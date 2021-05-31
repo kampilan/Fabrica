@@ -32,6 +32,8 @@ using Amazon.SecurityToken;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SQS;
 using Autofac;
+using Fabrica.Aws.Storage;
+using Fabrica.Utilities.Storage;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 // ReSharper disable UnusedParameter.Local
@@ -303,6 +305,26 @@ namespace Fabrica.Aws
                 .As<IAmazonAppConfig>()
                 .SingleInstance()
                 .AutoActivate();
+
+        }
+
+
+        public static ContainerBuilder AddStorage(this ContainerBuilder builder)
+        {
+
+            builder.Register(c =>
+                {
+                    var client = c.Resolve<IAmazonS3>();
+                    var comp   = new StorageComponent(client);
+                    return comp;
+                })
+                .As<IStorageProvider>()
+                .As<IRemoteStorageProvider>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            return builder;
 
         }
 

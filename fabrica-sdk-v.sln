@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Mongo", "Fabr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Aws", "Fabrica.Aws\Fabrica.Aws.csproj", "{A9BDDCEB-3F15-4921-9537-B7CBB1FD82EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.One.Support", "Fabrica.One.Support\Fabrica.One.Support.csproj", "{6BEE20DE-F811-407B-AC74-326CB93DFE79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A9BDDCEB-3F15-4921-9537-B7CBB1FD82EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9BDDCEB-3F15-4921-9537-B7CBB1FD82EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9BDDCEB-3F15-4921-9537-B7CBB1FD82EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BEE20DE-F811-407B-AC74-326CB93DFE79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BEE20DE-F811-407B-AC74-326CB93DFE79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BEE20DE-F811-407B-AC74-326CB93DFE79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BEE20DE-F811-407B-AC74-326CB93DFE79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
