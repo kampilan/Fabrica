@@ -1,0 +1,12 @@
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\bin\Debug\net5.0\Fabrica.deps.json
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\bin\Debug\net5.0\Fabrica.dll
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\bin\Debug\net5.0\ref\Fabrica.dll
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.csprojAssemblyReference.cache
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.GeneratedMSBuildEditorConfig.editorconfig
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.AssemblyInfoInputs.cache
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.AssemblyInfo.cs
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.csproj.CoreCompileInputs.cache
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.dll
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\ref\Fabrica.dll
+E:\repositories\fabrica-sdk-v\fabrica-sdk-v\Fabrica\obj\Debug\net5.0\Fabrica.pdb

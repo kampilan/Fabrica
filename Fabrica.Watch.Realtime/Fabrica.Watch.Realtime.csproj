@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Fabrica.Watch</RootNamespace>
+    <Authors>The Kampilan Group Inc.</Authors>
+    <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Z:\Kampilan\smithy.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
+
+</Project>

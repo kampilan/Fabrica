@@ -11,11 +11,13 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Fabrica")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("The Kampilan Group Inc.")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("The Kampilan Group Inc. (c) 2021")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("Fabrica SDK for building REST APIs")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("Fabrica")]
+[assembly: System.Reflection.AssemblyProductAttribute("Fabrica SDK")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Fabrica")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
