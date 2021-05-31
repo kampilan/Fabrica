@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica", "Fabrica\Fabrica.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Realtime", "Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj", "{34E64157-3E6F-480B-AC9C-E892140F4C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch.Bridges", "Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj", "{A1954C96-AF2F-410A-861C-5EF5D3A392E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Bridges", "Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj", "{A1954C96-AF2F-410A-861C-5EF5D3A392E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch.Mongo", "Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj", "{D84D23D0-4553-4580-A891-14BD0E99018F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Mongo", "Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj", "{D84D23D0-4553-4580-A891-14BD0E99018F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Aws", "Fabrica.Aws\Fabrica.Aws.csproj", "{A9BDDCEB-3F15-4921-9537-B7CBB1FD82EA}"
 EndProject
