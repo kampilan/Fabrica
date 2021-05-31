@@ -5,7 +5,6 @@
     <RootNamespace>Fabrica.Watch</RootNamespace>
     <Authors>The Kampilan Group Inc.</Authors>
     <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
-    <PackageIcon>smithy.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
