@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica", "Fabrica\Fabrica.csproj", "{3B437107-DFAA-4694-8CEA-3A876773EC62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch.Realtime", "Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj", "{34E64157-3E6F-480B-AC9C-E892140F4C4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Realtime", "Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj", "{34E64157-3E6F-480B-AC9C-E892140F4C4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch.Bridges", "Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj", "{A1954C96-AF2F-410A-861C-5EF5D3A392E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch.Mongo", "Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj", "{D84D23D0-4553-4580-A891-14BD0E99018F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{34E64157-3E6F-480B-AC9C-E892140F4C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34E64157-3E6F-480B-AC9C-E892140F4C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34E64157-3E6F-480B-AC9C-E892140F4C4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1954C96-AF2F-410A-861C-5EF5D3A392E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1954C96-AF2F-410A-861C-5EF5D3A392E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1954C96-AF2F-410A-861C-5EF5D3A392E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1954C96-AF2F-410A-861C-5EF5D3A392E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D84D23D0-4553-4580-A891-14BD0E99018F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D84D23D0-4553-4580-A891-14BD0E99018F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D84D23D0-4553-4580-A891-14BD0E99018F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D84D23D0-4553-4580-A891-14BD0E99018F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
