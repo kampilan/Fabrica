@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+BC8nMkn0bodbcZ2oIL9fwX+98vV5q2skYxivTNTiAw81cN8WCtkONK95Ufl3MDctpiD0seOTTubGnIxxEHoZw==",
+  "dgSpecHash": "XSX4ipE0XUx934PhupoehLfe1sGAek83iPvROS4TcWheLB044QEpjUG+qyNWSwhpVKoqBnJY+n8/wobeTAh+Hg==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
   "expectedPackageFiles": [
@@ -8,8 +8,14 @@
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration.abstractions\\5.0.0\\microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration.fileextensions\\5.0.0\\microsoft.extensions.configuration.fileextensions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.dependencyinjection\\5.0.0\\microsoft.extensions.dependencyinjection.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.fileproviders.abstractions\\5.0.0\\microsoft.extensions.fileproviders.abstractions.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.fileproviders.physical\\5.0.0\\microsoft.extensions.fileproviders.physical.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.filesystemglobbing\\5.0.0\\microsoft.extensions.filesystemglobbing.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.logging\\5.0.0\\microsoft.extensions.logging.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.logging.abstractions\\5.0.0\\microsoft.extensions.logging.abstractions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.options\\5.0.0\\microsoft.extensions.options.5.0.0.nupkg.sha512",

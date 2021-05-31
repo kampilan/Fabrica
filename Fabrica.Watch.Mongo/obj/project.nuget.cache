@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kZSyRwHJNwU5gQ4FTJhdqzaygXyNAuHt12vreYfX9PprIbb/wowQsnevRmB3M70eaxh0gpeeAhFlJn1Ojz13kQ==",
+  "dgSpecHash": "DOvQvGXktbIMQ2Z3bKjtO8btGHWPFnnk9fWlRG5s9q76pNEw2G07X8lrhjwtrtssSdfixNUTPydhFIb9YJvM9g==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,14 @@
     "f:\\.nuget\\dnsclient\\1.4.0\\dnsclient.1.4.0.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration.abstractions\\5.0.0\\microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration.fileextensions\\5.0.0\\microsoft.extensions.configuration.fileextensions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.dependencyinjection.abstractions\\2.1.0\\microsoft.extensions.dependencyinjection.abstractions.2.1.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.fileproviders.abstractions\\5.0.0\\microsoft.extensions.fileproviders.abstractions.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.fileproviders.physical\\5.0.0\\microsoft.extensions.fileproviders.physical.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.filesystemglobbing\\5.0.0\\microsoft.extensions.filesystemglobbing.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.primitives\\5.0.0\\microsoft.extensions.primitives.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.netcore.platforms\\2.1.2\\microsoft.netcore.platforms.2.1.2.nupkg.sha512",
     "f:\\.nuget\\microsoft.netcore.targets\\1.1.3\\microsoft.netcore.targets.1.1.3.nupkg.sha512",
     "f:\\.nuget\\mongodb.bson\\2.12.3\\mongodb.bson.2.12.3.nupkg.sha512",
