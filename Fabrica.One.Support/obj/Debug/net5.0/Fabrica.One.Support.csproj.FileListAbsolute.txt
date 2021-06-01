@@ -19,7 +19,6 @@ E:\repositories\fabrica-sdk-v\Fabrica.One.Support\bin\Debug\net5.0\ref\Fabrica.O
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\bin\Debug\net5.0\Fabrica.One.Support.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\bin\Debug\net5.0\Fabrica.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.csprojAssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.GeneratedMSBuildEditorConfig.editorconfig
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.AssemblyInfoInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.AssemblyInfo.cs
@@ -28,3 +27,4 @@ E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.S
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\ref\Fabrica.One.Support.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.One.Support\obj\Debug\net5.0\Fabrica.One.Support.csproj.AssemblyReference.cache
