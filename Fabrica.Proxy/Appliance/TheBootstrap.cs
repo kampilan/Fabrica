@@ -245,25 +245,6 @@ namespace Fabrica.Proxy.Appliance
                 }
 
 
-
-                if( Options.ConfigureHealthCheck )
-                {
-
-                    var hcep = ep.Map(Options.HealthcheckRoute, _ =>
-                    {
-
-                        var result = new StatusCodeResult(200);
-
-                        return Task.FromResult(result);
-
-                    });
-
-
-                    if( Options.ConfigureForAuthentication )
-                        hcep.RequireAuthorization("Authentication:None");
-
-                }
-
                 if( RunProxy )
                     ep.MapReverseProxy();
 
