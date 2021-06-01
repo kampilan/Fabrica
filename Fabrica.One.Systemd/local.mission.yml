@@ -1,0 +1,10 @@
+﻿Name: Test
+Environment: Development
+RepositoryRoot: fabrica-appliance-repository
+WatchEventStoreUri: "mongodb://watch:w1FfV1qfZQJKTFv0zpme@10.78.142.10:27017"
+Deployments:
+
+    - Name: fabrica-monitor
+      UrlNamespace: "http://*:8989"
+      WatchDomainName: Fabrica.System.Development
+      ShowWindow: true

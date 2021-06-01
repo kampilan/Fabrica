@@ -1,0 +1,37 @@
+﻿RunningOnEC2: false;
+
+MetadataAddress: "https://dev-f1q4x7i6.us.auth0.com/.well-known/openid-configuration"
+ClientId: "19t7LRE8Y0lVqTioGZsol0q5yeUI35L3"
+ClientSecret: "rmC08fFjEh1bMyOkgarqXJPlKWGkLvmcP0_T40wk1jpW0Vdlq1G6zxmoi1-bt9zr"
+Audience: partner-connect-api
+ProviderSignOutUri: "https://dev-f1q4x7i6.us.auth0.com/v2/logout?client_id=19t7LRE8Y0lVqTioGZsol0q5yeUI35L3"
+
+PostLoginRedirectUri: /healthcheck
+PostLogoutRedirectUri: /healthcheck
+
+Proxy:
+
+    Routes:
+
+        - RouteId: Api
+          ClusterId: ConnectApi
+          Match:
+              Path: "/api/{**catch-all}"
+
+        - RouteId: App
+          ClusterId: Connect
+          Match:
+              Path: "{**catch-all}"
+
+    Clusters:
+
+        ConnectApi:
+            Destinations:
+                ConnectApi/Root:
+                    Address: http://localhost:8282
+
+        Connect:
+            Destinations:
+                Connect/Root:
+                    Address: http://localhost:8181
+

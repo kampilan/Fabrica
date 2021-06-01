@@ -1,0 +1,599 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Systemd\\Fabrica.One.Systemd.csproj": {}
+  },
+  "projects": {
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
+        "projectName": "Fabrica.Aws",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "AWSSDK.AppConfig": {
+              "target": "Package",
+              "version": "[3.7.0.23, )"
+            },
+            "AWSSDK.S3": {
+              "target": "Package",
+              "version": "[3.7.0.25, )"
+            },
+            "AWSSDK.SQS": {
+              "target": "Package",
+              "version": "[3.7.0.24, )"
+            },
+            "AWSSDK.SecurityToken": {
+              "target": "Package",
+              "version": "[3.7.1.12, )"
+            },
+            "AWSSDK.SimpleSystemsManagement": {
+              "target": "Package",
+              "version": "[3.7.3.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
+        "projectName": "Fabrica.One.Support",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "AWSSDK.AppConfig": {
+              "target": "Package",
+              "version": "[3.7.0.29, )"
+            },
+            "AWSSDK.Core": {
+              "target": "Package",
+              "version": "[3.7.0.31, )"
+            },
+            "AWSSDK.S3": {
+              "target": "Package",
+              "version": "[3.7.0.32, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Systemd\\Fabrica.One.Systemd.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Systemd\\Fabrica.One.Systemd.csproj",
+        "projectName": "Fabrica.One.Systemd",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Systemd\\Fabrica.One.Systemd.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Systemd\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj"
+              },
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj"
+              },
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj"
+              },
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj"
+              },
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj"
+              },
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting.Systemd": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
+        "projectName": "Fabrica.Watch.Bridges",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj",
+        "projectName": "Fabrica.Watch.Mongo",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "JetBrains.Annotations": {
+              "target": "Package",
+              "version": "[2021.1.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.12.3, )"
+            },
+            "protobuf-net": {
+              "target": "Package",
+              "version": "[3.0.101, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj",
+        "projectName": "Fabrica.Watch.Realtime",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj",
+        "projectName": "Fabrica",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj",
+        "packagesPath": "f:\\.nuget",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "F:\\repositories\\packages": {},
+          "https://www.myget.org/F/fabrica-v/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v3/index.json": {},
+          "https://www.myget.org/F/fabrica/auth/f2afe7cc-542f-4a3d-96f5-a4a0f371a002/api/v2": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Autofac": {
+              "target": "Package",
+              "version": "[6.2.0, )"
+            },
+            "Autofac.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[7.1.0, )"
+            },
+            "JetBrains.Annotations": {
+              "target": "Package",
+              "version": "[2021.1.0, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.FileExtensions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Sprache": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[11.1.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+﻿RunningOnEC2: true
+ApplicationDiscriminator: "Fabrica-Proxy"
+DataProtectionParameterName: ""
+
+AllowAnyIp: true
+

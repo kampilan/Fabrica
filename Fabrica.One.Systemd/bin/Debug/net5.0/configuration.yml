@@ -1,0 +1,9 @@
+﻿RegionName: us-east-2
+Profile: kampilan
+RunningOnEC2: false
+
+WatchEventStoreUri: "mongodb://watch:w1FfV1qfZQJKTFv0zpme@10.78.142.10:27017"
+WatchDomainName: Fabrica.System.Development
+
+#UseAppConfigPlanSource: true
+#AppConfigPlanSourceApplication: after-crm
