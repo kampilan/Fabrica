@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vMQGbDhtt0UHMTPZlwkrzsTKzniywIR5vhJpQmLVg0u42KAsPS6O2RZpThR7bhJne29WmWrmhZ/wm0aOMsYrRw==",
+  "dgSpecHash": "U4GVNDMZQgmp7Ll3CvUTBZhKWKIJmkiTi9ZUIvSS3V5T0/1ZuTuBogNZrSTyl7NC9n9oPVlf7GU+9XZEAql7Xg==",
   "success": true,
-  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
+  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",

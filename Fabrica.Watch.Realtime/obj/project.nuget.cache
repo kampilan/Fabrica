@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gLbd9+VDjfmz0J1rdCyGsHUxJK3QnHczU53Bki/GaU/gnDbGL/TcQsFjnwmV890D4uco2LFKy2PScUfGFAN5Lg==",
+  "dgSpecHash": "HPD0hkkZnIxRzz909sEiMX3ujoPWwvtbMkeHe4cY+VKqZZv6Sr84twQhbKYLe5Yiu9GoECk+yVoXnX4SC+HbvA==",
   "success": true,
-  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj",
+  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DOvQvGXktbIMQ2Z3bKjtO8btGHWPFnnk9fWlRG5s9q76pNEw2G07X8lrhjwtrtssSdfixNUTPydhFIb9YJvM9g==",
+  "dgSpecHash": "aUx+TB7VlhYfgZPwY5nl9rAG7hFUJo5yR8rU1ir7SCV7tjCecli0wyJsAOyXvB+J3FNT5LhGzqATO7wkmIFhgQ==",
   "success": true,
-  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj",
+  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",

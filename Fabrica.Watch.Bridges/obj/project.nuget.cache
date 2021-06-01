@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XSX4ipE0XUx934PhupoehLfe1sGAek83iPvROS4TcWheLB044QEpjUG+qyNWSwhpVKoqBnJY+n8/wobeTAh+Hg==",
+  "dgSpecHash": "Vos+2/qUqF+oJjEfjr81XoquyJi7Z8r0FvcEeuRI/5Y1u8bTcCRWUK5buyugFxEHOktRipRZ9PpWbffWc27Tlw==",
   "success": true,
-  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
+  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",

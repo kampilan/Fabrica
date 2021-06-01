@@ -1848,11 +1848,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
+      "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
       "projectName": "Fabrica.One.Support",
-      "projectPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
+      "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
       "packagesPath": "f:\\.nuget",
-      "outputPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.One.Support\\obj\\",
+      "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
@@ -1879,8 +1879,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
-              "projectPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+            "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+              "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
             }
           }
         }

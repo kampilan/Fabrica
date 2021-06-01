@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj": {}
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj": {}
   },
   "projects": {
-    "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj": {
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
         "projectName": "Fabrica.Aws",
-        "projectPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\Fabrica.Aws.csproj",
         "packagesPath": "f:\\.nuget",
-        "outputPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.Aws\\obj\\",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
@@ -38,8 +38,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
-                "projectPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
+              "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+                "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"
               }
             }
           }
@@ -94,14 +94,14 @@
         }
       }
     },
-    "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
+    "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj",
+        "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj",
         "projectName": "Fabrica",
-        "projectPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj",
+        "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj",
         "packagesPath": "f:\\.nuget",
-        "outputPath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica\\obj\\",
+        "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",

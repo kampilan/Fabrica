@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "V7B1TR8WFCvBJXt8u8/ZKvAXAPuTgB93MIe5Qs3ryTHUnQwh06WFIMsLhTb8uPkgM5fQfUb5LoLE20oaAIz2Uw==",
+  "dgSpecHash": "L1CFDcrtFVzvtzZYqSGGmj4i4OKbd4xocwlSG0baBhvWKuSsx2m1rRbOflG5Axq/ddGJU65jQaUbcncLAs3MaQ==",
   "success": true,
-  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
+  "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
