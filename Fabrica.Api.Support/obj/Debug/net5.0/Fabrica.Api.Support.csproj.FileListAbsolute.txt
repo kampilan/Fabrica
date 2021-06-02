@@ -1,7 +1,3 @@
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.GeneratedMSBuildEditorConfig.editorconfig
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.AssemblyInfoInputs.cache
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.AssemblyInfo.cs
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.csproj.CoreCompileInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Api.Support.deps.json
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Api.Support.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\ref\Fabrica.Api.Support.dll
@@ -16,8 +12,12 @@ E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Mongo.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.csproj.AssemblyReference.cache
+E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.GeneratedMSBuildEditorConfig.editorconfig
+E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.AssemblyInfoInputs.cache
+E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.AssemblyInfo.cs
+E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.csproj.CoreCompileInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.csproj.CopyComplete
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\ref\Fabrica.Api.Support.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.csproj.AssemblyReference.cache

@@ -19,6 +19,7 @@ E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\bin\Debug\net5.0\ref\Fabric
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.csproj.AssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.GeneratedMSBuildEditorConfig.editorconfig
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.AssemblyInfoInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.AssemblyInfo.cs
@@ -27,4 +28,3 @@ E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Wa
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\ref\Fabrica.Watch.Realtime.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Watch.Realtime\obj\Debug\net5.0\Fabrica.Watch.Realtime.csproj.AssemblyReference.cache

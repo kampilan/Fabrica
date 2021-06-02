@@ -19,6 +19,7 @@ E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\bin\Debug\net5.0\ref\Fabrica.W
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\bin\Debug\net5.0\Fabrica.Watch.Mongo.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.csproj.AssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.GeneratedMSBuildEditorConfig.editorconfig
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.AssemblyInfoInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.AssemblyInfo.cs
@@ -27,4 +28,3 @@ E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\ref\Fabrica.Watch.Mongo.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Watch.Mongo\obj\Debug\net5.0\Fabrica.Watch.Mongo.csproj.AssemblyReference.cache

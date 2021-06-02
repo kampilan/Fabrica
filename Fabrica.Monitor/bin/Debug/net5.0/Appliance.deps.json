@@ -6,13 +6,13 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "Fabrica.Monitor/1.0.0": {
+      "Appliance/1.0.0": {
         "dependencies": {
           "Fabrica": "1.0.0",
           "Fabrica.Api.Support": "1.0.0"
         },
         "runtime": {
-          "Fabrica.Monitor.dll": {}
+          "Appliance.dll": {}
         }
       },
       "Autofac/6.2.0": {
@@ -688,7 +688,7 @@
     }
   },
   "libraries": {
-    "Fabrica.Monitor/1.0.0": {
+    "Appliance/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

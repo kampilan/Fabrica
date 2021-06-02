@@ -19,6 +19,7 @@ E:\repositories\fabrica-sdk-v\Fabrica.Aws\bin\Debug\net5.0\ref\Fabrica.Aws.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\bin\Debug\net5.0\Fabrica.Aws.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.csproj.AssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.GeneratedMSBuildEditorConfig.editorconfig
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.AssemblyInfoInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.AssemblyInfo.cs
@@ -27,4 +28,3 @@ E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.csproj.Co
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\ref\Fabrica.Aws.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Aws\obj\Debug\net5.0\Fabrica.Aws.csproj.AssemblyReference.cache

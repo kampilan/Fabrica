@@ -188,7 +188,7 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Proxy\\Fabrica.Proxy.csproj",
-        "projectName": "Fabrica.Proxy",
+        "projectName": "Appliance",
         "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Proxy\\Fabrica.Proxy.csproj",
         "packagesPath": "f:\\.nuget",
         "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Proxy\\obj\\",

@@ -19,6 +19,7 @@ E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\bin\Debug\net5.0\ref\Fabrica
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\bin\Debug\net5.0\Fabrica.Watch.Bridges.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.csproj.AssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.GeneratedMSBuildEditorConfig.editorconfig
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.AssemblyInfoInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.AssemblyInfo.cs
@@ -27,4 +28,3 @@ E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Wat
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\ref\Fabrica.Watch.Bridges.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Watch.Bridges\obj\Debug\net5.0\Fabrica.Watch.Bridges.csproj.AssemblyReference.cache

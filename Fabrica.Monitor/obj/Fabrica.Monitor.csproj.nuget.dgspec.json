@@ -188,7 +188,7 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Monitor\\Fabrica.Monitor.csproj",
-        "projectName": "Fabrica.Monitor",
+        "projectName": "Appliance",
         "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Monitor\\Fabrica.Monitor.csproj",
         "packagesPath": "f:\\.nuget",
         "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Monitor\\obj\\",

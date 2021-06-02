@@ -1,8 +1,5 @@
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.csproj.AssemblyReference.cache
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.GeneratedMSBuildEditorConfig.editorconfig
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.AssemblyInfoInputs.cache
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.AssemblyInfo.cs
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.csproj.CoreCompileInputs.cache
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\configuration.yml
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\local.mission.yml
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.One.Service.exe
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.One.Service.deps.json
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.One.Service.runtimeconfig.json
@@ -79,10 +76,13 @@ E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.Watch
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.Watch.Mongo.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\Fabrica.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.csproj.AssemblyReference.cache
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.GeneratedMSBuildEditorConfig.editorconfig
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.AssemblyInfoInputs.cache
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.AssemblyInfo.cs
+E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.csproj.CoreCompileInputs.cache
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.csproj.CopyComplete
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\ref\Fabrica.One.Service.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Service\obj\Debug\net5.0\Fabrica.One.Service.genruntimeconfig.cache
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\configuration.yml
-E:\repositories\fabrica-sdk-v\Fabrica.One.Service\bin\Debug\net5.0\local.mission.yml
