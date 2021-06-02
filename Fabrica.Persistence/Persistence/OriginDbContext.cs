@@ -46,11 +46,11 @@ namespace Fabrica.Persistence
 {
 
 
-    public class MasterDbContext: BaseDbContext
+    public class OriginDbContext: BaseDbContext
     {
 
 
-        public MasterDbContext( ICorrelation correlation, IRuleSet rules,  [NotNull] DbContextOptions options, ILoggerFactory factory) : base( correlation, options, factory )
+        public OriginDbContext( ICorrelation correlation, IRuleSet rules,  [NotNull] DbContextOptions options, ILoggerFactory factory=null) : base( correlation, options, factory )
         {
 
             Rules = rules;

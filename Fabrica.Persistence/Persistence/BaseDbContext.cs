@@ -37,7 +37,7 @@ namespace Fabrica.Persistence
     {
 
 
-        protected BaseDbContext( ICorrelation correlation, [NotNull] DbContextOptions options, ILoggerFactory factory ): base( options )
+        protected BaseDbContext( ICorrelation correlation, [NotNull] DbContextOptions options, ILoggerFactory factory=null ): base( options )
         {
 
             Correlation = correlation;
@@ -56,9 +56,8 @@ namespace Fabrica.Persistence
         {
 
             base.OnConfiguring(optionsBuilder);
-
-            optionsBuilder.UseLoggerFactory(Factory);
-
+            if( Factory != null )
+                optionsBuilder.UseLoggerFactory(Factory);
 
         }
 

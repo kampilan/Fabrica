@@ -34,7 +34,7 @@ namespace Fabrica.Persistence
     {
 
 
-        public ReplicaDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory factory) : base( correlation, options, factory )
+        public ReplicaDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory factory=null) : base( correlation, options, factory )
         {
            
 

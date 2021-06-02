@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Autofac;
+﻿using Autofac;
 using Fabrica.Persistence.Connection;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rql;
