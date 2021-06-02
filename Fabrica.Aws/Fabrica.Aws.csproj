@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aws\Repository\" />
+  </ItemGroup>
+
 </Project>

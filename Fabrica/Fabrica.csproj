@@ -25,7 +25,7 @@
     <Folder Include="Identity\" />
     <Folder Include="Configuration\" />
     <Folder Include="Persistence\Audit\" />
-    <Folder Include="Utilities\" />
+    <Folder Include="Utilities\Repository\" />
   </ItemGroup>
 
 </Project>

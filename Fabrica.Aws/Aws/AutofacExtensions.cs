@@ -32,7 +32,9 @@ using Amazon.SecurityToken;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SQS;
 using Autofac;
+using Fabrica.Aws.Repository;
 using Fabrica.Aws.Storage;
+using Fabrica.Utilities.Repository;
 using Fabrica.Utilities.Storage;
 using Fabrica.Watch;
 using JetBrains.Annotations;
@@ -327,6 +329,49 @@ namespace Fabrica.Aws
             return builder;
 
         }
+
+        public static ContainerBuilder AddUrlProvider(this ContainerBuilder builder, string permanent, string transient, string resource)
+        {
+
+            builder.Register(c =>
+                {
+
+                    var s3 = c.Resolve<IAmazonS3>();
+
+                    var comp = new S3RepositoryUrlProvider(s3, permanent, transient, resource);
+
+                    return comp;
+
+                })
+                .As<IRepositoryUrlProvider>()
+                .SingleInstance();
+
+            return builder;
+
+        }
+
+        public static ContainerBuilder AddUrlProvider(this ContainerBuilder builder, IRepositoryConfiguration config )
+        {
+
+            builder.Register(c =>
+                {
+
+                    var s3 = c.Resolve<IAmazonS3>();
+
+                    var comp = new S3RepositoryUrlProvider(s3, config.PermanentContainer, config.TransientContainer, config.ResourceContainer);
+
+                    return comp;
+
+                })
+                .As<IRepositoryUrlProvider>()
+                .SingleInstance();
+
+            return builder;
+
+        }
+
+
+
 
 
     }
