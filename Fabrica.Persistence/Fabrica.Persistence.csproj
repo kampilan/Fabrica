@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>The Kampilan Group Inc.</Authors>
+    <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
+    <RootNamespace>Fabrica</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Persistence\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
+
+</Project>
