@@ -60,7 +60,7 @@ namespace Fabrica.Persistence.UnitOfWork
                 if( Connection != null )
                     return Connection;
 
-                Connection = Resolver.GetMasterConnection();
+                Connection = Resolver.GetOriginConnection();
 
                 if (Connection.State != ConnectionState.Open)
                     Connection.Open();

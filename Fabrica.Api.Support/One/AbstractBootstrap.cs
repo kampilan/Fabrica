@@ -44,7 +44,7 @@ namespace Fabrica.Api.Support.One
             // *****************************************************************
             var options = Configuration.Get<WatchMongoOptions>();
             var maker   = WatchFactoryBuilder.Create();
-            if( options.RealtimeLogging || string.IsNullOrWhiteSpace(options.WatchDomainName) || string.IsNullOrWhiteSpace(options.WatchEventStoreUri))
+            if( options == null || options.RealtimeLogging || string.IsNullOrWhiteSpace(options.WatchDomainName) || string.IsNullOrWhiteSpace(options.WatchEventStoreUri))
                 maker.UseRealtime(Level.Debug, Color.LightPink);
             else
                 maker.UseMongo(options);

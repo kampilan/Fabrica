@@ -35,20 +35,20 @@ namespace Fabrica.Persistence.Connection
     public class ConnectionResolver: IConnectionResolver
     {
 
-        public ConnectionResolver( ICorrelation correlation, DbProviderFactory factory, string replicaConnectionStr, string masterConnectionStr )
+        public ConnectionResolver( ICorrelation correlation, DbProviderFactory factory, string replicaConnectionStr, string originConnectionStr )
         {
 
             Correlation          = correlation;
             Factory              = factory;
             ReplicaConnectionStr = replicaConnectionStr;
-            MasterConnectionStr  = masterConnectionStr;
+            OriginConnectionStr  = originConnectionStr;
 
         }
 
         private ICorrelation Correlation { get; }
 
         private string ReplicaConnectionStr { get; }
-        private string MasterConnectionStr { get; }
+        private string OriginConnectionStr { get; }
 
 
         public DbProviderFactory Factory { get; }
@@ -128,7 +128,7 @@ namespace Fabrica.Persistence.Connection
         }
 
 
-        public DbConnection GetMasterConnection()
+        public DbConnection GetOriginConnection()
         {
 
             var logger = Correlation.GetLogger(this);
@@ -167,12 +167,12 @@ namespace Fabrica.Persistence.Connection
                 {
 
 
-                    logger.Inspect("MasterConnectionStr", MasterConnectionStr);
+                    logger.Inspect("OriginConnectionStr", OriginConnectionStr);
 
 
                     // ***********************************************************
                     logger.Debug("Attempting to set connection string on connection");
-                    conn.ConnectionString = MasterConnectionStr;
+                    conn.ConnectionString = OriginConnectionStr;
 
 
 
@@ -189,7 +189,7 @@ namespace Fabrica.Persistence.Connection
                 }
                 catch (Exception cause)
                 {
-                    logger.ErrorFormat(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, MasterConnectionStr);
+                    logger.ErrorFormat(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, OriginConnectionStr);
                     throw;
                 }
 

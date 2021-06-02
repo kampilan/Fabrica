@@ -31,7 +31,7 @@ namespace Fabrica.Persistence.Connection
     {
 
         DbConnection GetReplicaConnection();
-        DbConnection GetMasterConnection();
+        DbConnection GetOriginConnection();
 
         void CloseConnection( DbConnection connection );
 
