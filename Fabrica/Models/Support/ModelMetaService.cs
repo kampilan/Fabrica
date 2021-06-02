@@ -157,24 +157,24 @@ namespace Fabrica.Models.Support
                 var exclusions = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p =>
                     {
-                        var ia = p.GetCustomAttribute<RtoAttribute>();
-                        return ia != null && ia.Mutability == RtoMutability.Never;
+                        var ia = p.GetCustomAttribute<ModelMetaAttribute>();
+                        return ia != null && ia.Mutability == PropertyMutability.Never;
                     })
                     .Select(p => p.Name);
 
                 var creatables = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p =>
                     {
-                        var ia = p.GetCustomAttribute<RtoAttribute>();
-                        return ia != null && ia.Mutability == RtoMutability.CreateOnly;
+                        var ia = p.GetCustomAttribute<ModelMetaAttribute>();
+                        return ia != null && ia.Mutability == PropertyMutability.CreateOnly;
                     })
                     .Select(p => p.Name);
 
                 var updatables = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p =>
                     {
-                        var ia = p.GetCustomAttribute<RtoAttribute>();
-                        return ia == null || ia.Mutability == RtoMutability.Always;
+                        var ia = p.GetCustomAttribute<ModelMetaAttribute>();
+                        return ia == null || ia.Mutability == PropertyMutability.Always;
                     })
                     .Select(p => p.Name);
 

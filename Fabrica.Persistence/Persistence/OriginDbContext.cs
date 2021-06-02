@@ -204,7 +204,7 @@ namespace Fabrica.Persistence
         protected virtual AuditJournalModel CreateAuditJournal(DateTime journalTime, AuditJournalType type, [NotNull] IModel entity, [CanBeNull] PropertyEntry prop = null)
         {
 
-            var ident = Correlation.ToIdentity();
+            var ident = Correlation.ToIdentity()??new ClaimsIdentity();
 
             var aj = new AuditJournalModel
             {

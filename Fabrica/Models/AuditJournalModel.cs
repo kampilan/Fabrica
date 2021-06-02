@@ -39,7 +39,7 @@ namespace Fabrica.Models
     {
 
 
-        [Rto]
+        [ModelMeta]
         public override long Id { get; protected set; }
 
         public override string Uid { get; set; } = ShortGuid.NewGuid();

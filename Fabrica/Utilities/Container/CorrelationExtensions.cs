@@ -23,7 +23,7 @@ namespace Fabrica.Utilities.Container
 
         public static ClaimsIdentity ToIdentity(this ICorrelation correlation)
         {
-            var identity = correlation.Caller.Identity as ClaimsIdentity;
+            var identity = correlation.Caller.Identity as ClaimsIdentity ?? new ClaimsIdentity();
             return identity;
         }
 

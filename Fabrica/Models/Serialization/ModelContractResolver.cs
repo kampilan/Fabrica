@@ -8,7 +8,7 @@ namespace Fabrica.Models.Serialization
 {
 
 
-    public class RtoContractResolver: DefaultContractResolver
+    public class ModelContractResolver: DefaultContractResolver
     {
 
 
@@ -26,7 +26,16 @@ namespace Fabrica.Models.Serialization
 
 
             // ****************************************************************************
-            var nea = member.GetCustomAttribute<RtoNotEmptyAttribute>();
+            var mm = member.GetCustomAttribute<ModelMetaAttribute>();
+            if (mm != null)
+            {
+                property.ShouldSerialize = _ => !mm.Ignore;
+                return property;
+            }
+
+
+            // ****************************************************************************
+                var nea = member.GetCustomAttribute<ExcludeEmptyAttribute>();
             if( nea != null && property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType) )
             {
                 property.ShouldSerialize = instance =>

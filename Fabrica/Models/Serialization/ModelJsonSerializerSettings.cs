@@ -3,13 +3,13 @@
 namespace Fabrica.Models.Serialization
 {
 
-    public static class RtoJsonSerializerSettings
+    public static class ModelJsonSerializerSettings
     {
 
 
         public static JsonSerializerSettings ForRto { get; } = new JsonSerializerSettings
         {
-            ContractResolver           = new RtoContractResolver(),
+            ContractResolver           = new ModelContractResolver(),
             DefaultValueHandling       = DefaultValueHandling.Populate,
             NullValueHandling          = NullValueHandling.Ignore,
             DateTimeZoneHandling       = DateTimeZoneHandling.Utc,
@@ -19,7 +19,7 @@ namespace Fabrica.Models.Serialization
 
         public static JsonSerializerSettings ForRtoNoDefaults { get; } = new JsonSerializerSettings
         {
-            ContractResolver           = new RtoContractResolver(),
+            ContractResolver           = new ModelContractResolver(),
             DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate,
             NullValueHandling          = NullValueHandling.Ignore,
             DateTimeZoneHandling       = DateTimeZoneHandling.Utc,
@@ -30,7 +30,7 @@ namespace Fabrica.Models.Serialization
 
         public static JsonSerializerSettings ForRtoExplorer { get; } = new JsonSerializerSettings
         {
-            ContractResolver           = new RtoExplorerContractResolver(),
+            ContractResolver           = new ModelExplorerContractResolver(),
             DefaultValueHandling       = DefaultValueHandling.Populate,
             NullValueHandling          = NullValueHandling.Ignore,
             DateTimeZoneHandling       = DateTimeZoneHandling.Utc
@@ -38,7 +38,7 @@ namespace Fabrica.Models.Serialization
 
         public static JsonSerializerSettings ForRtoExplorerNoDefaults { get; } = new JsonSerializerSettings
         {
-            ContractResolver           = new RtoExplorerContractResolver(),
+            ContractResolver           = new ModelExplorerContractResolver(),
             DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate,
             NullValueHandling          = NullValueHandling.Ignore,
             DateTimeZoneHandling       = DateTimeZoneHandling.Utc

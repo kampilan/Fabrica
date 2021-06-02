@@ -39,7 +39,7 @@ namespace Fabrica.Api.Support.One
         protected virtual void ConfigureJsonForRto( MvcNewtonsoftJsonOptions opt )
         {
 
-            opt.SerializerSettings.ContractResolver           = new RtoContractResolver();
+            opt.SerializerSettings.ContractResolver           = new ModelContractResolver();
             opt.SerializerSettings.DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate;
             opt.SerializerSettings.NullValueHandling          = NullValueHandling.Ignore;
             opt.SerializerSettings.DateTimeZoneHandling       = DateTimeZoneHandling.Utc;
