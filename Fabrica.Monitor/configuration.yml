@@ -1,1 +1,2 @@
-﻿HealthcheckRoute: "/healthcheck"
+﻿HealthcheckRoute: ""
+CatchAllRoute: ""

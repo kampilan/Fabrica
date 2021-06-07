@@ -166,7 +166,7 @@
           "lib/netstandard1.0/_._": {}
         }
       },
-      "MongoDB.Bson/2.12.3": {
+      "MongoDB.Bson/2.12.4": {
         "type": "package",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
@@ -178,11 +178,11 @@
           "lib/netstandard2.1/MongoDB.Bson.dll": {}
         }
       },
-      "MongoDB.Driver/2.12.3": {
+      "MongoDB.Driver/2.12.4": {
         "type": "package",
         "dependencies": {
-          "MongoDB.Bson": "2.12.3",
-          "MongoDB.Driver.Core": "2.12.3",
+          "MongoDB.Bson": "2.12.4",
+          "MongoDB.Driver.Core": "2.12.4",
           "MongoDB.Libmongocrypt": "1.2.1"
         },
         "compile": {
@@ -192,11 +192,11 @@
           "lib/netstandard2.1/MongoDB.Driver.dll": {}
         }
       },
-      "MongoDB.Driver.Core/2.12.3": {
+      "MongoDB.Driver.Core/2.12.4": {
         "type": "package",
         "dependencies": {
           "DnsClient": "1.4.0",
-          "MongoDB.Bson": "2.12.3",
+          "MongoDB.Bson": "2.12.4",
           "MongoDB.Libmongocrypt": "1.2.1",
           "SharpCompress": "0.23.0",
           "System.Buffers": "4.5.1"
@@ -855,10 +855,10 @@
         "runtime.json"
       ]
     },
-    "MongoDB.Bson/2.12.3": {
-      "sha512": "1gkSkX+hlyeNMvrcx4JeeGnTqAmOctoekczmASEzxuQiA15wo2YKm40TVx/pFbZGV57ekguzF8w2nurO5+2IQg==",
+    "MongoDB.Bson/2.12.4": {
+      "sha512": "cQ0DTdKIpPzqDWnu1lTbW7TU8zQkMZ6YkbICcA1x3zDQefPYi0T0WYA/t3VJbowiEH3IKNHsJ4DIFfCt9AOG7A==",
       "type": "package",
-      "path": "mongodb.bson/2.12.3",
+      "path": "mongodb.bson/2.12.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -871,15 +871,15 @@
         "lib/netstandard2.0/MongoDB.Bson.xml",
         "lib/netstandard2.1/MongoDB.Bson.dll",
         "lib/netstandard2.1/MongoDB.Bson.xml",
-        "mongodb.bson.2.12.3.nupkg.sha512",
+        "mongodb.bson.2.12.4.nupkg.sha512",
         "mongodb.bson.nuspec",
         "packageIcon.png"
       ]
     },
-    "MongoDB.Driver/2.12.3": {
-      "sha512": "tRjJixeBeA7Gus49kdf3t9uKUwzRTpN8S2OGkrusZw+nwSeFOH0K5VEjBpVgQEekwJLqnUNd1IkhKd5nK2Fz7A==",
+    "MongoDB.Driver/2.12.4": {
+      "sha512": "VHg97pY81iHsmQGeJ0APa3p0NCmoO2H9cXZOsr4SxdTVR5UG4jtNCk8sURNNZyFrxXJ/OAF/eC8z+6gKM1tfLg==",
       "type": "package",
-      "path": "mongodb.driver/2.12.3",
+      "path": "mongodb.driver/2.12.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -892,15 +892,15 @@
         "lib/netstandard2.0/MongoDB.Driver.xml",
         "lib/netstandard2.1/MongoDB.Driver.dll",
         "lib/netstandard2.1/MongoDB.Driver.xml",
-        "mongodb.driver.2.12.3.nupkg.sha512",
+        "mongodb.driver.2.12.4.nupkg.sha512",
         "mongodb.driver.nuspec",
         "packageIcon.png"
       ]
     },
-    "MongoDB.Driver.Core/2.12.3": {
-      "sha512": "wb5F6J5eolHwSLtIlCpENEYY05CvCtWt79ptVdmVTLbFq58dbsu6rEfxEtd9V7lkyPCeUoJuiSkCxceXx9mMgQ==",
+    "MongoDB.Driver.Core/2.12.4": {
+      "sha512": "dK9huQse6wiP4mEL6kLeAoGUZmyLwfC2RCl37GWzDGmVk95vG78Nw1CO1FytJWRN5EDWtztGH3geaTQb1XP8Ig==",
       "type": "package",
-      "path": "mongodb.driver.core/2.12.3",
+      "path": "mongodb.driver.core/2.12.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -930,7 +930,7 @@
         "lib/netstandard2.0/MongoDB.Driver.Core.xml",
         "lib/netstandard2.1/MongoDB.Driver.Core.dll",
         "lib/netstandard2.1/MongoDB.Driver.Core.xml",
-        "mongodb.driver.core.2.12.3.nupkg.sha512",
+        "mongodb.driver.core.2.12.4.nupkg.sha512",
         "mongodb.driver.core.nuspec",
         "packageIcon.png",
         "runtimes/win/native/libzstd.dll",
@@ -2201,12 +2201,13 @@
     "net5.0": [
       "Fabrica >= 1.0.0",
       "JetBrains.Annotations >= 2021.1.0",
-      "MongoDB.Driver >= 2.12.3",
+      "MongoDB.Driver >= 2.12.4",
       "protobuf-net >= 3.0.101"
     ]
   },
   "packageFolders": {
     "f:\\.nuget": {},
+    "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
@@ -2221,12 +2222,14 @@
       "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -2235,6 +2238,7 @@
         "net5.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "F:\\repositories\\packages": {},
@@ -2267,7 +2271,7 @@
           },
           "MongoDB.Driver": {
             "target": "Package",
-            "version": "[2.12.3, )"
+            "version": "[2.12.4, )"
           },
           "protobuf-net": {
             "target": "Package",

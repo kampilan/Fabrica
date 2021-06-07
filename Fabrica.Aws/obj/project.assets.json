@@ -27,10 +27,10 @@
           "lib/netstandard2.1/Autofac.Extensions.DependencyInjection.dll": {}
         }
       },
-      "AWSSDK.AppConfig/3.7.0.23": {
+      "AWSSDK.AppConfig/3.7.0.29": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.24, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {}
@@ -39,7 +39,7 @@
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {}
         }
       },
-      "AWSSDK.Core/3.7.0.24": {
+      "AWSSDK.Core/3.7.0.31": {
         "type": "package",
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
@@ -48,10 +48,10 @@
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
         }
       },
-      "AWSSDK.S3/3.7.0.25": {
+      "AWSSDK.S3/3.7.1": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.24, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {}
@@ -60,10 +60,10 @@
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {}
         }
       },
-      "AWSSDK.SecurityToken/3.7.1.12": {
+      "AWSSDK.SecurityToken/3.7.1.18": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.24, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.SecurityToken.dll": {}
@@ -72,10 +72,10 @@
           "lib/netcoreapp3.1/AWSSDK.SecurityToken.dll": {}
         }
       },
-      "AWSSDK.SimpleSystemsManagement/3.7.3.5": {
+      "AWSSDK.SimpleSystemsManagement/3.7.3.12": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.24, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.SimpleSystemsManagement.dll": {}
@@ -84,10 +84,10 @@
           "lib/netcoreapp3.1/AWSSDK.SimpleSystemsManagement.dll": {}
         }
       },
-      "AWSSDK.SQS/3.7.0.24": {
+      "AWSSDK.SQS/3.7.0.30": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.24, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.SQS.dll": {}
@@ -497,16 +497,16 @@
         "lib/netstandard2.1/Autofac.Extensions.DependencyInjection.xml"
       ]
     },
-    "AWSSDK.AppConfig/3.7.0.23": {
-      "sha512": "HSyVz1sU11/mXCWMU6qgn3nRlF1B3lz3oKt49l7A6eX2N6GN4npPRo4FdRsCFjTKxyZ7BWLNJDcdAEls2yK01A==",
+    "AWSSDK.AppConfig/3.7.0.29": {
+      "sha512": "ptwyXqTFMJInU4Cnl1sTzGf0si+inbdcWTYnKZvAlFxr6nWciNipo2BAhX6iJaDSspboprGHBJNZB57ektnhhg==",
       "type": "package",
-      "path": "awssdk.appconfig/3.7.0.23",
+      "path": "awssdk.appconfig/3.7.0.29",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.AppConfig.CodeAnalysis.dll",
-        "awssdk.appconfig.3.7.0.23.nupkg.sha512",
+        "awssdk.appconfig.3.7.0.29.nupkg.sha512",
         "awssdk.appconfig.nuspec",
         "lib/net35/AWSSDK.AppConfig.dll",
         "lib/net35/AWSSDK.AppConfig.pdb",
@@ -524,15 +524,15 @@
         "tools/uninstall.ps1"
       ]
     },
-    "AWSSDK.Core/3.7.0.24": {
-      "sha512": "r4K1cZ7W5Ui6iHoUeGsMe5RV/UdM3Igc3h4jgg4ftRUwp3UxB5v5N7p/5NeCS7sqpm+DBFgooPgMaa9PD0sy1Q==",
+    "AWSSDK.Core/3.7.0.31": {
+      "sha512": "C2vzPag+Rzb1hBiMUwRW+HQzIrsPxxKBk7EMX0AUxkApg36DOGXI1Aha4xpC0w5sWqRuQAJ3YW0Ihk1nPlBzKA==",
       "type": "package",
-      "path": "awssdk.core/3.7.0.24",
+      "path": "awssdk.core/3.7.0.31",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "awssdk.core.3.7.0.24.nupkg.sha512",
+        "awssdk.core.3.7.0.31.nupkg.sha512",
         "awssdk.core.nuspec",
         "lib/net35/AWSSDK.Core.dll",
         "lib/net35/AWSSDK.Core.pdb",
@@ -549,16 +549,16 @@
         "tools/account-management.ps1"
       ]
     },
-    "AWSSDK.S3/3.7.0.25": {
-      "sha512": "XTBmUkL/SRR/oz70tlBEITQ1ygVSRobiq60/IJ5u5GeuOuVmhn5lCt7EqtAqd5uXnNJWVBEHQk6/j7T58/6kyg==",
+    "AWSSDK.S3/3.7.1": {
+      "sha512": "GhUxyqLDVNj0qubAmHuytZ5P68yT1PTnV5Phig6WziPgOTVrGJfgSx9cw6L5KSZxEGIZNXwuIaVCYA6N8v5kLQ==",
       "type": "package",
-      "path": "awssdk.s3/3.7.0.25",
+      "path": "awssdk.s3/3.7.1",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.S3.CodeAnalysis.dll",
-        "awssdk.s3.3.7.0.25.nupkg.sha512",
+        "awssdk.s3.3.7.1.nupkg.sha512",
         "awssdk.s3.nuspec",
         "lib/net35/AWSSDK.S3.dll",
         "lib/net35/AWSSDK.S3.pdb",
@@ -576,16 +576,16 @@
         "tools/uninstall.ps1"
       ]
     },
-    "AWSSDK.SecurityToken/3.7.1.12": {
-      "sha512": "AVp8GoK+gyb8HNxHc1n1oNzTzrVYFDMSDsIt3Rv0w8NnvGfcAtDdbZK8ouxuvJKNKXXrYrdYstbRK9qrWM2ZIQ==",
+    "AWSSDK.SecurityToken/3.7.1.18": {
+      "sha512": "4wNDK3Pk2hmDLYYMOehobrURP9PCw7lvzNB+ShknLwkIn9k3B7KIGqZRhDeszHt7ckkMcvJux6vfNo8euNhNOw==",
       "type": "package",
-      "path": "awssdk.securitytoken/3.7.1.12",
+      "path": "awssdk.securitytoken/3.7.1.18",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.SecurityToken.CodeAnalysis.dll",
-        "awssdk.securitytoken.3.7.1.12.nupkg.sha512",
+        "awssdk.securitytoken.3.7.1.18.nupkg.sha512",
         "awssdk.securitytoken.nuspec",
         "lib/net35/AWSSDK.SecurityToken.dll",
         "lib/net35/AWSSDK.SecurityToken.pdb",
@@ -603,16 +603,16 @@
         "tools/uninstall.ps1"
       ]
     },
-    "AWSSDK.SimpleSystemsManagement/3.7.3.5": {
-      "sha512": "vcb20MOxgHvlFdQzLKN7E+3VfbDuA/Q5QzXDLO1fsoH+da05OB6H1VuNBJFzYYng3kBkY9eTkE4KeM2ME63/ww==",
+    "AWSSDK.SimpleSystemsManagement/3.7.3.12": {
+      "sha512": "kgdpQmDXljW3sxeMW7kKnpvemFoxa70SJCF8l8WmMkdksaOReiPMJtZFL+1v4FyE6rQqY/yxaW/kcBJBeRHOKw==",
       "type": "package",
-      "path": "awssdk.simplesystemsmanagement/3.7.3.5",
+      "path": "awssdk.simplesystemsmanagement/3.7.3.12",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.SimpleSystemsManagement.CodeAnalysis.dll",
-        "awssdk.simplesystemsmanagement.3.7.3.5.nupkg.sha512",
+        "awssdk.simplesystemsmanagement.3.7.3.12.nupkg.sha512",
         "awssdk.simplesystemsmanagement.nuspec",
         "lib/net35/AWSSDK.SimpleSystemsManagement.dll",
         "lib/net35/AWSSDK.SimpleSystemsManagement.pdb",
@@ -630,16 +630,16 @@
         "tools/uninstall.ps1"
       ]
     },
-    "AWSSDK.SQS/3.7.0.24": {
-      "sha512": "Xtd1NV9RQYEFBfxYSmW7F9XtLw2P4r+CKZvBZHDjOiY2na+/PAMcaPRY+gqgP8Ovn44ZBFbA1IRmXo3gYQZM8g==",
+    "AWSSDK.SQS/3.7.0.30": {
+      "sha512": "W4OStj1SO1u7zBa7Ysm1FUlBKUAMEOEWm7jk+/5eBaJNMcyVR+kLsBpnnvrsk/ZQsx3DxYmXKTEebHK9TelIPw==",
       "type": "package",
-      "path": "awssdk.sqs/3.7.0.24",
+      "path": "awssdk.sqs/3.7.0.30",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.SQS.CodeAnalysis.dll",
-        "awssdk.sqs.3.7.0.24.nupkg.sha512",
+        "awssdk.sqs.3.7.0.30.nupkg.sha512",
         "awssdk.sqs.nuspec",
         "lib/net35/AWSSDK.SQS.dll",
         "lib/net35/AWSSDK.SQS.pdb",
@@ -1950,16 +1950,17 @@
   },
   "projectFileDependencyGroups": {
     "net5.0": [
-      "AWSSDK.AppConfig >= 3.7.0.23",
-      "AWSSDK.S3 >= 3.7.0.25",
-      "AWSSDK.SQS >= 3.7.0.24",
-      "AWSSDK.SecurityToken >= 3.7.1.12",
-      "AWSSDK.SimpleSystemsManagement >= 3.7.3.5",
+      "AWSSDK.AppConfig >= 3.7.0.29",
+      "AWSSDK.S3 >= 3.7.1",
+      "AWSSDK.SQS >= 3.7.0.30",
+      "AWSSDK.SecurityToken >= 3.7.1.18",
+      "AWSSDK.SimpleSystemsManagement >= 3.7.3.12",
       "Fabrica >= 1.0.0"
     ]
   },
   "packageFolders": {
     "f:\\.nuget": {},
+    "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
@@ -1974,12 +1975,14 @@
       "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Aws\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -1988,6 +1991,7 @@
         "net5.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "F:\\repositories\\packages": {},
@@ -2016,23 +2020,23 @@
         "dependencies": {
           "AWSSDK.AppConfig": {
             "target": "Package",
-            "version": "[3.7.0.23, )"
+            "version": "[3.7.0.29, )"
           },
           "AWSSDK.S3": {
             "target": "Package",
-            "version": "[3.7.0.25, )"
+            "version": "[3.7.1, )"
           },
           "AWSSDK.SQS": {
             "target": "Package",
-            "version": "[3.7.0.24, )"
+            "version": "[3.7.0.30, )"
           },
           "AWSSDK.SecurityToken": {
             "target": "Package",
-            "version": "[3.7.1.12, )"
+            "version": "[3.7.1.18, )"
           },
           "AWSSDK.SimpleSystemsManagement": {
             "target": "Package",
-            "version": "[3.7.3.5, )"
+            "version": "[3.7.3.12, )"
           }
         },
         "imports": [

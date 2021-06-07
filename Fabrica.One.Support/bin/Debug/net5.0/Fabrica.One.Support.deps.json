@@ -10,7 +10,7 @@
         "dependencies": {
           "AWSSDK.AppConfig": "3.7.0.29",
           "AWSSDK.Core": "3.7.0.31",
-          "AWSSDK.S3": "3.7.0.32",
+          "AWSSDK.S3": "3.7.1",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -59,14 +59,14 @@
           }
         }
       },
-      "AWSSDK.S3/3.7.0.32": {
+      "AWSSDK.S3/3.7.1": {
         "dependencies": {
           "AWSSDK.Core": "3.7.0.31"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.32"
+            "fileVersion": "3.7.1.0"
           }
         }
       },
@@ -361,12 +361,12 @@
       "path": "awssdk.core/3.7.0.31",
       "hashPath": "awssdk.core.3.7.0.31.nupkg.sha512"
     },
-    "AWSSDK.S3/3.7.0.32": {
+    "AWSSDK.S3/3.7.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Por+i5I+nnhx0buPAwJv316wOT8Yx/xSF5Q/wk2uS1K1815/jIsWMQcvIemwyjsIBNrQY4FUk7wwHD4fLizJIQ==",
-      "path": "awssdk.s3/3.7.0.32",
-      "hashPath": "awssdk.s3.3.7.0.32.nupkg.sha512"
+      "sha512": "sha512-GhUxyqLDVNj0qubAmHuytZ5P68yT1PTnV5Phig6WziPgOTVrGJfgSx9cw6L5KSZxEGIZNXwuIaVCYA6N8v5kLQ==",
+      "path": "awssdk.s3/3.7.1",
+      "hashPath": "awssdk.s3.3.7.1.nupkg.sha512"
     },
     "JetBrains.Annotations/2021.1.0": {
       "type": "package",

@@ -97,7 +97,7 @@ namespace Fabrica.Rules.Validators
         public static IEnumerableValidator<TFact, TType> HasAtLeast<TFact, TType>( this IEnumerableValidator<TFact, TType> validator, Func<TType, bool> predicate, int count )
             where TFact : class where TType : class
         {
-            validator.Is( ( f, v ) => v.Where( predicate ).Count() <= count );
+            validator.Is( ( f, v ) => v.Where( predicate ).Count() >= count );
             return validator;
         }
 

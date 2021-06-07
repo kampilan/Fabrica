@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vQoLH4bu7v6SHeRffCR8mnl+1LlvR/HWESnMnjVwpz7OaSAeCRMkWOPdZv/7O2jSTSc0S9GVKm0PT6rZvUd0Pg==",
+  "dgSpecHash": "6TK0Bt+6msubVl8Qux7NZo0KY+9HL45HFJzQKNjpiilHUNcYlqiGRVDntUXzDlBwXZepk3+fDy1veHM0bnDEDw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
   "expectedPackageFiles": [
@@ -8,7 +8,7 @@
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
     "f:\\.nuget\\awssdk.appconfig\\3.7.0.29\\awssdk.appconfig.3.7.0.29.nupkg.sha512",
     "f:\\.nuget\\awssdk.core\\3.7.0.31\\awssdk.core.3.7.0.31.nupkg.sha512",
-    "f:\\.nuget\\awssdk.s3\\3.7.0.32\\awssdk.s3.3.7.0.32.nupkg.sha512",
+    "f:\\.nuget\\awssdk.s3\\3.7.1\\awssdk.s3.3.7.1.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",

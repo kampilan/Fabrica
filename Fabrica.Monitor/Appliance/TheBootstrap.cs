@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Utilities.Drawing;
@@ -52,6 +53,9 @@ namespace Fabrica.Monitor.Appliance
         protected override void ConfigureWebApp(IApplicationBuilder builder)
         {
 
+            if( Options.ConfigureCatchAll )
+                builder.UseRequestLogging();
+
             builder.UseRouting();
 
             builder.UseEndpoints(ep =>
@@ -60,13 +64,21 @@ namespace Fabrica.Monitor.Appliance
                 if( Options.ConfigureHealthCheck )
                 {
 
-                    var hcep = ep.Map(Options.HealthcheckRoute, _ =>
+                    ep.Map(Options.HealthcheckRoute, _ =>
                     {
-
                         var result = new StatusCodeResult(200);
-
                         return Task.FromResult(result);
+                    });
 
+                }
+
+                if( Options.ConfigureCatchAll )
+                {
+
+                    ep.Map( Options.CatchAllRoute, _ =>
+                    {
+                        var result = new StatusCodeResult(200);
+                        return Task.FromResult(result);
                     });
 
                 }

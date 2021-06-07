@@ -62,47 +62,47 @@
           }
         }
       },
-      "AWSSDK.S3/3.7.0.32": {
+      "AWSSDK.S3/3.7.1": {
         "dependencies": {
           "AWSSDK.Core": "3.7.0.31"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.32"
+            "fileVersion": "3.7.1.0"
           }
         }
       },
-      "AWSSDK.SecurityToken/3.7.1.12": {
+      "AWSSDK.SecurityToken/3.7.1.18": {
         "dependencies": {
           "AWSSDK.Core": "3.7.0.31"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SecurityToken.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.1.12"
+            "fileVersion": "3.7.1.18"
           }
         }
       },
-      "AWSSDK.SimpleSystemsManagement/3.7.3.5": {
+      "AWSSDK.SimpleSystemsManagement/3.7.3.12": {
         "dependencies": {
           "AWSSDK.Core": "3.7.0.31"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SimpleSystemsManagement.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.3.5"
+            "fileVersion": "3.7.3.12"
           }
         }
       },
-      "AWSSDK.SQS/3.7.0.24": {
+      "AWSSDK.SQS/3.7.0.30": {
         "dependencies": {
           "AWSSDK.Core": "3.7.0.31"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SQS.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.24"
+            "fileVersion": "3.7.0.30"
           }
         }
       },
@@ -480,42 +480,42 @@
           "System.Security.Principal.Windows": "5.0.0"
         }
       },
-      "MongoDB.Bson/2.12.3": {
+      "MongoDB.Bson/2.12.4": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
         },
         "runtime": {
           "lib/netstandard2.1/MongoDB.Bson.dll": {
-            "assemblyVersion": "2.12.3.0",
-            "fileVersion": "2.12.3.0"
+            "assemblyVersion": "2.12.4.0",
+            "fileVersion": "2.12.4.0"
           }
         }
       },
-      "MongoDB.Driver/2.12.3": {
+      "MongoDB.Driver/2.12.4": {
         "dependencies": {
-          "MongoDB.Bson": "2.12.3",
-          "MongoDB.Driver.Core": "2.12.3",
+          "MongoDB.Bson": "2.12.4",
+          "MongoDB.Driver.Core": "2.12.4",
           "MongoDB.Libmongocrypt": "1.2.1"
         },
         "runtime": {
           "lib/netstandard2.1/MongoDB.Driver.dll": {
-            "assemblyVersion": "2.12.3.0",
-            "fileVersion": "2.12.3.0"
+            "assemblyVersion": "2.12.4.0",
+            "fileVersion": "2.12.4.0"
           }
         }
       },
-      "MongoDB.Driver.Core/2.12.3": {
+      "MongoDB.Driver.Core/2.12.4": {
         "dependencies": {
           "DnsClient": "1.4.0",
-          "MongoDB.Bson": "2.12.3",
+          "MongoDB.Bson": "2.12.4",
           "MongoDB.Libmongocrypt": "1.2.1",
           "SharpCompress": "0.23.0",
           "System.Buffers": "4.5.1"
         },
         "runtime": {
           "lib/netstandard2.1/MongoDB.Driver.Core.dll": {
-            "assemblyVersion": "2.12.3.0",
-            "fileVersion": "2.12.3.0"
+            "assemblyVersion": "2.12.4.0",
+            "fileVersion": "2.12.4.0"
           }
         },
         "runtimeTargets": {
@@ -781,10 +781,10 @@
       "Fabrica.Aws/1.0.0": {
         "dependencies": {
           "AWSSDK.AppConfig": "3.7.0.29",
-          "AWSSDK.S3": "3.7.0.32",
-          "AWSSDK.SQS": "3.7.0.24",
-          "AWSSDK.SecurityToken": "3.7.1.12",
-          "AWSSDK.SimpleSystemsManagement": "3.7.3.5",
+          "AWSSDK.S3": "3.7.1",
+          "AWSSDK.SQS": "3.7.0.30",
+          "AWSSDK.SecurityToken": "3.7.1.18",
+          "AWSSDK.SimpleSystemsManagement": "3.7.3.12",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -795,7 +795,7 @@
         "dependencies": {
           "AWSSDK.AppConfig": "3.7.0.29",
           "AWSSDK.Core": "3.7.0.31",
-          "AWSSDK.S3": "3.7.0.32",
+          "AWSSDK.S3": "3.7.1",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -815,7 +815,7 @@
         "dependencies": {
           "Fabrica": "1.0.0",
           "JetBrains.Annotations": "2021.1.0",
-          "MongoDB.Driver": "2.12.3",
+          "MongoDB.Driver": "2.12.4",
           "protobuf-net": "3.0.101"
         },
         "runtime": {
@@ -866,33 +866,33 @@
       "path": "awssdk.core/3.7.0.31",
       "hashPath": "awssdk.core.3.7.0.31.nupkg.sha512"
     },
-    "AWSSDK.S3/3.7.0.32": {
+    "AWSSDK.S3/3.7.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Por+i5I+nnhx0buPAwJv316wOT8Yx/xSF5Q/wk2uS1K1815/jIsWMQcvIemwyjsIBNrQY4FUk7wwHD4fLizJIQ==",
-      "path": "awssdk.s3/3.7.0.32",
-      "hashPath": "awssdk.s3.3.7.0.32.nupkg.sha512"
+      "sha512": "sha512-GhUxyqLDVNj0qubAmHuytZ5P68yT1PTnV5Phig6WziPgOTVrGJfgSx9cw6L5KSZxEGIZNXwuIaVCYA6N8v5kLQ==",
+      "path": "awssdk.s3/3.7.1",
+      "hashPath": "awssdk.s3.3.7.1.nupkg.sha512"
     },
-    "AWSSDK.SecurityToken/3.7.1.12": {
+    "AWSSDK.SecurityToken/3.7.1.18": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-AVp8GoK+gyb8HNxHc1n1oNzTzrVYFDMSDsIt3Rv0w8NnvGfcAtDdbZK8ouxuvJKNKXXrYrdYstbRK9qrWM2ZIQ==",
-      "path": "awssdk.securitytoken/3.7.1.12",
-      "hashPath": "awssdk.securitytoken.3.7.1.12.nupkg.sha512"
+      "sha512": "sha512-4wNDK3Pk2hmDLYYMOehobrURP9PCw7lvzNB+ShknLwkIn9k3B7KIGqZRhDeszHt7ckkMcvJux6vfNo8euNhNOw==",
+      "path": "awssdk.securitytoken/3.7.1.18",
+      "hashPath": "awssdk.securitytoken.3.7.1.18.nupkg.sha512"
     },
-    "AWSSDK.SimpleSystemsManagement/3.7.3.5": {
+    "AWSSDK.SimpleSystemsManagement/3.7.3.12": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-vcb20MOxgHvlFdQzLKN7E+3VfbDuA/Q5QzXDLO1fsoH+da05OB6H1VuNBJFzYYng3kBkY9eTkE4KeM2ME63/ww==",
-      "path": "awssdk.simplesystemsmanagement/3.7.3.5",
-      "hashPath": "awssdk.simplesystemsmanagement.3.7.3.5.nupkg.sha512"
+      "sha512": "sha512-kgdpQmDXljW3sxeMW7kKnpvemFoxa70SJCF8l8WmMkdksaOReiPMJtZFL+1v4FyE6rQqY/yxaW/kcBJBeRHOKw==",
+      "path": "awssdk.simplesystemsmanagement/3.7.3.12",
+      "hashPath": "awssdk.simplesystemsmanagement.3.7.3.12.nupkg.sha512"
     },
-    "AWSSDK.SQS/3.7.0.24": {
+    "AWSSDK.SQS/3.7.0.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Xtd1NV9RQYEFBfxYSmW7F9XtLw2P4r+CKZvBZHDjOiY2na+/PAMcaPRY+gqgP8Ovn44ZBFbA1IRmXo3gYQZM8g==",
-      "path": "awssdk.sqs/3.7.0.24",
-      "hashPath": "awssdk.sqs.3.7.0.24.nupkg.sha512"
+      "sha512": "sha512-W4OStj1SO1u7zBa7Ysm1FUlBKUAMEOEWm7jk+/5eBaJNMcyVR+kLsBpnnvrsk/ZQsx3DxYmXKTEebHK9TelIPw==",
+      "path": "awssdk.sqs/3.7.0.30",
+      "hashPath": "awssdk.sqs.3.7.0.30.nupkg.sha512"
     },
     "DnsClient/1.4.0": {
       "type": "package",
@@ -1118,26 +1118,26 @@
       "path": "microsoft.win32.registry/5.0.0",
       "hashPath": "microsoft.win32.registry.5.0.0.nupkg.sha512"
     },
-    "MongoDB.Bson/2.12.3": {
+    "MongoDB.Bson/2.12.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-1gkSkX+hlyeNMvrcx4JeeGnTqAmOctoekczmASEzxuQiA15wo2YKm40TVx/pFbZGV57ekguzF8w2nurO5+2IQg==",
-      "path": "mongodb.bson/2.12.3",
-      "hashPath": "mongodb.bson.2.12.3.nupkg.sha512"
+      "sha512": "sha512-cQ0DTdKIpPzqDWnu1lTbW7TU8zQkMZ6YkbICcA1x3zDQefPYi0T0WYA/t3VJbowiEH3IKNHsJ4DIFfCt9AOG7A==",
+      "path": "mongodb.bson/2.12.4",
+      "hashPath": "mongodb.bson.2.12.4.nupkg.sha512"
     },
-    "MongoDB.Driver/2.12.3": {
+    "MongoDB.Driver/2.12.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-tRjJixeBeA7Gus49kdf3t9uKUwzRTpN8S2OGkrusZw+nwSeFOH0K5VEjBpVgQEekwJLqnUNd1IkhKd5nK2Fz7A==",
-      "path": "mongodb.driver/2.12.3",
-      "hashPath": "mongodb.driver.2.12.3.nupkg.sha512"
+      "sha512": "sha512-VHg97pY81iHsmQGeJ0APa3p0NCmoO2H9cXZOsr4SxdTVR5UG4jtNCk8sURNNZyFrxXJ/OAF/eC8z+6gKM1tfLg==",
+      "path": "mongodb.driver/2.12.4",
+      "hashPath": "mongodb.driver.2.12.4.nupkg.sha512"
     },
-    "MongoDB.Driver.Core/2.12.3": {
+    "MongoDB.Driver.Core/2.12.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-wb5F6J5eolHwSLtIlCpENEYY05CvCtWt79ptVdmVTLbFq58dbsu6rEfxEtd9V7lkyPCeUoJuiSkCxceXx9mMgQ==",
-      "path": "mongodb.driver.core/2.12.3",
-      "hashPath": "mongodb.driver.core.2.12.3.nupkg.sha512"
+      "sha512": "sha512-dK9huQse6wiP4mEL6kLeAoGUZmyLwfC2RCl37GWzDGmVk95vG78Nw1CO1FytJWRN5EDWtztGH3geaTQb1XP8Ig==",
+      "path": "mongodb.driver.core/2.12.4",
+      "hashPath": "mongodb.driver.core.2.12.4.nupkg.sha512"
     },
     "MongoDB.Libmongocrypt/1.2.1": {
       "type": "package",

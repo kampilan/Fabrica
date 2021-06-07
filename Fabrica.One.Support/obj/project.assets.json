@@ -48,7 +48,7 @@
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
         }
       },
-      "AWSSDK.S3/3.7.0.32": {
+      "AWSSDK.S3/3.7.1": {
         "type": "package",
         "dependencies": {
           "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
@@ -513,16 +513,16 @@
         "tools/account-management.ps1"
       ]
     },
-    "AWSSDK.S3/3.7.0.32": {
-      "sha512": "Por+i5I+nnhx0buPAwJv316wOT8Yx/xSF5Q/wk2uS1K1815/jIsWMQcvIemwyjsIBNrQY4FUk7wwHD4fLizJIQ==",
+    "AWSSDK.S3/3.7.1": {
+      "sha512": "GhUxyqLDVNj0qubAmHuytZ5P68yT1PTnV5Phig6WziPgOTVrGJfgSx9cw6L5KSZxEGIZNXwuIaVCYA6N8v5kLQ==",
       "type": "package",
-      "path": "awssdk.s3/3.7.0.32",
+      "path": "awssdk.s3/3.7.1",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.S3.CodeAnalysis.dll",
-        "awssdk.s3.3.7.0.32.nupkg.sha512",
+        "awssdk.s3.3.7.1.nupkg.sha512",
         "awssdk.s3.nuspec",
         "lib/net35/AWSSDK.S3.dll",
         "lib/net35/AWSSDK.S3.pdb",
@@ -1835,12 +1835,13 @@
     "net5.0": [
       "AWSSDK.AppConfig >= 3.7.0.29",
       "AWSSDK.Core >= 3.7.0.31",
-      "AWSSDK.S3 >= 3.7.0.32",
+      "AWSSDK.S3 >= 3.7.1",
       "Fabrica >= 1.0.0"
     ]
   },
   "packageFolders": {
     "f:\\.nuget": {},
+    "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
@@ -1855,12 +1856,14 @@
       "outputPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\me\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -1869,6 +1872,7 @@
         "net5.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "F:\\repositories\\packages": {},
@@ -1905,7 +1909,7 @@
           },
           "AWSSDK.S3": {
             "target": "Package",
-            "version": "[3.7.0.32, )"
+            "version": "[3.7.1, )"
           }
         },
         "imports": [
