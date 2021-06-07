@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Fabrica.Utilities.Container;
 
 namespace Fabrica.Monitor.Appliance
 {
@@ -8,6 +9,8 @@ namespace Fabrica.Monitor.Appliance
 
         protected override void Load(ContainerBuilder builder)
         {
+
+            builder.AddCorrelation();
 
         }
 
