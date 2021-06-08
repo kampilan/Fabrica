@@ -55,7 +55,7 @@ namespace Fabrica.Api.Support.Controllers
                     break;
 
                 case ErrorKind.NotFound:
-                    statusCode = HttpStatusCode.NotFound;
+                    statusCode = HttpStatusCode.NoContent;
                     break;
 
                 case ErrorKind.NotImplemented:
