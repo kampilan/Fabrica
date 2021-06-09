@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hyoQsg83IHSAueFgppD8V1EFHrn9Wee8yfIEorQxTDqeVxFMPQd5qDRXtCs1/PWlQ96ykQLXvvImw4Zm/80NTw==",
+  "dgSpecHash": "ICuLLpsUF4cRgZaS6j+WlTsAZmvIXe3vDM++2FsYGmoEuSjdtgRn60xTMe9Lr6PF8Kgws8CmsRVaBr2lJirrIw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Persistence\\Fabrica.Persistence.csproj",
   "expectedPackageFiles": [
@@ -8,9 +8,9 @@
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
-    "f:\\.nuget\\microsoft.entityframeworkcore\\5.0.6\\microsoft.entityframeworkcore.5.0.6.nupkg.sha512",
-    "f:\\.nuget\\microsoft.entityframeworkcore.abstractions\\5.0.6\\microsoft.entityframeworkcore.abstractions.5.0.6.nupkg.sha512",
-    "f:\\.nuget\\microsoft.entityframeworkcore.analyzers\\5.0.6\\microsoft.entityframeworkcore.analyzers.5.0.6.nupkg.sha512",
+    "f:\\.nuget\\microsoft.entityframeworkcore\\5.0.7\\microsoft.entityframeworkcore.5.0.7.nupkg.sha512",
+    "f:\\.nuget\\microsoft.entityframeworkcore.abstractions\\5.0.7\\microsoft.entityframeworkcore.abstractions.5.0.7.nupkg.sha512",
+    "f:\\.nuget\\microsoft.entityframeworkcore.analyzers\\5.0.7\\microsoft.entityframeworkcore.analyzers.5.0.7.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.caching.abstractions\\5.0.0\\microsoft.extensions.caching.abstractions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.caching.memory\\5.0.0\\microsoft.extensions.caching.memory.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",

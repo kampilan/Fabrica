@@ -101,12 +101,6 @@ namespace Fabrica.Mediator
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to evaluate request/response pair");
-                Evaluatate(request, response);
-
-
-
-                // *****************************************************************
                 return response;
 
             }

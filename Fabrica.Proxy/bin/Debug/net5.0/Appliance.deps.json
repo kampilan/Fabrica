@@ -11,8 +11,8 @@
           "Amazon.AspNetCore.DataProtection.SSM": "2.1.0",
           "Fabrica": "1.0.0",
           "Fabrica.Api.Support": "1.0.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.6",
-          "Microsoft.AspNetCore.Authentication.OpenIdConnect": "5.0.6",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.7",
+          "Microsoft.AspNetCore.Authentication.OpenIdConnect": "5.0.7",
           "Microsoft.Extensions.Http.Polly": "5.0.1",
           "Microsoft.ReverseProxy": "1.0.0-preview.9.21116.1",
           "jose-jwt": "3.1.1"
@@ -171,25 +171,25 @@
           }
         }
       },
-      "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.6": {
+      "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.7": {
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         },
         "runtime": {
           "lib/net5.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
-            "assemblyVersion": "5.0.6.0",
-            "fileVersion": "5.0.621.22305"
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
           }
         }
       },
-      "Microsoft.AspNetCore.Authentication.OpenIdConnect/5.0.6": {
+      "Microsoft.AspNetCore.Authentication.OpenIdConnect/5.0.7": {
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         },
         "runtime": {
           "lib/net5.0/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll": {
-            "assemblyVersion": "5.0.6.0",
-            "fileVersion": "5.0.621.22305"
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
           }
         }
       },
@@ -241,28 +241,28 @@
           "Microsoft.Extensions.Primitives": "5.0.0"
         }
       },
-      "Microsoft.AspNetCore.JsonPatch/5.0.6": {
+      "Microsoft.AspNetCore.JsonPatch/5.0.7": {
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.dll": {
-            "assemblyVersion": "5.0.6.0",
-            "fileVersion": "5.0.621.22305"
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
           }
         }
       },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.6": {
+      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.7": {
         "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "5.0.6",
+          "Microsoft.AspNetCore.JsonPatch": "5.0.7",
           "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         },
         "runtime": {
           "lib/net5.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll": {
-            "assemblyVersion": "5.0.6.0",
-            "fileVersion": "5.0.621.22305"
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
           }
         }
       },
@@ -877,7 +877,7 @@
           "Fabrica.Watch.Bridges": "1.0.0",
           "Fabrica.Watch.Mongo": "1.0.0",
           "Fabrica.Watch.Realtime": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.6",
+          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.7",
           "jose-jwt": "3.1.1"
         },
         "runtime": {
@@ -1031,19 +1031,19 @@
       "path": "mediatr/9.0.0",
       "hashPath": "mediatr.9.0.0.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.6": {
+    "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-m69AyXr3RgSufAdfPxpCFi4DPNPfbTDwamZYQvaU9o/3ii1tAK/J2CaLPWnbYtvPfkiyFOYRk3EqTzdy51XDcA==",
-      "path": "microsoft.aspnetcore.authentication.jwtbearer/5.0.6",
-      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.5.0.6.nupkg.sha512"
+      "sha512": "sha512-80zYklKE6CZZswm5zjCUNbDx2Pavt45qfmVWLY1Heoe7GiJsPGGs9odgmsUFZ75bq4D6F4ZwK0LOam1TGUlHCg==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/5.0.7",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.5.0.7.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.Authentication.OpenIdConnect/5.0.6": {
+    "Microsoft.AspNetCore.Authentication.OpenIdConnect/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-llB1zNAcdQka1PgHP/rNoDEQNdAhFgtKjPsLvmf6UCUWFdK9KPIi4kWGdwLzwQ1JxrfKiLO0hK3EjaBR8/jghg==",
-      "path": "microsoft.aspnetcore.authentication.openidconnect/5.0.6",
-      "hashPath": "microsoft.aspnetcore.authentication.openidconnect.5.0.6.nupkg.sha512"
+      "sha512": "sha512-pHhfYB92bZhENXFFrQ42Ru/BCWkhWOP4tuyQN3rOCZ2yw3rsiPApPbxMHvUUKF2QaudgBlI64BkTzupc085cMA==",
+      "path": "microsoft.aspnetcore.authentication.openidconnect/5.0.7",
+      "hashPath": "microsoft.aspnetcore.authentication.openidconnect.5.0.7.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/2.0.3": {
       "type": "package",
@@ -1101,19 +1101,19 @@
       "path": "microsoft.aspnetcore.http.features/2.0.3",
       "hashPath": "microsoft.aspnetcore.http.features.2.0.3.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.JsonPatch/5.0.6": {
+    "Microsoft.AspNetCore.JsonPatch/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-mLVtFR/wxJaWeHxBm7S+WoDGcYfE3Q9Tkf6m/BWzaZn2fWuTl3ojY3m6rDIBkPj2hGcgBvCnVmyYH5R2fkN+Aw==",
-      "path": "microsoft.aspnetcore.jsonpatch/5.0.6",
-      "hashPath": "microsoft.aspnetcore.jsonpatch.5.0.6.nupkg.sha512"
+      "sha512": "sha512-IMindTqVCOLpY8uoDuZTOlzJyTDKMt8p6OAdlXMC9XFcGn80BW5VS3t+729p/+tW/lafxAS0cnrrklM59QfdYg==",
+      "path": "microsoft.aspnetcore.jsonpatch/5.0.7",
+      "hashPath": "microsoft.aspnetcore.jsonpatch.5.0.7.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.6": {
+    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-q4Z1EiWGJP8TYXU26sUX6NoBoUXK0FIwKS00I1kNt1B3mYCtSyEvxE8bbjxNfa0psFhVpbNrr0M0hS5sHMgQ6A==",
-      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/5.0.6",
-      "hashPath": "microsoft.aspnetcore.mvc.newtonsoftjson.5.0.6.nupkg.sha512"
+      "sha512": "sha512-iEiVcGFcj8GZUB9dLoVg2/Z4B5kORXyE6cdoo5EVPao0h0laZltcw5rSx0LwfLLBR253HjMGz3SYeiGZ5bC2Xw==",
+      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/5.0.7",
+      "hashPath": "microsoft.aspnetcore.mvc.newtonsoftjson.5.0.7.nupkg.sha512"
     },
     "Microsoft.CSharp/4.7.0": {
       "type": "package",

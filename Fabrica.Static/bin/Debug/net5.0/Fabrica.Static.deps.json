@@ -155,28 +155,28 @@
           }
         }
       },
-      "Microsoft.AspNetCore.JsonPatch/5.0.6": {
+      "Microsoft.AspNetCore.JsonPatch/5.0.7": {
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.dll": {
-            "assemblyVersion": "5.0.6.0",
-            "fileVersion": "5.0.621.22305"
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
           }
         }
       },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.6": {
+      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.7": {
         "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "5.0.6",
+          "Microsoft.AspNetCore.JsonPatch": "5.0.7",
           "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         },
         "runtime": {
           "lib/net5.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll": {
-            "assemblyVersion": "5.0.6.0",
-            "fileVersion": "5.0.621.22305"
+            "assemblyVersion": "5.0.7.0",
+            "fileVersion": "5.0.721.26309"
           }
         }
       },
@@ -670,7 +670,7 @@
           "Fabrica.Watch.Bridges": "1.0.0",
           "Fabrica.Watch.Mongo": "1.0.0",
           "Fabrica.Watch.Realtime": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.6",
+          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.7",
           "jose-jwt": "3.1.1"
         },
         "runtime": {
@@ -817,19 +817,19 @@
       "path": "mediatr/9.0.0",
       "hashPath": "mediatr.9.0.0.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.JsonPatch/5.0.6": {
+    "Microsoft.AspNetCore.JsonPatch/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-mLVtFR/wxJaWeHxBm7S+WoDGcYfE3Q9Tkf6m/BWzaZn2fWuTl3ojY3m6rDIBkPj2hGcgBvCnVmyYH5R2fkN+Aw==",
-      "path": "microsoft.aspnetcore.jsonpatch/5.0.6",
-      "hashPath": "microsoft.aspnetcore.jsonpatch.5.0.6.nupkg.sha512"
+      "sha512": "sha512-IMindTqVCOLpY8uoDuZTOlzJyTDKMt8p6OAdlXMC9XFcGn80BW5VS3t+729p/+tW/lafxAS0cnrrklM59QfdYg==",
+      "path": "microsoft.aspnetcore.jsonpatch/5.0.7",
+      "hashPath": "microsoft.aspnetcore.jsonpatch.5.0.7.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.6": {
+    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-q4Z1EiWGJP8TYXU26sUX6NoBoUXK0FIwKS00I1kNt1B3mYCtSyEvxE8bbjxNfa0psFhVpbNrr0M0hS5sHMgQ6A==",
-      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/5.0.6",
-      "hashPath": "microsoft.aspnetcore.mvc.newtonsoftjson.5.0.6.nupkg.sha512"
+      "sha512": "sha512-iEiVcGFcj8GZUB9dLoVg2/Z4B5kORXyE6cdoo5EVPao0h0laZltcw5rSx0LwfLLBR253HjMGz3SYeiGZ5bC2Xw==",
+      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/5.0.7",
+      "hashPath": "microsoft.aspnetcore.mvc.newtonsoftjson.5.0.7.nupkg.sha512"
     },
     "Microsoft.CSharp/4.7.0": {
       "type": "package",

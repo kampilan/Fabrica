@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "NkTsr8aLx8PNoegHGRoiEy7+OoD3vQGN4/I271IrfNFrtke32Jt0NwgkAEg2s0QhL7upNEmJUWd7XlcPkK153Q==",
+  "dgSpecHash": "belQpogkI6ExKTyEb+T/01+cT8oEwyUgWH9M44CN+pv5dVUd2xlQppHiOiMWV/6UU89lTLcL28TyGuxqdJtVNw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Monitor\\Fabrica.Monitor.csproj",
   "expectedPackageFiles": [
@@ -16,8 +16,8 @@
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\jose-jwt\\3.1.1\\jose-jwt.3.1.1.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
-    "f:\\.nuget\\microsoft.aspnetcore.jsonpatch\\5.0.6\\microsoft.aspnetcore.jsonpatch.5.0.6.nupkg.sha512",
-    "f:\\.nuget\\microsoft.aspnetcore.mvc.newtonsoftjson\\5.0.6\\microsoft.aspnetcore.mvc.newtonsoftjson.5.0.6.nupkg.sha512",
+    "f:\\.nuget\\microsoft.aspnetcore.jsonpatch\\5.0.7\\microsoft.aspnetcore.jsonpatch.5.0.7.nupkg.sha512",
+    "f:\\.nuget\\microsoft.aspnetcore.mvc.newtonsoftjson\\5.0.7\\microsoft.aspnetcore.mvc.newtonsoftjson.5.0.7.nupkg.sha512",
     "f:\\.nuget\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration.abstractions\\5.0.0\\microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512",

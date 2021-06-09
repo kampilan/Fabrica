@@ -137,7 +137,7 @@
           "lib/netstandard2.1/MediatR.dll": {}
         }
       },
-      "Microsoft.AspNetCore.JsonPatch/5.0.6": {
+      "Microsoft.AspNetCore.JsonPatch/5.0.7": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
@@ -150,10 +150,10 @@
           "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.dll": {}
         }
       },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.6": {
+      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.7": {
         "type": "package",
         "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "5.0.6",
+          "Microsoft.AspNetCore.JsonPatch": "5.0.7",
           "Newtonsoft.Json": "12.0.2",
           "Newtonsoft.Json.Bson": "1.0.2"
         },
@@ -1072,7 +1072,7 @@
           "Fabrica.Watch.Bridges": "1.0.0",
           "Fabrica.Watch.Mongo": "1.0.0",
           "Fabrica.Watch.Realtime": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.6",
+          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.7",
           "jose-jwt": "3.1.1"
         },
         "compile": {
@@ -1422,10 +1422,10 @@
         "mediatr.nuspec"
       ]
     },
-    "Microsoft.AspNetCore.JsonPatch/5.0.6": {
-      "sha512": "mLVtFR/wxJaWeHxBm7S+WoDGcYfE3Q9Tkf6m/BWzaZn2fWuTl3ojY3m6rDIBkPj2hGcgBvCnVmyYH5R2fkN+Aw==",
+    "Microsoft.AspNetCore.JsonPatch/5.0.7": {
+      "sha512": "IMindTqVCOLpY8uoDuZTOlzJyTDKMt8p6OAdlXMC9XFcGn80BW5VS3t+729p/+tW/lafxAS0cnrrklM59QfdYg==",
       "type": "package",
-      "path": "microsoft.aspnetcore.jsonpatch/5.0.6",
+      "path": "microsoft.aspnetcore.jsonpatch/5.0.7",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1435,14 +1435,14 @@
         "lib/net461/Microsoft.AspNetCore.JsonPatch.xml",
         "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.dll",
         "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.xml",
-        "microsoft.aspnetcore.jsonpatch.5.0.6.nupkg.sha512",
+        "microsoft.aspnetcore.jsonpatch.5.0.7.nupkg.sha512",
         "microsoft.aspnetcore.jsonpatch.nuspec"
       ]
     },
-    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.6": {
-      "sha512": "q4Z1EiWGJP8TYXU26sUX6NoBoUXK0FIwKS00I1kNt1B3mYCtSyEvxE8bbjxNfa0psFhVpbNrr0M0hS5sHMgQ6A==",
+    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/5.0.7": {
+      "sha512": "iEiVcGFcj8GZUB9dLoVg2/Z4B5kORXyE6cdoo5EVPao0h0laZltcw5rSx0LwfLLBR253HjMGz3SYeiGZ5bC2Xw==",
       "type": "package",
-      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/5.0.6",
+      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/5.0.7",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1450,7 +1450,7 @@
         "THIRD-PARTY-NOTICES.TXT",
         "lib/net5.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll",
         "lib/net5.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.xml",
-        "microsoft.aspnetcore.mvc.newtonsoftjson.5.0.6.nupkg.sha512",
+        "microsoft.aspnetcore.mvc.newtonsoftjson.5.0.7.nupkg.sha512",
         "microsoft.aspnetcore.mvc.newtonsoftjson.nuspec"
       ]
     },
