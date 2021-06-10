@@ -55,7 +55,7 @@ namespace Fabrica.Api.Support.Controllers
                     break;
 
                 case ErrorKind.NotFound:
-                    statusCode = HttpStatusCode.NoContent;
+                    statusCode = HttpStatusCode.NotFound;
                     break;
 
                 case ErrorKind.NotImplemented:
@@ -63,7 +63,7 @@ namespace Fabrica.Api.Support.Controllers
                     break;
 
                 case ErrorKind.Predicate:
-                    statusCode = (HttpStatusCode)422;
+                    statusCode = HttpStatusCode.BadRequest;
                     break;
 
                 case ErrorKind.Conflict:
@@ -71,7 +71,7 @@ namespace Fabrica.Api.Support.Controllers
                     break;
 
                 case ErrorKind.Functional:
-                    statusCode = (HttpStatusCode)420;
+                    statusCode = HttpStatusCode.InternalServerError;
                     break;
 
                 case ErrorKind.Concurrency:
