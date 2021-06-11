@@ -190,7 +190,7 @@ namespace Fabrica.Persistence
         #region Journaling
 
 
-        public IRootModel Root { get; set; }
+        public IModel Root { get; set; }
 
 
 
@@ -277,6 +277,14 @@ namespace Fabrica.Persistence
                 if (!hasChanges)
                     return journals;
 
+                if( Root != null )
+                {
+
+                    logger.Debug("Attempting to create unmodified root journal entry");
+                    var aj = CreateAuditJournal(journalTime, AuditJournalType.UnmodifiedRoot, Root);
+
+                    journals.Add(aj);
+                }
 
 
                 // *****************************************************************
@@ -289,8 +297,8 @@ namespace Fabrica.Persistence
 
 
                     // *****************************************************************
-                    logger.Debug("Attempting to check if entity is IEntity");
-                    if (!(entry.Entity is IModel entity))
+                    logger.Debug("Attempting to check if entity is Model");
+                    if (entry.Entity is not IModel entity)
                         continue;
 
 
@@ -364,7 +372,7 @@ namespace Fabrica.Persistence
 
 
                     // *****************************************************************
-                    if (entry.State == EntityState.Unchanged && audit.Write && entity is IRootModel && Root != null && Equals(Root, entity) )
+                    if( entry.State == EntityState.Unchanged && audit.Write && entity is IRootModel && Root == null )
                     {
 
                         logger.Debug("Attempting to create unmodified root journal entry");
