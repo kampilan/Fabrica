@@ -40,6 +40,9 @@ namespace Fabrica.Mediator
             return new Response<TResponse>();
         }
 
+        protected TRequest Request { get; private set; }
+
+
         public async Task<Response<TResponse>> Handle(TRequest request, CancellationToken cancellationToken)
         {
 
@@ -52,6 +55,8 @@ namespace Fabrica.Mediator
 
                 logger.LogObject(nameof(request), request);
 
+
+                Request = request;
 
 
                 // *****************************************************************
@@ -115,61 +120,27 @@ namespace Fabrica.Mediator
         protected virtual Task Before(TRequest request)
         {
 
-            var logger = GetLogger();
+            using var logger = GetLogger();
 
-            try
-            {
-
-                logger.EnterMethod();
-
-                return Task.CompletedTask;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return Task.CompletedTask;
 
         }
 
         protected virtual Task<TResponse> Success(TRequest request, TResponse response)
         {
 
-            var logger = GetLogger();
+            using var logger = GetLogger();
 
-            try
-            {
-
-                logger.EnterMethod();
-
-                return Task.FromResult(response);
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return Task.FromResult(response);
 
         }
 
         protected virtual void Failure(TRequest request, Exception cause)
         {
 
-            var logger = GetLogger();
+            using var logger = GetLogger();
 
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.ErrorWithContext(cause, request, "Handle failed");
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
+            logger.ErrorWithContext(cause, request, "Handle failed");
 
         }
 
@@ -207,6 +178,10 @@ namespace Fabrica.Mediator
         {
             return new Response();
         }
+
+
+        protected TRequest Request { get; private set; }
+
 
         public async Task<Response> Handle(TRequest request, CancellationToken cancellationToken)
         {
@@ -283,61 +258,27 @@ namespace Fabrica.Mediator
         protected virtual Task Before(TRequest request)
         {
 
-            var logger = GetLogger();
+            using var logger = GetLogger();
 
-            try
-            {
-
-                logger.EnterMethod();
-
-                return Task.CompletedTask;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return Task.CompletedTask;
 
         }
 
         protected virtual Task Success(TRequest request)
         {
 
-            var logger = GetLogger();
+            using var logger = GetLogger();
 
-            try
-            {
-
-                logger.EnterMethod();
-
-                return Task.CompletedTask;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return Task.CompletedTask;
 
         }
 
         protected virtual void Failure(TRequest request, Exception cause)
         {
 
-            var logger = GetLogger();
+            using var logger = GetLogger();
 
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.ErrorWithContext(cause, request, "Handle failed");
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
+            logger.ErrorWithContext(cause, request, "Handle failed");
 
         }
 
