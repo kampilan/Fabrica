@@ -204,7 +204,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
                 if( Request.Properties.ContainsKey( re.Metadata.PropertyInfo.Name ) )
                 {
                     var call = GetType().GetMethod("ApplyReferenceByName", (BindingFlags.Instance | BindingFlags.NonPublic))?.MakeGenericMethod(re.Metadata.PropertyInfo.PropertyType);
-                    if (call?.Invoke(this, new object[] {re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
+                    if (call?.Invoke(this, new object[] {target, re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
                         await task;
                 }
 
