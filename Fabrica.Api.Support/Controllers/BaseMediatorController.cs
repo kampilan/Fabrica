@@ -710,7 +710,7 @@ namespace Fabrica.Api.Support.Controllers
 
 
 
-        protected virtual async Task<IActionResult> DispatchQuery<TRequest,TValue,TCriteria>() where TRequest : class, IRequest<Response<TValue>>, IQueryRequest<TValue>, new() where TValue : class, IModel where TCriteria : class
+        protected virtual async Task<IActionResult> DispatchQuery<TRequest,TValue,TCriteria>() where TRequest : class, IRequest<Response<List<TValue>>>, IQueryRequest<TValue>, new() where TValue : class, IModel where TCriteria : class
         {
 
             using var logger = EnterMethod();
