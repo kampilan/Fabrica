@@ -200,19 +200,35 @@ namespace Fabrica.Persistence.Mediator.Handlers
             logger.Debug("Attempting to check for references");
             foreach( var re in Context.Entry(target).References )
             {
-               
-                var call = GetType().GetMethod("ApplyReferenceByName",(BindingFlags.Instance|BindingFlags.NonPublic))?.MakeGenericMethod( re.Metadata.PropertyInfo.PropertyType );
-                if( call?.Invoke(this, new object[] { re.Metadata.PropertyInfo.Name, cancellationToken }) is Task task )
-                    await task;
+
+                if( Request.Properties.ContainsKey( re.Metadata.PropertyInfo.Name ) )
+                {
+                    var call = GetType().GetMethod("ApplyReferenceByName", (BindingFlags.Instance | BindingFlags.NonPublic))?.MakeGenericMethod(re.Metadata.PropertyInfo.PropertyType);
+                    if (call?.Invoke(this, new object[] {re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
+                        await task;
+                }
 
             }
 
 
+
+            // *****************************************************************
+            logger.Debug("Attempting to validate properties");
             Validate();
+
+
 
             // *****************************************************************
             logger.Debug("Attempting to apply properties");
             Apply( target );
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to check for detached state");
+
+            if( Context.Entry(target).State == EntityState.Detached )
+                await Context.AddAsync( target, cancellationToken );
 
 
 
