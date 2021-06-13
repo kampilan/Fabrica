@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Mediator.Requests;
 using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
@@ -18,7 +19,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>> where TResponse: class, IModel where TDbContext: ReplicaDbContext
+    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryRequest<TResponse> where TResponse: class, IModel where TDbContext: ReplicaDbContext
     {
 
 
@@ -87,6 +88,27 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         }
 
+
+        protected override async Task<List<TResponse>> Perform( CancellationToken cancellationToken = default )
+        {
+
+            using var logger = EnterMethod();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to process filters");
+            var result = await ProcessFilters(Request.Filters, cancellationToken);
+
+            logger.Inspect(nameof(result.Count), result.Count);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
 
 
     }
