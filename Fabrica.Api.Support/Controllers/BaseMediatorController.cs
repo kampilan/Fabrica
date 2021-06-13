@@ -8,6 +8,7 @@ using Autofac;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
+using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
@@ -21,18 +22,18 @@ using Newtonsoft.Json.Linq;
 namespace Fabrica.Api.Support.Controllers
 {
 
-    
-    public abstract class BaseMediatorController: BaseController
+
+    public abstract class BaseMediatorController : BaseController
     {
 
 
         protected enum Operation { Create, Update }
 
 
-        protected BaseMediatorController( ILifetimeScope scope ) : base( scope )
+        protected BaseMediatorController(ILifetimeScope scope) : base(scope)
         {
 
-            Meta        = Scope.Resolve<IModelMetaService>();
+            Meta = Scope.Resolve<IModelMetaService>();
             TheMediator = Scope.Resolve<IMessageMediator>();
 
         }
@@ -101,7 +102,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual IActionResult BuildResult<TValue>( Response<TValue> response )
+        protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
         {
 
             var logger = GetLogger();
@@ -119,10 +120,10 @@ namespace Fabrica.Api.Support.Controllers
                 // *****************************************************************
                 logger.Debug("Attempting to check for success");
                 logger.Inspect(nameof(response.Ok), response.Ok);
-                if( response.Ok && typeof(TValue).IsValueType )
+                if (response.Ok && typeof(TValue).IsValueType)
                     return Ok();
-                else if( response.Ok )
-                    return Ok( response.Value );
+                else if (response.Ok)
+                    return Ok(response.Value);
 
 
                 return BuildErrorResult(response);
@@ -137,7 +138,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual IActionResult BuildResult( Response response )
+        protected virtual IActionResult BuildResult(Response response)
         {
 
             var logger = GetLogger();
@@ -155,7 +156,7 @@ namespace Fabrica.Api.Support.Controllers
                 // *****************************************************************
                 logger.Debug("Attempting to check for success");
                 logger.Inspect(nameof(response.Ok), response.Ok);
-                if (response.Ok )
+                if (response.Ok)
                     return Ok();
 
 
@@ -394,7 +395,7 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual List<string> ProduceRql<TExplorer,TCriteria>() where TExplorer : class, IModel where TCriteria: class
+        protected virtual List<string> ProduceRql<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class
         {
 
             var logger = GetLogger();
@@ -573,7 +574,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual bool TryValidate<TModel>( Operation oper, Dictionary<string, object> properties, out IActionResult error) where TModel : class, IModel
+        protected virtual bool TryValidate<TModel>(Operation oper, Dictionary<string, object> properties, out IActionResult error) where TModel : class, IModel
         {
 
             var logger = GetLogger();
@@ -623,7 +624,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual async Task<IActionResult> Dispatch<TValue>([NotNull] IRequest<Response<TValue>> request )
+        protected virtual async Task<IActionResult> Dispatch<TValue>([NotNull] IRequest<Response<TValue>> request)
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -707,6 +708,204 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
+
+
+        protected virtual async Task<IActionResult> DispatchQuery<TRequest,TValue,TCriteria>() where TRequest : class, IRequest<Response<TValue>>, IQueryRequest<TValue>, new() where TValue : class, IModel where TCriteria : class
+        {
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to produce filters");
+            var filters = ProduceFilter<TValue, TCriteria>();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = new TRequest
+            {
+                Filters = filters
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dispatch via mediator");
+            var result = await Dispatch(request);
+
+
+
+            // *****************************************************************
+            return result;
+
+        }
+
+
+        protected virtual async Task<IActionResult> DispatchRetrieve<TRequest,TValue>( [NotNull] string uid ) where TRequest : class, IRequest<Response<TValue>>, IRetrieveRequest, new() where TValue : class, IModel
+        {
+
+            if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = new TRequest
+            {
+                Uid = uid
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dispatch via mediator");
+            var result = await Dispatch(request);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
+
+
+        protected virtual async Task<IActionResult> DispatchCreate<TRequest,TValue>() where TRequest : class, IRequest<Response<TValue>>, ICreateRequest, new() where TValue : class, IModel
+        {
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to get properties from body");
+            var properties = await FromBody();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = new TRequest
+            {
+                Properties = properties
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dispatch via mediator");
+            var result = await Dispatch(request);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
+
+
+        protected virtual async Task<IActionResult> DispatchMemberCreate<TRequest,TValue>( [NotNull] string parentUid ) where TRequest : class, IRequest<Response<TValue>>, IMemberCreateRequest, new() where TValue : class, IModel
+        {
+            
+            if (string.IsNullOrWhiteSpace(parentUid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(parentUid));
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to get properties from body");
+            var properties = await FromBody();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = new TRequest
+            {
+                ParentUid  = parentUid,
+                Properties = properties
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dispatch via mediator");
+            var result = await Dispatch(request);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
+
+
+        protected virtual async Task<IActionResult> DispatchUpdate<TRequest,TValue>( [NotNull] string uid ) where TRequest : class, IRequest<Response<TValue>>, IUpdateRequest, new() where TValue : class, IModel
+        {
+
+            if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to get properties from body");
+            var properties = await FromBody();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = new TRequest
+            {
+                Uid        = uid,
+                Properties = properties
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dispatch via mediator");
+            var result = await Dispatch(request);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
+
+
+        protected virtual async Task<IActionResult> DispatchDelete<TRequest>( [NotNull] string uid) where TRequest : class, IRequest<Response>, IDeleteRequest, new()
+        {
+
+            if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = new TRequest
+            {
+                Uid = uid
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dispatch via mediator");
+            var result = await Dispatch(request);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
 
 
 

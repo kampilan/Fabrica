@@ -2,7 +2,7 @@
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 
-namespace Fabrica.Persistence.Mediator.Requests
+namespace Fabrica.Mediator.Requests
 {
 
     public interface IQueryRequest
@@ -14,7 +14,7 @@ namespace Fabrica.Persistence.Mediator.Requests
     public interface IQueryRequest<TModel>: IQueryRequest where TModel: class, IModel
     {
 
-        List<IRqlFilter<TModel>> Filters { get; }
+        List<IRqlFilter<TModel>> Filters { get; set; }
 
     }
 }

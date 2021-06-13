@@ -2,9 +2,9 @@
 using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
+using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
-using Fabrica.Persistence.Mediator.Requests;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Utilities.Container;
 using MediatR;

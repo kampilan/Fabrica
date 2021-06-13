@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="Identity\" />
     <Folder Include="Configuration\" />
+    <Folder Include="Mediator\Requests\" />
     <Folder Include="Persistence\Audit\" />
     <Folder Include="Persistence\Thin\" />
     <Folder Include="Utilities\Sql\" />

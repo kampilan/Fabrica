@@ -1,4 +1,4 @@
-﻿namespace Fabrica.Persistence.Mediator.Requests
+﻿namespace Fabrica.Mediator.Requests
 {
 
     public interface ICreateRequest: IMutableRequest
