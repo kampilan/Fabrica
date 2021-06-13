@@ -74,7 +74,7 @@ namespace Fabrica.Mediator
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Perform");
-                var response = await Perform(request, cancellationToken);
+                var response = await Perform( cancellationToken );
 
 
 
@@ -152,7 +152,7 @@ namespace Fabrica.Mediator
         }
 
 
-        protected abstract Task<TResponse> Perform(TRequest request, CancellationToken cancellationToken);
+        protected abstract Task<TResponse> Perform( CancellationToken cancellationToken=default );
 
 
     }
@@ -220,7 +220,7 @@ namespace Fabrica.Mediator
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Perform");
-                await Perform(request, cancellationToken);
+                await Perform( cancellationToken );
 
 
 
@@ -298,7 +298,7 @@ namespace Fabrica.Mediator
         }
 
 
-        protected abstract Task Perform(TRequest request, CancellationToken cancellationToken);
+        protected abstract Task Perform( CancellationToken cancellationToken=default );
 
 
     }

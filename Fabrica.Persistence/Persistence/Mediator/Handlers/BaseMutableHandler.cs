@@ -17,19 +17,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabrica.Persistence.Mediator.Handlers
 {
- 
-    
-    public abstract class BaseMutableHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IMutableRequest where TResponse : class, IModel where TDbContext: OriginDbContext
+
+
+    public abstract class BaseMutableHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IMutableRequest where TResponse : class, IModel where TDbContext : OriginDbContext
     {
 
 
-        protected BaseMutableHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper): base(correlation)
+        protected BaseMutableHandler(ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper) : base(correlation)
         {
 
-            Meta    = meta.GetMetaFromType(typeof(TResponse));
-            Uow     = uow;
+            Meta = meta.GetMetaFromType(typeof(TResponse));
+            Uow = uow;
             Context = context;
-            Mapper  = mapper;
+            Mapper = mapper;
 
         }
 
@@ -40,10 +40,12 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected TDbContext Context { get; }
         protected IMapper Mapper { get; }
 
+
+        protected abstract Task<TResponse> GetEntity();
+
         protected abstract void Validate();
 
-
-        protected async Task ApplyReference<TReference>( [NotNull] TResponse target, [NotNull] Expression<Func<TResponse,TReference>> getter, CancellationToken token=default ) where TReference: class, IReferenceModel
+        protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IReferenceModel
         {
 
             if (target == null) throw new ArgumentNullException(nameof(target));
@@ -52,7 +54,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             using var logger = EnterMethod();
 
-            if( getter.Body is MemberExpression {Member: PropertyInfo {CanWrite: true} pi} && Request.Properties.TryGetValue(pi.Name, out var value ) )
+            if (getter.Body is MemberExpression { Member: PropertyInfo { CanWrite: true } pi } && Request.Properties.TryGetValue(pi.Name, out var value))
             {
 
                 var uid = value.ToString();
@@ -74,7 +76,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
                 // *****************************************************************
                 logger.Debug("Attempting to set property on target");
-                pi.GetSetMethod()?.Invoke(target, new object[]{re});
+                pi.GetSetMethod()?.Invoke(target, new object[] { re });
 
 
 
@@ -88,7 +90,76 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         }
 
-        protected void Apply( [NotNull] TResponse target )
+        protected async Task ApplyReferenceByName<TReference>([NotNull] TResponse target, [NotNull] string name, CancellationToken token = default) where TReference : class, IReferenceModel
+        {
+
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to get value from properties");
+            var uid = "";
+            if (Request.Properties.TryGetValue(name, out var value))
+                uid = value.ToString();
+
+            if (string.IsNullOrWhiteSpace(uid))
+                return;
+
+
+
+            logger.Inspect("typeof(TReference)", typeof(TReference).FullName);
+            logger.Inspect(nameof(name), name);
+            logger.Inspect(nameof(uid), uid);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to find writable property on target");
+            var pi = target.GetType().GetProperty(name);
+            if (pi is null)
+                throw new Exception($"Could not find property ({name}) on Type {typeof(TResponse)}");
+
+            if (!pi.CanWrite)
+                throw new Exception($"Can write property ({name}) on Type {typeof(TResponse)}");
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dig out setter method");
+            var method = pi.GetSetMethod();
+            if (method is null)
+                throw new Exception($"Could not get Setter for property ({name}) on Type {typeof(TResponse)}");
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to fetch reference using uid");
+            var replacement = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
+            if (replacement == null)
+                throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({name}) using ({uid})");
+
+            logger.LogObject(nameof(replacement), replacement);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to call setter with new reference");
+            method.Invoke(target, new object[] { replacement });
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to remove value form properties");
+            Request.Properties.Remove(name);
+
+
+        }
+
+        protected void Apply([NotNull] TResponse target)
         {
 
             if (target == null) throw new ArgumentNullException(nameof(target));
@@ -104,9 +175,49 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
-            logger.Debug("Attempting to map properties to entity" );
-            Mapper.Map( Request.Properties, target);
+            logger.Debug("Attempting to map properties to entity");
+            Mapper.Map(Request.Properties, target);
 
+
+        }
+
+        protected override async Task<TResponse> Perform( CancellationToken cancellationToken = default )
+        {
+
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to get target");
+            var target = await GetEntity();
+
+            logger.LogObject(nameof(target), target);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to check for references");
+            foreach( var re in Context.Entry(target).References )
+            {
+               
+                var call = GetType().GetMethod("ApplyReferenceByName",(BindingFlags.Instance|BindingFlags.NonPublic))?.MakeGenericMethod( re.Metadata.PropertyInfo.PropertyType );
+                if( call?.Invoke(this, new object[] { re.Metadata.PropertyInfo.Name, cancellationToken }) is Task task )
+                    await task;
+
+            }
+
+
+            Validate();
+
+            // *****************************************************************
+            logger.Debug("Attempting to apply properties");
+            Apply( target );
+
+
+
+            // *****************************************************************
+            return target;
 
         }
 
@@ -115,7 +226,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
         {
 
             using var logger = EnterMethod();
-            
+
             await Context.SaveChangesAsync();
 
             Uow.CanCommit();
