@@ -12,11 +12,11 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
     
-    public abstract class BaseCreateHandler<TRequest, TResponse> : BaseMutableHandler<TRequest, TResponse> where TRequest : class, IMutableRequest, IRequest<Response<TResponse>> where TResponse : class, IModel
+    public abstract class BaseCreateHandler<TRequest, TResponse,TDbContext> : BaseMutableHandler<TRequest, TResponse, TDbContext> where TRequest : class, IMutableRequest, IRequest<Response<TResponse>> where TResponse : class, IModel where TDbContext: OriginDbContext
     {
 
 
-        protected BaseCreateHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, OriginDbContext context, IMapper mapper): base( correlation, meta, uow, context, mapper )
+        protected BaseCreateHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper): base( correlation, meta, uow, context, mapper )
         {
         }
 

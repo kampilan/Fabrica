@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fabrica.Mediator;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Persistence.UnitOfWork;
@@ -10,11 +9,11 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
     
-    public abstract class BaseDeleteHandler<TRequest> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>
+    public abstract class BaseDeleteHandler<TRequest,TDbContext> : BaseHandler<TRequest> where TRequest : class, IRequest<Response> where TDbContext: OriginDbContext
     {
 
 
-        protected BaseDeleteHandler( ICorrelation correlation, IUnitOfWork uow, OriginDbContext context ): base(correlation)
+        protected BaseDeleteHandler( ICorrelation correlation, IUnitOfWork uow, TDbContext context ): base(correlation)
         {
 
             Uow     = uow;
@@ -23,7 +22,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
         }
 
         protected IUnitOfWork Uow { get; }
-        protected OriginDbContext Context { get; }
+        protected TDbContext Context { get; }
 
 
         protected override async Task<Response> Success( TRequest request )

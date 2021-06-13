@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
+using Fabrica.Persistence.Contexts;
 using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
@@ -17,11 +18,11 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>
+    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>> where TResponse: class, IModel where TDbContext: ReplicaDbContext
     {
 
 
-        protected BaseQueryHandler(ICorrelation correlation, IRuleSet rules, DbContext context) : base(correlation)
+        protected BaseQueryHandler(ICorrelation correlation, IRuleSet rules, TDbContext context) : base(correlation)
         {
             Rules = rules;
             Context = context;
@@ -29,10 +30,15 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
         protected IRuleSet Rules { get; }
-        protected DbContext Context { get; }
+        protected TDbContext Context { get; }
 
 
-        protected async Task<List<TModel>> ProcessFilters<TModel>([NotNull] IEnumerable<IRqlFilter<TModel>> filters, CancellationToken token) where TModel : class, IModel
+        protected virtual IQueryable<TResponse> GetQueryable()
+        {
+            return Context.Set<TResponse>().AsQueryable();
+        }
+
+        protected async Task<List<TResponse>> ProcessFilters([NotNull] IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token)
         {
 
             if (filters == null) throw new ArgumentNullException(nameof(filters));
@@ -58,8 +64,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to process each given filter");
-            var set = new HashSet<TModel>();
-            foreach (var queryable in filterList.Select(filter => filter.ToExpression()).Select(predicate => Context.Set<TModel>().Where(predicate)))
+            var set = new HashSet<TResponse>();
+            foreach (var queryable in filterList.Select(filter => filter.ToExpression()).Select(predicate => GetQueryable().Where(predicate)))
             {
                 var result = await queryable.ToListAsync(cancellationToken: token);
                 set.UnionWith(result);

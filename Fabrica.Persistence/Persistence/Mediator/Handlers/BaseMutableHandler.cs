@@ -19,11 +19,11 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
  
     
-    public abstract class BaseMutableHandler<TRequest, TResponse> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IMutableRequest where TResponse : class, IModel
+    public abstract class BaseMutableHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IMutableRequest where TResponse : class, IModel where TDbContext: OriginDbContext
     {
 
 
-        protected BaseMutableHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, OriginDbContext context, IMapper mapper): base(correlation)
+        protected BaseMutableHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper): base(correlation)
         {
 
             Meta    = meta.GetMetaFromType(typeof(TResponse));
@@ -37,7 +37,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         protected IUnitOfWork Uow { get; }
 
-        protected OriginDbContext Context { get; }
+        protected TDbContext Context { get; }
         protected IMapper Mapper { get; }
 
         protected abstract void Validate();
