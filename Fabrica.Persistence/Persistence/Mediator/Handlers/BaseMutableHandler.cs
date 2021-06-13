@@ -45,7 +45,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         protected abstract void Validate();
 
-        protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IReferenceModel
+        protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
         {
 
             if (target == null) throw new ArgumentNullException(nameof(target));
@@ -90,7 +90,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         }
 
-        protected async Task ApplyReferenceByName<TReference>([NotNull] TResponse target, [NotNull] string name, CancellationToken token = default) where TReference : class, IReferenceModel
+        protected async Task ApplyReferenceByName<TReference>([NotNull] TResponse target, [NotNull] string name, CancellationToken token = default) where TReference : class, IModel
         {
 
             if (target == null) throw new ArgumentNullException(nameof(target));
