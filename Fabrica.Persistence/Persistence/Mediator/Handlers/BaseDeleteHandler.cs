@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
@@ -29,6 +30,15 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IUnitOfWork Uow { get; }
         protected TDbContext Context { get; }
 
+        protected virtual IQueryable<TModel> GetQueryable()
+        {
+
+            using var logger = EnterMethod();
+
+            return Context.Set<TModel>().AsQueryable();
+
+
+        }
 
         protected override async Task Perform(CancellationToken cancellationToken = default)
         {
@@ -38,7 +48,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to fetch one entity by uid");
-            var entity = await Context.Set<TModel>().SingleOrDefaultAsync( e => e.Uid == Request.Uid, cancellationToken: cancellationToken );
+            var entity = await GetQueryable().SingleOrDefaultAsync( e => e.Uid == Request.Uid, cancellationToken: cancellationToken );
 
             if (entity is null)
                 throw new NotFoundException($"Could not find {typeof(TModel).Name} using Uid = ({Request.Uid})");

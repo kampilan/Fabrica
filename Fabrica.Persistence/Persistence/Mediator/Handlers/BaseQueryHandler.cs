@@ -36,7 +36,11 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         protected virtual IQueryable<TResponse> GetQueryable()
         {
+
+            using var logger = EnterMethod();
+
             return Context.Set<TResponse>().AsQueryable();
+
         }
 
         protected async Task<List<TResponse>> ProcessFilters([NotNull] IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token)
