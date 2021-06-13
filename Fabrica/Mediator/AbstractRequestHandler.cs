@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
@@ -18,21 +19,21 @@ namespace Fabrica.Mediator
 
         protected AbstractRequestHandler()
         {
-            Correation = new Correlation();
+            Correlation = new Correlation();
         }
 
 
         protected AbstractRequestHandler(ICorrelation correlation)
         {
-            Correation = correlation;
+            Correlation = correlation;
         }
 
 
-        protected ICorrelation Correation { get; }
-        private ILogger _logger;
-        protected ILogger GetLogger()
+        protected ICorrelation Correlation { get; }
+
+        protected ILogger GetLogger( [CallerMemberName] string name = "" )
         {
-            return _logger ??= Correation.GetLogger(this);
+            return Correlation.EnterMethod(name);
         }
 
         protected virtual Response<TResponse> CreateFailureResponse()

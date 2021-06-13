@@ -48,12 +48,12 @@ namespace Fabrica.Watch
             {
                 Debug         = correlation.Debug,
                 Tenant        = correlation.Tenant,
-                Subject       = correlation.Caller.Identity.Name,
+                Subject       = correlation.Caller?.Identity?.Name??"",
                 Category      = category,
                 CorrelationId = correlation.Uid
             };
 
-            request.FilterKeys.Add(("Subject", correlation.Caller.Identity.Name));
+            request.FilterKeys.Add(("Subject", correlation.Caller?.Identity?.Name??""));
             request.FilterKeys.Add(("Tenant", correlation.Tenant));
 
 
