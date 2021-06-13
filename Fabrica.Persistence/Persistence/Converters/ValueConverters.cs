@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Fabrica.Persistence
+namespace Fabrica.Persistence.Converters
 {
 
-    public static class ValueConvertors
+    public static class ValueConverters
     {
 
         public static readonly DateTime MinDateTime = new DateTime(1883, 11, 19, 0, 0, 0, 0);

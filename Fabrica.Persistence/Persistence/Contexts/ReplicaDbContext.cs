@@ -27,7 +27,7 @@ using Fabrica.Utilities.Container;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Fabrica.Persistence
+namespace Fabrica.Persistence.Contexts
 {
 
     public class ReplicaDbContext: BaseDbContext

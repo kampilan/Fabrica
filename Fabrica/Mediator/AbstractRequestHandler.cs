@@ -31,10 +31,16 @@ namespace Fabrica.Mediator
 
         protected ICorrelation Correlation { get; }
 
-        protected ILogger GetLogger( [CallerMemberName] string name = "" )
+        protected ILogger GetLogger()
         {
-            return Correlation.EnterMethod( GetType(), name );
+            return Correlation.GetLogger(this);
         }
+
+        protected ILogger EnterMethod( [CallerMemberName] string name = "" )
+        {
+            return Correlation.EnterMethod(GetType(), name);
+        }
+
 
         protected virtual Response<TResponse> CreateFailureResponse()
         {
@@ -158,22 +164,30 @@ namespace Fabrica.Mediator
 
         protected AbstractRequestHandler()
         {
-            Correation = new Correlation();
+            Correlation = new Correlation();
         }
 
 
         protected AbstractRequestHandler(ICorrelation correlation)
         {
-            Correation = correlation;
+            Correlation = correlation;
         }
 
 
-        protected ICorrelation Correation { get; }
-        private ILogger _logger;
+        protected ICorrelation Correlation { get; }
+
         protected ILogger GetLogger()
         {
-            return _logger ??= Correation.GetLogger(this);
+            return Correlation.GetLogger(this);
         }
+
+        protected ILogger EnterMethod( [CallerMemberName] string name = "" )
+        {
+            return Correlation.EnterMethod(GetType(), name);
+        }
+
+
+
 
         protected virtual Response CreateFailureResponse()
         {

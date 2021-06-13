@@ -29,7 +29,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ILogger = Fabrica.Watch.ILogger;
 
-namespace Fabrica.Persistence
+namespace Fabrica.Persistence.Contexts
 {
 
 

@@ -28,7 +28,6 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.Indexed;
 using Fabrica.Identity;
 using Fabrica.Models;
 using Fabrica.Models.Support;
@@ -42,7 +41,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 
-namespace Fabrica.Persistence
+namespace Fabrica.Persistence.Contexts
 {
 
 
