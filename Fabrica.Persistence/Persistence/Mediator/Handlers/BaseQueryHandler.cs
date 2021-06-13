@@ -18,7 +18,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>> where TResponse: class, IModel where TDbContext: ReplicaDbContext
+    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>> where TResponse: class, IModel where TDbContext: ReplicaDbContext
     {
 
 
