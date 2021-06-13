@@ -33,7 +33,7 @@ namespace Fabrica.Mediator
 
         protected ILogger GetLogger( [CallerMemberName] string name = "" )
         {
-            return Correlation.EnterMethod(name);
+            return Correlation.EnterMethod( GetType(), name );
         }
 
         protected virtual Response<TResponse> CreateFailureResponse()
