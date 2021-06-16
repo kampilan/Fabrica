@@ -211,6 +211,8 @@ namespace Fabrica.Mediator
                 logger.LogObject(nameof(request), request);
 
 
+                Request = request;
+
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Before");
