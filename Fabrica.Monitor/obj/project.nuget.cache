@@ -1,17 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "belQpogkI6ExKTyEb+T/01+cT8oEwyUgWH9M44CN+pv5dVUd2xlQppHiOiMWV/6UU89lTLcL28TyGuxqdJtVNw==",
+  "dgSpecHash": "7mcH+rjFYF8cF1YB1qdAqal5qV+JhWtIBYhm/HkO0ly8LokOhsEd70hemIfFU4TwnnsPKGg8jDBfxxrDw6nlhQ==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Monitor\\Fabrica.Monitor.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
-    "f:\\.nuget\\awssdk.appconfig\\3.7.0.29\\awssdk.appconfig.3.7.0.29.nupkg.sha512",
-    "f:\\.nuget\\awssdk.core\\3.7.0.31\\awssdk.core.3.7.0.31.nupkg.sha512",
-    "f:\\.nuget\\awssdk.s3\\3.7.1\\awssdk.s3.3.7.1.nupkg.sha512",
-    "f:\\.nuget\\awssdk.securitytoken\\3.7.1.18\\awssdk.securitytoken.3.7.1.18.nupkg.sha512",
-    "f:\\.nuget\\awssdk.simplesystemsmanagement\\3.7.3.12\\awssdk.simplesystemsmanagement.3.7.3.12.nupkg.sha512",
-    "f:\\.nuget\\awssdk.sqs\\3.7.0.30\\awssdk.sqs.3.7.0.30.nupkg.sha512",
+    "f:\\.nuget\\awssdk.appconfig\\3.7.0.31\\awssdk.appconfig.3.7.0.31.nupkg.sha512",
+    "f:\\.nuget\\awssdk.core\\3.7.0.33\\awssdk.core.3.7.0.33.nupkg.sha512",
+    "f:\\.nuget\\awssdk.s3\\3.7.1.3\\awssdk.s3.3.7.1.3.nupkg.sha512",
+    "f:\\.nuget\\awssdk.securitytoken\\3.7.1.20\\awssdk.securitytoken.3.7.1.20.nupkg.sha512",
+    "f:\\.nuget\\awssdk.simplesystemsmanagement\\3.7.3.14\\awssdk.simplesystemsmanagement.3.7.3.14.nupkg.sha512",
+    "f:\\.nuget\\awssdk.sqs\\3.7.0.32\\awssdk.sqs.3.7.0.32.nupkg.sha512",
     "f:\\.nuget\\dnsclient\\1.4.0\\dnsclient.1.4.0.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\jose-jwt\\3.1.1\\jose-jwt.3.1.1.nupkg.sha512",
@@ -84,7 +84,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading\\4.3.0\\system.threading.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.1.1\\yamldotnet.11.1.1.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
   ],
   "logs": []
 }

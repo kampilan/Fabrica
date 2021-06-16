@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "FcvRu2xqgn+/EhDc9jy+GcGptuw2PY83ZZxd+nRPNyYArXiE1ehuT+njAIORr3/pAepDiLnQh7MsSZrwe3FFlA==",
+  "dgSpecHash": "4qqysO8K4sZxd4+mcOxzTPc1gpmnv8Q5tMFDI02yfmZV7Dh/1UgDkAb9FLmhhTLniCj5ngPwgDl6OJUEdwVXQw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
-    "f:\\.nuget\\awssdk.appconfig\\3.7.0.29\\awssdk.appconfig.3.7.0.29.nupkg.sha512",
-    "f:\\.nuget\\awssdk.core\\3.7.0.31\\awssdk.core.3.7.0.31.nupkg.sha512",
-    "f:\\.nuget\\awssdk.s3\\3.7.1\\awssdk.s3.3.7.1.nupkg.sha512",
+    "f:\\.nuget\\awssdk.appconfig\\3.7.0.31\\awssdk.appconfig.3.7.0.31.nupkg.sha512",
+    "f:\\.nuget\\awssdk.core\\3.7.0.33\\awssdk.core.3.7.0.33.nupkg.sha512",
+    "f:\\.nuget\\awssdk.s3\\3.7.1.3\\awssdk.s3.3.7.1.3.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
@@ -38,7 +38,7 @@
     "f:\\.nuget\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.1.1\\yamldotnet.11.1.1.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
   ],
   "logs": []
 }
