@@ -504,7 +504,7 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual bool TryValidate<TModel>(BaseDelta delta, out IActionResult error)
+        protected virtual bool TryValidate( BaseDelta delta, out IActionResult error )
         {
 
             using var logger = EnterMethod();
