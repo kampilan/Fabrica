@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ZTJvqVwiYCXHRD2hGPIePJEmDXX7Max45nTpy8xJtODijcrg/d7OVIQssuay2AWOHKY0ENfahnU1QgGVgoVAZA==",
+  "dgSpecHash": "89zrMsMl/yYdd4BTvHpC1ZXqBNUxvaB+/gSoXasBWMwL/AOr1NKhQSiHFBUi0Xhs9tgUC7IJV1NO8iALeqGfuw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Static\\Fabrica.Static.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
+    "f:\\.nuget\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "f:\\.nuget\\awssdk.appconfig\\3.7.0.31\\awssdk.appconfig.3.7.0.31.nupkg.sha512",
     "f:\\.nuget\\awssdk.core\\3.7.0.33\\awssdk.core.3.7.0.33.nupkg.sha512",
     "f:\\.nuget\\awssdk.dynamodbv2\\3.7.0.32\\awssdk.dynamodbv2.3.7.0.32.nupkg.sha512",
@@ -70,6 +71,7 @@
     "f:\\.nuget\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.private.uri\\4.3.2\\system.private.uri.4.3.2.nupkg.sha512",
     "f:\\.nuget\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
+    "f:\\.nuget\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.reflection.primitives\\4.3.0\\system.reflection.primitives.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.resources.resourcemanager\\4.3.0\\system.resources.resourcemanager.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",

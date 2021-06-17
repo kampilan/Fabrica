@@ -62,3 +62,4 @@ E:\repositories\fabrica-sdk-v\Fabrica.Static\obj\Debug\net5.0\Fabrica.Static.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Static\obj\Debug\net5.0\ref\Fabrica.Static.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Static\obj\Debug\net5.0\Fabrica.Static.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Static\obj\Debug\net5.0\Fabrica.Static.genruntimeconfig.cache
+E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\AutoMapper.dll

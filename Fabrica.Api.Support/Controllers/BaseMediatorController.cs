@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Autofac;
+using AutoMapper;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
@@ -16,6 +17,7 @@ using Fabrica.Rql.Serialization;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -36,11 +38,14 @@ namespace Fabrica.Api.Support.Controllers
             Meta = Scope.Resolve<IModelMetaService>();
             TheMediator = Scope.Resolve<IMessageMediator>();
 
+            Mapper = Scope.Resolve<IMapper>();
+
         }
 
 
         protected IModelMetaService Meta { get; }
         protected IMessageMediator TheMediator { get; }
+        protected IMapper Mapper { get; }
 
 
         protected virtual HttpStatusCode MapErrorToStatus(ErrorKind kind)

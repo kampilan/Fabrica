@@ -59,3 +59,4 @@ E:\repositories\fabrica-sdk-v\Fabrica.Monitor\obj\Debug\net5.0\Appliance.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Monitor\obj\Debug\net5.0\ref\Appliance.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Monitor\obj\Debug\net5.0\Appliance.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Monitor\obj\Debug\net5.0\Fabrica.Monitor.genruntimeconfig.cache
+E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\AutoMapper.dll
