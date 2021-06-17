@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Amazon.S3.Model;
 using Autofac;
 using AutoMapper;
 using Fabrica.Api.Support.Models;
@@ -14,6 +15,7 @@ using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Serialization;
+using Fabrica.Utilities.Types;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -579,6 +581,19 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
+        protected virtual IDictionary<string, object> FromDelta( object delta )
+        {
+
+            using var logger = EnterMethod();
+
+            var props = new NoNullDictionary();
+            Mapper.Map( delta, props );
+
+            return props;
+
+        }
+
+
         protected virtual bool TryValidate<TModel>(Operation oper, Dictionary<string, object> properties, out IActionResult error) where TModel : class, IModel
         {
 
@@ -778,7 +793,7 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual async Task<IActionResult> DispatchCreate<TRequest,TValue>() where TRequest : class, IRequest<Response<TValue>>, ICreateRequest, new() where TValue : class, IModel
+        protected virtual async Task<IActionResult> DispatchCreate<TRequest,TValue>( [NotNull] object delta ) where TRequest : class, IRequest<Response<TValue>>, ICreateRequest, new() where TValue : class, IModel
         {
 
             using var logger = EnterMethod();
@@ -786,7 +801,7 @@ namespace Fabrica.Api.Support.Controllers
 
             // *****************************************************************
             logger.Debug("Attempting to get properties from body");
-            var properties = await FromBody();
+            var properties = FromDelta( delta );
 
 
             // *****************************************************************
@@ -811,17 +826,18 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual async Task<IActionResult> DispatchMemberCreate<TRequest,TValue>( [NotNull] string parentUid ) where TRequest : class, IRequest<Response<TValue>>, IMemberCreateRequest, new() where TValue : class, IModel
+        protected virtual async Task<IActionResult> DispatchMemberCreate<TRequest,TValue>( [NotNull] string parentUid, [NotNull] object delta ) where TRequest : class, IRequest<Response<TValue>>, IMemberCreateRequest, new() where TValue : class, IModel
         {
-            
+
+            if (delta == null) throw new ArgumentNullException(nameof(delta));
             if (string.IsNullOrWhiteSpace(parentUid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(parentUid));
 
             using var logger = EnterMethod();
 
 
             // *****************************************************************
-            logger.Debug("Attempting to get properties from body");
-            var properties = await FromBody();
+            logger.Debug("Attempting to get properties from delta");
+            var properties = FromDelta( delta );
 
 
             // *****************************************************************
@@ -847,8 +863,10 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual async Task<IActionResult> DispatchUpdate<TRequest,TValue>( [NotNull] string uid ) where TRequest : class, IRequest<Response<TValue>>, IUpdateRequest, new() where TValue : class, IModel
+        protected virtual async Task<IActionResult> DispatchUpdate<TRequest,TValue>( [NotNull] string uid, [NotNull] object delta ) where TRequest : class, IRequest<Response<TValue>>, IUpdateRequest, new() where TValue : class, IModel
         {
+
+            if (delta == null) throw new ArgumentNullException(nameof(delta));
 
             if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
 
@@ -857,7 +875,7 @@ namespace Fabrica.Api.Support.Controllers
 
             // *****************************************************************
             logger.Debug("Attempting to get properties from body");
-            var properties = await FromBody();
+            var properties = FromDelta( delta );
 
 
             // *****************************************************************
