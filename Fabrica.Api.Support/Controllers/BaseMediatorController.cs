@@ -4,13 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Amazon.S3.Model;
 using Autofac;
 using AutoMapper;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
@@ -19,7 +17,6 @@ using Fabrica.Utilities.Types;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -31,13 +28,9 @@ namespace Fabrica.Api.Support.Controllers
     {
 
 
-        protected enum Operation { Create, Update }
-
-
-        protected BaseMediatorController(ILifetimeScope scope) : base(scope)
+        protected BaseMediatorController( ILifetimeScope scope ) : base( scope )
         {
 
-            Meta = Scope.Resolve<IModelMetaService>();
             TheMediator = Scope.Resolve<IMessageMediator>();
 
             Mapper = Scope.Resolve<IMapper>();
@@ -45,7 +38,6 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected IModelMetaService Meta { get; }
         protected IMessageMediator TheMediator { get; }
         protected IMapper Mapper { get; }
 
@@ -112,35 +104,24 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
         {
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
+            using var logger = this.EnterMethod();
 
 
-                logger.LogObject(nameof(response), response);
+            logger.LogObject(nameof(response), response);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to check for success");
-                logger.Inspect(nameof(response.Ok), response.Ok);
-                if (response.Ok && typeof(TValue).IsValueType)
-                    return Ok();
-                else if (response.Ok)
-                    return Ok(response.Value);
+            // *****************************************************************
+            logger.Debug("Attempting to check for success");
+            logger.Inspect(nameof(response.Ok), response.Ok);
+            if (response.Ok && typeof(TValue).IsValueType)
+                return Ok();
+
+            if (response.Ok)
+                return Ok(response.Value);
 
 
-                return BuildErrorResult(response);
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return BuildErrorResult(response);
 
 
         }
@@ -148,33 +129,23 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual IActionResult BuildResult(Response response)
         {
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.LogObject(nameof(response), response);
+            using var logger = EnterMethod();
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to check for success");
-                logger.Inspect(nameof(response.Ok), response.Ok);
-                if (response.Ok)
-                    return Ok();
+            logger.LogObject(nameof(response), response);
 
 
-                return BuildErrorResult(response);
+
+            // *****************************************************************
+            logger.Debug("Attempting to check for success");
+            logger.Inspect(nameof(response.Ok), response.Ok);
+            if (response.Ok)
+                return Ok();
 
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return BuildErrorResult(response);
+
 
 
         }
@@ -183,56 +154,45 @@ namespace Fabrica.Api.Support.Controllers
         {
 
 
-            var logger = GetLogger();
+            using var logger = EnterMethod();
 
-            try
+
+            logger.LogObject(nameof(error), error);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build ErrorResponseModel");
+            var model = new ErrorResponseModel
             {
-
-                logger.EnterMethod();
-
-
-                logger.LogObject(nameof(error), error);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to build ErrorResponseModel");
-                var model = new ErrorResponseModel
-                {
-                    ErrorCode = error.ErrorCode,
-                    Explanation = error.Explanation,
-                    Details = new List<EventDetail>(error.Details),
-                    CorrelationId = Correlation.Uid
-                };
+                ErrorCode = error.ErrorCode,
+                Explanation = error.Explanation,
+                Details = new List<EventDetail>(error.Details),
+                CorrelationId = Correlation.Uid
+            };
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to map error Kind to HttpStatusCode");
-                var status = MapErrorToStatus(error.Kind);
+            // *****************************************************************
+            logger.Debug("Attempting to map error Kind to HttpStatusCode");
+            var status = MapErrorToStatus(error.Kind);
 
-                logger.Inspect(nameof(status), status);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to build ObjectResult");
-                var result = new ObjectResult(model)
-                {
-                    StatusCode = (int)status
-                };
+            logger.Inspect(nameof(status), status);
 
 
 
-                // *****************************************************************
-                return result;
-
-
-            }
-            finally
+            // *****************************************************************
+            logger.Debug("Attempting to build ObjectResult");
+            var result = new ObjectResult(model)
             {
-                logger.LeaveMethod();
-            }
+                StatusCode = (int)status
+            };
+
+
+
+            // *****************************************************************
+            return result;
+
 
         }
 
@@ -241,82 +201,71 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual List<string> ProduceRql<TExplorer>() where TExplorer : class, IModel
         {
 
-            var logger = GetLogger();
+            using var logger = EnterMethod();
 
-            try
+
+            // *****************************************************************
+            logger.Debug("Attempting to digout query parameters");
+
+            var rqls = new List<string>();
+            var parameters = new Dictionary<string, string>();
+            foreach (var key in Request.Query.Keys)
             {
 
-                logger.EnterMethod();
+                logger.Inspect(nameof(key), key);
+                logger.LogObject("values", Request.Query[key]);
+
+                if (key == "rql")
+                    rqls.AddRange(Request.Query[key].ToArray());
+                else
+                    parameters[key] = Request.Query[key].First();
+
+            }
+
+
+
+
+            var filters = new List<string>();
+            if (rqls.Count > 0)
+                filters.AddRange(rqls);
+            else
+            {
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to digout query parameters");
-
-                var rqls = new List<string>();
-                var parameters = new Dictionary<string, string>();
-                foreach (var key in Request.Query.Keys)
-                {
-
-                    logger.Inspect(nameof(key), key);
-                    logger.LogObject("values", Request.Query[key]);
-
-                    if (key == "rql")
-                        rqls.AddRange(Request.Query[key].ToArray());
-                    else
-                        parameters[key] = Request.Query[key].First();
-
-                }
+                logger.Debug("Attempting to resolve criteria given target");
+                var type = Scope.ResolveOptionalNamed<Type>($"Rql.Criteria.Target:{typeof(TExplorer).FullName}");
+                if (type == null)
+                    return filters;
 
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to map parameters to criteria model");
+                var jo = JObject.FromObject(parameters);
+                var criteria = jo.ToObject(type);
 
-                var filters = new List<string>();
-                if (rqls.Count > 0)
-                    filters.AddRange(rqls);
-                else
-                {
-
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to resolve criteria given target");
-                    var type = Scope.ResolveOptionalNamed<Type>($"Rql.Criteria.Target:{typeof(TExplorer).FullName}");
-                    if (type == null)
-                        return filters;
+                logger.LogObject(nameof(criteria), criteria);
 
 
 
-                    // *****************************************************************
-                    logger.Debug("Attempting to map parameters to criteria model");
-                    var jo = JObject.FromObject(parameters);
-                    var criteria = jo.ToObject(type);
+                // *****************************************************************
+                logger.Debug("Attempting to introspect criteria RQL");
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+                var rql = filter.ToRqlCriteria();
 
-                    logger.LogObject(nameof(criteria), criteria);
-
-
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to introspect criteria RQL");
-                    var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-                    var rql = filter.ToRqlCriteria();
-
-                    logger.Inspect(nameof(rql), rql);
+                logger.Inspect(nameof(rql), rql);
 
 
 
-                    // *****************************************************************
-                    filters.Add(rql);
+                // *****************************************************************
+                filters.Add(rql);
 
-
-                }
-
-
-                return filters;
 
             }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+
+            return filters;
 
 
         }
@@ -324,79 +273,69 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual List<IRqlFilter<TExplorer>> ProduceFilter<TExplorer>() where TExplorer : class, IModel
         {
 
-            var logger = GetLogger();
+            using var logger = EnterMethod();
 
-            try
+
+            // *****************************************************************
+            logger.Debug("Attempting to digout query parameters");
+
+            var rqls = new List<string>();
+            var parameters = new Dictionary<string, string>();
+            foreach (var key in Request.Query.Keys)
             {
 
-                logger.EnterMethod();
+                logger.Inspect(nameof(key), key);
+                logger.LogObject("values", Request.Query[key]);
+
+                if (key == "rql")
+                    rqls.AddRange(Request.Query[key].ToArray());
+                else
+                    parameters[key] = Request.Query[key].First();
+
+            }
+
+
+            var filters = new List<IRqlFilter<TExplorer>>();
+            if (rqls.Count > 0)
+            {
+                filters.AddRange(rqls.Select(RqlFilterBuilder<TExplorer>.FromRql));
+            }
+            else
+            {
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to digout query parameters");
-
-                var rqls = new List<string>();
-                var parameters = new Dictionary<string, string>();
-                foreach (var key in Request.Query.Keys)
-                {
-
-                    logger.Inspect(nameof(key), key);
-                    logger.LogObject("values", Request.Query[key]);
-
-                    if (key == "rql")
-                        rqls.AddRange(Request.Query[key].ToArray());
-                    else
-                        parameters[key] = Request.Query[key].First();
-
-                }
-
-
-                var filters = new List<IRqlFilter<TExplorer>>();
-                if (rqls.Count > 0)
-                {
-                    filters.AddRange(rqls.Select(RqlFilterBuilder<TExplorer>.FromRql));
-                }
-                else
-                {
-
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to resolve criteria given target");
-                    var type = Scope.ResolveOptionalNamed<Type>($"Rql.Criteria.Target:{typeof(TExplorer).FullName}");
-                    if (type == null)
-                        return filters;
+                logger.Debug("Attempting to resolve criteria given target");
+                var type = Scope.ResolveOptionalNamed<Type>($"Rql.Criteria.Target:{typeof(TExplorer).FullName}");
+                if (type == null)
+                    return filters;
 
 
 
-                    // *****************************************************************
-                    logger.Debug("Attempting to map parameters to criteria model");
-                    var jo = JObject.FromObject(parameters);
-                    var criteria = jo.ToObject(type);
+                // *****************************************************************
+                logger.Debug("Attempting to map parameters to criteria model");
+                var jo = JObject.FromObject(parameters);
+                var criteria = jo.ToObject(type);
 
-                    logger.LogObject(nameof(criteria), criteria);
-
-
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to introspect criteria RQL");
-                    var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+                logger.LogObject(nameof(criteria), criteria);
 
 
 
-                    // *****************************************************************
-                    filters.Add(filter);
+                // *****************************************************************
+                logger.Debug("Attempting to introspect criteria RQL");
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
 
 
-                }
 
+                // *****************************************************************
+                filters.Add(filter);
 
-                return filters;
 
             }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+
+            return filters;
+
 
 
         }
@@ -405,74 +344,65 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual List<string> ProduceRql<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class
         {
 
-            var logger = GetLogger();
+            using var logger = EnterMethod();
 
-            try
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to digout query parameters");
+
+            var rqls = new List<string>();
+            var parameters = new Dictionary<string, string>();
+            foreach (var key in Request.Query.Keys)
             {
 
-                logger.EnterMethod();
+                logger.Inspect(nameof(key), key);
+                logger.LogObject("values", Request.Query[key]);
+
+                if (key == "rql")
+                    rqls.AddRange(Request.Query[key].ToArray());
+                else
+                    parameters[key] = Request.Query[key].First();
+
+            }
+
+
+
+
+            var filters = new List<string>();
+            if (rqls.Count > 0)
+                filters.AddRange(rqls);
+            else
+            {
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to digout query parameters");
+                logger.Debug("Attempting to map parameters to criteria model");
+                var jo = JObject.FromObject(parameters);
+                var criteria = jo.ToObject<TCriteria>();
 
-                var rqls = new List<string>();
-                var parameters = new Dictionary<string, string>();
-                foreach (var key in Request.Query.Keys)
-                {
-
-                    logger.Inspect(nameof(key), key);
-                    logger.LogObject("values", Request.Query[key]);
-
-                    if (key == "rql")
-                        rqls.AddRange(Request.Query[key].ToArray());
-                    else
-                        parameters[key] = Request.Query[key].First();
-
-                }
+                logger.LogObject(nameof(criteria), criteria);
 
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to introspect criteria RQL");
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+                var rql = filter.ToRqlCriteria();
 
-                var filters = new List<string>();
-                if (rqls.Count > 0)
-                    filters.AddRange(rqls);
-                else
-                {
-
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to map parameters to criteria model");
-                    var jo = JObject.FromObject(parameters);
-                    var criteria = jo.ToObject<TCriteria>();
-
-                    logger.LogObject(nameof(criteria), criteria);
+                logger.Inspect(nameof(rql), rql);
 
 
 
-                    // *****************************************************************
-                    logger.Debug("Attempting to introspect criteria RQL");
-                    var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-                    var rql = filter.ToRqlCriteria();
+                // *****************************************************************
+                filters.Add(rql);
 
-                    logger.Inspect(nameof(rql), rql);
-
-
-
-                    // *****************************************************************
-                    filters.Add(rql);
-
-
-                }
-
-
-                return filters;
 
             }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+
+            return filters;
+
 
 
         }
@@ -480,72 +410,61 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual List<IRqlFilter<TExplorer>> ProduceFilter<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class
         {
 
-            var logger = GetLogger();
+            using var logger = EnterMethod();
 
-            try
+
+            // *****************************************************************
+            logger.Debug("Attempting to digout query parameters");
+
+            var rqls = new List<string>();
+            var parameters = new Dictionary<string, string>();
+            foreach (var key in Request.Query.Keys)
             {
 
-                logger.EnterMethod();
+                logger.Inspect(nameof(key), key);
+                logger.LogObject("values", Request.Query[key]);
+
+                if (key == "rql")
+                    rqls.AddRange(Request.Query[key].ToArray());
+                else
+                    parameters[key] = Request.Query[key].First();
+
+            }
+
+
+
+
+            var filters = new List<IRqlFilter<TExplorer>>();
+            if (rqls.Count > 0)
+            {
+                filters.AddRange(rqls.Select(RqlFilterBuilder<TExplorer>.FromRql));
+            }
+            else
+            {
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to digout query parameters");
+                logger.Debug("Attempting to map parameters to criteria model");
+                var jo = JObject.FromObject(parameters);
+                var criteria = jo.ToObject<TCriteria>();
 
-                var rqls = new List<string>();
-                var parameters = new Dictionary<string, string>();
-                foreach (var key in Request.Query.Keys)
-                {
-
-                    logger.Inspect(nameof(key), key);
-                    logger.LogObject("values", Request.Query[key]);
-
-                    if (key == "rql")
-                        rqls.AddRange(Request.Query[key].ToArray());
-                    else
-                        parameters[key] = Request.Query[key].First();
-
-                }
+                logger.LogObject(nameof(criteria), criteria);
 
 
 
-
-                var filters = new List<IRqlFilter<TExplorer>>();
-                if (rqls.Count > 0)
-                {
-                    filters.AddRange(rqls.Select(RqlFilterBuilder<TExplorer>.FromRql));
-                }
-                else
-                {
+                // *****************************************************************
+                logger.Debug("Attempting to introspect criteria RQL");
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
 
 
-                    // *****************************************************************
-                    logger.Debug("Attempting to map parameters to criteria model");
-                    var jo = JObject.FromObject(parameters);
-                    var criteria = jo.ToObject<TCriteria>();
+                // *****************************************************************
+                filters.Add(filter);
 
-                    logger.LogObject(nameof(criteria), criteria);
-
-
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to introspect criteria RQL");
-                    var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-
-
-                    // *****************************************************************
-                    filters.Add(filter);
-
-
-                }
-
-
-                return filters;
 
             }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+
+            return filters;
 
 
         }
@@ -555,378 +474,122 @@ namespace Fabrica.Api.Support.Controllers
         protected virtual async Task<Dictionary<string, object>> FromBody()
         {
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to parse request body");
-                var jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
-                var properties = jo.ToObject<Dictionary<string, object>>();
+            using var logger = EnterMethod();
 
 
 
-                // *****************************************************************
-                return properties;
+            // *****************************************************************
+            logger.Debug("Attempting to parse request body");
+            var jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
+            var properties = jo.ToObject<Dictionary<string, object>>();
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+
+            // *****************************************************************
+            return properties;
+
 
         }
 
-        protected virtual IDictionary<string, object> FromDelta( object delta )
+        protected virtual IDictionary<string, object> FromDelta([NotNull] BaseDelta delta)
         {
 
             using var logger = EnterMethod();
 
             var props = new NoNullDictionary();
-            Mapper.Map( delta, props );
+            Mapper.Map(delta, props);
 
             return props;
 
         }
 
 
-        protected virtual bool TryValidate<TModel>(Operation oper, Dictionary<string, object> properties, out IActionResult error) where TModel : class, IModel
+        protected virtual bool TryValidate<TModel>(BaseDelta delta, out IActionResult error)
         {
 
-            var logger = GetLogger();
+            using var logger = EnterMethod();
 
-            try
+
+            error = null;
+
+            if (delta.IsOverposted())
             {
 
-                logger.EnterMethod();
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to get meta from given model");
-                var meta = Meta.GetMetaFromType(typeof(TModel));
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to check properties for over-posting");
-
-                var overposted = oper == Operation.Create ? meta.CheckForCreate(properties.Keys) : meta.CheckForUpdate(properties.Keys);
-
-                if (overposted.Count > 0)
+                var info = new ExceptionInfoModel
                 {
-                    var erm = new ErrorResponseModel
-                    {
-                        CorrelationId = Correlation.Uid,
-                        ErrorCode = "DisallowedProperties",
-                        Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', overposted)})"
-                    };
+                    Kind = ErrorKind.BadRequest,
+                    ErrorCode = "Over-posted",
+                    Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})"
+                };
 
-                    error = new BadRequestObjectResult(erm);
-                    return false;
+                error = BuildErrorResult(info);
 
-                }
-
-
-                // *****************************************************************
-                error = null;
-
-                return true;
+                return false;
 
             }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+
+            return true;
+
 
         }
 
-        protected virtual async Task<IActionResult> Dispatch<TValue>([NotNull] IRequest<Response<TValue>> request)
+
+
+        protected virtual async Task<IActionResult> Send<TValue>([NotNull] IRequest<Response<TValue>> request)
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.LogObject(nameof(request), request);
+            using var logger = EnterMethod();
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to send request via Mediator");
-                var response = await TheMediator.Send(request);
+            // *****************************************************************
+            logger.Debug("Attempting to send request via Mediator");
+            var response = await TheMediator.Send(request);
 
-                logger.Inspect(nameof(response.Ok), response.Ok);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to build result");
-                var result = BuildResult(response);
+            logger.Inspect(nameof(response.Ok), response.Ok);
 
 
 
-                // *****************************************************************
-                return result;
+            // *****************************************************************
+            logger.Debug("Attempting to build result");
+            var result = BuildResult(response);
 
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+            // *****************************************************************
+            return result;
+
 
         }
 
-        protected virtual async Task<IActionResult> Dispatch([NotNull] IRequest<Response> request)
+        protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response> request)
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.LogObject(nameof(request), request);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to send request via Mediator");
-                var response = await TheMediator.Send(request);
-
-                logger.Inspect(nameof(response.Ok), response.Ok);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to build result");
-                var result = BuildResult(response);
-
-
-
-                // *****************************************************************
-                return result;
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-        }
-
-
-
-        protected virtual async Task<IActionResult> DispatchQuery<TRequest,TValue,TCriteria>() where TRequest : class, IRequest<Response<List<TValue>>>, IQueryRequest<TValue>, new() where TValue : class, IModel where TCriteria : class
-        {
-
             using var logger = EnterMethod();
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to produce filters");
-            var filters = ProduceFilter<TValue, TCriteria>();
-
-
 
             // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new TRequest
-            {
-                Filters = filters
-            };
+            logger.Debug("Attempting to send request via Mediator");
+            var response = await TheMediator.Send(request);
+
+            logger.Inspect(nameof(response.Ok), response.Ok);
 
 
 
             // *****************************************************************
-            logger.Debug("Attempting to dispatch via mediator");
-            var result = await Dispatch(request);
+            logger.Debug("Attempting to build result");
+            var result = BuildResult(response);
 
 
 
             // *****************************************************************
             return result;
-
-        }
-
-
-        protected virtual async Task<IActionResult> DispatchRetrieve<TRequest,TValue>( [NotNull] string uid ) where TRequest : class, IRequest<Response<TValue>>, IRetrieveRequest, new() where TValue : class, IModel
-        {
-
-            if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new TRequest
-            {
-                Uid = uid
-            };
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to dispatch via mediator");
-            var result = await Dispatch(request);
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-
-
-        protected virtual async Task<IActionResult> DispatchCreate<TRequest,TValue>( [NotNull] object delta ) where TRequest : class, IRequest<Response<TValue>>, ICreateRequest, new() where TValue : class, IModel
-        {
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to get properties from body");
-            var properties = FromDelta( delta );
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new TRequest
-            {
-                Properties = properties
-            };
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to dispatch via mediator");
-            var result = await Dispatch(request);
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-
-
-        protected virtual async Task<IActionResult> DispatchMemberCreate<TRequest,TValue>( [NotNull] string parentUid, [NotNull] object delta ) where TRequest : class, IRequest<Response<TValue>>, IMemberCreateRequest, new() where TValue : class, IModel
-        {
-
-            if (delta == null) throw new ArgumentNullException(nameof(delta));
-            if (string.IsNullOrWhiteSpace(parentUid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(parentUid));
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to get properties from delta");
-            var properties = FromDelta( delta );
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new TRequest
-            {
-                ParentUid  = parentUid,
-                Properties = properties
-            };
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to dispatch via mediator");
-            var result = await Dispatch(request);
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-
-
-        protected virtual async Task<IActionResult> DispatchUpdate<TRequest,TValue>( [NotNull] string uid, [NotNull] object delta ) where TRequest : class, IRequest<Response<TValue>>, IUpdateRequest, new() where TValue : class, IModel
-        {
-
-            if (delta == null) throw new ArgumentNullException(nameof(delta));
-
-            if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to get properties from body");
-            var properties = FromDelta( delta );
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new TRequest
-            {
-                Uid        = uid,
-                Properties = properties
-            };
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to dispatch via mediator");
-            var result = await Dispatch(request);
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-
-
-        protected virtual async Task<IActionResult> DispatchDelete<TRequest>( [NotNull] string uid) where TRequest : class, IRequest<Response>, IDeleteRequest, new()
-        {
-
-            if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new TRequest
-            {
-                Uid = uid
-            };
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to dispatch via mediator");
-            var result = await Dispatch(request);
-
-
-
-            // *****************************************************************
-            return result;
-
 
         }
 
