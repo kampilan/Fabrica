@@ -29,14 +29,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected TDbContext Context { get; }
 
 
-        protected virtual IQueryable<TResponse> GetQueryable()
-        {
-
-            using var logger = EnterMethod();
-
-            return Context.Set<TResponse>().AsQueryable();
-
-        }
+        protected abstract IQueryable<TResponse> GetQueryable();
 
         protected override async Task<TResponse> Perform( CancellationToken cancellationToken=default )
         {
