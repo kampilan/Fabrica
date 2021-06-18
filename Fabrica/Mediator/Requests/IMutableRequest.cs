@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Fabrica.Models.Support;
 
 namespace Fabrica.Mediator.Requests
 {
@@ -6,7 +6,7 @@ namespace Fabrica.Mediator.Requests
     public interface IMutableRequest
     {
 
-        IDictionary<string, object> Properties { get; set; }
+        BaseDelta Delta { get; }
 
     }
 

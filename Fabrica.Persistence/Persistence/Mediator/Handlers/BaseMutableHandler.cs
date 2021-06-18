@@ -23,7 +23,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
     {
 
 
-        protected BaseMutableHandler(ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper) : base(correlation)
+        protected BaseMutableHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper ) : base( correlation )
         {
 
             Meta = meta.GetMetaFromType(typeof(TResponse));
@@ -41,9 +41,13 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IMapper Mapper { get; }
 
 
+        protected DeltaPropertySet Properties { get; private set; }
+
+
         protected abstract Task<TResponse> GetEntity();
 
-        protected abstract void Validate();
+        protected abstract Task Validate();
+
 
         protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
         {
@@ -54,7 +58,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             using var logger = EnterMethod();
 
-            if (getter.Body is MemberExpression { Member: PropertyInfo { CanWrite: true } pi } && Request.Properties.TryGetValue(pi.Name, out var value))
+
+            if (getter.Body is MemberExpression { Member: PropertyInfo { CanWrite: true } pi } && Properties.TryGetValue(pi.Name, out var value))
             {
 
                 var uid = value.ToString();
@@ -82,7 +87,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
                 // *****************************************************************
                 logger.Debug("Attempting to remove value from properties");
-                Request.Properties.Remove(pi.Name);
+                Properties.Remove(pi.Name);
 
 
             }
@@ -103,7 +108,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             // *****************************************************************
             logger.Debug("Attempting to get value from properties");
             var uid = "";
-            if (Request.Properties.TryGetValue(name, out var value))
+            if( Properties.TryGetValue(name, out var value) )
                 uid = value.ToString();
 
             if (string.IsNullOrWhiteSpace(uid))
@@ -154,7 +159,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to remove value form properties");
-            Request.Properties.Remove(name);
+            Properties.Remove(name);
 
 
         }
@@ -176,7 +181,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to map properties to entity");
-            Mapper.Map(Request.Properties, target);
+            Mapper.Map( Properties, target );
 
 
         }
@@ -197,11 +202,18 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
+            logger.Debug("Attempting to get property set from delta");
+            Properties = Request.Delta?.GetPropertySet() ?? new DeltaPropertySet();
+            logger.LogObject(nameof(Properties), Properties);
+
+
+
+            // *****************************************************************
             logger.Debug("Attempting to check for references");
             foreach( var re in Context.Entry(target).References )
             {
 
-                if( Request.Properties.ContainsKey( re.Metadata.PropertyInfo.Name ) )
+                if( Properties.ContainsKey( re.Metadata.PropertyInfo.Name ) )
                 {
                     var call = GetType().GetMethod("ApplyReferenceByName", (BindingFlags.Instance | BindingFlags.NonPublic))?.MakeGenericMethod(re.Metadata.PropertyInfo.PropertyType);
                     if (call?.Invoke(this, new object[] {target, re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
@@ -214,7 +226,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to validate properties");
-            Validate();
+            await Validate();
 
 
 

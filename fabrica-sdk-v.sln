@@ -33,7 +33,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Monitor", "Fabrica.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Static", "Fabrica.Static\Fabrica.Static.csproj", "{A59937EF-E00F-46E1-8BBB-8CDB1D2022FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Persistence", "Fabrica.Persistence\Fabrica.Persistence.csproj", "{CB60F29D-610D-41B6-8B08-5CF69D57C03A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence", "Fabrica.Persistence\Fabrica.Persistence.csproj", "{CB60F29D-610D-41B6-8B08-5CF69D57C03A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2E2E37FB-828B-4516-9A53-557B03BD4BC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Tests", "Fabrica.Tests\Fabrica.Tests.csproj", "{0D691923-2F48-4835-981C-E9310EF1E992}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +97,10 @@ Global
 		{CB60F29D-610D-41B6-8B08-5CF69D57C03A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB60F29D-610D-41B6-8B08-5CF69D57C03A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB60F29D-610D-41B6-8B08-5CF69D57C03A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D691923-2F48-4835-981C-E9310EF1E992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D691923-2F48-4835-981C-E9310EF1E992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D691923-2F48-4835-981C-E9310EF1E992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D691923-2F48-4835-981C-E9310EF1E992}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +119,7 @@ Global
 		{5F885F8E-8F2B-4887-92B0-93548A0D39D0} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
 		{A59937EF-E00F-46E1-8BBB-8CDB1D2022FB} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
 		{CB60F29D-610D-41B6-8B08-5CF69D57C03A} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
+		{0D691923-2F48-4835-981C-E9310EF1E992} = {2E2E37FB-828B-4516-9A53-557B03BD4BC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE8638D5-DE76-4377-8051-B8525AC1799D}

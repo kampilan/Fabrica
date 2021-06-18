@@ -17,6 +17,8 @@ namespace Fabrica.Models.Support
 
         public IEnumerable<string> GetOverpostNames() => Overposts.Keys;
 
+        public DeltaPropertySet GetPropertySet() => new (this);
+
 
     }
 

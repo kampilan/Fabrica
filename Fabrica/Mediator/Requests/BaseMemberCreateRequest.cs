@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using Fabrica.Models.Support;
 
 namespace Fabrica.Mediator.Requests
 {
 
-    public abstract class BaseMemberCreateRequest: IMemberCreateRequest
+    public abstract class BaseMemberCreateRequest<TDelta>: IMemberCreateRequest where TDelta: BaseDelta, new()
     {
 
         public string ParentUid { get; set; } = "";
 
-        public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+        public TDelta Delta { get; set; } = new ();
+
+        BaseDelta IMutableRequest.Delta => Delta;
 
     }
 

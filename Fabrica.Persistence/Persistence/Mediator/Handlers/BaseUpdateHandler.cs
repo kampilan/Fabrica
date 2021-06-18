@@ -49,16 +49,6 @@ namespace Fabrica.Persistence.Mediator.Handlers
         }
 
 
-        protected override void Validate()
-        {
-
-            var overposted = Meta.CheckForUpdate(Request.Properties.Keys);
-            if( overposted.Count > 0 )
-                throw new PredicateException($"The following properties were not found or are not mutable: ({string.Join(',', overposted)})").WithErrorCode("DisallowedProperties");
-
-        }
-
-
     }
 
 }

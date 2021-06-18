@@ -33,13 +33,10 @@ namespace Fabrica.Api.Support.Controllers
 
             TheMediator = Scope.Resolve<IMessageMediator>();
 
-            Mapper = Scope.Resolve<IMapper>();
-
         }
 
 
         protected IMessageMediator TheMediator { get; }
-        protected IMapper Mapper { get; }
 
 
         protected virtual HttpStatusCode MapErrorToStatus(ErrorKind kind)
@@ -270,7 +267,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilter<TExplorer>() where TExplorer : class, IModel
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>() where TExplorer : class, IModel
         {
 
             using var logger = EnterMethod();
@@ -407,7 +404,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilter<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class
         {
 
             using var logger = EnterMethod();
@@ -471,39 +468,6 @@ namespace Fabrica.Api.Support.Controllers
 
 
 
-        protected virtual async Task<Dictionary<string, object>> FromBody()
-        {
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to parse request body");
-            var jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
-            var properties = jo.ToObject<Dictionary<string, object>>();
-
-
-
-            // *****************************************************************
-            return properties;
-
-
-        }
-
-        protected virtual IDictionary<string, object> FromDelta([NotNull] BaseDelta delta)
-        {
-
-            using var logger = EnterMethod();
-
-            var props = new NoNullDictionary();
-            Mapper.Map(delta, props);
-
-            return props;
-
-        }
-
-
         protected virtual bool TryValidate( BaseDelta delta, out IActionResult error )
         {
 
@@ -518,7 +482,7 @@ namespace Fabrica.Api.Support.Controllers
                 var info = new ExceptionInfoModel
                 {
                     Kind = ErrorKind.BadRequest,
-                    ErrorCode = "Over-posted",
+                    ErrorCode = "DisallowedProperties",
                     Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})"
                 };
 
