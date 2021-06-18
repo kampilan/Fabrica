@@ -46,7 +46,10 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         protected abstract Task<TResponse> GetEntity();
 
-        protected abstract Task Validate();
+        protected virtual Task Validate()
+        {
+            return Task.CompletedTask;
+        }
 
 
         protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
