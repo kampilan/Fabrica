@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
@@ -41,7 +42,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IMapper Mapper { get; }
 
 
-        protected DeltaPropertySet Properties { get; private set; }
+        protected IDictionary<string,object> Properties { get; private set; }
 
 
         protected abstract Task<TResponse> GetEntity();
@@ -162,27 +163,6 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         }
 
-        protected void Apply([NotNull] TResponse target)
-        {
-
-            if (target == null) throw new ArgumentNullException(nameof(target));
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to validate properties");
-            Validate();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to map properties to entity");
-            Mapper.Map( Properties, target );
-
-
-        }
 
         protected override async Task<TResponse> Perform( CancellationToken cancellationToken = default )
         {
@@ -223,14 +203,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
-            logger.Debug("Attempting to validate properties");
-            await Validate();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to apply properties");
-            Apply( target );
+            logger.Debug("Attempting to map properties to entity");
+            Mapper.Map(Properties, target);
 
 
 
