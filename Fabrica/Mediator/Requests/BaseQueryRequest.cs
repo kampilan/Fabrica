@@ -60,4 +60,17 @@ namespace Fabrica.Mediator.Requests
 
     }
 
+
+    public abstract class BaseCriteriaQueryRequest<TModel,TCriteria> : IQueryRequest<TModel> where TModel : class, IModel where TCriteria: class, ICriteria, new()
+    {
+
+        public TCriteria Criteria { get; set; } = new ();
+
+        public bool HasCriteria => Criteria is not null;
+
+        public List<IRqlFilter<TModel>> Filters => new() {RqlFilterBuilder<TModel>.Create().Introspect(Criteria)};
+
+    }
+
+
 }

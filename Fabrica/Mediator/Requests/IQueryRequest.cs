@@ -14,7 +14,7 @@ namespace Fabrica.Mediator.Requests
     public interface IQueryRequest<TModel>: IQueryRequest where TModel: class, IModel
     {
 
-        List<IRqlFilter<TModel>> Filters { get; set; }
+        List<IRqlFilter<TModel>> Filters { get; }
 
     }
 }
