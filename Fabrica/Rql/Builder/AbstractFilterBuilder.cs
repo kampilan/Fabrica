@@ -115,7 +115,7 @@ namespace Fabrica.Rql.Builder
 
         }
 
-        protected ISet<string> ProjectedProperties { get; }
+        protected ISet<string> ProjectedProperties { get; private set; }
         public bool HasProjection => ProjectedProperties.Count > 0;
         public IEnumerable<string> Projection => ProjectedProperties;
 
@@ -125,11 +125,23 @@ namespace Fabrica.Rql.Builder
 
         #region Criteria related members
 
-        public TBuilder Introspect( [NotNull] object source, [CanBeNull] IDictionary<string,string> map=null )
+        public TBuilder Introspect( [NotNull] ICriteria source, [CanBeNull] IDictionary<string,string> map=null )
         {
 
             if (source == null) throw new ArgumentNullException(nameof(source));
 
+
+            if( !string.IsNullOrWhiteSpace(source.Rql) )
+            {
+
+                var tree = RqlLanguageParser.ToCriteria(source.Rql);
+        
+                ProjectedProperties = new HashSet<string>(tree.Projection);
+                Predicates          = new List<IRqlPredicate>(tree.Criteria);
+
+                return (TBuilder)this;
+
+            }
 
             var parts = new Dictionary<string, RqlPredicate>();
 
@@ -263,7 +275,7 @@ namespace Fabrica.Rql.Builder
 
         }
 
-        protected IList<IRqlPredicate> Predicates { get; }
+        protected IList<IRqlPredicate> Predicates { get; private set; }
 
         public bool HasCriteria => Predicates.Count > 0;
         public IEnumerable<IRqlPredicate> Criteria => Predicates;

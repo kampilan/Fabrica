@@ -3,6 +3,9 @@
 
     public interface ICriteria
     {
+
+        public string Rql { get; }
+
     }
 
 

@@ -19,7 +19,7 @@ namespace Fabrica.Mediator.Requests
         bool IQueryRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
 
 
-        public RqlFilterBuilder<TModel> AddFilter( object criteria=null )
+        public RqlFilterBuilder<TModel> AddFilter( ICriteria criteria=null )
         {
             
             var builder = RqlFilterBuilder<TModel>.Create();

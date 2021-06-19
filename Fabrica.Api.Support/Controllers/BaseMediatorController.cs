@@ -228,7 +228,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<string> ProduceRql<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, new()
+        protected virtual List<string> ProduceRql<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
         {
 
             using var logger = EnterMethod();
@@ -333,7 +333,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer,TCriteria>() where TExplorer : class, IModel where TCriteria : class, new()
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer,TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
         {
 
             using var logger = EnterMethod();
