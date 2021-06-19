@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright (c) 2021 The Kampilan Group Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
 using System.Threading.Tasks;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -44,20 +45,18 @@ namespace Fabrica.Api.Support.Middleware
 
         public Task Invoke( [NotNull] HttpContext context, [NotNull] ICorrelation correlation )
         {
+            
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (correlation == null) throw new ArgumentNullException(nameof(correlation));
 
-            var logger = correlation.GetLogger(this);
-
-            try
+            using( var logger = correlation.GetLogger(this) )
             {
-
-                logger.EnterMethod();
-
 
                 var debug = false;
 
                 // *****************************************************************
                 logger.Debug("Attempting to check for Fabrica-Watch-Debug header");
-                if( context.Request.Headers.ContainsKey("Fabrica-Watch-Debug") )
+                if (context.Request.Headers.ContainsKey("Fabrica-Watch-Debug"))
                 {
 
                     logger.Debug("Fabrica-Watch-Debug IS present");
@@ -82,10 +81,6 @@ namespace Fabrica.Api.Support.Middleware
                 ((Correlation)correlation).Debug = debug;
 
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
             }
 
 

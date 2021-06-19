@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -24,26 +25,26 @@ namespace Fabrica.Api.Support.Filters
         protected ICorrelation Correlation { get; }
 
 
-        public virtual async Task OnResultExecutionAsync( [NotNull] ResultExecutingContext context, [NotNull] ResultExecutionDelegate next )
+        public virtual async Task OnResultExecutionAsync( ResultExecutingContext context, ResultExecutionDelegate next )
         {
 
-            var logger = Correlation.GetLogger(this);
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (next == null) throw new ArgumentNullException(nameof(next));
 
-            try
+
+            using( var logger = Correlation.EnterMethod(GetType()) )
             {
-
-                logger.EnterMethod();
 
                 var diagLogger = Correlation.GetLogger("Fabrica.Diagnostics.Http");
 
                 logger.Inspect(nameof(diagLogger.IsDebugEnabled), diagLogger.IsDebugEnabled);
 
 
-                if( diagLogger.IsDebugEnabled )
+                if (diagLogger.IsDebugEnabled)
                 {
 
                     var builder = new StringBuilder();
-                    builder.AppendLine("********************************************************************************");
+                    builder.AppendLine( "********************************************************************************" );
                     builder.AppendLine();
                     builder.AppendFormat("Result Type : {0}", context.Result?.GetType().FullName ?? "");
                     builder.AppendLine();
@@ -51,20 +52,13 @@ namespace Fabrica.Api.Support.Filters
                     builder.AppendFormat("Status Code : {0}", context.HttpContext.Response.StatusCode);
                     builder.AppendLine();
                     builder.AppendLine();
-                    builder.AppendLine("********************************************************************************");
-
-
+                    builder.AppendLine( "********************************************************************************" );
 
                     var le = diagLogger.CreateEvent(Level.Debug, "HTTP Result", PayloadType.Text, builder.ToString());
                     diagLogger.LogEvent(le);
 
                 }
 
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
             }
 
 

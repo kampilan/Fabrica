@@ -54,24 +54,20 @@ namespace Fabrica.Api.Support.Middleware
         private RequestDelegate Next { get; }
 
 
-        public async Task Invoke( HttpContext context, ICorrelation correlation )
+        public async Task Invoke( [NotNull] HttpContext context, [NotNull] ICorrelation correlation )
         {
 
-            var logger = correlation.GetLogger(this);
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (correlation == null) throw new ArgumentNullException(nameof(correlation));
 
-            try
+            // ReSharper disable once UnusedVariable
+            using( var logger = correlation.EnterMethod(GetType()) )
             {
 
-                logger.EnterMethod();
-
-                await _performRequestLogging( context, correlation );
+                await _performRequestLogging(context, correlation);
 
             }
-            finally
-            {
-                logger.LeaveMethod();
 
-            }
 
             await Next(context);
 
@@ -111,21 +107,20 @@ namespace Fabrica.Api.Support.Middleware
                 logger.Debug("Attempting to gather HTTP Headers");
 
                 var headers = new Dictionary<string, object>();
-                foreach (var header in context.Request.Headers)
+                foreach( var (key, values) in context.Request.Headers )
                 {
-                    var    key = header.Key;
                     string value;
-                    if (header.Key != "Authorization")
-                        value = string.Join(",", header.Value);
+                    if (key != "Authorization")
+                        value = string.Join(",", values.ToArray());
                     else
                     {
 
-                        if (header.Value.Count <= 0)
+                        if (values.Count <= 0)
                             continue;
 
-                        var pos    = header.Value[0].IndexOf(" ", 0, StringComparison.Ordinal);
-                        var scheme = header.Value[0].Substring(0, pos);
-                        var len    = header.Value[0].Length - pos;
+                        var pos    = values[0].IndexOf(" ", 0, StringComparison.Ordinal);
+                        var scheme = values[0].Substring(0, pos);
+                        var len    = values[0].Length - pos;
                         value = $"Scheme: {scheme} Length: {len}";
 
                     }
@@ -135,7 +130,7 @@ namespace Fabrica.Api.Support.Middleware
                 }
 
                 var claims = new Dictionary<string, string>();
-                if( context.User.Identity.IsAuthenticated )
+                if( context.User.Identity?.IsAuthenticated??false )
                 {
                     foreach (var claim in context.User.Claims)
                         claims[claim.Type] = claim.Value;
@@ -325,13 +320,13 @@ namespace Fabrica.Api.Support.Middleware
         {
 
             var values  = new UrlEncodingParser(form);
-            var padding = values.AllKeys.Max(k => k.Length);
+            var padding = values.AllKeys.Max(k => k?.Length??0);
 
             var builder = new StringBuilder();
             foreach( var key in values.AllKeys )
             {
 
-                var label = key.PadRight(padding);
+                var label = key?.PadRight(padding)??"Unknown".PadRight(padding);
                 var value = values[key];
 
                 builder.AppendFormat("{0} : {1}", label, value );

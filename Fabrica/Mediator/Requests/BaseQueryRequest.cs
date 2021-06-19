@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
+using Fabrica.Rql.Builder;
+using JetBrains.Annotations;
 
 namespace Fabrica.Mediator.Requests
 {
@@ -13,6 +17,46 @@ namespace Fabrica.Mediator.Requests
         public List<IRqlFilter<TModel>> Filters { get; set; } = new();
 
         bool IQueryRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
+
+
+        public RqlFilterBuilder<TModel> AddFilter( object criteria=null )
+        {
+            
+            var builder = RqlFilterBuilder<TModel>.Create();
+            Filters.Add(builder);
+
+            if (criteria is not null)
+                builder.Introspect(criteria);
+
+
+            return builder;
+
+        }
+
+        public RqlFilterBuilder<TModel> Where<TValue>( [NotNull] Expression<Func<TModel,TValue>> prop )
+        {
+
+            if (prop == null) throw new ArgumentNullException(nameof(prop));
+
+            var builder = RqlFilterBuilder<TModel>.Where(prop);
+            Filters.Add(builder);
+
+            return builder;
+
+        }
+
+        public RqlFilterBuilder<TModel> FromRql( [NotNull] string rql )
+        {
+
+            if (string.IsNullOrWhiteSpace(rql)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(rql));
+
+            var builder = RqlFilterBuilder<TModel>.FromRql( rql );
+            Filters.Add(builder);
+
+            return builder;
+
+        }
+
 
     }
 

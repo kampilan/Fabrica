@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright (c) 2021 The Kampilan Group Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@ SOFTWARE.
 */
 
 using System.Runtime.CompilerServices;
-using Autofac;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
@@ -35,17 +34,14 @@ namespace Fabrica.Api.Support.Controllers
     {
 
 
-        protected BaseController( ILifetimeScope scope  )
+        protected BaseController( ICorrelation correlation  )
         {
 
-            Scope = scope;
-
-            Correlation = Scope.Resolve<ICorrelation>();
+            Correlation = correlation;
 
         }
 
 
-        protected ILifetimeScope Scope { get; }
         protected ICorrelation Correlation { get; }
 
 
