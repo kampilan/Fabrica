@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Fabrica.Api.Support.ActionResult;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
@@ -126,6 +128,29 @@ namespace Fabrica.Api.Support.Controllers
 
 
         }
+
+        protected virtual IActionResult BuildResult( Response<MemoryStream> response )
+        {
+
+            using var logger = EnterMethod();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to check for success");
+            logger.Inspect(nameof(response.Ok), response.Ok);
+            if( response.Ok )
+                return new JsonStreamResult(response.Value);
+
+
+            return BuildErrorResult(response);
+
+
+        }
+
+
+
+
 
         protected virtual IActionResult BuildResult(Response response)
         {
