@@ -175,6 +175,7 @@ namespace Fabrica.Rql.Builder
 
                     if( value == null )
                         continue;
+/*
                     if (prop.PropertyType == typeof(string) && string.IsNullOrWhiteSpace(value.ToString()))
                         continue;
                     if (prop.PropertyType == typeof(int) && (int)value == 0)
@@ -183,6 +184,7 @@ namespace Fabrica.Rql.Builder
                         continue;
                     if (prop.PropertyType == typeof(DateTime) && (((DateTime)value) == DateTime.MinValue || ((DateTime)value) == DateTime.MaxValue))
                         continue;
+*/
                     if (prop.PropertyType == typeof(ICollection<string>) && ((ICollection<string>)value).Count == 0)
                         continue;
                     if (prop.PropertyType == typeof(ICollection<int>) && ((ICollection<int>)value).Count == 0)
