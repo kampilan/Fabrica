@@ -104,7 +104,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
+        protected virtual IActionResult BuildResult<TValue>( Response<TValue> response )
         {
 
             using var logger = EnterMethod();
@@ -488,6 +488,37 @@ namespace Fabrica.Api.Support.Controllers
 
 
         }
+
+
+        protected virtual async Task<IActionResult> Send( [NotNull] IRequest<Response<MemoryStream>> request )
+        {
+
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            using var logger = EnterMethod();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send request via Mediator");
+            var response = await Mediator.Send(request);
+
+            logger.Inspect(nameof(response.Ok), response.Ok);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build result");
+            var result = BuildResult(response);
+
+
+
+            // *****************************************************************
+            return result;
+
+
+        }
+
 
         protected virtual async Task<IActionResult> Send( [NotNull] IRequest<Response> request )
         {
