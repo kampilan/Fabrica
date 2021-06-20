@@ -29,19 +29,16 @@ namespace Fabrica.Models.Support
     public class ModelMeta
     {
 
-        public ModelMeta( string alias, string resourece, Type target, Type reference, Type explorer, Type rto, IEnumerable<string> exclusions, IEnumerable<string> creatables, IEnumerable<string> updatables )
+        public ModelMeta( string alias, string resource, Type target, IEnumerable<string> projection, IEnumerable<string> exclusions, IEnumerable<string> creatables, IEnumerable<string> updatables )
         {
 
             Alias     = alias;
-            Resource  = resourece;
+            Resource  = resource;
             Target    = target;
-            Reference = reference;
-            Explorer  = explorer;
-            Rto       = rto;
-
-            Exclusions  = new HashSet<string>( exclusions );
-            Creatable = new HashSet<string>( creatables );
-            Updatable    = new HashSet<string>( updatables );
+            Projection = new HashSet<string>(projection);
+            Exclusions = new HashSet<string>( exclusions );
+            Immutables = new HashSet<string>( creatables );
+            Mutables   = new HashSet<string>( updatables );
 
         }
 
@@ -51,16 +48,13 @@ namespace Fabrica.Models.Support
 
         public Type Target { get; }
 
-        public Type Reference { get; }
 
-        public Type Explorer { get; }
-
-        public Type Rto { get; }
-
-
+        public ISet<string> Projection { get; }
         public ISet<string> Exclusions { get; }
-        public ISet<string> Creatable { get; }
-        public ISet<string> Updatable { get; }
+        public ISet<string> Immutables { get; }
+        public ISet<string> Mutables { get; }
+
+
 
 
         public ISet<string> CheckForCreate( IEnumerable<string> candidates )
@@ -68,8 +62,8 @@ namespace Fabrica.Models.Support
 
             var combo = new HashSet<string>(candidates);
 
-            combo.ExceptWith( Creatable );
-            combo.ExceptWith( Updatable );
+            combo.ExceptWith( Immutables );
+            combo.ExceptWith( Mutables );
 
             return combo;
 
@@ -80,7 +74,7 @@ namespace Fabrica.Models.Support
 
             var combo = new HashSet<string>(candidates);
 
-            combo.ExceptWith(Updatable);
+            combo.ExceptWith(Mutables);
 
             return combo;
 
@@ -152,13 +146,20 @@ namespace Fabrica.Models.Support
                 if (amap.TryGetValue(aliasKey, out var adup))
                     throw new InvalidOperationException($" Attempting to add an Alias ({aliasKey}) for Type ({target.FullName}) when Type ({adup.Target.FullName}) is already using it.");
 
-                var rto = attr?.Rto;
+
+                var projection = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p =>
+                    {
+                        var ia = p.GetCustomAttribute<ModelMetaAttribute>();
+                        return ia != null && (ia.Scope == PropertyScope.Immutable || ia.Scope == PropertyScope.Mutable);
+                    })
+                    .Select(p => p.Name);
 
                 var exclusions = target.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p =>
                     {
                         var ia = p.GetCustomAttribute<ModelMetaAttribute>();
-                        return ia != null && ia.Mutability == PropertyMutability.Never;
+                        return ia != null && ia.Scope == PropertyScope.Exclude;
                     })
                     .Select(p => p.Name);
 
@@ -166,7 +167,7 @@ namespace Fabrica.Models.Support
                     .Where(p =>
                     {
                         var ia = p.GetCustomAttribute<ModelMetaAttribute>();
-                        return ia != null && ia.Mutability == PropertyMutability.CreateOnly;
+                        return ia != null && ia.Scope == PropertyScope.Immutable;
                     })
                     .Select(p => p.Name);
 
@@ -174,7 +175,7 @@ namespace Fabrica.Models.Support
                     .Where(p =>
                     {
                         var ia = p.GetCustomAttribute<ModelMetaAttribute>();
-                        return ia == null || ia.Mutability == PropertyMutability.Always;
+                        return ia == null || ia.Scope == PropertyScope.Mutable;
                     })
                     .Select(p => p.Name);
 
@@ -196,10 +197,8 @@ namespace Fabrica.Models.Support
                     if (rmap.TryGetValue(resourceKey, out var rdup))
                         throw new InvalidOperationException($" Attempting to add a Resource ({resourceKey}) for Type ({target.FullName}) when Type ({rdup.Target.FullName}) is already using it.");
 
-                    var reference = attr?.Reference??target;
-                    var explorer  = attr?.Explorer??reference;
 
-                    var meta = new ModelMeta(aliasKey, resourceKey, target, reference, explorer, rto != target ? rto : null, exclusions, creatables, updatables );
+                    var meta = new ModelMeta(aliasKey, resourceKey, target, projection, exclusions, creatables, updatables );
 
                     amap[aliasKey]    = meta;
                     rmap[resourceKey] = meta;
@@ -210,7 +209,7 @@ namespace Fabrica.Models.Support
                 void ForReferences()
                 {
 
-                    var meta = new ModelMeta(aliasKey, "", target, null, null, rto, exclusions, creatables, updatables);
+                    var meta = new ModelMeta(aliasKey, "", target, projection, exclusions, creatables, updatables);
 
                     amap[aliasKey] = meta;
                     tmap[target]   = meta;
@@ -224,9 +223,7 @@ namespace Fabrica.Models.Support
                     if (rmap.TryGetValue(resourceKey, out var rdup))
                         throw new InvalidOperationException($" Attempting to add a Resource ({resourceKey}) for Type ({target.FullName}) when Type ({rdup.Target.FullName}) is already using it.");
 
-                    var explorer = attr?.Explorer??target;
-
-                    var meta = new ModelMeta( aliasKey, resourceKey, target, null, explorer, rto, exclusions, creatables, updatables );
+                    var meta = new ModelMeta( aliasKey, resourceKey, target, projection, exclusions, creatables, updatables );
 
                     amap[aliasKey]    = meta;
                     rmap[resourceKey] = meta;
@@ -291,11 +288,7 @@ namespace Fabrica.Models.Support
             var aliasKey    = (attr == null || string.IsNullOrWhiteSpace(attr.Alias) ? type.Name : attr.Alias).ToLowerInvariant();
             var resourceKey = (attr == null || string.IsNullOrWhiteSpace(attr.Resource) ? type.Name.Pluralize() : attr.Resource).ToLowerInvariant();
 
-            var reference = attr?.Reference??type;
-            var explorer  = attr?.Explorer??reference;
-            var rto       = attr?.Rto;
-
-            var fly = new ModelMeta(aliasKey, resourceKey, type, reference, explorer, rto, Empty, Empty, Empty );
+            var fly = new ModelMeta(aliasKey, resourceKey, type, Empty, Empty, Empty, Empty );
 
             return fly;
 

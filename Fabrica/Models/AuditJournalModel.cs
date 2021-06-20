@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright (c) 2021 The Kampilan Group Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,33 +39,44 @@ namespace Fabrica.Models
     {
 
 
-        [ModelMeta]
+        [ModelMeta(Scope = PropertyScope.Exclude)]
         public override long Id { get; protected set; }
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public override string Uid { get; set; } = ShortGuid.NewGuid();
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string UnitOfWorkUid { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string SubjectUid { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string SubjectDescription { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual DateTime Occurred { get; set; } = new DateTime(1883, 11, 19, 0, 0, 0, 0);
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string TypeCode { get; set; } = "";
 
-
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string Entity { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string EntityUid { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string EntityDescription { get; set; } = "";
 
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string PropertyName { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string PreviousValue { get; set; } = "";
 
+        [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string CurrentValue { get; set; } = "";
 
 
