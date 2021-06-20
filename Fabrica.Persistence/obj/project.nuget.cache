@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "q0zHseBxYAm6aSllTCPVeou8AtVp5MqTUyslhq32PZlFFGaDPpduq2QxEVc8a1QN/8w0HIY/qISpRIkm7LZYbQ==",
+  "dgSpecHash": "3MVk8gn1vW9GrYC44oj71BcnR20DOm7DDeqHlK1DWHvhaEq3ojTw1pLSAI+EjFByIwe78G5Wu20RrbKGAzPSEA==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Persistence\\Fabrica.Persistence.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,7 @@
     "f:\\.nuget\\microsoft.entityframeworkcore\\5.0.7\\microsoft.entityframeworkcore.5.0.7.nupkg.sha512",
     "f:\\.nuget\\microsoft.entityframeworkcore.abstractions\\5.0.7\\microsoft.entityframeworkcore.abstractions.5.0.7.nupkg.sha512",
     "f:\\.nuget\\microsoft.entityframeworkcore.analyzers\\5.0.7\\microsoft.entityframeworkcore.analyzers.5.0.7.nupkg.sha512",
+    "f:\\.nuget\\microsoft.entityframeworkcore.relational\\5.0.7\\microsoft.entityframeworkcore.relational.5.0.7.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.caching.abstractions\\5.0.0\\microsoft.extensions.caching.abstractions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.caching.memory\\5.0.0\\microsoft.extensions.caching.memory.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
