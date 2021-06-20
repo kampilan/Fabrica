@@ -57,8 +57,14 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
+            logger.Debug("Attempting to fetch ModelMeta");
+            var mm = Meta.GetMetaFromType(typeof(TResponse));
+
+
+
+            // *****************************************************************
             logger.Debug("Attempting to build SQL query from RQL filter");
-            var query = filter.ToSqlQuery(typeof(TResponse).Name.Pluralize());
+            var query = filter.ToSqlQuery( typeof(TResponse).Name.Pluralize(), mm.Projection );
 
 
 
@@ -72,8 +78,14 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             using var logger = EnterMethod();
 
-            var mm = Meta.GetMetaFromType(typeof(TResponse));
 
+            // *****************************************************************
+            logger.Debug("Attempting to fetch ModelMeta");
+            var mm = Meta.GetMetaFromType( typeof(TResponse) );
+
+
+
+            // *****************************************************************
             return mm.Exclusions;
 
         }

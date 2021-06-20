@@ -250,7 +250,7 @@ namespace Fabrica.Api.Support.Controllers
             logger.Debug("Attempting to produce filters from supplied RQL");
             var filters = new List<IRqlFilter<TExplorer>>();
             if (rqls.Count > 0)
-                filters.AddRange(rqls.Select( r=> RqlFilterBuilder<TExplorer>.FromRql(r).AutoProject()));
+                filters.AddRange(rqls.Select( RqlFilterBuilder<TExplorer>.FromRql));
 
 
 
@@ -308,7 +308,7 @@ namespace Fabrica.Api.Support.Controllers
 
                 // *****************************************************************
                 logger.Debug("Attempting to introspect criteria RQL");
-                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria).AutoProject();
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
 
 
                 // *****************************************************************

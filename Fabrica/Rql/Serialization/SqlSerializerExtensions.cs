@@ -67,13 +67,19 @@ namespace Fabrica.Rql.Serialization
 
             string DefaultFormatter(object o) => o.ToString();
 
-            typeMap[typeof(string)] = new TypeSpec { NeedsQuotes = true, Formatter = DefaultFormatter };
-            typeMap[typeof(bool)] = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(DateTime)] = new TypeSpec { NeedsQuotes = true, Formatter = _dateTimeFormatter };
-            typeMap[typeof(decimal)] = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(short)] = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(int)] = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(long)] = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(string)]    = new TypeSpec { NeedsQuotes = true, Formatter = DefaultFormatter };
+            typeMap[typeof(bool)]      = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(DateTime)]  = new TypeSpec { NeedsQuotes = true, Formatter = _dateTimeFormatter };
+            typeMap[typeof(decimal)]   = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(short)]     = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(int)]       = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(long)]      = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(bool?)]     = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(DateTime?)] = new TypeSpec { NeedsQuotes = true, Formatter  = _dateTimeFormatter };
+            typeMap[typeof(decimal?)]  = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(short?)]    = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(int?)]      = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
+            typeMap[typeof(long?)]     = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
 
             TypeMap = typeMap;
 
@@ -141,154 +147,40 @@ namespace Fabrica.Rql.Serialization
         }
 
 
-        [NotNull]
-        public static string ToUnsafeSqlQuery<TEntity>(this RqlFilterBuilder<TEntity> builder ) where TEntity: class
+
+        public static (string sql, object[] parameters) ToSqlQuery<TEntity>( this RqlFilterBuilder<TEntity> builder, IEnumerable<string> projection=null ) where TEntity : class
         {
 
             var tableName = typeof(TEntity).Name.Pluralize();
 
-            var sql = ToUnsafeSqlQuery( builder, tableName );
-
-            return sql;
-
-        }
-
-
-        [NotNull]
-        public static string ToUnsafeSqlQuery(this IRqlFilter builder, [NotNull] string tableName)
-        {
-
-            if (string.IsNullOrWhiteSpace(tableName))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tableName));
-
-
-            var projection = builder.HasProjection ? string.Join( ",", builder.Projection ) : "*";
-
-            var where = builder.ToUnsafeSqlWhere();
-
-            if (string.IsNullOrWhiteSpace(where))
-            {
-                var query = $"select {projection} from {tableName}";
-                return query;
-            }
-            else
-            {
-                var query = $"select {projection} from {tableName} where {where}";
-                return query;
-            }
-
-
-        }
-
-
-        public static (string sql, object[] parameters) ToSqlQuery<TEntity>( this RqlFilterBuilder<TEntity> builder ) where TEntity : class
-        {
-
-            var tableName = typeof(TEntity).Name.Pluralize();
-
-            var result = ToSqlQuery(builder, tableName);
+            var result = ToSqlQuery(builder, tableName, projection);
 
             return result;
 
         }
 
-        public static (string sql, object[] parameters) ToSqlQuery( this IRqlFilter builder, [NotNull] string tableName, bool indexed=true )
+        public static (string sql, object[] parameters) ToSqlQuery( this IRqlFilter builder, [NotNull] string tableName, [CanBeNull] IEnumerable<string> projection=null, bool indexed=true )
         {
+            
+            if (tableName == null) throw new ArgumentNullException(nameof(tableName));
 
 
-            if (string.IsNullOrWhiteSpace(tableName))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tableName));
-
-
-            var projection = builder.HasProjection ? string.Join(",", builder.Projection) : "*";
+            projection ??= builder.HasProjection ? builder.Projection : new[] {"*"};
 
 
             var pair = builder.ToSqlWhere(indexed);
 
             if( string.IsNullOrWhiteSpace(pair.sql) )
             {
-                var query = $"select {projection} from {tableName}";
+                var query = $"select {string.Join(',',projection)} from {tableName}";
                 return (query, new object[]{});
             }
             else
             {
-                var query = $"select {projection} from {tableName} where {pair.sql}";
+                var query = $"select {string.Join(',', projection)} from {tableName} where {pair.sql}";
                 return (query, pair.parameters);
             }
 
-
-        }
-
-
-        [NotNull]
-        public static string ToUnsafeSqlWhere([NotNull] this IRqlFilter builder)
-        {
-
-            var parts = new List<string>();
-
-            foreach (var op in builder.Criteria)
-            {
-                
-                if (!OperatorMap.TryGetValue(op.Operator, out var kindSpec))
-                    throw new Exception($"{op.Operator} is not a supported operation");
-
-
-                if (!TypeMap.TryGetValue(op.DataType, out var typeSpec))
-                    throw new Exception($"{op.DataType.Name} is not a supported data type");
-
-
-                if (kindSpec.Style == ValueStyle.Single)
-                {
-
-                    var value = kindSpec.Formatter(op.Values[0]);
-
-                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                    if (typeSpec.NeedsQuotes)
-                        parts.Add(string.Format(kindSpec.Operation, op.Target, $"'{typeSpec.Formatter(value)}'"));
-                    else
-                        parts.Add(string.Format(kindSpec.Operation, op.Target, typeSpec.Formatter(value)));
-
-                }
-                else if (kindSpec.Style == ValueStyle.Pair)
-                {
-
-                    var value1 = kindSpec.Formatter(op.Values[0]);
-                    var value2 = kindSpec.Formatter(op.Values[1]);
-
-                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                    if (typeSpec.NeedsQuotes)
-                        parts.Add(string.Format(kindSpec.Operation, op.Target, $"'{typeSpec.Formatter(value1)}'",
-                            $"'{typeSpec.Formatter(value2)}'"));
-                    else
-                        parts.Add(string.Format(kindSpec.Operation, op.Target, typeSpec.Formatter(value1),
-                            typeSpec.Formatter(value2)));
-                }
-                else
-                {
-
-                    var values = new List<string>();
-
-                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                    if (typeSpec.NeedsQuotes)
-                        values.AddRange(op.Values.Select(v => $"'{typeSpec.Formatter(kindSpec.Formatter(v))}'"));
-                    else
-                        values.AddRange(op.Values.Select(v => typeSpec.Formatter(kindSpec.Formatter(v))));
-
-                    parts.Add(string.Format(kindSpec.Operation, op.Target, string.Join(",", values)));
-
-                }
-
-
-            }
-
-
-            if (parts.Count == 0)
-                return "";
-
-
-            var join = string.Join(" and ", parts);
-
-            return join;
 
         }
 
