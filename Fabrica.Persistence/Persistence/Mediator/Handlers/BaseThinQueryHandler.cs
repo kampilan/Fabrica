@@ -119,6 +119,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
             logger.Debug("Attempting to get exclusions");
             var exclusions = GetExclusions();
 
+            logger.LogObject(nameof(exclusions), exclusions);
+
 
 
             // *****************************************************************
