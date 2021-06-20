@@ -151,7 +151,7 @@ namespace Fabrica.Models.Support
                     .Where(p =>
                     {
                         var ia = p.GetCustomAttribute<ModelMetaAttribute>();
-                        return ia != null && (ia.Scope == PropertyScope.Immutable || ia.Scope == PropertyScope.Mutable);
+                        return ia == null || ia.Scope is PropertyScope.Immutable or PropertyScope.Mutable;
                     })
                     .Select(p => p.Name);
 
