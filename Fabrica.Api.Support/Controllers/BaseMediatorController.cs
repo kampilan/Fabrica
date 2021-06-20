@@ -11,7 +11,6 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
-using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using JetBrains.Annotations;
 using MediatR;
@@ -224,103 +223,6 @@ namespace Fabrica.Api.Support.Controllers
 
 
 
-        protected virtual List<string> ProduceRql<TExplorer>() where TExplorer : class, IModel
-        {
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to digout RQL query parameters");
-
-            var rqls = new List<string>();
-            foreach( var key in Request.Query.Keys )
-            {
-
-                logger.Inspect(nameof(key), key);
-                logger.LogObject("values", Request.Query[key]);
-
-                if (key == "rql")
-                    rqls.AddRange(Request.Query[key].ToArray());
-
-            }
-
-
-
-            // *****************************************************************
-            return rqls;
-
-
-        }
-
-        protected virtual List<string> ProduceRql<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
-        {
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to digout query parameters");
-
-            var rqls       = new List<string>();
-            var parameters = new Dictionary<string, string>();
-            foreach (var key in Request.Query.Keys)
-            {
-
-                logger.Inspect(nameof(key), key);
-                logger.LogObject("values", Request.Query[key]);
-
-                if (key == "rql")
-                    rqls.AddRange(Request.Query[key].ToArray());
-                else
-                    parameters[key] = Request.Query[key].First();
-
-            }
-
-
-
-            var filters = new List<string>();
-            if (rqls.Count > 0)
-                filters.AddRange(rqls);
-            else
-            {
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to map parameters to criteria model");
-                var jo       = JObject.FromObject(parameters);
-                var criteria = jo.ToObject<TCriteria>();
-
-                criteria ??= new TCriteria();
-
-                logger.LogObject(nameof(criteria), criteria);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to introspect criteria RQL");
-                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect( criteria );
-                var rql    = filter.ToRqlCriteria();
-
-                logger.Inspect(nameof(rql), rql);
-
-
-
-                // *****************************************************************
-                filters.Add(rql);
-
-
-            }
-
-
-            return filters;
-
-
-
-        }
-
-
         protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>() where TExplorer : class, IModel
         {
 
@@ -348,7 +250,7 @@ namespace Fabrica.Api.Support.Controllers
             logger.Debug("Attempting to produce filters from supplied RQL");
             var filters = new List<IRqlFilter<TExplorer>>();
             if (rqls.Count > 0)
-                filters.AddRange(rqls.Select(RqlFilterBuilder<TExplorer>.FromRql));
+                filters.AddRange(rqls.Select( r=> RqlFilterBuilder<TExplorer>.FromRql(r).AutoProject()));
 
 
 
@@ -406,7 +308,7 @@ namespace Fabrica.Api.Support.Controllers
 
                 // *****************************************************************
                 logger.Debug("Attempting to introspect criteria RQL");
-                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria).AutoProject();
 
 
                 // *****************************************************************
