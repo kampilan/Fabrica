@@ -74,12 +74,6 @@ namespace Fabrica.Rql.Serialization
             typeMap[typeof(short)]     = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
             typeMap[typeof(int)]       = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
             typeMap[typeof(long)]      = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(bool?)]     = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(DateTime?)] = new TypeSpec { NeedsQuotes = true, Formatter  = _dateTimeFormatter };
-            typeMap[typeof(decimal?)]  = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(short?)]    = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(int?)]      = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
-            typeMap[typeof(long?)]     = new TypeSpec { NeedsQuotes = false, Formatter = DefaultFormatter };
 
             TypeMap = typeMap;
 

@@ -173,6 +173,8 @@ namespace Fabrica.Rql.Builder
                 else
                 {
 
+                    if( value == null )
+                        continue;
                     if (prop.PropertyType == typeof(string) && string.IsNullOrWhiteSpace(value.ToString()))
                         continue;
                     if (prop.PropertyType == typeof(int) && (int)value == 0)
@@ -193,6 +195,10 @@ namespace Fabrica.Rql.Builder
 
                 var target   = string.IsNullOrWhiteSpace(attr.Name) ? prop.Name : attr.Name;
                 var dataType = prop.PropertyType;
+
+                if (dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    dataType = Nullable.GetUnderlyingType(dataType);
+
 
                 switch (attr.Operand)
                 {
