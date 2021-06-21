@@ -10,6 +10,7 @@ using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Persistence.Thin;
+using Fabrica.Rql.Builder;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
@@ -33,6 +34,15 @@ namespace Fabrica.Persistence.Mediator.Handlers
             Rules   = rules;
             Context = context;
 
+
+            var mm = meta.GetMetaFromType(typeof(TResponse));
+
+            Projection = new HashSet<string>(mm.Projection);
+            Projection.ExceptWith(mm.Exclusions);
+
+            TableName = typeof(TResponse).Name.Pluralize();
+            Filter    = RqlFilterBuilder<TResponse>.All();
+
         }
 
 
@@ -41,52 +51,13 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected ReplicaDbContext Context { get; }
 
 
-        protected virtual (string sql, object[] parameters) GetSqlTemplate()
+        protected ISet<string> Projection { get; set; }
+        protected string TableName { get; set; }
+        protected RqlFilterBuilder<TResponse> Filter { get; set; }
+
+
+        protected virtual void PrepareQuery()
         {
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to get first filter");
-            var filter = Request.Filters.FirstOrDefault();
-            if (filter == null)
-                throw new PredicateException("At least 1 filter must be defined to use Thin query");
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to fetch ModelMeta");
-            var mm = Meta.GetMetaFromType(typeof(TResponse));
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build SQL query from RQL filter");
-            var query = filter.ToSqlQuery( typeof(TResponse).Name.Pluralize(), mm.Projection );
-
-
-
-            // *****************************************************************
-            return query;
-
-        }
-
-        protected virtual ISet<string> GetExclusions()
-        {
-
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to fetch ModelMeta");
-            var mm = Meta.GetMetaFromType( typeof(TResponse) );
-
-
-
-            // *****************************************************************
-            return mm.Exclusions;
 
         }
 
@@ -99,11 +70,25 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
+            logger.Debug("Attempting to get first filter");
+            var filter = Request.Filters.FirstOrDefault();
+
+            Filter = (RqlFilterBuilder<TResponse>) filter ?? throw new PredicateException("At least 1 filter must be defined to use Thin query");
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to delegate to Prepare");
+            PrepareQuery();
+
+
+
+            // *****************************************************************
             logger.Debug("Attempting to evaluate filters");
             var ec = Rules.GetEvaluationContext();
             ec.ThrowNoRulesException = false;
 
-            ec.AddAllFacts(Request.Filters);
+            ec.AddFacts(Filter);
 
             var er = Rules.Evaluate(ec);
 
@@ -120,18 +105,11 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
-            logger.Debug("Attempting to get sql template");
-            var (sql, parameters) = GetSqlTemplate();
+            logger.Debug("Attempting to build SQL query from RQL filter");
+            var (sql, parameters) = Filter.ToSqlQuery( TableName, Projection );
 
             logger.Inspect(nameof(sql),sql);
 
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to get exclusions");
-            var exclusions = GetExclusions();
-
-            logger.LogObject(nameof(exclusions), exclusions);
 
 
 
@@ -148,7 +126,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             await using (var writer = new StreamWriter(strm, leaveOpen: true))
             await using (var reader = await cmd.ExecuteReaderAsync(cancellationToken))
             {
-                await reader.ToJson( writer, exclusions );
+                await reader.ToJson( writer );
             }
 
             strm.Seek(0, SeekOrigin.Begin);
