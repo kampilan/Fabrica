@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Fabrica.Models.Patch.Builder;
+// ReSharper disable UnusedMember.Local
 
 namespace Fabrica.Models.Support
 {
@@ -274,7 +275,18 @@ namespace Fabrica.Models.Support
         #endregion
 
 
+        #region Lifecycle
 
+
+        public void OnCreate()
+        {
+        }
+
+        public void OnModification()
+        {
+        }
+
+        #endregion
 
 
     }

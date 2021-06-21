@@ -117,13 +117,26 @@ namespace Fabrica.Persistence.Contexts
 
 
 
-                    // *****************************************************************
-                    if( EvaluationEntities && (entry.State == EntityState.Added || entry.State == EntityState.Modified) )
+                    if( entry.Entity is IMutableModel mm && (entry.State is EntityState.Added or EntityState.Modified) )
                     {
-                        logger.Debug("Attempting to add created amd updated entities to evaluation context");
-                        context.AddFacts(entry.Entity);
+
+                        logger.DebugFormat("Attempting to call lifecycle hooks on mutable entity for State {0}", entry.State);
+
+                        if( entry.State == EntityState.Added )
+                            mm.OnCreate();
+
+                        mm.OnModification();
+
                     }
 
+
+                    // *****************************************************************
+                    if ( EvaluationEntities && (entry.State is EntityState.Added or EntityState.Modified) )
+                    {
+
+                        logger.Debug("Attempting to add created and updated entities to evaluation context");
+                        context.AddFacts(entry.Entity);
+                    }
 
 
                 }

@@ -31,6 +31,10 @@ namespace Fabrica.Models.Support
 
         void NotifyCollectionChanged([NotNull] IAggregateCollection collection, [CanBeNull] IModel member = null);
 
+        void OnCreate();
+        void OnModification();
+
+
     }
 
 
