@@ -278,11 +278,11 @@ namespace Fabrica.Models.Support
         #region Lifecycle
 
 
-        public void OnCreate()
+        public virtual void OnCreate()
         {
         }
 
-        public void OnModification()
+        public virtual void OnModification()
         {
         }
 
