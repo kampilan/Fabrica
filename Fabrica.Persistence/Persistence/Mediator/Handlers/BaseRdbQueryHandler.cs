@@ -41,44 +41,55 @@ namespace Fabrica.Persistence.Mediator.Handlers
             using var logger = EnterMethod();
 
 
-
-            // *****************************************************************
-            logger.Debug("Attempting to evaluate filters");
-            var filterList = Request.Filters;
-
-            var ec = Rules.GetEvaluationContext();
-            ec.ThrowNoRulesException = false;
-
-            ec.AddAllFacts(filterList);
-
-            var er = Rules.Evaluate(ec);
-
-            logger.LogObject(nameof(er), er);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to process each given filter");
-            var set = new HashSet<TResponse>();
-            foreach( var fields in filterList.Select(filter => filter.ToRdbQueryFields()) )
+            using( Connection )
             {
-                var result = await Connection.QueryAsync<TResponse>( @where: fields, cancellationToken: cancellationToken);
-                set.UnionWith(result);
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to ensure connection is open");
+                await Connection.EnsureOpenAsync(cancellationToken: cancellationToken);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to evaluate filters");
+                var filterList = Request.Filters;
+
+                var ec = Rules.GetEvaluationContext();
+                ec.ThrowNoRulesException = false;
+
+                ec.AddAllFacts(filterList);
+
+                var er = Rules.Evaluate(ec);
+
+                logger.LogObject(nameof(er), er);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to process each given filter");
+                var set = new HashSet<TResponse>();
+                foreach( var fields in filterList.Select(filter => filter.ToRdbQueryFields()))
+                {
+                    var result = await Connection.QueryAsync<TResponse>(@where: fields, cancellationToken: cancellationToken);
+                    set.UnionWith(result);
+                }
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to create list from union set");
+                var list = set.ToList();
+
+                logger.Inspect(nameof(list.Count), list.Count);
+
+
+
+                // *****************************************************************
+                return list;
+
+
             }
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to create list from union set");
-            var list = set.ToList();
-
-            logger.Inspect(nameof(list.Count), list.Count);
-
-
-
-            // *****************************************************************
-            return list;
-
 
 
         }
