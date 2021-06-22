@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Fabrica.Exceptions;
+using Fabrica.Models.Serialization;
 using JetBrains.Annotations;
 
 namespace Fabrica.Mediator
@@ -34,7 +35,8 @@ namespace Fabrica.Mediator
         public string ErrorCode { get; protected set; }
         public string Explanation { get; protected set; }
 
-        public List<EventDetail> Details { get; protected set; } = new List<EventDetail>();
+        [ExcludeEmpty]
+        public List<EventDetail> Details { get; protected set; } = new ();
 
         public bool HasViolations => Details.Any(d => d.Category == EventDetail.EventCategory.Violation);
 

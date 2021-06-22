@@ -84,3 +84,8 @@ E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\obj\Debug\net5.0\Fabrica.One.S
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\obj\Debug\net5.0\ref\Fabrica.One.Systemd.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\obj\Debug\net5.0\Fabrica.One.Systemd.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\obj\Debug\net5.0\Fabrica.One.Systemd.genruntimeconfig.cache
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Microsoft.Extensions.Http.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Microsoft.Extensions.Http.Polly.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Polly.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Polly.Contrib.WaitAndRetry.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Polly.Extensions.Http.dll

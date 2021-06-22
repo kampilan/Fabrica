@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v5.0": {
       "Fabrica.Static/1.0.0": {
         "dependencies": {
-          "AWSSDK.DynamoDBv2": "3.7.0.32",
+          "AWSSDK.DynamoDBv2": "3.7.0.34",
           "Fabrica": "1.0.0",
           "Fabrica.Api.Support": "1.0.0",
           "Fabrica.Watch.Bridges": "1.0.0",
@@ -56,77 +56,77 @@
           }
         }
       },
-      "AWSSDK.AppConfig/3.7.0.31": {
+      "AWSSDK.AppConfig/3.7.0.33": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.33"
+          "AWSSDK.Core": "3.7.0.35"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {
-            "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.31"
-          }
-        }
-      },
-      "AWSSDK.Core/3.7.0.33": {
-        "runtime": {
-          "lib/netcoreapp3.1/AWSSDK.Core.dll": {
             "assemblyVersion": "3.3.0.0",
             "fileVersion": "3.7.0.33"
           }
         }
       },
-      "AWSSDK.DynamoDBv2/3.7.0.32": {
+      "AWSSDK.Core/3.7.0.35": {
+        "runtime": {
+          "lib/netcoreapp3.1/AWSSDK.Core.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.7.0.35"
+          }
+        }
+      },
+      "AWSSDK.DynamoDBv2/3.7.0.34": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.33"
+          "AWSSDK.Core": "3.7.0.35"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.DynamoDBv2.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.32"
+            "fileVersion": "3.7.0.34"
           }
         }
       },
-      "AWSSDK.S3/3.7.1.3": {
+      "AWSSDK.S3/3.7.1.5": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.33"
+          "AWSSDK.Core": "3.7.0.35"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.1.3"
+            "fileVersion": "3.7.1.5"
           }
         }
       },
-      "AWSSDK.SecurityToken/3.7.1.20": {
+      "AWSSDK.SecurityToken/3.7.1.22": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.33"
+          "AWSSDK.Core": "3.7.0.35"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SecurityToken.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.1.20"
+            "fileVersion": "3.7.1.22"
           }
         }
       },
-      "AWSSDK.SimpleSystemsManagement/3.7.3.14": {
+      "AWSSDK.SimpleSystemsManagement/3.7.3.16": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.33"
+          "AWSSDK.Core": "3.7.0.35"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SimpleSystemsManagement.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.3.14"
+            "fileVersion": "3.7.3.16"
           }
         }
       },
-      "AWSSDK.SQS/3.7.0.32": {
+      "AWSSDK.SQS/3.7.0.34": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.33"
+          "AWSSDK.Core": "3.7.0.35"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SQS.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.32"
+            "fileVersion": "3.7.0.34"
           }
         }
       },
@@ -232,6 +232,27 @@
         }
       },
       "Microsoft.Extensions.FileSystemGlobbing/5.0.0": {},
+      "Microsoft.Extensions.Http/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Options": "5.0.0"
+        }
+      },
+      "Microsoft.Extensions.Http.Polly/5.0.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Http": "5.0.0",
+          "Polly": "7.2.2",
+          "Polly.Extensions.Http": "3.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Http.Polly.dll": {
+            "assemblyVersion": "5.0.1.0",
+            "fileVersion": "5.0.120.58002"
+          }
+        }
+      },
       "Microsoft.Extensions.Logging/5.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "5.0.0",
@@ -363,6 +384,17 @@
           "lib/netstandard2.0/Polly.Contrib.WaitAndRetry.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.1.1.0"
+          }
+        }
+      },
+      "Polly.Extensions.Http/3.0.0": {
+        "dependencies": {
+          "Polly": "7.2.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Polly.Extensions.Http.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
           }
         }
       },
@@ -668,7 +700,9 @@
           "Microsoft.Extensions.Configuration": "5.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
           "Microsoft.Extensions.Configuration.FileExtensions": "5.0.0",
+          "Microsoft.Extensions.Http.Polly": "5.0.1",
           "Newtonsoft.Json": "13.0.1",
+          "Polly.Contrib.WaitAndRetry": "1.1.1",
           "Sprache": "2.3.1",
           "YamlDotNet": "11.2.0"
         },
@@ -693,11 +727,11 @@
       },
       "Fabrica.Aws/1.0.0": {
         "dependencies": {
-          "AWSSDK.AppConfig": "3.7.0.31",
-          "AWSSDK.S3": "3.7.1.3",
-          "AWSSDK.SQS": "3.7.0.32",
-          "AWSSDK.SecurityToken": "3.7.1.20",
-          "AWSSDK.SimpleSystemsManagement": "3.7.3.14",
+          "AWSSDK.AppConfig": "3.7.0.33",
+          "AWSSDK.S3": "3.7.1.5",
+          "AWSSDK.SQS": "3.7.0.34",
+          "AWSSDK.SecurityToken": "3.7.1.22",
+          "AWSSDK.SimpleSystemsManagement": "3.7.3.16",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -761,54 +795,54 @@
       "path": "automapper/10.1.1",
       "hashPath": "automapper.10.1.1.nupkg.sha512"
     },
-    "AWSSDK.AppConfig/3.7.0.31": {
+    "AWSSDK.AppConfig/3.7.0.33": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-kvAFaNcC4KIR6XvsR98RhEbVTshjTrh4UfUYVlq2SS7J2vmYo3bo6s1lGNn24rQioMx0etpEU7sCNItTiWsJRg==",
-      "path": "awssdk.appconfig/3.7.0.31",
-      "hashPath": "awssdk.appconfig.3.7.0.31.nupkg.sha512"
+      "sha512": "sha512-UlidL8+tpLg6ZE5M3Ji97Hgksn2fKoByOTftv/pZyQYAEXFgaCBAaVD6+lrAcYhrzVpIZql/AWQraos+hJOH5Q==",
+      "path": "awssdk.appconfig/3.7.0.33",
+      "hashPath": "awssdk.appconfig.3.7.0.33.nupkg.sha512"
     },
-    "AWSSDK.Core/3.7.0.33": {
+    "AWSSDK.Core/3.7.0.35": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ABnGRXmGkSd9d8nPKsqLvJLtd9U/+1+60mYbR8mgWX5svmvui6TqBRefM799qOupSXkxt/RV0IMjjkX0f39S4g==",
-      "path": "awssdk.core/3.7.0.33",
-      "hashPath": "awssdk.core.3.7.0.33.nupkg.sha512"
+      "sha512": "sha512-bjPgNNSv8ZuT8MQ1EBQaEecAyAXbNh7Hp6WDDnU6/msdKtEGFyF0G3s6fvqqCMzBUWHFgobaD3zm487g3pJ4tg==",
+      "path": "awssdk.core/3.7.0.35",
+      "hashPath": "awssdk.core.3.7.0.35.nupkg.sha512"
     },
-    "AWSSDK.DynamoDBv2/3.7.0.32": {
+    "AWSSDK.DynamoDBv2/3.7.0.34": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-RYPxIA/bPgYlfZ0jardNLCpeJqHr1N6Ft3mgitiPXEu9hsqrukhAA4e02TWQfg2/6T57GQweKCZZZ257koFINw==",
-      "path": "awssdk.dynamodbv2/3.7.0.32",
-      "hashPath": "awssdk.dynamodbv2.3.7.0.32.nupkg.sha512"
+      "sha512": "sha512-CZ0GBnIl4pDcPrWbpDw2BvsKd+8jAG3GKFP/yCEhwgevUvSjtIVu8nOhGdL8OOllLunSTMi+FSMZ6tXFcCnvFg==",
+      "path": "awssdk.dynamodbv2/3.7.0.34",
+      "hashPath": "awssdk.dynamodbv2.3.7.0.34.nupkg.sha512"
     },
-    "AWSSDK.S3/3.7.1.3": {
+    "AWSSDK.S3/3.7.1.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-WgxfTt/MYUl3i5HKaMkSRvjdHdqn660E1x+lqTmMWzmr0spJ8NyHH7k90zWz6jHLKMEkyEll0SpC/ky1pwn62Q==",
-      "path": "awssdk.s3/3.7.1.3",
-      "hashPath": "awssdk.s3.3.7.1.3.nupkg.sha512"
+      "sha512": "sha512-u4c+Ch5jQzuOox9XilExlUXwRuLOzyDOXoTFSWIv8Vd0snLVxGrJlaJtwJqa4uRJFy0O/D3KvBWJb6hgyMODpg==",
+      "path": "awssdk.s3/3.7.1.5",
+      "hashPath": "awssdk.s3.3.7.1.5.nupkg.sha512"
     },
-    "AWSSDK.SecurityToken/3.7.1.20": {
+    "AWSSDK.SecurityToken/3.7.1.22": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jZUjnCyVQIFQ3z8FdH2RsqMwkxHK+2oCxWhkFgpMP9u05NzN67AHVDj2AJ88x5mh7N+n7MOUUU8Fa0tvsQq5YQ==",
-      "path": "awssdk.securitytoken/3.7.1.20",
-      "hashPath": "awssdk.securitytoken.3.7.1.20.nupkg.sha512"
+      "sha512": "sha512-tVwH39lXvxp6jpLhnkKPV2EH9XGjEN32jDylT7ZJfTTwRbsWPu4bH3h1pL8uSG451sWXrLHqZVAOg+625g8BgQ==",
+      "path": "awssdk.securitytoken/3.7.1.22",
+      "hashPath": "awssdk.securitytoken.3.7.1.22.nupkg.sha512"
     },
-    "AWSSDK.SimpleSystemsManagement/3.7.3.14": {
+    "AWSSDK.SimpleSystemsManagement/3.7.3.16": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-wz8P0PjSTRD1mdaChNuBgYnsnJ1dJBN695+MixIMEGMYvs0AhXhKmupqXSwqW57hy6hRVlXLnUFCnqdxrzF+/g==",
-      "path": "awssdk.simplesystemsmanagement/3.7.3.14",
-      "hashPath": "awssdk.simplesystemsmanagement.3.7.3.14.nupkg.sha512"
+      "sha512": "sha512-q2Koieklxa/qjjSBLs5hDAC+gbryRhReAZdoclko1Y2rx/eJtA86pxZqe+DZF9rC9fulYTUI3Zhm3kxd5yUcUw==",
+      "path": "awssdk.simplesystemsmanagement/3.7.3.16",
+      "hashPath": "awssdk.simplesystemsmanagement.3.7.3.16.nupkg.sha512"
     },
-    "AWSSDK.SQS/3.7.0.32": {
+    "AWSSDK.SQS/3.7.0.34": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0MXBR6PeXGALox8DwsSXP7Vu4ychfoGI3y/OBc+NxMFe1ks0KRi1GffssXERh8AmVQHdoDvyx0HIR4LA5i48rQ==",
-      "path": "awssdk.sqs/3.7.0.32",
-      "hashPath": "awssdk.sqs.3.7.0.32.nupkg.sha512"
+      "sha512": "sha512-ZccIgZlV0eGFkT4MhcDjkTm7tt9t5MILLyLzWFVXRyel5e775FACmYKiUou/CSQTR+7ivNYh3MZN/lElQDN7sA==",
+      "path": "awssdk.sqs/3.7.0.34",
+      "hashPath": "awssdk.sqs.3.7.0.34.nupkg.sha512"
     },
     "DnsClient/1.4.0": {
       "type": "package",
@@ -915,6 +949,20 @@
       "path": "microsoft.extensions.filesystemglobbing/5.0.0",
       "hashPath": "microsoft.extensions.filesystemglobbing.5.0.0.nupkg.sha512"
     },
+    "Microsoft.Extensions.Http/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kT1ijDKZuSUhBtYoC1sXrmVKP7mA08h9Xrsr4VrS/QOtiKCEtUTTd7dd3XI9dwAb46tZSak13q/zdIcr4jqbyg==",
+      "path": "microsoft.extensions.http/5.0.0",
+      "hashPath": "microsoft.extensions.http.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Http.Polly/5.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Tzf+x8HVDhri9dkIGCGOP5RVjgXnTZuBcwZHr0sW6KAtVGPDU0xEDXPDpoW5vwq/K12dMI75vuapUtMw0d/pIw==",
+      "path": "microsoft.extensions.http.polly/5.0.1",
+      "hashPath": "microsoft.extensions.http.polly.5.0.1.nupkg.sha512"
+    },
     "Microsoft.Extensions.Logging/5.0.0": {
       "type": "package",
       "serviceable": true,
@@ -1012,6 +1060,13 @@
       "sha512": "sha512-1MUQLiSo4KDkQe6nzQRhIU05lm9jlexX5BVsbuw0SL82ynZ+GzAHQxJVDPVBboxV37Po3SG077aX8DuSy8TkaA==",
       "path": "polly.contrib.waitandretry/1.1.1",
       "hashPath": "polly.contrib.waitandretry.1.1.1.nupkg.sha512"
+    },
+    "Polly.Extensions.Http/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-drrG+hB3pYFY7w1c3BD+lSGYvH2oIclH8GRSehgfyP5kjnFnHKQuuBhuHLv+PWyFuaTDyk/vfRpnxOzd11+J8g==",
+      "path": "polly.extensions.http/3.0.0",
+      "hashPath": "polly.extensions.http.3.0.0.nupkg.sha512"
     },
     "protobuf-net/3.0.101": {
       "type": "package",

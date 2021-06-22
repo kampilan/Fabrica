@@ -74,3 +74,4 @@ E:\repositories\fabrica-sdk-v\Fabrica.Proxy\obj\Debug\net5.0\ref\Appliance.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Proxy\obj\Debug\net5.0\Appliance.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Proxy\obj\Debug\net5.0\Fabrica.Proxy.genruntimeconfig.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Proxy\bin\Debug\net5.0\AutoMapper.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Proxy\bin\Debug\net5.0\Polly.Contrib.WaitAndRetry.dll
