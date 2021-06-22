@@ -114,3 +114,12 @@ E:\repositories\fabrica-sdk-v\Fabrica.Tests\obj\Debug\net5.0\Fabrica.Tests.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\obj\Debug\net5.0\ref\Fabrica.Tests.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\obj\Debug\net5.0\Fabrica.Tests.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\obj\Debug\net5.0\Fabrica.Tests.genruntimeconfig.cache
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Http.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Http.Polly.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Logging.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Polly.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Polly.Contrib.WaitAndRetry.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Polly.Extensions.Http.dll

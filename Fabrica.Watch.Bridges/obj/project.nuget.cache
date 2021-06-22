@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "waYVPDtog34B6Bwh4q5ss6fmu9fUMlKDdUFcPChxULaD4hz+1MBrgXF+kxXvP0g8+4nPCUZiCo0whPfWRROzbQ==",
+  "dgSpecHash": "R8SoukwLshc/SGdeVVSSj0LzW6Qw+agGy+pMbUN65ErHxd3jw0tIlJ3acsn5CVSk53hvMwNCm5F6gYM8dvpltA==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
   "expectedPackageFiles": [
@@ -16,6 +16,8 @@
     "f:\\.nuget\\microsoft.extensions.fileproviders.abstractions\\5.0.0\\microsoft.extensions.fileproviders.abstractions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.fileproviders.physical\\5.0.0\\microsoft.extensions.fileproviders.physical.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.filesystemglobbing\\5.0.0\\microsoft.extensions.filesystemglobbing.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.http\\5.0.0\\microsoft.extensions.http.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.http.polly\\5.0.1\\microsoft.extensions.http.polly.5.0.1.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.logging\\5.0.0\\microsoft.extensions.logging.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.logging.abstractions\\5.0.0\\microsoft.extensions.logging.abstractions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.options\\5.0.0\\microsoft.extensions.options.5.0.0.nupkg.sha512",
@@ -23,6 +25,9 @@
     "f:\\.nuget\\microsoft.netcore.platforms\\1.1.1\\microsoft.netcore.platforms.1.1.1.nupkg.sha512",
     "f:\\.nuget\\microsoft.netcore.targets\\1.1.3\\microsoft.netcore.targets.1.1.3.nupkg.sha512",
     "f:\\.nuget\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "f:\\.nuget\\polly\\7.1.0\\polly.7.1.0.nupkg.sha512",
+    "f:\\.nuget\\polly.contrib.waitandretry\\1.1.1\\polly.contrib.waitandretry.1.1.1.nupkg.sha512",
+    "f:\\.nuget\\polly.extensions.http\\3.0.0\\polly.extensions.http.3.0.0.nupkg.sha512",
     "f:\\.nuget\\sprache\\2.3.1\\sprache.2.3.1.nupkg.sha512",
     "f:\\.nuget\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.diagnostics.debug\\4.3.0\\system.diagnostics.debug.4.3.0.nupkg.sha512",

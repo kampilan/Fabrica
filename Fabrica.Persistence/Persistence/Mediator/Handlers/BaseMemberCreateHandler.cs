@@ -25,6 +25,12 @@ namespace Fabrica.Persistence.Mediator.Handlers
         }
 
 
+        protected override Task<TChild> GetEntity()
+        {
+            return Task.FromResult( new TChild() );
+        }
+
+
         protected abstract IQueryable<TParent> GetParentQueryable();
 
         protected abstract void AttachToParent( TParent parent, TChild child );

@@ -20,12 +20,12 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">f:\.nuget\awssdk.core\3.7.0.33</PkgAWSSDK_Core>
-    <PkgAWSSDK_SQS Condition=" '$(PkgAWSSDK_SQS)' == '' ">f:\.nuget\awssdk.sqs\3.7.0.32</PkgAWSSDK_SQS>
-    <PkgAWSSDK_SimpleSystemsManagement Condition=" '$(PkgAWSSDK_SimpleSystemsManagement)' == '' ">f:\.nuget\awssdk.simplesystemsmanagement\3.7.3.14</PkgAWSSDK_SimpleSystemsManagement>
-    <PkgAWSSDK_SecurityToken Condition=" '$(PkgAWSSDK_SecurityToken)' == '' ">f:\.nuget\awssdk.securitytoken\3.7.1.20</PkgAWSSDK_SecurityToken>
-    <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">f:\.nuget\awssdk.s3\3.7.1.3</PkgAWSSDK_S3>
-    <PkgAWSSDK_AppConfig Condition=" '$(PkgAWSSDK_AppConfig)' == '' ">f:\.nuget\awssdk.appconfig\3.7.0.31</PkgAWSSDK_AppConfig>
-    <PkgAWSSDK_DynamoDBv2 Condition=" '$(PkgAWSSDK_DynamoDBv2)' == '' ">f:\.nuget\awssdk.dynamodbv2\3.7.0.32</PkgAWSSDK_DynamoDBv2>
+    <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">f:\.nuget\awssdk.core\3.7.0.35</PkgAWSSDK_Core>
+    <PkgAWSSDK_SQS Condition=" '$(PkgAWSSDK_SQS)' == '' ">f:\.nuget\awssdk.sqs\3.7.0.34</PkgAWSSDK_SQS>
+    <PkgAWSSDK_SimpleSystemsManagement Condition=" '$(PkgAWSSDK_SimpleSystemsManagement)' == '' ">f:\.nuget\awssdk.simplesystemsmanagement\3.7.3.16</PkgAWSSDK_SimpleSystemsManagement>
+    <PkgAWSSDK_SecurityToken Condition=" '$(PkgAWSSDK_SecurityToken)' == '' ">f:\.nuget\awssdk.securitytoken\3.7.1.22</PkgAWSSDK_SecurityToken>
+    <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">f:\.nuget\awssdk.s3\3.7.1.5</PkgAWSSDK_S3>
+    <PkgAWSSDK_AppConfig Condition=" '$(PkgAWSSDK_AppConfig)' == '' ">f:\.nuget\awssdk.appconfig\3.7.0.33</PkgAWSSDK_AppConfig>
+    <PkgAWSSDK_DynamoDBv2 Condition=" '$(PkgAWSSDK_DynamoDBv2)' == '' ">f:\.nuget\awssdk.dynamodbv2\3.7.0.34</PkgAWSSDK_DynamoDBv2>
   </PropertyGroup>
 </Project>
