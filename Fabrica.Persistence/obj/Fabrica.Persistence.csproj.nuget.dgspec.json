@@ -68,6 +68,10 @@
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
               "version": "[5.0.7, )"
+            },
+            "RepoDb": {
+              "target": "Package",
+              "version": "[1.12.7, )"
             }
           },
           "imports": [
