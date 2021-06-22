@@ -68,7 +68,24 @@ namespace Fabrica.Mediator.Requests
 
         public bool HasCriteria => Criteria is not null;
 
-        public List<IRqlFilter<TModel>> Filters => new() {RqlFilterBuilder<TModel>.Create().Introspect(Criteria)};
+        public List<IRqlFilter<TModel>> Filters
+        {
+            
+            get
+            {
+
+                var filters = new List<IRqlFilter<TModel>>();
+
+                if( Criteria is not null && Criteria.Rql is not null && Criteria.Rql.Length > 0)
+                    filters.AddRange( Criteria.Rql.Select(RqlFilterBuilder<TModel>.FromRql) );
+                else if( Criteria is not null )
+                    filters.Add( RqlFilterBuilder<TModel>.Create().Introspect(Criteria) );
+
+                return filters;
+
+            }
+
+        }
 
     }
 
