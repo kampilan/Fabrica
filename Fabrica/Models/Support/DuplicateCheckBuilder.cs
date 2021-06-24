@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Fabrica.Utilities.Types;
 
 namespace Fabrica.Models.Support
@@ -21,7 +23,7 @@ namespace Fabrica.Models.Support
 
             Template  = template;
             Predicate = predicate;
-            
+
         }        
         
 
@@ -40,7 +42,6 @@ namespace Fabrica.Models.Support
             return (expr, message);
 
         }
-
         
         
     }
