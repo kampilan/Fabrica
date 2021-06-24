@@ -18,7 +18,7 @@ namespace Fabrica.Models.Support
     {
 
         
-        public DuplicateCheckBuilder( Func<TModel,string> template, Func<TModel,Expression<Func<TModel,bool>>> predicate )
+        public DuplicateCheckBuilder( Func<TModel,TModel,string> template, Func<TModel,Expression<Func<TModel,bool>>> predicate )
         {
 
             Template  = template;
@@ -27,19 +27,18 @@ namespace Fabrica.Models.Support
         }        
         
 
-        private Func<TModel,string> Template { get; }
+        private Func<TModel,TModel,string> Template { get; }
         
         private Func<TModel,Expression<Func<TModel,bool>>> Predicate { get; }
 
 
-        public (Expression<Func<TModel,bool>> checker, string message) Build( TModel source )
+        public (Expression<Func<TModel,bool>> checker, Func<TModel, TModel, string> template) Build( TModel source )
         {
 
             var expr    = PredicateBuilder.True<TModel>().And( Predicate(source) ).And( t=>t.Uid != source.Uid );
-            var message = Template(source);
                 
             // *****************************************************************                
-            return (expr, message);
+            return (expr, Template);
 
         }
         
