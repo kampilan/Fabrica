@@ -123,3 +123,11 @@ E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extension
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Polly.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Polly.Contrib.WaitAndRetry.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Polly.Extensions.Http.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Fabrica.Watch.Realtime.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Auth0.Core.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Auth0.ManagementApi.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Fabrica.Identity.Auth0.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Fabrica.Identity.Auth0.pdb
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\identity-tests.yml
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Configuration.Binder.dll

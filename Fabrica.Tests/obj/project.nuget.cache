@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "UW69ihpb+qxL53xmKQCQSiCb/jR44dFW/7aYLJgE6yhFbmL+S5IhqdL3f5VxlsRqnh6lALYJaFCDU+J9nfXZ+g==",
+  "dgSpecHash": "fVRoqfOZ9aTsyd5UKpsRY7zaE++XUCmGvCrdLnOpLvE3bII5SsrpuUZk7fj2ogeThCBv1N6e1+Yt7oSlcwPlNw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Tests\\Fabrica.Tests.csproj",
   "expectedPackageFiles": [
+    "f:\\.nuget\\auth0.core\\7.8.0\\auth0.core.7.8.0.nupkg.sha512",
+    "f:\\.nuget\\auth0.managementapi\\7.8.0\\auth0.managementapi.7.8.0.nupkg.sha512",
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
@@ -11,6 +13,7 @@
     "f:\\.nuget\\microsoft.codecoverage\\16.10.0\\microsoft.codecoverage.16.10.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration.abstractions\\5.0.0\\microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512",
+    "f:\\.nuget\\microsoft.extensions.configuration.binder\\5.0.0\\microsoft.extensions.configuration.binder.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration.fileextensions\\5.0.0\\microsoft.extensions.configuration.fileextensions.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.dependencyinjection\\5.0.0\\microsoft.extensions.dependencyinjection.5.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",

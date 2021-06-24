@@ -24,10 +24,13 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Fabrica.Exceptions;
 using Fabrica.Identity;
 using Fabrica.Models;
 using Fabrica.Models.Support;
@@ -40,16 +43,17 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using Polly;
 
 namespace Fabrica.Persistence.Contexts
 {
 
 
-    public class OriginDbContext: BaseDbContext
+    public class OriginDbContext : BaseDbContext
     {
 
 
-        public OriginDbContext( ICorrelation correlation, IRuleSet rules,  [NotNull] DbContextOptions options, ILoggerFactory factory=null) : base( correlation, options, factory )
+        public OriginDbContext(ICorrelation correlation, IRuleSet rules, [NotNull] DbContextOptions options, ILoggerFactory factory = null) : base(correlation, options, factory)
         {
 
             Rules = rules;
@@ -62,7 +66,7 @@ namespace Fabrica.Persistence.Contexts
         protected IRuleSet Rules { get; }
 
 
-        public override int SaveChanges( bool acceptAllChangesOnSuccess )
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
 
 
@@ -74,7 +78,7 @@ namespace Fabrica.Persistence.Contexts
                 logger.EnterMethod();
 
 
-                var result = AsyncPump.Run( ()=>SaveChangesAsync(acceptAllChangesOnSuccess ) );
+                var result = AsyncPump.Run(() => SaveChangesAsync(acceptAllChangesOnSuccess));
 
                 return result;
 
@@ -88,7 +92,7 @@ namespace Fabrica.Persistence.Contexts
         }
 
 
-        public override async Task<int> SaveChangesAsync( bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken() )
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
 
 
@@ -109,29 +113,38 @@ namespace Fabrica.Persistence.Contexts
 
                 // *****************************************************************
                 logger.Debug("Attempting to inspect each entity in this DbContext");
-                foreach( var entry in ChangeTracker.Entries() )
+                foreach (var entry in ChangeTracker.Entries())
                 {
 
 
-                    logger.Inspect( nameof(entry.Entity), entry.Entity.GetType().FullName );
+                    logger.Inspect(nameof(entry.Entity), entry.Entity.GetType().FullName);
 
 
 
                     if( entry.Entity is IMutableModel mm && (entry.State is EntityState.Added or EntityState.Modified) )
                     {
 
+
                         logger.DebugFormat("Attempting to call lifecycle hooks on mutable entity for State {0}", entry.State);
 
-                        if( entry.State == EntityState.Added )
+                        if (entry.State == EntityState.Added)
                             mm.OnCreate();
 
                         mm.OnModification();
 
+
+
+                        logger.Debug("Attempting to perform duplicate checking");
+                        await CheckForDuplicates(mm);
+
+
                     }
 
 
+
+
                     // *****************************************************************
-                    if ( EvaluationEntities && (entry.State is EntityState.Added or EntityState.Modified) )
+                    if (EvaluationEntities && (entry.State is EntityState.Added or EntityState.Modified))
                     {
 
                         logger.Debug("Attempting to add created and updated entities to evaluation context");
@@ -145,7 +158,7 @@ namespace Fabrica.Persistence.Contexts
 
                 // *****************************************************************
                 logger.Debug("Attempting to evaluate added and modified entities");
-                context.ThrowNoRulesException    = false;
+                context.ThrowNoRulesException = false;
                 context.ThrowValidationException = true;
 
                 Rules.Evaluate(context);
@@ -171,7 +184,7 @@ namespace Fabrica.Persistence.Contexts
 
                     // *****************************************************************
                     logger.Debug("Attempting to add journal entities to context");
-                    await AuditJournals.AddRangeAsync( list, cancellationToken );
+                    await AuditJournals.AddRangeAsync(list, cancellationToken);
 
 
 
@@ -193,9 +206,73 @@ namespace Fabrica.Persistence.Contexts
             {
                 logger.LeaveMethod();
             }
-            
+
 
         }
+
+
+
+        #region Duplicate Checking
+
+
+        private IDictionary<Type, IList<IDuplicateCheckBuilder>> DupCheckBuilders { get; } = new Dictionary<Type, IList<IDuplicateCheckBuilder>>();
+
+        public void AddDuplicateCheck<TModel>(Func<TModel, string> template, Func<TModel, Expression<Func<TModel, bool>>> predicate) where TModel : class, IModel
+        {
+
+            if (DupCheckBuilders.TryGetValue(typeof(TModel), out var list))
+                list.Add(new DuplicateCheckBuilder<TModel>(template, predicate));
+            else
+            {
+
+                list = new List<IDuplicateCheckBuilder>
+                {
+                    new DuplicateCheckBuilder<TModel>(template, predicate)
+                };
+
+                DupCheckBuilders[typeof(TModel)] = list;
+
+            }
+
+        }
+
+
+        protected async Task CheckForDuplicates<TModel>( TModel source ) where TModel : class, IModel
+        {
+
+
+            if (!DupCheckBuilders.TryGetValue(typeof(TModel), out var list))
+                return;
+
+
+            PredicateException pe = null;
+
+            foreach( var check in list.Cast<DuplicateCheckBuilder<TModel>>() )
+            {
+
+
+                var pair = check.Build(source);
+
+                var exists = await Set<TModel>().AnyAsync(pair.checker);
+                if (!exists)
+                    continue;
+
+
+                pe ??= new PredicateException("Duplicate found");
+
+                pe.WithDetail(new EventDetail { Group = $"{typeof(TModel).Name}.Duplicates", Explanation = pair.message });
+
+
+            }
+
+            if (pe != null)
+                throw pe;
+
+        }
+
+
+        #endregion
+
 
 
 
@@ -216,7 +293,7 @@ namespace Fabrica.Persistence.Contexts
         protected virtual AuditJournalModel CreateAuditJournal(DateTime journalTime, AuditJournalType type, [NotNull] IModel entity, [CanBeNull] PropertyEntry prop = null)
         {
 
-            var ident = Correlation.ToIdentity()??new ClaimsIdentity();
+            var ident = Correlation.ToIdentity() ?? new ClaimsIdentity();
 
             var aj = new AuditJournalModel
             {
@@ -289,7 +366,7 @@ namespace Fabrica.Persistence.Contexts
                 if (!hasChanges)
                     return journals;
 
-                if( Root != null )
+                if (Root != null)
                 {
 
                     logger.Debug("Attempting to create unmodified root journal entry");
@@ -384,7 +461,7 @@ namespace Fabrica.Persistence.Contexts
 
 
                     // *****************************************************************
-                    if( entry.State == EntityState.Unchanged && audit.Write && entity is IRootModel && Root == null )
+                    if (entry.State == EntityState.Unchanged && audit.Write && entity is IRootModel && Root == null)
                     {
 
                         logger.Debug("Attempting to create unmodified root journal entry");

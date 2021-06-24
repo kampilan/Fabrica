@@ -6,13 +6,17 @@ namespace Fabrica.Tests.Identity
 {
     
 
-    public class IdentityModule: Module, IOidcConfiguration
+    public class IdentityModule: Module
     {
 
-        public string OidcMetaEndpoint { get; set; } = "https://auth-qa.contakt.world/auth/realms/contact-world-realm/.well-known/openid-configuration";
-        public string OidcClientId { get; set; } = "meshtek-backend";
-        public string OidcClientSecret { get; set; } = "99ce1821-6e16-4d99-94ed-5bebdfcd57e6";
-        public string OidcAudience { get; set; } = "";
+        public string Auth0Domain { get; set; } = "";
+
+        public string MetaEndpoint { get; set; } = "";
+        public string TokenEndpoint { get; set; } = "";
+
+        public string ClientId { get; set; } = "";
+        public string ClientSecret { get; set; } = "";
+        public string Audience { get; set; } = "";
 
 
         protected override void Load(ContainerBuilder builder)
@@ -20,7 +24,9 @@ namespace Fabrica.Tests.Identity
 
             builder.AddCorrelation();
 
-            builder.UseOidcAccessTokenSource(this);
+            builder.AddAccessTokenSource( "Auth0Management", new ClientCredentialGrant { ClientId = ClientId, ClientSecret = ClientSecret, Audience = Audience }, MetaEndpoint, TokenEndpoint );
+
+            builder.UseAuth0IdentityProvider("Auth0Management", Auth0Domain);
 
         }
 

@@ -10,10 +10,12 @@ namespace Fabrica.Identity
     {
 
 
-        public static ContainerBuilder UseOidcAccessTokenSource( this ContainerBuilder builder, IOidcConfiguration config )
+        public static ContainerBuilder AddAccessTokenSource( this ContainerBuilder builder, string tokenSourceName, ICredentialGrant grant, string metaEndpoint="", string toeknEndpoint="" )
         {
 
-            builder.AddHttpClient("OidcEndpoint");
+            var clientName = $"TokenSource:{tokenSourceName}";
+
+            builder.AddHttpClient( clientName );
 
             builder.Register(c =>
                 {
@@ -21,12 +23,13 @@ namespace Fabrica.Identity
                     var corr    = c.Resolve<ICorrelation>();
                     var factory = c.Resolve<IHttpClientFactory>();
 
-                    var comp = new OidcAccessTokenSource(config, factory, corr);
+                    var comp = new OidcAccessTokenSource(corr, factory, clientName, grant, metaEndpoint, toeknEndpoint );
 
                     return comp;
 
                 })
                 .As<IAccessTokenSource>()
+                .Named<IAccessTokenSource>( tokenSourceName )
                 .As<IStartable>()
                 .SingleInstance()
                 .AutoActivate();

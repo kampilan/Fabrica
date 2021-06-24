@@ -69,9 +69,9 @@ namespace Fabrica.Persistence.Mediator.Handlers
                 // *****************************************************************
                 logger.Debug("Attempting to process each given filter");
                 var set = new HashSet<TResponse>();
-                foreach( var fields in filterList.Select(filter => filter.ToRdbQueryFields()))
+                foreach( var predicate in filterList.Select(filter => filter.ToRdbQueryFields()))
                 {
-                    var result = await Connection.QueryAsync<TResponse>(@where: fields, cancellationToken: cancellationToken);
+                    var result = await Connection.QueryAsync<TResponse>( predicate, cancellationToken: cancellationToken);
                     set.UnionWith(result);
                 }
 
