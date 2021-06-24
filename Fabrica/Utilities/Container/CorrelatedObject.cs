@@ -5,6 +5,7 @@ namespace Fabrica.Utilities.Container
 {
 
 
+
     public abstract class CorrelatedObject
     {
 

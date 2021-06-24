@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Runtime.CompilerServices;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using JetBrains.Annotations;
@@ -71,6 +72,15 @@ namespace Fabrica.Persistence.Contexts
         {
 
             var logger = Correlation.GetLogger(this);
+
+            return logger;
+
+        }
+
+        protected ILogger EnterMethod( [CallerMemberName] string name = "" )
+        {
+
+            var logger = Correlation.EnterMethod(GetType(), name);
 
             return logger;
 
