@@ -24,13 +24,10 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Fabrica.Exceptions;
 using Fabrica.Identity;
 using Fabrica.Models;
 using Fabrica.Models.Support;
@@ -43,7 +40,6 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
-using Polly;
 
 namespace Fabrica.Persistence.Contexts
 {
@@ -92,7 +88,7 @@ namespace Fabrica.Persistence.Contexts
         }
 
 
-        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default )
         {
 
 
@@ -131,11 +127,6 @@ namespace Fabrica.Persistence.Contexts
                             mm.OnCreate();
 
                         mm.OnModification();
-
-
-
-                        logger.Debug("Attempting to perform duplicate checking");
-                        await CheckForDuplicates(mm);
 
 
                     }
@@ -210,79 +201,6 @@ namespace Fabrica.Persistence.Contexts
 
         }
 
-
-
-        #region Duplicate Checking
-
-
-        private IDictionary<Type, IList<IDuplicateCheckBuilder>> DupCheckBuilders { get; } = new Dictionary<Type, IList<IDuplicateCheckBuilder>>();
-
-        public void AddDuplicateCheck<TModel>(Func<TModel, string> template, Func<TModel, Expression<Func<TModel, bool>>> predicate) where TModel : class, IModel
-        {
-
-            if (DupCheckBuilders.TryGetValue(typeof(TModel), out var list))
-                list.Add(new DuplicateCheckBuilder<TModel>(template, predicate));
-            else
-            {
-
-                list = new List<IDuplicateCheckBuilder>
-                {
-                    new DuplicateCheckBuilder<TModel>(template, predicate)
-                };
-
-                DupCheckBuilders[typeof(TModel)] = list;
-
-            }
-
-        }
-
-
-        protected async Task CheckForDuplicates<TModel>( TModel source ) where TModel : class, IModel
-        {
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.DebugFormat("Attempting to find dupCheck builders for Type {0}", typeof(TModel).Name );
-            if (!DupCheckBuilders.TryGetValue(typeof(TModel), out var list))
-            {
-                logger.Debug( "No DupCheck builder found" );
-                return;
-            }
-
-            logger.Inspect(nameof(list.Count), list.Count);
-
-
-
-            PredicateException pe = null;
-
-            foreach( var check in list.Cast<DuplicateCheckBuilder<TModel>>() )
-            {
-
-
-                var (checker, message) = check.Build(source);
-
-                var exists = await Set<TModel>().AnyAsync(checker);
-                if (!exists)
-                    continue;
-
-
-                pe ??= new PredicateException("Duplicate found");
-
-                pe.WithDetail(new EventDetail { Group = $"{typeof(TModel).Name}.Duplicates", Explanation = message });
-
-
-            }
-
-            if (pe != null)
-                throw pe;
-
-        }
-
-
-        #endregion
 
 
         #region Journaling

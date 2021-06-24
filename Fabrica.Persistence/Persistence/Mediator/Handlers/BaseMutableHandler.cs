@@ -42,6 +42,55 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IMapper Mapper { get; }
 
 
+        private IList<DuplicateCheckBuilder<TResponse>> DuplicateChecks { get; } = new List<DuplicateCheckBuilder<TResponse>>();
+
+        protected void AddDuplicateCheck( Func<TResponse, string> template, Func<TResponse, Expression<Func<TResponse, bool>>> predicate )
+        {
+
+            using var logger = EnterMethod();
+            
+            DuplicateChecks.Add( new DuplicateCheckBuilder<TResponse>( template, predicate) );
+
+        }
+
+        protected async Task CheckForDuplicates( [NotNull] TResponse source )
+        {
+
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            using var logger = EnterMethod();
+
+
+            logger.Inspect(nameof(DuplicateChecks.Count), DuplicateChecks.Count);
+
+
+            PredicateException pe = null;
+
+            foreach (var check in DuplicateChecks )
+            {
+
+
+                var (checker, message) = check.Build(source);
+
+                var exists = await Context.Set<TResponse>().AnyAsync(checker);
+                if (!exists)
+                    continue;
+
+
+                pe ??= new PredicateException("Duplicate found");
+
+                pe.WithDetail(new EventDetail { Group = $"{typeof(TResponse).Name}.Duplicates", Explanation = message });
+
+
+            }
+
+            if (pe != null)
+                throw pe;
+
+        }
+
+
+
         protected IDictionary<string,object> Properties { get; private set; }
 
 
@@ -205,6 +254,12 @@ namespace Fabrica.Persistence.Mediator.Handlers
             // *****************************************************************
             logger.Debug("Attempting to map properties to entity");
             Mapper.Map(Properties, target);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to perform duplicate checks");
+            await CheckForDuplicates(target);
 
 
 
