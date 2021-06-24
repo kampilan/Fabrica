@@ -42,6 +42,9 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IMapper Mapper { get; }
 
 
+        protected TResponse Entity { get; private set; }
+
+
         private IList<DuplicateCheckBuilder<TResponse>> DuplicateChecks { get; } = new List<DuplicateCheckBuilder<TResponse>>();
 
         public void AddDuplicateCheck( Func<TResponse,TResponse, string> template, Func<TResponse, Expression<Func<TResponse, bool>>> predicate )
@@ -53,10 +56,9 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         }
 
-        protected async Task CheckForDuplicates( [NotNull] TResponse source )
+        protected async Task CheckForDuplicates()
         {
 
-            if (source == null) throw new ArgumentNullException(nameof(source));
 
             using var logger = EnterMethod();
 
@@ -70,7 +72,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             {
 
 
-                var (checker, template) = check.Build(source);
+                var (checker, template) = check.Build(Entity);
 
                 var exists = await Context.Set<TResponse>().FirstOrDefaultAsync(checker);
                 if( exists == null )
@@ -80,7 +82,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
                 pe ??= new PredicateException("Duplicate found");
 
 
-                var message = template( source, exists );
+                var message = template( Entity, exists );
 
                 pe.WithDetail(new EventDetail { Group = $"{typeof(TResponse).Name}.Duplicates", Explanation = message });
 
@@ -225,9 +227,9 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to get target");
-            var target = await GetEntity();
+            Entity = await GetEntity();
 
-            logger.LogObject(nameof(target), target);
+            logger.LogObject(nameof(Entity), Entity);
 
 
 
@@ -240,13 +242,13 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to check for references");
-            foreach( var re in Context.Entry(target).References )
+            foreach( var re in Context.Entry(Entity).References )
             {
 
                 if( Properties.ContainsKey( re.Metadata.PropertyInfo.Name ) )
                 {
                     var call = GetType().GetMethod("ApplyReferenceByName", (BindingFlags.Instance | BindingFlags.NonPublic))?.MakeGenericMethod(re.Metadata.PropertyInfo.PropertyType);
-                    if (call?.Invoke(this, new object[] {target, re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
+                    if (call?.Invoke(this, new object[] {Entity, re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
                         await task;
                 }
 
@@ -256,26 +258,26 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to map properties to entity");
-            Mapper.Map(Properties, target);
+            Mapper.Map(Properties, Entity);
 
 
 
             // *****************************************************************
             logger.Debug("Attempting to perform duplicate checks");
-            await CheckForDuplicates(target);
+            await CheckForDuplicates();
 
 
 
             // *****************************************************************
             logger.Debug("Attempting to check for detached state");
 
-            if( Context.Entry(target).State == EntityState.Detached )
-                await Context.AddAsync( target, cancellationToken );
+            if( Context.Entry(Entity).State == EntityState.Detached )
+                await Context.AddAsync( Entity, cancellationToken );
 
 
 
             // *****************************************************************
-            return target;
+            return Entity;
 
         }
 
