@@ -44,7 +44,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         private IList<DuplicateCheckBuilder<TResponse>> DuplicateChecks { get; } = new List<DuplicateCheckBuilder<TResponse>>();
 
-        protected void AddDuplicateCheck( Func<TResponse, string> template, Func<TResponse, Expression<Func<TResponse, bool>>> predicate )
+        protected void AddDuplicateCheck( Func<TResponse,TResponse, string> template, Func<TResponse, Expression<Func<TResponse, bool>>> predicate )
         {
 
             using var logger = EnterMethod();
@@ -70,14 +70,17 @@ namespace Fabrica.Persistence.Mediator.Handlers
             {
 
 
-                var (checker, message) = check.Build(source);
+                var (checker, template) = check.Build(source);
 
-                var exists = await Context.Set<TResponse>().AnyAsync(checker);
-                if (!exists)
+                var exists = await Context.Set<TResponse>().FirstOrDefaultAsync(checker);
+                if( exists == null )
                     continue;
 
 
                 pe ??= new PredicateException("Duplicate found");
+
+
+                var message = template( source, exists );
 
                 pe.WithDetail(new EventDetail { Group = $"{typeof(TResponse).Name}.Duplicates", Explanation = message });
 
