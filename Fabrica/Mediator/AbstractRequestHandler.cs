@@ -68,13 +68,19 @@ namespace Fabrica.Mediator
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Before");
-                await Before(request);
+                await Before();
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Perform");
                 var response = await Perform( cancellationToken );
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to call After");
+                await After();
 
 
 
@@ -124,14 +130,21 @@ namespace Fabrica.Mediator
         }
 
 
-        protected virtual Task Before(TRequest request)
+        protected virtual Task Before()
         {
-
-            using var logger = GetLogger();
 
             return Task.CompletedTask;
 
         }
+
+
+        protected virtual Task After()
+        {
+
+            return Task.CompletedTask;
+
+        }
+
 
         protected virtual Task<TResponse> Success(TRequest request, TResponse response)
         {
@@ -216,13 +229,19 @@ namespace Fabrica.Mediator
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Before");
-                await Before(request);
+                await Before();
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to call Perform");
                 await Perform( cancellationToken );
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to call After");
+                await After();
 
 
 
@@ -272,14 +291,21 @@ namespace Fabrica.Mediator
         }
 
 
-        protected virtual Task Before(TRequest request)
+        protected virtual Task Before()
         {
-
-            using var logger = GetLogger();
 
             return Task.CompletedTask;
 
         }
+
+
+        protected virtual Task After()
+        {
+
+            return Task.CompletedTask;
+
+        }
+
 
         protected virtual Task Success(TRequest request)
         {
