@@ -9,12 +9,37 @@
       "Fabrica.Tests/1.0.0": {
         "dependencies": {
           "Fabrica": "1.0.0",
+          "Fabrica.Identity.Auth0": "1.0.0",
+          "Fabrica.Watch.Realtime": "1.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "5.0.0",
           "Microsoft.NET.Test.Sdk": "16.10.0",
           "NUnit": "3.13.2",
           "NUnit3TestAdapter": "4.0.0"
         },
         "runtime": {
           "Fabrica.Tests.dll": {}
+        }
+      },
+      "Auth0.Core/7.8.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Auth0.Core.dll": {
+            "assemblyVersion": "7.8.0.0",
+            "fileVersion": "7.8.0.0"
+          }
+        }
+      },
+      "Auth0.ManagementApi/7.8.0": {
+        "dependencies": {
+          "Auth0.Core": "7.8.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Auth0.ManagementApi.dll": {
+            "assemblyVersion": "7.8.0.0",
+            "fileVersion": "7.8.0.0"
+          }
         }
       },
       "Autofac/6.2.0": {
@@ -82,6 +107,17 @@
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.51904"
+          }
+        }
+      },
+      "Microsoft.Extensions.Configuration.Binder/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Configuration.Binder.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.20.51904"
           }
@@ -682,6 +718,23 @@
         "runtime": {
           "Fabrica.dll": {}
         }
+      },
+      "Fabrica.Identity.Auth0/1.0.0": {
+        "dependencies": {
+          "Auth0.ManagementApi": "7.8.0",
+          "Fabrica": "1.0.0"
+        },
+        "runtime": {
+          "Fabrica.Identity.Auth0.dll": {}
+        }
+      },
+      "Fabrica.Watch.Realtime/1.0.0": {
+        "dependencies": {
+          "Fabrica": "1.0.0"
+        },
+        "runtime": {
+          "Fabrica.Watch.Realtime.dll": {}
+        }
       }
     }
   },
@@ -690,6 +743,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Auth0.Core/7.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Dgibq1dhymU/o4E/frfjZRyJP0vBpZDNWWQJMBD3f7fhL3wL4GFxFxJlCPr4LDx/+LD9npWmPTqR2SPZh9di3Q==",
+      "path": "auth0.core/7.8.0",
+      "hashPath": "auth0.core.7.8.0.nupkg.sha512"
+    },
+    "Auth0.ManagementApi/7.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bJNaaI/6aK5IUvmfI1XxTmDPcfBzDMmNhPVQDhrGrZC5ZM5Koxr7zh6u5e8FYD1fY9xDUD2DD0E6PcKvyJKsWg==",
+      "path": "auth0.managementapi/7.8.0",
+      "hashPath": "auth0.managementapi.7.8.0.nupkg.sha512"
     },
     "Autofac/6.2.0": {
       "type": "package",
@@ -739,6 +806,13 @@
       "sha512": "sha512-ETjSBHMp3OAZ4HxGQYpwyGsD8Sw5FegQXphi0rpoGMT74S4+I2mm7XJEswwn59XAaKOzC15oDSOWEE8SzDCd6Q==",
       "path": "microsoft.extensions.configuration.abstractions/5.0.0",
       "hashPath": "microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Binder/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Of1Irt1+NzWO+yEYkuDh5TpT4On7LKl98Q9iLqCdOZps6XXEWDj3AKtmyvzJPVXZe4apmkJJIiDL7rR1yC+hjQ==",
+      "path": "microsoft.extensions.configuration.binder/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.binder.5.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration.FileExtensions/5.0.0": {
       "type": "package",
@@ -1042,6 +1116,16 @@
       "hashPath": "yamldotnet.11.2.0.nupkg.sha512"
     },
     "Fabrica/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Fabrica.Identity.Auth0/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Fabrica.Watch.Realtime/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

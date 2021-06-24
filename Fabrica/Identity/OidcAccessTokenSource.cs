@@ -1,26 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Autofac;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Threading;
+using Fabrica.Watch;
 using Newtonsoft.Json;
 
 namespace Fabrica.Identity
 {
 
-    public interface IOidcConfiguration
-    {
-
-        string OidcMetaEndpoint { get; set; }
-
-        string OidcClientId { get; set; }
-        string OidcClientSecret { get; set; }
-
-        string OidcAudience { get; set; }
-
-    }
 
     public interface IAccessTokenSource
     {
@@ -30,36 +19,35 @@ namespace Fabrica.Identity
 
     }
 
-
-
     public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IStartable
     {
 
 
-        public OidcAccessTokenSource( IOidcConfiguration config, IHttpClientFactory factory, ICorrelation correlation ) : base(correlation)
+        public OidcAccessTokenSource( ICorrelation correlation, IHttpClientFactory factory, string clientName, ICredentialGrant grant, string metaEndpoint="", string tokenEndpoint="" ) : base(correlation)
         {
 
-            Config  = config;
-            Factory = factory;
+            Factory    = factory;
+            ClientName = clientName;
 
-            Credentials = new Dictionary<string, string>
-            {
-                ["grant_type"]    = "client_credentials",
-                ["client_id"]     = Config.OidcClientId,
-                ["client_secret"] = Config.OidcClientSecret
-            };
+            Grant = grant;
+
+            MetaEndpoint  = metaEndpoint;
+            TokenEndpoint = tokenEndpoint;
 
         }
 
 
-
-        private IOidcConfiguration Config { get; }
         private IHttpClientFactory Factory { get; }
+        private string ClientName { get; }
+
+        private string MetaEndpoint { get; }
+        private string TokenEndpoint { get; }
+
+        private ICredentialGrant Grant { get; }
+
 
         private MetaModel Meta { get; set; }
         private TokenModel Token { get; set; }
-
-        private IDictionary<string, string> Credentials { get; }
 
 
 
@@ -85,14 +73,35 @@ namespace Fabrica.Identity
 
         public bool HasExpired => Token?.HasExpired() ?? true;
 
-        public Task<string> GetToken()
+        public async Task<string> GetToken()
         {
 
             using var logger = EnterMethod();
 
+
+            logger.Inspect(nameof(HasExpired), HasExpired);
+
+
+
+            // *****************************************************************
+            if ( HasExpired )
+            {
+                logger.Debug("Attempting to fetch new token");
+                await _fetchToken();
+            }
+
+
+
+            // *****************************************************************
             var token = Token.AccessToken ?? "";
 
-            return Task.FromResult(token);
+            logger.Inspect(nameof(token.Length), token.Length);
+
+
+
+            // *****************************************************************
+            return token;
+
 
         }
 
@@ -103,15 +112,21 @@ namespace Fabrica.Identity
             using var logger = EnterMethod();
 
 
-            using var client = Factory.CreateClient("OidcEndpoint");
+            using var client = Factory.CreateClient( ClientName );
 
             try
             {
 
+                if( !string.IsNullOrWhiteSpace(TokenEndpoint) )
+                {
+                    var meta = new MetaModel { TokenEndpoint = TokenEndpoint };
+                    return meta;
+                }
+
 
                 // *****************************************************************
                 logger.Debug("Attempting to fetch Meta");
-                var res = await client.GetAsync( Config.OidcMetaEndpoint );
+                var res = await client.GetAsync( MetaEndpoint );
 
                 logger.Inspect(nameof(res.StatusCode), res.StatusCode);
 
@@ -158,14 +173,14 @@ namespace Fabrica.Identity
             using var logger = EnterMethod();
 
 
-            using var client = Factory.CreateClient("OidcEndpoint");
+            using var client = Factory.CreateClient( ClientName );
             try
             {
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to build credentials");
-                var content = new FormUrlEncodedContent(Credentials);
+                var content = new FormUrlEncodedContent(Grant.Body);
 
 
 
@@ -240,12 +255,14 @@ namespace Fabrica.Identity
     {
 
 
+        [Sensitive]
         [JsonProperty("access_token")]
         public string AccessToken { get; set; } = "";
 
         [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; }
 
+        [Sensitive]
         [JsonProperty("refresh_token")]
         public string RefreshToken { get; set; } = "";
 
