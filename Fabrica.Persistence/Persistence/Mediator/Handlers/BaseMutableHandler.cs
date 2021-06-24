@@ -44,7 +44,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         private IList<DuplicateCheckBuilder<TResponse>> DuplicateChecks { get; } = new List<DuplicateCheckBuilder<TResponse>>();
 
-        protected void AddDuplicateCheck( Func<TResponse,TResponse, string> template, Func<TResponse, Expression<Func<TResponse, bool>>> predicate )
+        public void AddDuplicateCheck( Func<TResponse,TResponse, string> template, Func<TResponse, Expression<Func<TResponse, bool>>> predicate )
         {
 
             using var logger = EnterMethod();
