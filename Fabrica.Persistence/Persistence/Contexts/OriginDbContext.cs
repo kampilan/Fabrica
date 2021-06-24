@@ -240,9 +240,20 @@ namespace Fabrica.Persistence.Contexts
         protected async Task CheckForDuplicates<TModel>( TModel source ) where TModel : class, IModel
         {
 
+            using var logger = EnterMethod();
 
+
+
+            // *****************************************************************
+            logger.DebugFormat("Attempting to find dupCheck builders for Type {0}", typeof(TModel).Name );
             if (!DupCheckBuilders.TryGetValue(typeof(TModel), out var list))
+            {
+                logger.Debug( "No DupCheck builder found" );
                 return;
+            }
+
+            logger.Inspect(nameof(list.Count), list.Count);
+
 
 
             PredicateException pe = null;
@@ -251,16 +262,16 @@ namespace Fabrica.Persistence.Contexts
             {
 
 
-                var pair = check.Build(source);
+                var (checker, message) = check.Build(source);
 
-                var exists = await Set<TModel>().AnyAsync(pair.checker);
+                var exists = await Set<TModel>().AnyAsync(checker);
                 if (!exists)
                     continue;
 
 
                 pe ??= new PredicateException("Duplicate found");
 
-                pe.WithDetail(new EventDetail { Group = $"{typeof(TModel).Name}.Duplicates", Explanation = pair.message });
+                pe.WithDetail(new EventDetail { Group = $"{typeof(TModel).Name}.Duplicates", Explanation = message });
 
 
             }
@@ -272,8 +283,6 @@ namespace Fabrica.Persistence.Contexts
 
 
         #endregion
-
-
 
 
         #region Journaling
