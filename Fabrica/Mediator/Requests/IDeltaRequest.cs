@@ -3,11 +3,12 @@
 namespace Fabrica.Mediator.Requests
 {
 
-
-    public interface IUpdateRequest: IMutableRequest
+    public interface IDeltaRequest
     {
 
         string Uid { get; set; }
+
+        BaseDelta Delta { get; }
 
     }
 

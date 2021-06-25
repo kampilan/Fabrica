@@ -16,7 +16,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseMemberCreateHandler<TRequest,TParent,TChild,TDbContext> : BaseMutableHandler<TRequest, TChild, TDbContext> where TRequest : class, IMemberCreateRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : OriginDbContext
+    public abstract class BaseMemberCreateHandler<TRequest,TParent,TChild,TDbContext> : BaseDeltaHandler<TRequest, TChild, TDbContext> where TRequest : class, IMemberCreateRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : OriginDbContext
     {
 
 
@@ -25,7 +25,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
         }
 
 
-        protected override Task<TChild> GetEntity()
+        protected override Task<TChild> CreateEntity()
         {
             return Task.FromResult( new TChild() );
         }

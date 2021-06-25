@@ -8,9 +8,11 @@ namespace Fabrica.Mediator.Requests
 
         public string ParentUid { get; set; } = "";
 
+        public string Uid { get; set; } = "";
+
         public TDelta Delta { get; set; } = new ();
 
-        BaseDelta IMutableRequest.Delta => Delta;
+        BaseDelta IDeltaRequest.Delta => Delta;
 
     }
 

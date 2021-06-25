@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
@@ -20,17 +21,19 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseMutableHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IMutableRequest where TResponse : class, IModel where TDbContext : OriginDbContext
+    public abstract class BaseDeltaHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IDeltaRequest where TResponse : class, IModel, new() where TDbContext : OriginDbContext
     {
 
 
-        protected BaseMutableHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper ) : base( correlation )
+        protected BaseDeltaHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper ) : base( correlation )
         {
 
-            Meta = meta.GetMetaFromType(typeof(TResponse));
-            Uow = uow;
+            Meta    = meta.GetMetaFromType(typeof(TResponse));
+            Uow     = uow;
             Context = context;
-            Mapper = mapper;
+            Mapper  = mapper;
+
+            One = ()=>Context.Set<TResponse>().AsQueryable();
 
         }
 
@@ -42,7 +45,54 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IMapper Mapper { get; }
 
 
+        protected Func<IQueryable<TResponse>> One { get; set; }
+
         protected TResponse Entity { get; private set; }
+
+
+
+        protected virtual Task<TResponse> CreateEntity()
+        {
+
+            using var logger = EnterMethod();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to create new entity");
+            var entity = new TResponse();
+
+            logger.LogObject(nameof(entity), entity);
+
+
+
+            // *****************************************************************
+            return Task.FromResult( entity );
+
+        }
+
+        protected virtual async Task<TResponse> RetrieveEntity()
+        {
+
+            using var logger = EnterMethod();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to fetch one entity");
+            var entity = await One().SingleOrDefaultAsync(e => e.Uid == Request.Uid);
+
+            if (entity is null)
+                throw new NotFoundException($"Could not find {typeof(TResponse)} using Uid ({Request.Uid})");
+
+            logger.LogObject(nameof(entity), entity);
+
+
+
+            // *****************************************************************
+            return entity;
+
+        }
 
 
         private IList<DuplicateCheckBuilder<TResponse>> DuplicateChecks { get; } = new List<DuplicateCheckBuilder<TResponse>>();
@@ -98,8 +148,6 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         protected IDictionary<string,object> Properties { get; private set; }
 
-
-        protected abstract Task<TResponse> GetEntity();
 
 
         protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
@@ -225,11 +273,19 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             await base.Before();
 
-            // *****************************************************************
-            logger.Debug("Attempting to get target");
-            Entity = await GetEntity();
 
-            logger.LogObject(nameof(Entity), Entity);
+            // *****************************************************************
+            if (string.IsNullOrWhiteSpace(Request.Uid))
+            {
+                logger.Debug("Attempting to create entity");
+                Entity = await CreateEntity();
+            }
+            else
+            {
+                logger.Debug("Attempting to create entity");
+                Entity = await RetrieveEntity();
+            }
+
 
         }
 
