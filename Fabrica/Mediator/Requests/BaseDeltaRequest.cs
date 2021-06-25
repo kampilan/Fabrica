@@ -4,14 +4,14 @@ namespace Fabrica.Mediator.Requests
 {
 
 
-    public abstract class BaseUpdateRequest<TDelta> : IUpdateRequest where TDelta: BaseDelta, new()
+    public abstract class BaseDeltaRequest<TDelta> : IDeltaRequest where TDelta: BaseDelta, new()
     {
 
         public string Uid { get; set; } = "";
 
         public TDelta Delta { get; set; } = new ();
 
-        BaseDelta IMutableRequest.Delta => Delta;
+        BaseDelta IDeltaRequest.Delta => Delta;
 
     }
 
