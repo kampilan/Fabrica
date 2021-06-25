@@ -218,18 +218,27 @@ namespace Fabrica.Persistence.Mediator.Handlers
         }
 
 
-        protected override async Task<TResponse> Perform( CancellationToken cancellationToken = default )
+        protected override async Task Before()
         {
-
 
             using var logger = EnterMethod();
 
+            await base.Before();
 
             // *****************************************************************
             logger.Debug("Attempting to get target");
             Entity = await GetEntity();
 
             logger.LogObject(nameof(Entity), Entity);
+
+        }
+
+
+        protected override async Task<TResponse> Perform( CancellationToken cancellationToken = default )
+        {
+
+
+            using var logger = EnterMethod();
 
 
 
