@@ -60,8 +60,14 @@ namespace Fabrica.Identity
             SyncUserResponse result;
             if ( user == null )
                 result = await _createUser( request );
+            else if( !string.IsNullOrWhiteSpace(request.IdentityUid) )
+                result = await _updateUser(request);
             else
-                result = await _updateUser( request );
+            {
+                request.IdentityUid = user.UserId;
+                result = await _updateUser(request);
+            }
+
 
 
             logger.LogObject(nameof(user), user);
