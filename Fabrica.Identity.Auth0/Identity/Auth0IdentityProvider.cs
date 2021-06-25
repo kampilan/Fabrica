@@ -230,10 +230,10 @@ namespace Fabrica.Identity
             {
 
 
-                logger.Debug("Attempting to Auth0 request");
+                logger.Debug("Attempting to build Auth0 request");
                 var uur = new UserUpdateRequest();
 
-                if (!string.IsNullOrWhiteSpace(request.NewEmail))
+                if( !string.IsNullOrWhiteSpace(request.NewEmail) )
                 {
                     uur.Email = request.NewEmail;
                     uur.EmailVerified = true;
@@ -242,7 +242,7 @@ namespace Fabrica.Identity
                 if( !string.IsNullOrWhiteSpace(request.NewFirstName) )
                     uur.FirstName = request.NewFirstName;
 
-                if (!string.IsNullOrWhiteSpace(request.NewLastName))
+                if( !string.IsNullOrWhiteSpace(request.NewLastName) )
                     uur.LastName = request.NewLastName;
 
 
