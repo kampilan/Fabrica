@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
+using Fabrica.Exceptions;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using JetBrains.Annotations;
@@ -30,21 +31,15 @@ namespace Fabrica.Identity
 
         private ManagementApiClient Client { get; set; }
 
-        public async Task<SyncUserResponse> SyncUser( [NotNull] string identityUid, [NotNull] string email, [NotNull] string firstName, [NotNull] string lastName )
+        public async Task<SyncUserResponse> SyncUser( SyncUserRequest request )
         {
 
-
-            if (firstName == null) throw new ArgumentNullException(nameof(firstName));
-            if (lastName == null) throw new ArgumentNullException(nameof(lastName));
-            if (email == null) throw new ArgumentNullException(nameof(email));
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
 
             using var logger = EnterMethod();
 
-            logger.Inspect( nameof(identityUid), identityUid );
-            logger.Inspect(nameof(email), email);
-            logger.Inspect( nameof(firstName), firstName );
-            logger.Inspect( nameof(lastName), lastName );
+            logger.LogObject(nameof(request), request);
 
 
 
@@ -57,16 +52,16 @@ namespace Fabrica.Identity
 
             // *****************************************************************
             logger.Debug("Attempting to find user");
-            var user = await _findUser( identityUid, email );
+            var user = await _findUser( request );
 
 
 
             // *****************************************************************
             SyncUserResponse result;
             if ( user == null )
-                result = await _createUser(email, firstName, lastName);
+                result = await _createUser( request );
             else
-                result = await _updateUser(identityUid, email, firstName, lastName);
+                result = await _updateUser( request );
 
 
             logger.LogObject(nameof(user), user);
@@ -81,11 +76,11 @@ namespace Fabrica.Identity
         }
 
 
-        private async Task<User> _findUser( [CanBeNull] string identityUid, [NotNull] string email )
+        private async Task<User> _findUser( [NotNull] SyncUserRequest request )
         {
-
             
-            if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(email));
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
 
             using var logger = EnterMethod();
 
@@ -97,21 +92,22 @@ namespace Fabrica.Identity
             {
 
                 logger.Debug("Attempting to find user");
-                if (string.IsNullOrWhiteSpace(identityUid))
+                if( !string.IsNullOrWhiteSpace(request.IdentityUid) )
+                    user = await Client.Users.GetAsync(request.IdentityUid);
+                else if( string.IsNullOrWhiteSpace(request.IdentityUid) && !string.IsNullOrWhiteSpace(request.CurrentEmail) )
                 {
-                    var list = await Client.Users.GetUsersByEmailAsync(email);
+                    var list = await Client.Users.GetUsersByEmailAsync(request.CurrentEmail);
                     user =  list.FirstOrDefault();
                 }
                 else
-                    user = await Client.Users.GetAsync(identityUid);
+                    user = null;
 
                 logger.LogObject(nameof(user), user);
 
             }
-            catch (Exception cause)
+            catch( Exception cause )
             {
-                var ctx = new { identityUid, email };
-                logger.ErrorWithContext(cause, ctx, "Failed while trying to find Auth0 User");
+                logger.ErrorWithContext(cause, request, "Failed while trying to find Auth0 User");
                 throw;
             }
 
@@ -123,8 +119,10 @@ namespace Fabrica.Identity
 
         }
 
-        private async Task<SyncUserResponse> _createUser(string email, string firstName, string lastName)
+        private async Task<SyncUserResponse> _createUser( [NotNull] SyncUserRequest request )
         {
+
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             using var logger = EnterMethod();
 
@@ -132,6 +130,30 @@ namespace Fabrica.Identity
             logger.Debug("Attempting to create new User");
             try
             {
+
+                PredicateException exp = null;
+
+                if (string.IsNullOrWhiteSpace(request.NewEmail))
+                {
+                    exp ??= new PredicateException("Invalid Create User request");
+                    exp.WithDetail(new EventDetail {Category = EventDetail.EventCategory.Violation, Explanation = "Email is required"} );
+                }
+
+                if (string.IsNullOrWhiteSpace(request.NewFirstName))
+                {
+                    exp ??= new PredicateException("Invalid Create User request");
+                    exp.WithDetail(new EventDetail { Category = EventDetail.EventCategory.Violation, Explanation = "First Name is required" });
+                }
+
+                if (string.IsNullOrWhiteSpace(request.NewLastName))
+                {
+                    exp ??= new PredicateException("Invalid Create User request");
+                    exp.WithDetail(new EventDetail { Category = EventDetail.EventCategory.Violation, Explanation = "Last Name is required" });
+                }
+
+                if (exp != null)
+                    throw exp;
+
 
 
                 // *****************************************************************
@@ -144,20 +166,20 @@ namespace Fabrica.Identity
 
                 // *****************************************************************
                 logger.Debug("Attempting to Auth0 request");
-                var request = new UserCreateRequest
+                var ucr = new UserCreateRequest
                 {
                     Connection    = "Username-Password-Authentication",
-                    Email         = email,
+                    Email         = request.NewEmail,
                     EmailVerified = true,
                     Password      = password,
-                    FirstName     = firstName,
-                    LastName      = lastName,
-                    FullName      = $"{firstName} {lastName}",
+                    FirstName     = request.NewFirstName,
+                    LastName      = request.NewLastName,
+                    FullName      = $"{request.NewFirstName} {request.NewLastName}",
                 };
 
 
                 logger.Debug("Attempting to call Create");
-                var user = await Client.Users.CreateAsync(request);
+                var user = await Client.Users.CreateAsync(ucr);
 
 
                 // *****************************************************************
@@ -180,8 +202,7 @@ namespace Fabrica.Identity
             }
             catch (Exception cause)
             {
-                var ctx = new { email, firstName, lastName };
-                logger.ErrorWithContext(cause, ctx, "Failed to create new Auth0 User");
+                logger.ErrorWithContext(cause, request, "Failed to create new Auth0 User");
                 throw;
             }
 
@@ -189,8 +210,10 @@ namespace Fabrica.Identity
 
         }
 
-        private async Task<SyncUserResponse> _updateUser( string identityUid, string email, string firstName, string lastName )
+        private async Task<SyncUserResponse> _updateUser( [NotNull] SyncUserRequest request )
         {
+
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             using var logger = EnterMethod();
 
@@ -202,18 +225,23 @@ namespace Fabrica.Identity
 
 
                 logger.Debug("Attempting to Auth0 request");
-                var request = new UserUpdateRequest
+                var uur = new UserUpdateRequest();
+
+                if (!string.IsNullOrWhiteSpace(request.NewEmail))
                 {
-                    FirstName     = firstName,
-                    LastName      = lastName,
-                    FullName      = $"{firstName} {lastName}",
-                    Email         = email,
-                    EmailVerified = true,
-                };
+                    uur.Email = request.NewEmail;
+                    uur.EmailVerified = true;
+                }
+
+                if( !string.IsNullOrWhiteSpace(request.NewFirstName) )
+                    uur.FirstName = request.NewFirstName;
+
+                if (!string.IsNullOrWhiteSpace(request.NewLastName))
+                    uur.LastName = request.NewLastName;
 
 
                 logger.Debug("Attempting to call Update");
-                var user = await Client.Users.UpdateAsync(identityUid, request);
+                var user = await Client.Users.UpdateAsync( request.IdentityUid, uur );
 
 
 
@@ -232,8 +260,7 @@ namespace Fabrica.Identity
             }
             catch (Exception cause)
             {
-                var ctx = new { identityUid, firstName, lastName, email };
-                logger.ErrorWithContext(cause, ctx, "Failed to update existing Auth0 User");
+                logger.ErrorWithContext(cause, request, "Failed to update existing Auth0 User");
                 throw;
             }
 
