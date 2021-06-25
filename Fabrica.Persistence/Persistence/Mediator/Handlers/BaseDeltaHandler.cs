@@ -83,7 +83,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             var entity = await One().SingleOrDefaultAsync(e => e.Uid == Request.Uid);
 
             if (entity is null)
-                throw new NotFoundException($"Could not find {typeof(TResponse)} using Uid ({Request.Uid})");
+                throw new NotFoundException($"Could not find {typeof(TResponse).Name} using Uid ({Request.Uid})");
 
             logger.LogObject(nameof(entity), entity);
 
