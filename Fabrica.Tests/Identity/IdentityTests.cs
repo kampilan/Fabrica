@@ -84,7 +84,16 @@ namespace Fabrica.Tests.Identity
 
             var comp = scope.Resolve<IIdentityProvider>();
 
-            var result = await comp.SyncUser( "", "moring.gabby@gmail.com", "Gabby", "Moring" );
+
+            var request = new SyncUserRequest
+            {
+                NewEmail     = "moring.gabby@gmail.com",
+                NewFirstName = "Gabby",
+                NewLastName  = "Moring"
+            };
+
+
+            var result = await comp.SyncUser( request );
 
             Assert.IsNotNull(result);
             Assert.IsTrue( result.Created);
@@ -92,7 +101,18 @@ namespace Fabrica.Tests.Identity
             Assert.IsNotEmpty(result.Password);
 
 
-            var result2 = await comp.SyncUser( result.IdentityUid, "her@gabbymoring.com", "Gabriela", "Moring" );
+            var request2 = new SyncUserRequest
+            {
+                IdentityUid  = result.IdentityUid,
+                CurrentEmail = "moring.gabby@gmail.com",
+                NewEmail     = "her@gabbymoring.com",
+                NewFirstName = "Gabriela",
+                NewLastName  = "Moring"
+            };
+
+
+
+            var result2 = await comp.SyncUser( request2 );
 
             Assert.IsNotNull(result2);
             Assert.IsFalse(result2.Created);
