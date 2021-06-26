@@ -27,6 +27,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Identity;
 using Fabrica.Watch;
 using JetBrains.Annotations;
@@ -158,8 +159,7 @@ namespace Fabrica.Work.Processor
             };
 
             var token = await TokenSource.GetToken();
-            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+            message.Headers.Add( TokenConstants.HeaderName, token );
 
 
             // *****************************************************************
