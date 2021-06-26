@@ -1,0 +1,25 @@
+﻿
+# Amazon credential related settings
+Profile: kampilan
+RegionName: us-east-2
+RunningOnEC2: false
+
+WorkQueueName: "fabrica-work"
+
+WebhookEndpoint: "http://localhost:8383"
+
+TokenSigningKey: pJqdQe0R5G1nMHMhuyKOexWN9GULvI6Au/b4Q/2rEK9e1ZZqNClZIKo77/l4NsdZoVVfitDmjLu1yoBI4C54HQ==
+IdentitySubject: "1234567890"
+IdentityName: "Fabria Work"
+
+MissionName: Local-Test
+ApplianceName: fabrica-work
+ApplianceBuild: "Local"
+Environment: Development
+ListeningPort: 8181
+WatchDomainName: Connect.Api.Development
+WatchEventStoreUri: "mongodb://watch:w1FfV1qfZQJKTFv0zpme@10.78.142.10:27017"
+
+Topics:
+    Tester1: "http://localhost:8282/hooks/tester2"
+    Tester2: "http://localhost:8282/hooks/tester1"      

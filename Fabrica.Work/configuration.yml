@@ -1,0 +1,7 @@
+﻿
+WorkQueueName: "fabrica-work"
+
+IdentitySubject: "fabrica-work"
+IdentityName: "Automation"
+
+
