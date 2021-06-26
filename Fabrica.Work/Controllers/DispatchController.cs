@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Utilities.Container;
 using Fabrica.Work.Processor;
-using Fabrica.Work.Queue;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

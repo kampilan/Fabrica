@@ -75,11 +75,12 @@ namespace Fabrica.Work.Appliance
 
             builder.AddHttpClient( "WebhookEndpoint", WebhookEndpoint );
 
+            builder.AddProxyTokenEncoder(TokenSigningKey);
 
             builder.Register(c =>
                 {
 
-                    var config = c.Resolve<IConfiguration>();
+                    var config  = c.Resolve<IConfiguration>();
 
                     var dict = config.GetSection("Topics").Get<Dictionary<string, string>>();
                     var comp = new TopicMap();
@@ -93,17 +94,10 @@ namespace Fabrica.Work.Appliance
                 .AutoActivate();
 
 
-            builder.Register( _ =>
+            builder.Register( c =>
                 {
 
-                    byte[] key = null;
-                    if (!string.IsNullOrWhiteSpace(TokenSigningKey))
-                        key = Convert.FromBase64String(TokenSigningKey);
 
-                    var encoder = new ProxyTokenJwtEncoder
-                    {
-                        TokenSigningKey = key
-                    };
 
                     var claims = new ClaimSetModel
                     {
@@ -111,8 +105,8 @@ namespace Fabrica.Work.Appliance
                         Name    = IdentityName
                     };
 
-
-                    var token = encoder.Encode(claims);
+                    var encoder = c.Resolve<IProxyTokenEncoder>();
+                    var token   = encoder.Encode(claims);
 
                     var comp = new StaticAccessTokenSource(token);
 
