@@ -11,6 +11,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Work.Processor;
 using Fabrica.Work.Queue;
+using Fabrica.Work.Topics;
 using Microsoft.Extensions.Configuration;
 using Module = Autofac.Module;
 
@@ -81,15 +82,18 @@ namespace Fabrica.Work.Appliance
                 {
 
                     var config  = c.Resolve<IConfiguration>();
-
-                    var dict = config.GetSection("Topics").Get<Dictionary<string, string>>();
-                    var comp = new TopicMap();
-                    comp.Load(dict);
+                    var section = config.GetSection("Topics");
+ 
+                    var corr = c.Resolve<ICorrelation>();
+                    
+                    var comp = new TopicMap( corr );
+                    comp.Load( WebhookEndpoint, section );
 
                     return comp;
 
                 })
                 .AsSelf()
+                .As<ITopicMap>()
                 .SingleInstance()
                 .AutoActivate();
 

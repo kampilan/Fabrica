@@ -28,8 +28,10 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Identity.Proxy;
+using Fabrica.Exceptions;
 using Fabrica.Identity;
 using Fabrica.Watch;
+using Fabrica.Work.Topics;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -136,40 +138,41 @@ namespace Fabrica.Work.Processor
 
 
             // *****************************************************************
-            logger.Debug("Attempting to build Content from Json Payload");
-            var payload = args.Request.Payload.ToString(Formatting.None);
-            var content = new StringContent(payload);
-
-            content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to get Uri from Topic");
-            var topic = args.Request.Topic;
-            var uri   = Map.GetUri(topic);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build Request message");
-            var message = new HttpRequestMessage( HttpMethod.Post, uri )
-            {
-                Content = content
-            };
-
-            var token = await TokenSource.GetToken();
-            message.Headers.Add( TokenConstants.HeaderName, token );
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to send request");
+            logger.Debug("Attempting to build and send request");
             try
             {
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to build Content from Json Payload");
+                var payload = args.Request.Payload.ToString(Formatting.None);
+                var content = new StringContent(payload);
+
+                content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to get TopicEndpoint for requested Topic");
+                if( !Map.TryGetEndpoint(args.Request.Topic, out var ep) )
+                    throw new PredicateException($"Could not find requested Topic ({args.Request.Topic})");
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build Request message");
+                var message = new HttpRequestMessage( HttpMethod.Post, ep.Path )
+                {
+                    Content = content
+                };
+
+                var token = await TokenSource.GetToken();
+                message.Headers.Add( TokenConstants.HeaderName, token );
+
+
+
                 logger.Debug("Attempting to create HTTP client from factory");
-                using var client = Factory.CreateClient(EndpointName);
+                using var client = Factory.CreateClient(ep.Name);
 
 
 
@@ -182,20 +185,20 @@ namespace Fabrica.Work.Processor
                 response.EnsureSuccessStatusCode();
 
 
-
-                logger.Debug("Attempting to call teh completion handler");
-                args.CompletionHandler(true);
-
-
             }
-            catch (Exception cause)
+            catch( Exception cause )
             {
-                logger.Error(cause, "Send failed");
-                args.CompletionHandler(false);
+                var ctx = new {args.Request.Topic, args.Request.Uid};
+                logger.ErrorWithContext( cause, ctx, "Send failed" );
             }
             finally
             {
+
+                logger.Debug("Attempting to call the completion handler");
+                args.CompletionHandler(true);
+
                 Interlocked.Decrement(ref _workerCounter);
+
             }
 
 
