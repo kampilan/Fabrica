@@ -130,7 +130,7 @@ namespace Fabrica.Work.Appliance
                     var map         = c.Resolve<TopicMap>();
                     var tokenSource = c.Resolve<IAccessTokenSource>();
 
-                    var comp = new WorkProcessor( factory, "WebhookEndpoint", map, tokenSource );
+                    var comp = new WorkProcessor( factory, map, tokenSource );
 
                     return comp;
 
