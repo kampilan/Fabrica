@@ -50,11 +50,10 @@ namespace Fabrica.Work.Processor
         }
 
 
-        public WorkProcessor( IHttpClientFactory factory, string endpointName, TopicMap map, IAccessTokenSource tokenSource )
+        public WorkProcessor( IHttpClientFactory factory, ITopicMap map, IAccessTokenSource tokenSource )
         {
 
             Factory      = factory;
-            EndpointName = endpointName;
             Map          = map;
             TokenSource = tokenSource;
 
@@ -62,8 +61,7 @@ namespace Fabrica.Work.Processor
 
 
         private IHttpClientFactory Factory { get; }
-        private string EndpointName { get; }
-        private TopicMap Map { get; }
+        private ITopicMap Map { get; }
 
         private IAccessTokenSource TokenSource { get; }
 
@@ -144,18 +142,20 @@ namespace Fabrica.Work.Processor
 
 
                 // *****************************************************************
+                logger.Debug("Attempting to get TopicEndpoint for requested Topic");
+                if( !Map.TryGetEndpoint(args.Request.Topic, out var ep) )
+                    throw new PredicateException($"Could not find requested Topic ({args.Request.Topic})");
+
+                logger.LogObject(nameof(ep), ep);
+
+
+
+                // *****************************************************************
                 logger.Debug("Attempting to build Content from Json Payload");
                 var payload = args.Request.Payload.ToString(Formatting.None);
                 var content = new StringContent(payload);
 
                 content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to get TopicEndpoint for requested Topic");
-                if( !Map.TryGetEndpoint(args.Request.Topic, out var ep) )
-                    throw new PredicateException($"Could not find requested Topic ({args.Request.Topic})");
 
 
 
