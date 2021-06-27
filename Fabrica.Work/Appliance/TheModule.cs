@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using Amazon.SQS;
 using Autofac;
@@ -87,7 +86,7 @@ namespace Fabrica.Work.Appliance
                     var corr = c.Resolve<ICorrelation>();
                     
                     var comp = new TopicMap( corr );
-                    comp.Load( WebhookEndpoint, section );
+                    comp.Load( "WebhookEndpoint", section );
 
                     return comp;
 
