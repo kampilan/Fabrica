@@ -180,12 +180,13 @@ namespace Fabrica.Identity
                     Password      = password,
                     FirstName     = request.NewFirstName,
                     LastName      = request.NewLastName,
-                    FullName      = $"{request.NewFirstName} {request.NewLastName}",
+                    FullName      = $"{request.NewFirstName} {request.NewLastName}"
                 };
 
 
                 logger.Debug("Attempting to call Create");
                 var user = await Client.Users.CreateAsync(ucr);
+
 
 
                 // *****************************************************************

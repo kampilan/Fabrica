@@ -43,8 +43,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Identity.Auth0", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Work", "Fabrica.Work\Fabrica.Work.csproj", "{8449F594-FC67-41FE-816C-55D790694F5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Identity", "Fabrica.Identity\Fabrica.Identity.csproj", "{27F70E76-675B-453D-869E-CFC005913CAB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,10 +113,6 @@ Global
 		{8449F594-FC67-41FE-816C-55D790694F5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8449F594-FC67-41FE-816C-55D790694F5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8449F594-FC67-41FE-816C-55D790694F5E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27F70E76-675B-453D-869E-CFC005913CAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27F70E76-675B-453D-869E-CFC005913CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27F70E76-675B-453D-869E-CFC005913CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27F70E76-675B-453D-869E-CFC005913CAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,7 +134,6 @@ Global
 		{0D691923-2F48-4835-981C-E9310EF1E992} = {2E2E37FB-828B-4516-9A53-557B03BD4BC1}
 		{E1934D6F-2617-4A1C-92BF-DDB3386AAF7A} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 		{8449F594-FC67-41FE-816C-55D790694F5E} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
-		{27F70E76-675B-453D-869E-CFC005913CAB} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE8638D5-DE76-4377-8051-B8525AC1799D}
