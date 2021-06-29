@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "R8SoukwLshc/SGdeVVSSj0LzW6Qw+agGy+pMbUN65ErHxd3jw0tIlJ3acsn5CVSk53hvMwNCm5F6gYM8dvpltA==",
+  "dgSpecHash": "t6tYjGAKeGcqjJ/cyh4/IiUvnXPDwo8K89TcU8yLups/Ang0R8+zGic+prZ5UcUX+IUtdGeHDokhXiz9gI4pHw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Bridges\\Fabrica.Watch.Bridges.csproj",
   "expectedPackageFiles": [
@@ -44,7 +44,7 @@
     "f:\\.nuget\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.1\\yamldotnet.11.2.1.nupkg.sha512"
   ],
   "logs": []
 }

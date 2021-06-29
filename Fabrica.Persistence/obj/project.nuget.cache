@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1QejPYHgd2VRUzcBQ6UrOJpTHM2Tyf0ATn8Q7G9KgGypKYTR745iaQA+3ZWdwULWgJMB85+gIbcy+sPU5wINqA==",
+  "dgSpecHash": "SOFzIIajlOLKVb1IIWqQObp5qW5P0QBGvuXOmEx0MXNe4xkGFlEzRkzYQcZC/o3JbQXobDOssVo2fTXK2D3uLA==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Persistence\\Fabrica.Persistence.csproj",
   "expectedPackageFiles": [
@@ -65,7 +65,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading\\4.3.0\\system.threading.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.1\\yamldotnet.11.2.1.nupkg.sha512"
   ],
   "logs": []
 }

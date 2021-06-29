@@ -463,7 +463,7 @@
           "ref/netstandard1.3/_._": {}
         }
       },
-      "YamlDotNet/11.2.0": {
+      "YamlDotNet/11.2.1": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/YamlDotNet.dll": {}
@@ -487,7 +487,7 @@
           "Newtonsoft.Json": "13.0.1",
           "Polly.Contrib.WaitAndRetry": "1.1.1",
           "Sprache": "2.3.1",
-          "YamlDotNet": "11.2.0"
+          "YamlDotNet": "11.2.1"
         },
         "compile": {
           "bin/placeholder/Fabrica.dll": {}
@@ -1980,10 +1980,10 @@
         "system.threading.tasks.nuspec"
       ]
     },
-    "YamlDotNet/11.2.0": {
-      "sha512": "9PvAymQMmHAKSdzbUwlmZypyqTuz6AxYv7J1DcTSotKCsLwPxg69gH1fEHgGdbrNLDzJ6Q0W/jX+e10/fppbnw==",
+    "YamlDotNet/11.2.1": {
+      "sha512": "tBt8K+korVfrjH9wyDEhiLKxbs8qoLCLIFwvYgkSUuMC9//w3z0cFQ8LQAI/5MCKq+BMil0cfRTRvPeE7eXhQw==",
       "type": "package",
-      "path": "yamldotnet/11.2.0",
+      "path": "yamldotnet/11.2.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2001,7 +2001,7 @@
         "lib/netstandard1.3/YamlDotNet.xml",
         "lib/netstandard2.1/YamlDotNet.dll",
         "lib/netstandard2.1/YamlDotNet.xml",
-        "yamldotnet.11.2.0.nupkg.sha512",
+        "yamldotnet.11.2.1.nupkg.sha512",
         "yamldotnet.nuspec"
       ]
     },

@@ -27,10 +27,10 @@
           "lib/netstandard2.1/Autofac.Extensions.DependencyInjection.dll": {}
         }
       },
-      "AWSSDK.AppConfig/3.7.0.33": {
+      "AWSSDK.AppConfig/3.7.0.35": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.35, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.37, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {}
@@ -39,7 +39,7 @@
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {}
         }
       },
-      "AWSSDK.Core/3.7.0.35": {
+      "AWSSDK.Core/3.7.0.37": {
         "type": "package",
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
@@ -48,10 +48,10 @@
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
         }
       },
-      "AWSSDK.S3/3.7.1.5": {
+      "AWSSDK.S3/3.7.1.7": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.35, 4.0.0)"
+          "AWSSDK.Core": "[3.7.0.37, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {}
@@ -496,7 +496,7 @@
           "ref/netstandard1.3/_._": {}
         }
       },
-      "YamlDotNet/11.2.0": {
+      "YamlDotNet/11.2.1": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/YamlDotNet.dll": {}
@@ -520,7 +520,7 @@
           "Newtonsoft.Json": "13.0.1",
           "Polly.Contrib.WaitAndRetry": "1.1.1",
           "Sprache": "2.3.1",
-          "YamlDotNet": "11.2.0"
+          "YamlDotNet": "11.2.1"
         },
         "compile": {
           "bin/placeholder/Fabrica.dll": {}
@@ -571,16 +571,16 @@
         "lib/netstandard2.1/Autofac.Extensions.DependencyInjection.xml"
       ]
     },
-    "AWSSDK.AppConfig/3.7.0.33": {
-      "sha512": "UlidL8+tpLg6ZE5M3Ji97Hgksn2fKoByOTftv/pZyQYAEXFgaCBAaVD6+lrAcYhrzVpIZql/AWQraos+hJOH5Q==",
+    "AWSSDK.AppConfig/3.7.0.35": {
+      "sha512": "2XKSvXfKMq7A+GNpIHIw9ERKR07cT5vzeYNOWjynd1zE3oqSL9TadL5YbUDPndsKbEz9CgxOrg54aFjdnNimKg==",
       "type": "package",
-      "path": "awssdk.appconfig/3.7.0.33",
+      "path": "awssdk.appconfig/3.7.0.35",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.AppConfig.CodeAnalysis.dll",
-        "awssdk.appconfig.3.7.0.33.nupkg.sha512",
+        "awssdk.appconfig.3.7.0.35.nupkg.sha512",
         "awssdk.appconfig.nuspec",
         "lib/net35/AWSSDK.AppConfig.dll",
         "lib/net35/AWSSDK.AppConfig.pdb",
@@ -598,15 +598,15 @@
         "tools/uninstall.ps1"
       ]
     },
-    "AWSSDK.Core/3.7.0.35": {
-      "sha512": "bjPgNNSv8ZuT8MQ1EBQaEecAyAXbNh7Hp6WDDnU6/msdKtEGFyF0G3s6fvqqCMzBUWHFgobaD3zm487g3pJ4tg==",
+    "AWSSDK.Core/3.7.0.37": {
+      "sha512": "urpl1vl9PnwOqc4WXWj+MmuB/fHmzxVPmsjuu5j7FW0h0964aUuFbCJhM++ahu55JI7JlmKHSXxlCjKiJGHeyg==",
       "type": "package",
-      "path": "awssdk.core/3.7.0.35",
+      "path": "awssdk.core/3.7.0.37",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "awssdk.core.3.7.0.35.nupkg.sha512",
+        "awssdk.core.3.7.0.37.nupkg.sha512",
         "awssdk.core.nuspec",
         "lib/net35/AWSSDK.Core.dll",
         "lib/net35/AWSSDK.Core.pdb",
@@ -623,16 +623,16 @@
         "tools/account-management.ps1"
       ]
     },
-    "AWSSDK.S3/3.7.1.5": {
-      "sha512": "u4c+Ch5jQzuOox9XilExlUXwRuLOzyDOXoTFSWIv8Vd0snLVxGrJlaJtwJqa4uRJFy0O/D3KvBWJb6hgyMODpg==",
+    "AWSSDK.S3/3.7.1.7": {
+      "sha512": "E16Nhb9l+udVajJwz1+IMog3dUhIM49qGUd8mqoPKr0RAYiAmsFcUdJRwrjNLzCrh99rQEFj7Fa7BifCTL+vnw==",
       "type": "package",
-      "path": "awssdk.s3/3.7.1.5",
+      "path": "awssdk.s3/3.7.1.7",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.S3.CodeAnalysis.dll",
-        "awssdk.s3.3.7.1.5.nupkg.sha512",
+        "awssdk.s3.3.7.1.7.nupkg.sha512",
         "awssdk.s3.nuspec",
         "lib/net35/AWSSDK.S3.dll",
         "lib/net35/AWSSDK.S3.pdb",
@@ -2092,10 +2092,10 @@
         "system.threading.tasks.nuspec"
       ]
     },
-    "YamlDotNet/11.2.0": {
-      "sha512": "9PvAymQMmHAKSdzbUwlmZypyqTuz6AxYv7J1DcTSotKCsLwPxg69gH1fEHgGdbrNLDzJ6Q0W/jX+e10/fppbnw==",
+    "YamlDotNet/11.2.1": {
+      "sha512": "tBt8K+korVfrjH9wyDEhiLKxbs8qoLCLIFwvYgkSUuMC9//w3z0cFQ8LQAI/5MCKq+BMil0cfRTRvPeE7eXhQw==",
       "type": "package",
-      "path": "yamldotnet/11.2.0",
+      "path": "yamldotnet/11.2.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2113,7 +2113,7 @@
         "lib/netstandard1.3/YamlDotNet.xml",
         "lib/netstandard2.1/YamlDotNet.dll",
         "lib/netstandard2.1/YamlDotNet.xml",
-        "yamldotnet.11.2.0.nupkg.sha512",
+        "yamldotnet.11.2.1.nupkg.sha512",
         "yamldotnet.nuspec"
       ]
     },
@@ -2125,9 +2125,9 @@
   },
   "projectFileDependencyGroups": {
     "net5.0": [
-      "AWSSDK.AppConfig >= 3.7.0.33",
-      "AWSSDK.Core >= 3.7.0.35",
-      "AWSSDK.S3 >= 3.7.1.5",
+      "AWSSDK.AppConfig >= 3.7.0.35",
+      "AWSSDK.Core >= 3.7.0.37",
+      "AWSSDK.S3 >= 3.7.1.7",
       "Fabrica >= 1.0.0"
     ]
   },
@@ -2193,15 +2193,15 @@
         "dependencies": {
           "AWSSDK.AppConfig": {
             "target": "Package",
-            "version": "[3.7.0.33, )"
+            "version": "[3.7.0.35, )"
           },
           "AWSSDK.Core": {
             "target": "Package",
-            "version": "[3.7.0.35, )"
+            "version": "[3.7.0.37, )"
           },
           "AWSSDK.S3": {
             "target": "Package",
-            "version": "[3.7.1.5, )"
+            "version": "[3.7.1.7, )"
           }
         },
         "imports": [

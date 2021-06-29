@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qeY6MdsvGu3lYBTDYzLKDGE6ObCdSk451KPU4rWUv73LfKUUtJuDNSX1BX0LnX9IZRheMgt3Akqo4KIDvXlhhA==",
+  "dgSpecHash": "aFrmlxtrtkaPYOgofixUyigtg/XpCILDqSkRC5q1ewNtPUSdMyCx+TCqx2W/L8Bb6mein/Eb+9T2doRIwhQXQg==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj",
   "expectedPackageFiles": [
@@ -44,7 +44,7 @@
     "f:\\.nuget\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.1\\yamldotnet.11.2.1.nupkg.sha512"
   ],
   "logs": []
 }

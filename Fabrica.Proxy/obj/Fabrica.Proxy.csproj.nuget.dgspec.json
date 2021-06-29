@@ -156,23 +156,23 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.33, )"
+              "version": "[3.7.0.35, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.5, )"
+              "version": "[3.7.1.7, )"
             },
             "AWSSDK.SQS": {
               "target": "Package",
-              "version": "[3.7.0.34, )"
+              "version": "[3.7.0.36, )"
             },
             "AWSSDK.SecurityToken": {
               "target": "Package",
-              "version": "[3.7.1.22, )"
+              "version": "[3.7.1.24, )"
             },
             "AWSSDK.SimpleSystemsManagement": {
               "target": "Package",
-              "version": "[3.7.3.16, )"
+              "version": "[3.7.3.18, )"
             }
           },
           "imports": [
@@ -622,7 +622,7 @@
             },
             "YamlDotNet": {
               "target": "Package",
-              "version": "[11.2.0, )"
+              "version": "[11.2.1, )"
             }
           },
           "imports": [

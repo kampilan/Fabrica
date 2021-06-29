@@ -87,7 +87,7 @@ namespace Fabrica.Identity
             if ( HasExpired )
             {
                 logger.Debug("Attempting to fetch new token");
-                await _fetchToken();
+                Token = await _fetchToken();
             }
 
 
