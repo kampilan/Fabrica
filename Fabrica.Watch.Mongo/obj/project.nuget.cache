@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "b5Qr6yzxXNoLDnfzeKwYUmUnKI+aAI12Q4HNOTueH5qgRcgX5/eZCPOol9CPwsnxDm6QAZwMyCUOkmOitLUjzQ==",
+  "dgSpecHash": "iCVljJzeUpYpt8BCnle3yaVt+gNQ4DR3Ir+oQsxziECyBmMFYtjbSNHt0AZ8pOx/82MIbePU3cw7B3DvOZzD6g==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj",
   "expectedPackageFiles": [
@@ -55,7 +55,7 @@
     "f:\\.nuget\\system.text.encoding.codepages\\4.5.1\\system.text.encoding.codepages.4.5.1.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.1\\yamldotnet.11.2.1.nupkg.sha512"
   ],
   "logs": []
 }

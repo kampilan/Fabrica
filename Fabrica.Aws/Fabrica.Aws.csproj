@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.0.33" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.1.5" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.22" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.3.16" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.7.0.34" />
+    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.0.35" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.1.7" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.24" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.3.18" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.0.36" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "fVRoqfOZ9aTsyd5UKpsRY7zaE++XUCmGvCrdLnOpLvE3bII5SsrpuUZk7fj2ogeThCBv1N6e1+Yt7oSlcwPlNw==",
+  "dgSpecHash": "y5raMp/1dk92FbrD8NGspv9HfkFT4IAmGfM2Ytm6gtTyPaCLvfuyj1EjWJb580wRN+YYKxrj4mhK8Y6z57GUoQ==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Tests\\Fabrica.Tests.csproj",
   "expectedPackageFiles": [
@@ -56,7 +56,7 @@
     "f:\\.nuget\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "f:\\.nuget\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "f:\\.nuget\\yamldotnet\\11.2.0\\yamldotnet.11.2.0.nupkg.sha512"
+    "f:\\.nuget\\yamldotnet\\11.2.1\\yamldotnet.11.2.1.nupkg.sha512"
   ],
   "logs": []
 }
