@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Fabrica.Models.Patch.Builder;
+
 // ReSharper disable UnusedMember.Local
 
 namespace Fabrica.Models.Support
@@ -79,6 +80,7 @@ namespace Fabrica.Models.Support
         {
             return _isAdded;
         }
+
         public void Added()
         {
             if (!_isReadonly)
@@ -97,6 +99,7 @@ namespace Fabrica.Models.Support
         {
             return _isRemoved;
         }
+
         public void Removed()
         {
 

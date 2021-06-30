@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright (c) 2021 The Kampilan Group Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ using Fabrica.Identity;
 using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Audit;
+using Fabrica.Persistence.Rules;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Threading;
@@ -57,7 +58,7 @@ namespace Fabrica.Persistence.Contexts
         }
 
 
-        public bool EvaluationEntities { get; set; } = true;
+        public bool EvaluatateEntities { get; set; } = true;
 
         protected IRuleSet Rules { get; }
 
@@ -135,11 +136,39 @@ namespace Fabrica.Persistence.Contexts
 
 
                     // *****************************************************************
-                    if (EvaluationEntities && (entry.State is EntityState.Added or EntityState.Modified))
+                    if( EvaluatateEntities && (entry.State is EntityState.Added or EntityState.Modified or EntityState.Deleted) && entry.Entity is IMutableModel mutable )
                     {
 
-                        logger.Debug("Attempting to add created and updated entities to evaluation context");
-                        context.AddFacts(entry.Entity);
+                        
+                        switch (entry.State)
+                        {
+
+                            case EntityState.Deleted:
+
+                                var dm = mutable.ForDeleted();
+                                context.AddFacts( dm );
+                                break;
+
+                            case EntityState.Modified:
+
+                                var um = mutable.ForUpdate();
+                                context.AddFacts(um);
+                                context.AddFacts( mutable );
+                                break;
+
+                            case EntityState.Added:
+
+                                var cm = mutable.ForCreate();
+                                context.AddFacts(cm);
+                                context.AddFacts(mutable);
+                                break;
+
+                            default:
+                                continue;
+
+                        }
+
+
                     }
 
 
