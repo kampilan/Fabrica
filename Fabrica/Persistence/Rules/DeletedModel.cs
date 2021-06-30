@@ -15,7 +15,7 @@ namespace Fabrica.Persistence.Rules
 
         public TModel Target { get; private set; }
 
-        void IDeletedModel.SetTarget(object model)
+        public void SetTarget(object model)
         {
             if (model is TModel tm)
                 Target = tm;
