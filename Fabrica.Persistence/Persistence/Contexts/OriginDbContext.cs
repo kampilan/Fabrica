@@ -34,6 +34,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Audit;
 using Fabrica.Persistence.Rules;
 using Fabrica.Rules;
+using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
@@ -179,9 +180,14 @@ namespace Fabrica.Persistence.Contexts
                 // *****************************************************************
                 logger.Debug("Attempting to evaluate added and modified entities");
                 context.ThrowNoRulesException = false;
-                context.ThrowValidationException = true;
+                context.ThrowValidationException = false;
 
-                Rules.Evaluate(context);
+                var er = Rules.Evaluate(context);
+
+                logger.LogObject(nameof(er), er);
+
+                if( er.HasViolations )
+                    throw new ViolationsExistException(er);
 
 
 
