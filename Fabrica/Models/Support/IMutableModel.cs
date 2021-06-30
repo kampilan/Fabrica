@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using Fabrica.Models.Patch.Builder;
+using Fabrica.Persistence.Rules;
 using JetBrains.Annotations;
 
 namespace Fabrica.Models.Support
@@ -14,12 +15,16 @@ namespace Fabrica.Models.Support
         bool IsReadonly();
         void Readonly();
 
+
         bool IsAdded();
+
         void Added();
 
         bool IsModified();
 
+
         bool IsRemoved();
+
         void Removed();
 
         void Undo();
@@ -33,6 +38,9 @@ namespace Fabrica.Models.Support
 
         void OnCreate();
         void OnModification();
+
+
+
 
 
     }
