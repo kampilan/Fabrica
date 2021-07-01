@@ -32,6 +32,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             return Task.FromResult( new TChild() );
         }
 
+        protected sealed override Func<TDbContext,IQueryable<TChild>> One => c => c.Set<TChild>().AsQueryable();
         protected abstract Func<TDbContext,IQueryable<TParent>> OneParent { get; }
         protected abstract Action<TParent,TChild> Attach { get; }
 
