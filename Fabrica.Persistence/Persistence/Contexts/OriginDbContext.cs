@@ -137,40 +137,9 @@ namespace Fabrica.Persistence.Contexts
 
 
                     // *****************************************************************
-                    if( EvaluatateEntities && (entry.State is EntityState.Added or EntityState.Modified or EntityState.Deleted) && entry.Entity is IMutableModel mutable )
-                    {
+                    if( EvaluatateEntities && (entry.State is EntityState.Added or EntityState.Modified) )
+                        context.AddFacts(entry.Entity);
 
-                        
-                        switch (entry.State)
-                        {
-
-                            case EntityState.Deleted:
-
-                                var dm = mutable.ForDeleted();
-                                context.AddFacts( dm );
-                                break;
-
-                            case EntityState.Modified:
-
-                                var um = mutable.ForUpdate();
-                                context.AddFacts(um);
-                                context.AddFacts( mutable );
-                                break;
-
-                            case EntityState.Added:
-
-                                var cm = mutable.ForCreate();
-                                context.AddFacts(cm);
-                                context.AddFacts(mutable);
-                                break;
-
-                            default:
-                                continue;
-
-                        }
-
-
-                    }
 
 
                 }
