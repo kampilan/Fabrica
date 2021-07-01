@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,6 +23,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
         protected BaseMemberCreateHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper ) : base( correlation, meta, uow, context, mapper )
         {
+
         }
 
 
@@ -30,10 +32,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
             return Task.FromResult( new TChild() );
         }
 
-
-        protected abstract IQueryable<TParent> GetParentQueryable();
-
-        protected abstract void AttachToParent( TParent parent, TChild child );
+        protected abstract Func<TDbContext,IQueryable<TParent>> OneParent { get; }
+        protected abstract Action<TParent,TChild> Attach { get; }
 
 
         protected override async Task<TChild> Perform(CancellationToken cancellationToken = default)
@@ -44,7 +44,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to fetch parent using ParentUid");
-            var parent = await GetParentQueryable().SingleOrDefaultAsync(e => e.Uid == Request.ParentUid, cancellationToken: cancellationToken);
+            var parent = await OneParent(Context).SingleOrDefaultAsync(e => e.Uid == Request.ParentUid, cancellationToken: cancellationToken);
             if (parent is null)
                 throw new NotFoundException( $"Could not find Parent ({typeof(TParent).Name}) using ParentUid = ({Request.ParentUid}) for Child ({typeof(TChild)})" );
 
@@ -60,7 +60,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to Attach Child to Parent");
-            AttachToParent( parent, child );
+            Attach( parent, child );
 
 
             // *****************************************************************
