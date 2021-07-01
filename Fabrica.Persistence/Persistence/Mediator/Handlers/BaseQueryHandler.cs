@@ -34,14 +34,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected TDbContext Context { get; }
 
 
-        protected virtual IQueryable<TResponse> GetQueryable()
-        {
+        protected abstract Func<TDbContext,IQueryable<TResponse>> Many { get; }
 
-            using var logger = EnterMethod();
-
-            return Context.Set<TResponse>().AsQueryable();
-
-        }
 
         protected async Task<List<TResponse>> ProcessFilters([NotNull] IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token)
         {
@@ -70,7 +64,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             // *****************************************************************
             logger.Debug("Attempting to process each given filter");
             var set = new HashSet<TResponse>();
-            foreach (var queryable in filterList.Select(filter => filter.ToExpression()).Select(predicate => GetQueryable().Where(predicate)))
+            foreach (var queryable in filterList.Select(filter => filter.ToExpression()).Select(predicate => Many(Context).Where(predicate)))
             {
                 var result = await queryable.ToListAsync(cancellationToken: token);
                 set.UnionWith(result);

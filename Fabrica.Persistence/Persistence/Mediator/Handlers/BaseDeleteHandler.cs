@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
@@ -30,35 +31,47 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected IUnitOfWork Uow { get; }
         protected TDbContext Context { get; }
 
-        protected virtual IQueryable<TModel> GetQueryable()
+
+        protected abstract Func<TDbContext,IQueryable<TModel>> One { get; }
+
+        protected TModel Entity { get; private set; }
+
+
+        protected override async Task Before()
         {
 
             using var logger = EnterMethod();
+            
+            await  base.Before();
 
-            return Context.Set<TModel>().AsQueryable();
+
+            // *****************************************************************
+            logger.Debug("Attempting to fetch one entity");
+            var entity = await One(Context).SingleOrDefaultAsync(e => e.Uid == Request.Uid);
+
+            if (entity is null)
+                throw new NotFoundException($"Could not find {typeof(TModel).Name} using Uid ({Request.Uid})");
+
+            logger.LogObject(nameof(entity), entity);
+
+
+            Entity = entity;
 
 
         }
 
-        protected override async Task Perform(CancellationToken cancellationToken = default)
+        protected override Task Perform(CancellationToken cancellationToken = default)
         {
 
             using var logger = EnterMethod();
 
 
             // *****************************************************************
-            logger.Debug("Attempting to fetch one entity by uid");
-            var entity = await GetQueryable().SingleOrDefaultAsync( e => e.Uid == Request.Uid, cancellationToken: cancellationToken );
-
-            if (entity is null)
-                throw new NotFoundException($"Could not find {typeof(TModel).Name} using Uid = ({Request.Uid})");
-
-
-
-            // *****************************************************************
             logger.Debug("Attempting to remove entity");
-            Context.Remove(entity);
+            Context.Remove(Entity);
 
+
+            return Task.CompletedTask;
 
         }
 

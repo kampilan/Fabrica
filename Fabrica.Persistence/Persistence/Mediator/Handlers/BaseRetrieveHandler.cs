@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
@@ -29,7 +30,8 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected TDbContext Context { get; }
 
 
-        protected abstract IQueryable<TResponse> GetQueryable();
+        protected abstract Func<TDbContext, IQueryable<TResponse>> One { get; }
+
 
         protected override async Task<TResponse> Perform( CancellationToken cancellationToken=default )
         {
@@ -39,7 +41,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to fetch one entity");
-            var entity = await GetQueryable().SingleOrDefaultAsync(e => e.Uid == Request.Uid, cancellationToken: cancellationToken);
+            var entity = await One(Context).SingleOrDefaultAsync(e => e.Uid == Request.Uid, cancellationToken: cancellationToken);
 
             if (entity is null)
                 throw new NotFoundException($"Could not find {typeof(TResponse).Name} using Uid = ({Request.Uid})");
