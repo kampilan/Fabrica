@@ -20,25 +20,25 @@
           "Fabrica.Tests.dll": {}
         }
       },
-      "Auth0.Core/7.8.0": {
+      "Auth0.Core/7.8.1": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
           "lib/netstandard2.0/Auth0.Core.dll": {
-            "assemblyVersion": "7.8.0.0",
-            "fileVersion": "7.8.0.0"
+            "assemblyVersion": "7.8.1.0",
+            "fileVersion": "7.8.1.0"
           }
         }
       },
-      "Auth0.ManagementApi/7.8.0": {
+      "Auth0.ManagementApi/7.8.1": {
         "dependencies": {
-          "Auth0.Core": "7.8.0"
+          "Auth0.Core": "7.8.1"
         },
         "runtime": {
           "lib/netstandard2.0/Auth0.ManagementApi.dll": {
-            "assemblyVersion": "7.8.0.0",
-            "fileVersion": "7.8.0.0"
+            "assemblyVersion": "7.8.1.0",
+            "fileVersion": "7.8.1.0"
           }
         }
       },
@@ -721,7 +721,7 @@
       },
       "Fabrica.Identity.Auth0/1.0.0": {
         "dependencies": {
-          "Auth0.ManagementApi": "7.8.0",
+          "Auth0.ManagementApi": "7.8.1",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -744,19 +744,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Auth0.Core/7.8.0": {
+    "Auth0.Core/7.8.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Dgibq1dhymU/o4E/frfjZRyJP0vBpZDNWWQJMBD3f7fhL3wL4GFxFxJlCPr4LDx/+LD9npWmPTqR2SPZh9di3Q==",
-      "path": "auth0.core/7.8.0",
-      "hashPath": "auth0.core.7.8.0.nupkg.sha512"
+      "sha512": "sha512-KEJeym3Rut8Wo03r7wxRGlSgtGZ0nNGdZSsJ1oA+hrPWg8TFtLEfdUw4LeTTegBO9LB1iO8UA2KGZ7l8/IASxw==",
+      "path": "auth0.core/7.8.1",
+      "hashPath": "auth0.core.7.8.1.nupkg.sha512"
     },
-    "Auth0.ManagementApi/7.8.0": {
+    "Auth0.ManagementApi/7.8.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-bJNaaI/6aK5IUvmfI1XxTmDPcfBzDMmNhPVQDhrGrZC5ZM5Koxr7zh6u5e8FYD1fY9xDUD2DD0E6PcKvyJKsWg==",
-      "path": "auth0.managementapi/7.8.0",
-      "hashPath": "auth0.managementapi.7.8.0.nupkg.sha512"
+      "sha512": "sha512-Nka48UPFmM2GJnYGAa5F/vm2uNGVqaBwpjBHS5K4GYj6pZZ+V8wMhVrEDwzcknSEbYZ+/ofMGx4vNnRlzdTgDQ==",
+      "path": "auth0.managementapi/7.8.1",
+      "hashPath": "auth0.managementapi.7.8.1.nupkg.sha512"
     },
     "Autofac/6.2.0": {
       "type": "package",

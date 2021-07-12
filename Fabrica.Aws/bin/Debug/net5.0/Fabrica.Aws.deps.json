@@ -8,11 +8,11 @@
     ".NETCoreApp,Version=v5.0": {
       "Fabrica.Aws/1.0.0": {
         "dependencies": {
-          "AWSSDK.AppConfig": "3.7.0.35",
-          "AWSSDK.S3": "3.7.1.7",
-          "AWSSDK.SQS": "3.7.0.36",
-          "AWSSDK.SecurityToken": "3.7.1.24",
-          "AWSSDK.SimpleSystemsManagement": "3.7.3.18",
+          "AWSSDK.AppConfig": "3.7.0.40",
+          "AWSSDK.S3": "3.7.1.12",
+          "AWSSDK.SQS": "3.7.0.41",
+          "AWSSDK.SecurityToken": "3.7.1.30",
+          "AWSSDK.SimpleSystemsManagement": "3.7.3.23",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -42,66 +42,66 @@
           }
         }
       },
-      "AWSSDK.AppConfig/3.7.0.35": {
+      "AWSSDK.AppConfig/3.7.0.40": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.35"
+            "fileVersion": "3.7.0.40"
           }
         }
       },
-      "AWSSDK.Core/3.7.0.37": {
+      "AWSSDK.Core/3.7.0.42": {
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.37"
+            "fileVersion": "3.7.0.42"
           }
         }
       },
-      "AWSSDK.S3/3.7.1.7": {
+      "AWSSDK.S3/3.7.1.12": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.1.7"
+            "fileVersion": "3.7.1.12"
           }
         }
       },
-      "AWSSDK.SecurityToken/3.7.1.24": {
+      "AWSSDK.SecurityToken/3.7.1.30": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SecurityToken.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.1.24"
+            "fileVersion": "3.7.1.30"
           }
         }
       },
-      "AWSSDK.SimpleSystemsManagement/3.7.3.18": {
+      "AWSSDK.SimpleSystemsManagement/3.7.3.23": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SimpleSystemsManagement.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.3.18"
+            "fileVersion": "3.7.3.23"
           }
         }
       },
-      "AWSSDK.SQS/3.7.0.36": {
+      "AWSSDK.SQS/3.7.0.41": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.SQS.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.36"
+            "fileVersion": "3.7.0.41"
           }
         }
       },
@@ -483,47 +483,47 @@
       "path": "autofac.extensions.dependencyinjection/7.1.0",
       "hashPath": "autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512"
     },
-    "AWSSDK.AppConfig/3.7.0.35": {
+    "AWSSDK.AppConfig/3.7.0.40": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-2XKSvXfKMq7A+GNpIHIw9ERKR07cT5vzeYNOWjynd1zE3oqSL9TadL5YbUDPndsKbEz9CgxOrg54aFjdnNimKg==",
-      "path": "awssdk.appconfig/3.7.0.35",
-      "hashPath": "awssdk.appconfig.3.7.0.35.nupkg.sha512"
+      "sha512": "sha512-Z/Ba+DUaamxty72aYE/AnGUrDSkUtYY1e7KEN+b7pb9xCc8dgkYqpz2wYi3UyUN0rj2fy5uXTo7rOu5DF3QV0g==",
+      "path": "awssdk.appconfig/3.7.0.40",
+      "hashPath": "awssdk.appconfig.3.7.0.40.nupkg.sha512"
     },
-    "AWSSDK.Core/3.7.0.37": {
+    "AWSSDK.Core/3.7.0.42": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-urpl1vl9PnwOqc4WXWj+MmuB/fHmzxVPmsjuu5j7FW0h0964aUuFbCJhM++ahu55JI7JlmKHSXxlCjKiJGHeyg==",
-      "path": "awssdk.core/3.7.0.37",
-      "hashPath": "awssdk.core.3.7.0.37.nupkg.sha512"
+      "sha512": "sha512-+5A5o248NToq22nUoOv8jPDscwZdL+eyNJqOCFlznLrBLXd9XjYkJ8UBnBpqbAm4SyY/7v/miT4k8fZ8KauyOg==",
+      "path": "awssdk.core/3.7.0.42",
+      "hashPath": "awssdk.core.3.7.0.42.nupkg.sha512"
     },
-    "AWSSDK.S3/3.7.1.7": {
+    "AWSSDK.S3/3.7.1.12": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-E16Nhb9l+udVajJwz1+IMog3dUhIM49qGUd8mqoPKr0RAYiAmsFcUdJRwrjNLzCrh99rQEFj7Fa7BifCTL+vnw==",
-      "path": "awssdk.s3/3.7.1.7",
-      "hashPath": "awssdk.s3.3.7.1.7.nupkg.sha512"
+      "sha512": "sha512-bo4wRds/mSnbCYw45ecesAEmABVgnigSMnea1FHEI6Z0dTQ8/INRzSsOwFD584nC5xe5sSFyn/VXBnUluc274A==",
+      "path": "awssdk.s3/3.7.1.12",
+      "hashPath": "awssdk.s3.3.7.1.12.nupkg.sha512"
     },
-    "AWSSDK.SecurityToken/3.7.1.24": {
+    "AWSSDK.SecurityToken/3.7.1.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-iPmtnOPV6ZqyhlhjtDYVt/0MOmDP6AbdYAnGaZQ7TRqKSrLJpyvvQUR7aiPacpDxx8xM4KGa/q1s85rWIQIqBA==",
-      "path": "awssdk.securitytoken/3.7.1.24",
-      "hashPath": "awssdk.securitytoken.3.7.1.24.nupkg.sha512"
+      "sha512": "sha512-jzajVKjnRyKVbmvzQcIuQcULCrA4hbe3SbXr0ML4yH8ts6FBAbLn2NWnubWqCNHRgRqB20aae7GFcbKivMBtAw==",
+      "path": "awssdk.securitytoken/3.7.1.30",
+      "hashPath": "awssdk.securitytoken.3.7.1.30.nupkg.sha512"
     },
-    "AWSSDK.SimpleSystemsManagement/3.7.3.18": {
+    "AWSSDK.SimpleSystemsManagement/3.7.3.23": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-G1ic1Ys48fCNwXUXIA+pIpa9bMQwii+9vzhpDi0wxJ0j4LJkXvB+Vpsu4oIwrVZdeEEu12cRcqsiW6GRw3sQ1w==",
-      "path": "awssdk.simplesystemsmanagement/3.7.3.18",
-      "hashPath": "awssdk.simplesystemsmanagement.3.7.3.18.nupkg.sha512"
+      "sha512": "sha512-tCrlMqbqz6pZ992H2XxJSYSh+h7pOw2JmC03MYH/riyy8nJz9h5lhH3rdZetFuDD2k8SgJ9Plv1BFWvOJL9vzA==",
+      "path": "awssdk.simplesystemsmanagement/3.7.3.23",
+      "hashPath": "awssdk.simplesystemsmanagement.3.7.3.23.nupkg.sha512"
     },
-    "AWSSDK.SQS/3.7.0.36": {
+    "AWSSDK.SQS/3.7.0.41": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/1Nvqpzp9O712lgC61P99J0hV40x2JbXvGZw/0g3SrUuYArbYmeImS9BedILop6fOJnLj14Wx97gslnP+5pc4A==",
-      "path": "awssdk.sqs/3.7.0.36",
-      "hashPath": "awssdk.sqs.3.7.0.36.nupkg.sha512"
+      "sha512": "sha512-k22HM1BBldekgmmEyrDRbg96pylIJGvnMrXp+7WD5WMPKAbXk0j54lgejn44LOU5Y8oF7whkU6pwv2Kr8MhoCQ==",
+      "path": "awssdk.sqs/3.7.0.41",
+      "hashPath": "awssdk.sqs.3.7.0.41.nupkg.sha512"
     },
     "JetBrains.Annotations/2021.1.0": {
       "type": "package",

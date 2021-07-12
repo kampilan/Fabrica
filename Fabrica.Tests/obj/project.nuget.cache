@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "y5raMp/1dk92FbrD8NGspv9HfkFT4IAmGfM2Ytm6gtTyPaCLvfuyj1EjWJb580wRN+YYKxrj4mhK8Y6z57GUoQ==",
+  "dgSpecHash": "/B98dAwlMnq/pjdDu9GaF48GxaFF8nQRaOn54N57Ar4ZvUYNXSemyFLYjinkqA/GVywWU1SwgZYbxHh24EF4Uw==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Tests\\Fabrica.Tests.csproj",
   "expectedPackageFiles": [
-    "f:\\.nuget\\auth0.core\\7.8.0\\auth0.core.7.8.0.nupkg.sha512",
-    "f:\\.nuget\\auth0.managementapi\\7.8.0\\auth0.managementapi.7.8.0.nupkg.sha512",
+    "f:\\.nuget\\auth0.core\\7.8.1\\auth0.core.7.8.1.nupkg.sha512",
+    "f:\\.nuget\\auth0.managementapi\\7.8.1\\auth0.managementapi.7.8.1.nupkg.sha512",
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
