@@ -59,23 +59,23 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.35, )"
+              "version": "[3.7.0.40, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.7, )"
+              "version": "[3.7.1.12, )"
             },
             "AWSSDK.SQS": {
               "target": "Package",
-              "version": "[3.7.0.36, )"
+              "version": "[3.7.0.41, )"
             },
             "AWSSDK.SecurityToken": {
               "target": "Package",
-              "version": "[3.7.1.24, )"
+              "version": "[3.7.1.30, )"
             },
             "AWSSDK.SimpleSystemsManagement": {
               "target": "Package",
-              "version": "[3.7.3.18, )"
+              "version": "[3.7.3.23, )"
             }
           },
           "imports": [
@@ -152,15 +152,15 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.35, )"
+              "version": "[3.7.0.40, )"
             },
             "AWSSDK.Core": {
               "target": "Package",
-              "version": "[3.7.0.37, )"
+              "version": "[3.7.0.42, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.7, )"
+              "version": "[3.7.1.12, )"
             }
           },
           "imports": [

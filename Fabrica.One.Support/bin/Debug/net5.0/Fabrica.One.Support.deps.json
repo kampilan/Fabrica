@@ -8,9 +8,9 @@
     ".NETCoreApp,Version=v5.0": {
       "Fabrica.One.Support/1.0.0": {
         "dependencies": {
-          "AWSSDK.AppConfig": "3.7.0.35",
-          "AWSSDK.Core": "3.7.0.37",
-          "AWSSDK.S3": "3.7.1.7",
+          "AWSSDK.AppConfig": "3.7.0.40",
+          "AWSSDK.Core": "3.7.0.42",
+          "AWSSDK.S3": "3.7.1.12",
           "Fabrica": "1.0.0"
         },
         "runtime": {
@@ -40,33 +40,33 @@
           }
         }
       },
-      "AWSSDK.AppConfig/3.7.0.35": {
+      "AWSSDK.AppConfig/3.7.0.40": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.AppConfig.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.35"
+            "fileVersion": "3.7.0.40"
           }
         }
       },
-      "AWSSDK.Core/3.7.0.37": {
+      "AWSSDK.Core/3.7.0.42": {
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.0.37"
+            "fileVersion": "3.7.0.42"
           }
         }
       },
-      "AWSSDK.S3/3.7.1.7": {
+      "AWSSDK.S3/3.7.1.12": {
         "dependencies": {
-          "AWSSDK.Core": "3.7.0.37"
+          "AWSSDK.Core": "3.7.0.42"
         },
         "runtime": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
             "assemblyVersion": "3.3.0.0",
-            "fileVersion": "3.7.1.7"
+            "fileVersion": "3.7.1.12"
           }
         }
       },
@@ -448,26 +448,26 @@
       "path": "autofac.extensions.dependencyinjection/7.1.0",
       "hashPath": "autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512"
     },
-    "AWSSDK.AppConfig/3.7.0.35": {
+    "AWSSDK.AppConfig/3.7.0.40": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-2XKSvXfKMq7A+GNpIHIw9ERKR07cT5vzeYNOWjynd1zE3oqSL9TadL5YbUDPndsKbEz9CgxOrg54aFjdnNimKg==",
-      "path": "awssdk.appconfig/3.7.0.35",
-      "hashPath": "awssdk.appconfig.3.7.0.35.nupkg.sha512"
+      "sha512": "sha512-Z/Ba+DUaamxty72aYE/AnGUrDSkUtYY1e7KEN+b7pb9xCc8dgkYqpz2wYi3UyUN0rj2fy5uXTo7rOu5DF3QV0g==",
+      "path": "awssdk.appconfig/3.7.0.40",
+      "hashPath": "awssdk.appconfig.3.7.0.40.nupkg.sha512"
     },
-    "AWSSDK.Core/3.7.0.37": {
+    "AWSSDK.Core/3.7.0.42": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-urpl1vl9PnwOqc4WXWj+MmuB/fHmzxVPmsjuu5j7FW0h0964aUuFbCJhM++ahu55JI7JlmKHSXxlCjKiJGHeyg==",
-      "path": "awssdk.core/3.7.0.37",
-      "hashPath": "awssdk.core.3.7.0.37.nupkg.sha512"
+      "sha512": "sha512-+5A5o248NToq22nUoOv8jPDscwZdL+eyNJqOCFlznLrBLXd9XjYkJ8UBnBpqbAm4SyY/7v/miT4k8fZ8KauyOg==",
+      "path": "awssdk.core/3.7.0.42",
+      "hashPath": "awssdk.core.3.7.0.42.nupkg.sha512"
     },
-    "AWSSDK.S3/3.7.1.7": {
+    "AWSSDK.S3/3.7.1.12": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-E16Nhb9l+udVajJwz1+IMog3dUhIM49qGUd8mqoPKr0RAYiAmsFcUdJRwrjNLzCrh99rQEFj7Fa7BifCTL+vnw==",
-      "path": "awssdk.s3/3.7.1.7",
-      "hashPath": "awssdk.s3.3.7.1.7.nupkg.sha512"
+      "sha512": "sha512-bo4wRds/mSnbCYw45ecesAEmABVgnigSMnea1FHEI6Z0dTQ8/INRzSsOwFD584nC5xe5sSFyn/VXBnUluc274A==",
+      "path": "awssdk.s3/3.7.1.12",
+      "hashPath": "awssdk.s3.3.7.1.12.nupkg.sha512"
     },
     "JetBrains.Annotations/2021.1.0": {
       "type": "package",

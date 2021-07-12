@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "YJk3Bhbt5XZrIKnjF/DYbU1Hd2mbOTsKcxIesiLLWPtjHoshFLeMVTVk/xfmJTc4yXGdEKEkFgnW2YX0+xxRZw==",
+  "dgSpecHash": "uYoAxUie1ANfReUpGIL2PmnvjgHU2vLLc8wNquYYgI1BOdR4v1wcUes8fx2FDjEzwVwzvBI6M5xyTnXwSFb5IA==",
   "success": true,
   "projectFilePath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.One.Support\\Fabrica.One.Support.csproj",
   "expectedPackageFiles": [
     "f:\\.nuget\\autofac\\6.2.0\\autofac.6.2.0.nupkg.sha512",
     "f:\\.nuget\\autofac.extensions.dependencyinjection\\7.1.0\\autofac.extensions.dependencyinjection.7.1.0.nupkg.sha512",
-    "f:\\.nuget\\awssdk.appconfig\\3.7.0.35\\awssdk.appconfig.3.7.0.35.nupkg.sha512",
-    "f:\\.nuget\\awssdk.core\\3.7.0.37\\awssdk.core.3.7.0.37.nupkg.sha512",
-    "f:\\.nuget\\awssdk.s3\\3.7.1.7\\awssdk.s3.3.7.1.7.nupkg.sha512",
+    "f:\\.nuget\\awssdk.appconfig\\3.7.0.40\\awssdk.appconfig.3.7.0.40.nupkg.sha512",
+    "f:\\.nuget\\awssdk.core\\3.7.0.42\\awssdk.core.3.7.0.42.nupkg.sha512",
+    "f:\\.nuget\\awssdk.s3\\3.7.1.12\\awssdk.s3.3.7.1.12.nupkg.sha512",
     "f:\\.nuget\\jetbrains.annotations\\2021.1.0\\jetbrains.annotations.2021.1.0.nupkg.sha512",
     "f:\\.nuget\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
     "f:\\.nuget\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",

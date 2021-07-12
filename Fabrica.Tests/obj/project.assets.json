@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net5.0": {
-      "Auth0.Core/7.8.0": {
+      "Auth0.Core/7.8.1": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "12.0.3"
@@ -14,10 +14,10 @@
           "lib/netstandard2.0/Auth0.Core.dll": {}
         }
       },
-      "Auth0.ManagementApi/7.8.0": {
+      "Auth0.ManagementApi/7.8.1": {
         "type": "package",
         "dependencies": {
-          "Auth0.Core": "7.8.0"
+          "Auth0.Core": "7.8.1"
         },
         "compile": {
           "lib/netstandard2.0/Auth0.ManagementApi.dll": {}
@@ -869,7 +869,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "Auth0.ManagementApi": "7.8.0",
+          "Auth0.ManagementApi": "7.8.1",
           "Fabrica": "1.0.0"
         },
         "compile": {
@@ -895,15 +895,15 @@
     }
   },
   "libraries": {
-    "Auth0.Core/7.8.0": {
-      "sha512": "Dgibq1dhymU/o4E/frfjZRyJP0vBpZDNWWQJMBD3f7fhL3wL4GFxFxJlCPr4LDx/+LD9npWmPTqR2SPZh9di3Q==",
+    "Auth0.Core/7.8.1": {
+      "sha512": "KEJeym3Rut8Wo03r7wxRGlSgtGZ0nNGdZSsJ1oA+hrPWg8TFtLEfdUw4LeTTegBO9LB1iO8UA2KGZ7l8/IASxw==",
       "type": "package",
-      "path": "auth0.core/7.8.0",
+      "path": "auth0.core/7.8.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Auth0Icon.png",
-        "auth0.core.7.8.0.nupkg.sha512",
+        "auth0.core.7.8.1.nupkg.sha512",
         "auth0.core.nuspec",
         "lib/net452/Auth0.Core.dll",
         "lib/net452/Auth0.Core.xml",
@@ -911,15 +911,15 @@
         "lib/netstandard2.0/Auth0.Core.xml"
       ]
     },
-    "Auth0.ManagementApi/7.8.0": {
-      "sha512": "bJNaaI/6aK5IUvmfI1XxTmDPcfBzDMmNhPVQDhrGrZC5ZM5Koxr7zh6u5e8FYD1fY9xDUD2DD0E6PcKvyJKsWg==",
+    "Auth0.ManagementApi/7.8.1": {
+      "sha512": "Nka48UPFmM2GJnYGAa5F/vm2uNGVqaBwpjBHS5K4GYj6pZZ+V8wMhVrEDwzcknSEbYZ+/ofMGx4vNnRlzdTgDQ==",
       "type": "package",
-      "path": "auth0.managementapi/7.8.0",
+      "path": "auth0.managementapi/7.8.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Auth0Icon.png",
-        "auth0.managementapi.7.8.0.nupkg.sha512",
+        "auth0.managementapi.7.8.1.nupkg.sha512",
         "auth0.managementapi.nuspec",
         "lib/net452/Auth0.ManagementApi.dll",
         "lib/net452/Auth0.ManagementApi.xml",

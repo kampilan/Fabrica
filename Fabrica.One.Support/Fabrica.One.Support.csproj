@@ -9,9 +9,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
-    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.0.35" />
-    <PackageReference Include="AWSSDK.Core" Version="3.7.0.37" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.1.7" />
+    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.0.40" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.0.42" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.1.12" />
   </ItemGroup>
 
 </Project>
