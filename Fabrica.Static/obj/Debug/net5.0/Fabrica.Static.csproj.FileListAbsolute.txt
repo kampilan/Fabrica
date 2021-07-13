@@ -45,11 +45,9 @@ E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Aws.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Watch.Bridges.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Watch.Mongo.dll
-E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Watch.Realtime.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Api.Support.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Watch.Bridges.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Watch.Mongo.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Static\bin\Debug\net5.0\Fabrica.Aws.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Static\obj\Debug\net5.0\Fabrica.Static.csproj.AssemblyReference.cache

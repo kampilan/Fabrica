@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Identity.Auth0\Fabrica.Identity.Auth0.csproj" />
-    <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 

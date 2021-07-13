@@ -6,11 +6,9 @@ E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Aws.d
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Bridges.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Mongo.dll
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Realtime.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Aws.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Bridges.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Mongo.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\bin\Debug\net5.0\Fabrica.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.csproj.AssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.Api.Support\obj\Debug\net5.0\Fabrica.Api.Support.GeneratedMSBuildEditorConfig.editorconfig
