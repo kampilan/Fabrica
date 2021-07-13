@@ -878,19 +878,6 @@
         "runtime": {
           "bin/placeholder/Fabrica.Identity.Auth0.dll": {}
         }
-      },
-      "Fabrica.Watch.Realtime/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v5.0",
-        "dependencies": {
-          "Fabrica": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Fabrica.Watch.Realtime.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Fabrica.Watch.Realtime.dll": {}
-        }
       }
     }
   },
@@ -3245,18 +3232,12 @@
       "type": "project",
       "path": "../Fabrica.Identity.Auth0/Fabrica.Identity.Auth0.csproj",
       "msbuildProject": "../Fabrica.Identity.Auth0/Fabrica.Identity.Auth0.csproj"
-    },
-    "Fabrica.Watch.Realtime/1.0.0": {
-      "type": "project",
-      "path": "../Fabrica.Watch.Realtime/Fabrica.Watch.Realtime.csproj",
-      "msbuildProject": "../Fabrica.Watch.Realtime/Fabrica.Watch.Realtime.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
       "Fabrica >= 1.0.0",
       "Fabrica.Identity.Auth0 >= 1.0.0",
-      "Fabrica.Watch.Realtime >= 1.0.0",
       "Microsoft.Extensions.Configuration.Binder >= 5.0.0",
       "Microsoft.NET.Test.Sdk >= 16.10.0",
       "NUnit >= 3.13.2",
@@ -3309,9 +3290,6 @@
           "projectReferences": {
             "E:\\repositories\\fabrica-sdk-v\\Fabrica.Identity.Auth0\\Fabrica.Identity.Auth0.csproj": {
               "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Identity.Auth0\\Fabrica.Identity.Auth0.csproj"
-            },
-            "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj": {
-              "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj"
             },
             "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
               "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"

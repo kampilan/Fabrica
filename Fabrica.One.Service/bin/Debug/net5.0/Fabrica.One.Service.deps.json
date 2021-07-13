@@ -13,7 +13,6 @@
           "Fabrica.One.Support": "1.0.0",
           "Fabrica.Watch.Bridges": "1.0.0",
           "Fabrica.Watch.Mongo": "1.0.0",
-          "Fabrica.Watch.Realtime": "1.0.0",
           "Microsoft.Extensions.Configuration.Binder": "5.0.0",
           "Microsoft.Extensions.Hosting.WindowsServices": "5.0.1"
         },
@@ -899,14 +898,6 @@
         "runtime": {
           "Fabrica.Watch.Mongo.dll": {}
         }
-      },
-      "Fabrica.Watch.Realtime/1.0.0": {
-        "dependencies": {
-          "Fabrica": "1.0.0"
-        },
-        "runtime": {
-          "Fabrica.Watch.Realtime.dll": {}
-        }
       }
     }
   },
@@ -1476,11 +1467,6 @@
       "sha512": ""
     },
     "Fabrica.Watch.Mongo/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Fabrica.Watch.Realtime/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

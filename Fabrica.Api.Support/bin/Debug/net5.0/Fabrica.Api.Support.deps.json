@@ -13,7 +13,6 @@
           "Fabrica.Aws": "1.0.0",
           "Fabrica.Watch.Bridges": "1.0.0",
           "Fabrica.Watch.Mongo": "1.0.0",
-          "Fabrica.Watch.Realtime": "1.0.0",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "5.0.7",
           "jose-jwt": "3.1.1"
         },
@@ -731,14 +730,6 @@
         "runtime": {
           "Fabrica.Watch.Mongo.dll": {}
         }
-      },
-      "Fabrica.Watch.Realtime/1.0.0": {
-        "dependencies": {
-          "Fabrica": "1.0.0"
-        },
-        "runtime": {
-          "Fabrica.Watch.Realtime.dll": {}
-        }
       }
     }
   },
@@ -1380,11 +1371,6 @@
       "sha512": ""
     },
     "Fabrica.Watch.Mongo/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Fabrica.Watch.Realtime/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

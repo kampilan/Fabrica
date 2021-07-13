@@ -67,12 +67,10 @@ E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.One.Support.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Watch.Bridges.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Watch.Mongo.dll
-E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Watch.Realtime.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Aws.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.One.Support.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Watch.Bridges.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Watch.Mongo.pdb
-E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.Watch.Realtime.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Fabrica.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\obj\Debug\net5.0\Fabrica.One.Systemd.csproj.AssemblyReference.cache
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\obj\Debug\net5.0\Fabrica.One.Systemd.GeneratedMSBuildEditorConfig.editorconfig

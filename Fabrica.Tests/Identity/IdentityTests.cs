@@ -4,7 +4,6 @@ using Fabrica.Configuration.Yaml;
 using Fabrica.Identity;
 using Fabrica.Utilities.Drawing;
 using Fabrica.Watch;
-using Fabrica.Watch.Realtime;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
@@ -21,7 +20,7 @@ namespace Fabrica.Tests.Identity
         {
 
             var maker = new WatchFactoryBuilder();
-            maker.UseRealtime();
+//            maker.UseRealtime();
             maker.UseLocalSwitchSource()
                 .WhenNotMatched(Level.Debug, Color.Aqua);
 

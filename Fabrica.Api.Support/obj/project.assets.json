@@ -1193,19 +1193,6 @@
         "runtime": {
           "bin/placeholder/Fabrica.Watch.Mongo.dll": {}
         }
-      },
-      "Fabrica.Watch.Realtime/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v5.0",
-        "dependencies": {
-          "Fabrica": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Fabrica.Watch.Realtime.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Fabrica.Watch.Realtime.dll": {}
-        }
       }
     }
   },
@@ -4179,11 +4166,6 @@
       "type": "project",
       "path": "../Fabrica.Watch.Mongo/Fabrica.Watch.Mongo.csproj",
       "msbuildProject": "../Fabrica.Watch.Mongo/Fabrica.Watch.Mongo.csproj"
-    },
-    "Fabrica.Watch.Realtime/1.0.0": {
-      "type": "project",
-      "path": "../Fabrica.Watch.Realtime/Fabrica.Watch.Realtime.csproj",
-      "msbuildProject": "../Fabrica.Watch.Realtime/Fabrica.Watch.Realtime.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4193,7 +4175,6 @@
       "Fabrica.Aws >= 1.0.0",
       "Fabrica.Watch.Bridges >= 1.0.0",
       "Fabrica.Watch.Mongo >= 1.0.0",
-      "Fabrica.Watch.Realtime >= 1.0.0",
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson >= 5.0.7",
       "jose-jwt >= 3.1.1"
     ]
@@ -4250,9 +4231,6 @@
             },
             "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj": {
               "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Mongo\\Fabrica.Watch.Mongo.csproj"
-            },
-            "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj": {
-              "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica.Watch.Realtime\\Fabrica.Watch.Realtime.csproj"
             },
             "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj": {
               "projectPath": "E:\\repositories\\fabrica-sdk-v\\Fabrica\\Fabrica.csproj"

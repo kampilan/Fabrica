@@ -8,7 +8,6 @@
     <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
-    <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 
