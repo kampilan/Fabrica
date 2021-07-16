@@ -63,7 +63,7 @@
             },
             "MongoDB.Driver": {
               "target": "Package",
-              "version": "[2.12.4, )"
+              "version": "[2.13.0, )"
             },
             "protobuf-net": {
               "target": "Package",

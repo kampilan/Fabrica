@@ -59,15 +59,15 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.40, )"
+              "version": "[3.7.0.42, )"
             },
             "AWSSDK.Core": {
               "target": "Package",
-              "version": "[3.7.0.42, )"
+              "version": "[3.7.0.44, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.12, )"
+              "version": "[3.7.1.14, )"
             }
           },
           "imports": [
