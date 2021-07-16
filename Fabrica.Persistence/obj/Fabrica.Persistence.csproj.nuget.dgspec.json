@@ -63,11 +63,11 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.7, )"
+              "version": "[5.0.8, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[5.0.7, )"
+              "version": "[5.0.8, )"
             },
             "RepoDb": {
               "target": "Package",

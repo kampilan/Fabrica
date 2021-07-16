@@ -72,11 +72,11 @@
             },
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
-              "version": "[5.0.7, )"
+              "version": "[5.0.8, )"
             },
             "jose-jwt": {
               "target": "Package",
-              "version": "[3.1.1, )"
+              "version": "[3.2.0, )"
             }
           },
           "imports": [
@@ -153,23 +153,23 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.40, )"
+              "version": "[3.7.0.42, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.12, )"
+              "version": "[3.7.1.14, )"
             },
             "AWSSDK.SQS": {
               "target": "Package",
-              "version": "[3.7.0.41, )"
+              "version": "[3.7.0.43, )"
             },
             "AWSSDK.SecurityToken": {
               "target": "Package",
-              "version": "[3.7.1.30, )"
+              "version": "[3.7.1.32, )"
             },
             "AWSSDK.SimpleSystemsManagement": {
               "target": "Package",
-              "version": "[3.7.3.23, )"
+              "version": "[3.7.4, )"
             }
           },
           "imports": [
@@ -401,7 +401,7 @@
             },
             "MongoDB.Driver": {
               "target": "Package",
-              "version": "[2.12.4, )"
+              "version": "[2.13.0, )"
             },
             "protobuf-net": {
               "target": "Package",

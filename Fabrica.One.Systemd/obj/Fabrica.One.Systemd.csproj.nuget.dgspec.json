@@ -59,23 +59,23 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.40, )"
+              "version": "[3.7.0.42, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.12, )"
+              "version": "[3.7.1.14, )"
             },
             "AWSSDK.SQS": {
               "target": "Package",
-              "version": "[3.7.0.41, )"
+              "version": "[3.7.0.43, )"
             },
             "AWSSDK.SecurityToken": {
               "target": "Package",
-              "version": "[3.7.1.30, )"
+              "version": "[3.7.1.32, )"
             },
             "AWSSDK.SimpleSystemsManagement": {
               "target": "Package",
-              "version": "[3.7.3.23, )"
+              "version": "[3.7.4, )"
             }
           },
           "imports": [
@@ -152,15 +152,15 @@
           "dependencies": {
             "AWSSDK.AppConfig": {
               "target": "Package",
-              "version": "[3.7.0.40, )"
+              "version": "[3.7.0.42, )"
             },
             "AWSSDK.Core": {
               "target": "Package",
-              "version": "[3.7.0.42, )"
+              "version": "[3.7.0.44, )"
             },
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.1.12, )"
+              "version": "[3.7.1.14, )"
             }
           },
           "imports": [
@@ -407,7 +407,7 @@
             },
             "MongoDB.Driver": {
               "target": "Package",
-              "version": "[2.12.4, )"
+              "version": "[2.13.0, )"
             },
             "protobuf-net": {
               "target": "Package",
