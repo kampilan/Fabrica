@@ -87,3 +87,8 @@ E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Microsoft.Ext
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Polly.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Polly.Contrib.WaitAndRetry.dll
 E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Polly.Extensions.Http.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\Microsoft.Win32.SystemEvents.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\System.Drawing.Common.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\repositories\fabrica-sdk-v\Fabrica.One.Systemd\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll

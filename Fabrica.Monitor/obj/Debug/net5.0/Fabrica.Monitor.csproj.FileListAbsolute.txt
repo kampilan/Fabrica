@@ -63,3 +63,6 @@ E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\Polly.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\Polly.Contrib.WaitAndRetry.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\Polly.Extensions.Http.dll
 E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\System.Text.Json.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\System.Drawing.Common.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Monitor\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
