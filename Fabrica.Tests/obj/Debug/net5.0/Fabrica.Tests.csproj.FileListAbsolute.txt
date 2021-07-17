@@ -129,3 +129,8 @@ E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Fabrica.Identity.Au
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Fabrica.Identity.Auth0.pdb
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\identity-tests.yml
 E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Extensions.Configuration.Binder.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\Microsoft.Win32.SystemEvents.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\System.Drawing.Common.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\repositories\fabrica-sdk-v\Fabrica.Tests\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
