@@ -29,7 +29,6 @@
     <Folder Include="Configuration\" />
     <Folder Include="Persistence\Audit\" />
     <Folder Include="Persistence\Thin\" />
-    <Folder Include="Utilities\Signature\" />
     <Folder Include="Utilities\Sql\" />
     <Folder Include="Utilities\Repository\" />
   </ItemGroup>

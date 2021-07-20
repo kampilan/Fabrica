@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Fabrica.Press</RootNamespace>
+    <Authors>The Kampilan Group Inc.</Authors>
+    <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GemBox.Document" Version="33.0.1269" />
+    <PackageReference Include="PDFsharpNetStandard2" Version="1.51.4845" />
+  </ItemGroup>
+
+</Project>

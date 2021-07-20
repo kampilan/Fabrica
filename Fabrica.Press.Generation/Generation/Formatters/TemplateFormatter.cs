@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace Fabrica.Press.Generation.Formatters
 {
@@ -18,16 +20,22 @@ namespace Fabrica.Press.Generation.Formatters
         public string Template { get; }
 
 
-        protected virtual object[] Parse( object value )
+        protected virtual object[] Parse( [NotNull] object value )
         {
-            var segs = value is string ? value.ToString().Split('|').Cast<object>().ToArray() : new[] { value };
+
+            if (value == null) throw new ArgumentNullException(nameof(value));
+
+            var segs = value is string ? value.ToString()?.Split('|').Cast<object>().ToArray()??new object[0] : new[] { value };
             return segs;
+
         }
 
         protected virtual object Format( object[] segments )
         {
+
             var formatted = string.Format( Template, segments );
             return formatted;
+
         }
 
         

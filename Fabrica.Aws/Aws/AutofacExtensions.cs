@@ -34,6 +34,7 @@ using Amazon.SQS;
 using Autofac;
 using Fabrica.Aws.Repository;
 using Fabrica.Aws.Storage;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
 using Fabrica.Utilities.Storage;
 using Fabrica.Watch;
@@ -316,8 +317,9 @@ namespace Fabrica.Aws
 
             builder.Register(c =>
                 {
+                    var corr   = c.Resolve<ICorrelation>();
                     var client = c.Resolve<IAmazonS3>();
-                    var comp   = new StorageComponent(client);
+                    var comp   = new StorageComponent( corr, client );
                     return comp;
                 })
                 .As<IStorageProvider>()
