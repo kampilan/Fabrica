@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright (c) 2021 The Kampilan Group Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,14 +38,14 @@ namespace Fabrica.Utilities.Storage
         bool Exists( [NotNull] string root, [NotNull] string key );
         Task<bool> ExistsAsync( [NotNull] string root, [NotNull] string key );
 
-        void Get( [NotNull] string root, [NotNull] string key, Stream content, bool rewind = true );
-        Task GetAsync([NotNull] string root, [NotNull] string key, Stream content, bool rewind = true);
+        void Get( [NotNull] string root, [NotNull] string key, [NotNull] Stream content, bool rewind = true );
+        Task GetAsync([NotNull] string root, [NotNull] string key, [NotNull] Stream content, bool rewind = true);
 
         void Put( [NotNull] string root, [NotNull] string key, [NotNull] Stream content, string contentType = "", bool rewind = true, bool autoClose = false );
         Task PutAsync([NotNull] string root, [NotNull] string key, [NotNull] Stream content, string contentType = "", bool rewind = true, bool autoClose = false);
 
         void Delete( [NotNull] string root, [NotNull] string key );
-        Task DeleteAsync([NotNull] string root, [NotNull] string key);
+        Task DeleteAsync( [NotNull] string root, [NotNull] string key );
 
 
         string GetReference( [NotNull] string root, [NotNull] string key, TimeSpan timeToLive );

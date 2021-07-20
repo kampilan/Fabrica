@@ -10,7 +10,7 @@ using Fabrica.Watch;
 using JetBrains.Annotations;
 using Color = System.Drawing.Color;
 
-namespace Fabrica.Utilities.Signature
+namespace Fabrica.Press.Utilities
 {
 
 
