@@ -1,5 +1,0 @@
-﻿Auth0Domain: "dev-fs-fortiumpartners.us.auth0.com"
-TokenEndpoint: "https://dev-fs-fortiumpartners.us.auth0.com/oauth/token"
-ClientId: "FSv8mJaPoVKngZbQENWQ7eAaxu0cwdDG"
-ClientSecret: "Up4N8vjU7-PoQvnQszUsRcgGMQbQKsrnkMCBMnotHMtF6xmqipk0GbccS7xOCaSq"
-Audience: "https://dev-fs-fortiumpartners.us.auth0.com/api/v2/"
