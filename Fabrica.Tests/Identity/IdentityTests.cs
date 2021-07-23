@@ -28,6 +28,7 @@ namespace Fabrica.Tests.Identity
 
 
             var cb = new ConfigurationBuilder();
+            cb.AddUserSecrets<IdentityTests>();
             cb.AddYamlFile("identity-tests.yml");
             TheConfiguration = cb.Build();
 
