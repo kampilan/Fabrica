@@ -61,11 +61,11 @@ namespace Fabrica.Identity
             if ( user == null )
                 result = await _createUser( request );
             else if( !string.IsNullOrWhiteSpace(request.IdentityUid) )
-                result = await _updateUser(request);
+                result = await _updateUser( user, request);
             else
             {
                 request.IdentityUid = user.UserId;
-                result = await _updateUser(request);
+                result = await _updateUser( user, request );
             }
 
 
@@ -141,7 +141,7 @@ namespace Fabrica.Identity
 
                 if (string.IsNullOrWhiteSpace(request.NewEmail))
                 {
-                    exp ??= new PredicateException("Invalid Create User request");
+                    exp = new PredicateException("Invalid Create User request");
                     exp.WithDetail(new EventDetail {Category = EventDetail.EventCategory.Violation, Explanation = "Email is required"} );
                 }
 
@@ -217,12 +217,26 @@ namespace Fabrica.Identity
 
         }
 
-        private async Task<SyncUserResponse> _updateUser( [NotNull] SyncUserRequest request )
+        private async Task<SyncUserResponse> _updateUser( [NotNull] User existing, [NotNull] SyncUserRequest request )
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             using var logger = EnterMethod();
+
+
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to check for items to update");
+            if (string.IsNullOrWhiteSpace(request.NewEmail) && string.IsNullOrWhiteSpace(request.NewFirstName) && string.IsNullOrWhiteSpace(request.NewLastName))
+            {
+                logger.Debug("Attempting to no items to update");
+                var response = new SyncUserResponse {Created = false, IdentityUid = existing.UserId};
+                return response;
+            }
+
 
 
             // *****************************************************************
