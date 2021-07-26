@@ -254,11 +254,13 @@ namespace Fabrica.Identity
                     uur.EmailVerified = true;
                 }
 
-                if( !string.IsNullOrWhiteSpace(request.NewFirstName) )
+                if (!string.IsNullOrWhiteSpace(request.NewFirstName))
                     uur.FirstName = request.NewFirstName;
 
                 if( !string.IsNullOrWhiteSpace(request.NewLastName) )
                     uur.LastName = request.NewLastName;
+
+                uur.FullName = $"{request.NewFirstName} {uur.LastName}";
 
 
                 logger.Debug("Attempting to call Update");
