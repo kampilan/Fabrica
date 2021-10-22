@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.13.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
     <PackageReference Include="protobuf-net" Version="3.0.101" />
   </ItemGroup>
 

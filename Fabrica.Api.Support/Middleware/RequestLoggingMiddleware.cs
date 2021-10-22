@@ -118,10 +118,15 @@ namespace Fabrica.Api.Support.Middleware
                         if (values.Count <= 0)
                             continue;
 
-                        var pos    = values[0].IndexOf(" ", 0, StringComparison.Ordinal);
-                        var scheme = values[0].Substring(0, pos);
-                        var len    = values[0].Length - pos;
-                        value = $"Scheme: {scheme} Length: {len}";
+                        var pos = values[0].IndexOf(" ", 0, StringComparison.Ordinal);
+                        if( pos > 0 )
+                        {
+                            var scheme = values[0][..pos];
+                            var len    = values[0].Length - pos;
+                            value = $"Scheme: {scheme} Length: {len}";
+                        }
+                        else
+                            value = values[0];
 
                     }
 

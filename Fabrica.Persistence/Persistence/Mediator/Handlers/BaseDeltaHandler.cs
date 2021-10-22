@@ -173,7 +173,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
                 // *****************************************************************
                 logger.Debug("Attempting to fetch reference using uid");
-                var re = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
+                var re = await EntityFrameworkQueryableExtensions.SingleOrDefaultAsync(Context.Set<TReference>(), e => e.Uid == uid, cancellationToken: token);
                 if (re == null)
                     throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
 
@@ -243,7 +243,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to fetch reference using uid");
-            var replacement = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
+            var replacement = await EntityFrameworkQueryableExtensions.SingleOrDefaultAsync(Context.Set<TReference>(), e => e.Uid == uid, cancellationToken: token);
             if (replacement == null)
                 throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({name}) using ({uid})");
 
