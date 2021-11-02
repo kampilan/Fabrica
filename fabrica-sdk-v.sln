@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Work", "Fabrica.Wor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Press.Generation", "Fabrica.Press.Generation\Fabrica.Press.Generation.csproj", "{91287193-A929-4CA0-B7E9-DD30322176F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch", "Fabrica.Watch\Fabrica.Watch.csproj", "{5A3DB926-8BD2-4A4C-95A2-427250FB7DAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Watch.Api", "Fabrica.Watch.Api\Fabrica.Watch.Api.csproj", "{5A3DB926-8BD2-4A4C-95A2-427250FB7DAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
