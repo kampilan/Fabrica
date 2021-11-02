@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Fabrica.Api.Support.Conventions;
 using Fabrica.Api.Support.Filters;
+using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Fabrica.Configuration.Yaml;
