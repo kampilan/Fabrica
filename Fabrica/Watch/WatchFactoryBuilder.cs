@@ -148,6 +148,27 @@ namespace Fabrica.Watch
         }
 
 
+
+        public IWatchFactory BuildNoSet()
+        {
+
+            var sink = _buildSink();
+
+            var factory = new WatchFactory(InitialPoolSize);
+
+            foreach (var i in Infrastructure)
+                factory.AddInfrastructure(i);
+
+            factory.Configure(Source, sink, Quiet);
+
+            return factory;
+
+        }
+
+
+
+
+
     }
 
 
