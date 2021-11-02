@@ -8,4 +8,4 @@
 
 Import-Module Fabrica.One/Builder
 
-New-Appliance -Name fabrica-watch -Build $buildNumber -Source $contentDir -Region $region -Bucket $bucket
+New-Appliance -Name fabrica-watch.api -Build $buildNumber -Source $contentDir -Region $region -Bucket $bucket

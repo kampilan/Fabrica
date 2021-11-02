@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="configuration.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
