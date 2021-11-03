@@ -88,6 +88,11 @@ namespace Fabrica.Watch.Api.Controllers
                 logger.Debug("Attempting to get logger for request Category");
                 var exLogger = factory.GetLogger(model.Category);
 
+                logger.Inspect(nameof(exLogger.IsTraceEnabled), exLogger.IsTraceEnabled);
+                logger.Inspect(nameof(exLogger.IsDebugEnabled), exLogger.IsDebugEnabled);
+                logger.Inspect(nameof(exLogger.IsInfoEnabled), exLogger.IsInfoEnabled);
+                logger.Inspect(nameof(exLogger.IsWarningEnabled), exLogger.IsWarningEnabled);
+                logger.Inspect(nameof(exLogger.IsErrorEnabled), exLogger.IsErrorEnabled);
 
                 if ((level == Level.Error && exLogger.IsErrorEnabled) ||
                     (level == Level.Warning && exLogger.IsWarningEnabled) ||
@@ -186,6 +191,13 @@ namespace Fabrica.Watch.Api.Controllers
                 // *****************************************************************
                 logger.Debug("Attempting to get logger for request Category");
                 var exLogger = factory.GetLogger(model.Category);
+
+
+                logger.Inspect(nameof(exLogger.IsTraceEnabled), exLogger.IsTraceEnabled);
+                logger.Inspect(nameof(exLogger.IsDebugEnabled), exLogger.IsDebugEnabled);
+                logger.Inspect(nameof(exLogger.IsInfoEnabled), exLogger.IsInfoEnabled);
+                logger.Inspect(nameof(exLogger.IsWarningEnabled), exLogger.IsWarningEnabled);
+                logger.Inspect(nameof(exLogger.IsErrorEnabled), exLogger.IsErrorEnabled);
 
 
                 if ((level == Level.Error && exLogger.IsErrorEnabled) ||
