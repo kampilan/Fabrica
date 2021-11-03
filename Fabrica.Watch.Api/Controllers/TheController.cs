@@ -4,8 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch.Api.Appliance;
 using Fabrica.Watch.Mongo;
-using Fabrica.Watch.Mongo.Sink;
 using Fabrica.Watch.Sink;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -20,9 +20,15 @@ namespace Fabrica.Watch.Api.Controllers
     {
 
 
-        public TheController(ICorrelation correlation) : base(correlation)
+        public TheController(ICorrelation correlation, WatchOptions options ) : base(correlation)
         {
+
+            Options = options;
+
         }
+
+
+        private WatchOptions Options { get; }
 
 
         [HttpPost]
@@ -34,24 +40,11 @@ namespace Fabrica.Watch.Api.Controllers
 
             using var logger = EnterMethod();
 
+            logger.LogObject(nameof(Options), Options);
             logger.LogObject(nameof(model), model);
 
 
-
-            // *****************************************************************
-            logger.Debug("Attempting to Dig out Mongo Sink");
-            var serverUri = "";
-            if( WatchFactoryLocator.Factory.Sink is CompositeSink root )
-            {
-                foreach( var sink in root.InnerSinks )
-                    if (sink is MongoEventSink mongo)
-                        serverUri = mongo.ServerUri;
-            }
-
-            logger.Inspect(nameof(serverUri), serverUri);
-
-
-            if (string.IsNullOrWhiteSpace(serverUri))
+            if (string.IsNullOrWhiteSpace(Options.WatchEventStoreUri))
                 return BadRequest();
 
 
@@ -65,14 +58,20 @@ namespace Fabrica.Watch.Api.Controllers
                 pt = PayloadType.Text;
 
             using var reader  = new StreamReader(Request.Body, leaveOpen: true);
-            var       payload = await reader.ReadToEndAsync();
+            var payload = await reader.ReadToEndAsync();
+
+            var domain = model.Domain;
+            if (string.IsNullOrWhiteSpace(domain))
+                domain = Options.DefaultWatchDomain;
+
+            logger.Inspect(nameof(domain), domain);
 
 
 
             // *****************************************************************
             logger.Debug("Attempting to build Watch Factory");
             var maker = new WatchFactoryBuilder();
-            maker.UseMongo( serverUri, model.Domain, false );
+            maker.UseMongo( Options.WatchEventStoreUri, domain, false );
 
 
 
@@ -139,24 +138,12 @@ namespace Fabrica.Watch.Api.Controllers
             using var logger = EnterMethod();
 
             logger.LogObject(nameof(model), model);
+            logger.LogObject(nameof(Options), Options);
 
 
-
-            // *****************************************************************
-            logger.Debug("Attempting to dig out Mongo Sink");
-            var serverUri = "";
-            if( WatchFactoryLocator.Factory.Sink is CompositeSink root )
-            {
-                foreach (var sink in root.InnerSinks)
-                    if (sink is MongoEventSink mongo)
-                        serverUri = mongo.ServerUri;
-            }
-
-            logger.Inspect(nameof(serverUri), serverUri);
-
-
-            if (string.IsNullOrWhiteSpace(serverUri))
+            if (string.IsNullOrWhiteSpace(Options.WatchEventStoreUri))
                 return Task.FromResult( (StatusCodeResult)BadRequest() );
+
 
 
             // *****************************************************************
@@ -172,10 +159,17 @@ namespace Fabrica.Watch.Api.Controllers
 
 
 
+            var domain = model.Domain;
+            if( string.IsNullOrWhiteSpace(domain) )
+                domain = Options.DefaultWatchDomain;
+
+            logger.Inspect(nameof(domain), domain);
+
+
             // *****************************************************************
             logger.Debug("Attempting to build Watch Factory");
             var maker = new WatchFactoryBuilder();
-            maker.UseMongo(serverUri, model.Domain, false);
+            maker.UseMongo(Options.WatchEventStoreUri, domain, false);
 
 
 

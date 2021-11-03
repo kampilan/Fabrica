@@ -17,7 +17,7 @@ namespace Fabrica.Api.Support.One
 {
 
 
-    public abstract class AbstractBootstrap<TModule,TOptions> where TModule: Module where TOptions: IApplianceOptions
+    public abstract class AbstractBootstrap<TModule,TOptions> where TModule: Module where TOptions: class, IApplianceOptions
     {
 
 
@@ -73,6 +73,10 @@ namespace Fabrica.Api.Support.One
                     .As<IConfiguration>()
                     .SingleInstance();
 
+
+                builder.RegisterInstance(Options)
+                    .As<TOptions>()
+                    .SingleInstance();
 
 
                 // *****************************************************************

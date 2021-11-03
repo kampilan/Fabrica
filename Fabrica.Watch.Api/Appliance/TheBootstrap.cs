@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Autofac;
 using Fabrica.Api.Support.Conventions;
 using Fabrica.Api.Support.Filters;
 using Fabrica.Api.Support.Identity.Proxy;
@@ -50,8 +51,6 @@ namespace Fabrica.Watch.Api.Appliance
         }
 
 #endif
-
-
 
 
         protected override void ConfigureServices(IServiceCollection services)

@@ -11,7 +11,7 @@ namespace Fabrica.Api.Support.One
 {
 
 
-    public abstract class KestrelBootstrap<TModule,TOptions> : AbstractBootstrap<TModule,TOptions> where TModule : Module where TOptions: IApplianceOptions
+    public abstract class KestrelBootstrap<TModule,TOptions> : AbstractBootstrap<TModule,TOptions> where TModule : Module where TOptions: class, IApplianceOptions
     {
 
         protected abstract void ConfigureServices(IServiceCollection services);
