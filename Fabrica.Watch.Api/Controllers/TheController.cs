@@ -51,7 +51,7 @@ namespace Fabrica.Watch.Api.Controllers
             maker.UseMongo( serverUri, model.Domain, false );
 
             var factory = maker.BuildNoSet();
-
+            factory.Start();
 
 
             Enum.TryParse(model.Level, out Level level );
@@ -69,6 +69,7 @@ namespace Fabrica.Watch.Api.Controllers
 
             exLogger.LogEvent( le );
 
+            factory.Stop();
 
 
             return Ok();
