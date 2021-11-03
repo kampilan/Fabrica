@@ -31,13 +31,24 @@ namespace Fabrica.Watch.Api.Controllers
 
             using var logger = EnterMethod();
 
+            logger.LogObject(nameof(model), model);
 
-            if( WatchFactoryLocator.Factory.Sink is not MongoEventSink sink )
-                return new StatusCodeResult(500);
+
+            var serverUri = "";
+            if( WatchFactoryLocator.Factory.Sink is CompositeSink root )
+            {
+                foreach( var sink in root.InnerSinks )
+                    if (sink is MongoEventSink mongo)
+                        serverUri = mongo.ServerUri;
+            }
+
+            if (string.IsNullOrWhiteSpace(serverUri))
+                return BadRequest();
+
 
 
             var maker = new WatchFactoryBuilder();
-            maker.UseMongo( sink.ServerUri, model.Domain, false );
+            maker.UseMongo( serverUri, model.Domain, false );
 
             var factory = maker.BuildNoSet();
 
@@ -60,7 +71,7 @@ namespace Fabrica.Watch.Api.Controllers
 
 
 
-            return new StatusCodeResult(200);
+            return Ok();
 
         }
 
