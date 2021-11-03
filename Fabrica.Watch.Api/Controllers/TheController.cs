@@ -89,13 +89,20 @@ namespace Fabrica.Watch.Api.Controllers
                 var exLogger = factory.GetLogger(model.Category);
 
 
+                if ((level == Level.Error && exLogger.IsErrorEnabled) ||
+                    (level == Level.Warning && exLogger.IsWarningEnabled) ||
+                    (level == Level.Info && exLogger.IsInfoEnabled) ||
+                    (level == Level.Debug && exLogger.IsDebugEnabled) ||
+                    (level == Level.Trace && exLogger.IsTraceEnabled))
+                {
 
-                // *****************************************************************
-                logger.Debug("Attempting to create and log event");
-                var le = exLogger.CreateEvent(level, model.Title, pt, payload);
+                    // *****************************************************************
+                    logger.Debug("Attempting to create and log event");
+                    var le = exLogger.CreateEvent(level, model.Title, pt, payload);
 
-                exLogger.LogEvent(le);
+                    exLogger.LogEvent(le);
 
+                }
 
 
             }
@@ -181,12 +188,21 @@ namespace Fabrica.Watch.Api.Controllers
                 var exLogger = factory.GetLogger(model.Category);
 
 
+                if ((level == Level.Error && exLogger.IsErrorEnabled) ||
+                    (level == Level.Warning && exLogger.IsWarningEnabled) ||
+                    (level == Level.Info && exLogger.IsInfoEnabled) ||
+                    (level == Level.Debug && exLogger.IsDebugEnabled) ||
+                    (level == Level.Trace && exLogger.IsTraceEnabled))
+                {
 
-                // *****************************************************************
-                logger.Debug("Attempting to create and log event");
-                var le = exLogger.CreateEvent(level, model.Title, pt, payload);
+                    // *****************************************************************
+                    logger.Debug("Attempting to create and log event");
+                    var le = exLogger.CreateEvent(level, model.Title, pt, payload);
 
-                exLogger.LogEvent(le);
+                    exLogger.LogEvent(le);
+
+                }
+
 
 
             }
