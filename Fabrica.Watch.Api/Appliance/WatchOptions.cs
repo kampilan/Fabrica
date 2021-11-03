@@ -1,6 +1,6 @@
 ﻿using Fabrica.Api.Support.One;
 
-namespace Fabrica.Watch.Appliance
+namespace Fabrica.Watch.Api.Appliance
 {
 
 

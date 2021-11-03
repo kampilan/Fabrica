@@ -9,7 +9,7 @@ using Fabrica.Watch.Sink;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Watch.Controllers
+namespace Fabrica.Watch.Api.Controllers
 {
 
     [Route("/")]

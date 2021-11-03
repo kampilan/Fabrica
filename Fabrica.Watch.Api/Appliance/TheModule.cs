@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace Fabrica.Watch.Appliance
+namespace Fabrica.Watch.Api.Appliance
 {
 
 
