@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
 using Bogus.DataSets;
 using Fabrica.Api.Support.Controllers;
+using Fabrica.Rql.Builder;
+using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Types;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +25,7 @@ namespace Fabrica.Fake.Controllers
 
 
         [HttpGet("people")]
-        public Task<IActionResult> GeneratePeople( [FromQuery] int count )
+        public Task<IActionResult> GeneratePeople( [FromQuery] int count=1000, [FromQuery] string rql = "" )
         {
 
             using var logger = EnterMethod();
@@ -39,10 +42,22 @@ namespace Fabrica.Fake.Controllers
                 .RuleFor(p => p.Email, f => f.Person.Email)
                 .RuleFor(p => p.PhoneNumber, f => f.Person.Phone);
 
+
             var list = ruleSet.Generate(count);
 
-            var result = Ok(list);
+            if( !string.IsNullOrWhiteSpace(rql) )
+            {
 
+                var filter = RqlFilterBuilder<Person>.FromRql(rql);
+                var lambda = filter.ToLambda();
+
+                var subset = list.Where(lambda);
+                list = subset.ToList();
+
+            }
+
+
+            var result = Ok(list);
 
             return Task.FromResult((IActionResult)result);
 
@@ -51,7 +66,7 @@ namespace Fabrica.Fake.Controllers
 
 
         [HttpGet("companies")]
-        public Task<IActionResult> GenerateCompanies( [FromQuery] int count )
+        public Task<IActionResult> GenerateCompanies( [FromQuery] int count=100, [FromQuery] string rql="" )
         {
 
             using var logger = EnterMethod();
@@ -72,8 +87,20 @@ namespace Fabrica.Fake.Controllers
 
             var list = ruleSet.Generate(count);
 
-            var result = Ok(list);
+            if( !string.IsNullOrWhiteSpace(rql) )
+            {
 
+                var filter = RqlFilterBuilder<Company>.FromRql(rql);
+                var lambda = filter.ToLambda();
+
+                var subset = list.Where(lambda);
+                list = subset.ToList();
+
+            }
+
+
+
+            var result = Ok(list);
 
             return Task.FromResult((IActionResult)result);
 
