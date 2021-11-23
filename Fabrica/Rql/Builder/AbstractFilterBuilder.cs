@@ -132,7 +132,7 @@ namespace Fabrica.Rql.Builder
             if (source == null) throw new ArgumentNullException(nameof(source));
 
 
-            if( source.Rql != null && source.Rql.Length > 0 )
+            if( source.Rql is { Length: > 0 } )
             {
 
                 var tree = RqlLanguageParser.ToCriteria(source.Rql[0]);
@@ -168,7 +168,7 @@ namespace Fabrica.Rql.Builder
                 if (includeMethod != null)
                 {
                     var ret = includeMethod.Invoke(source, new object[] { });
-                    if (ret is bool b && !b)
+                    if (ret is false)
                         continue;
                 }
                 else

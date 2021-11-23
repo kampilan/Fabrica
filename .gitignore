@@ -5,6 +5,7 @@
 *.sln.docstates
 
 /Fabrica.Tests/identity-tests.yml
+/Fabrica.Fake/local.yml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
