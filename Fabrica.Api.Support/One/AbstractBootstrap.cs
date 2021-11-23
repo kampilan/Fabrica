@@ -8,6 +8,7 @@ using Fabrica.Utilities.Process;
 using Fabrica.Watch;
 using Fabrica.Watch.Bridges.MicrosoftImpl;
 using Fabrica.Watch.Mongo;
+using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -44,9 +45,7 @@ namespace Fabrica.Api.Support.One
             var options = Configuration.Get<WatchMongoOptions>();
             var maker   = WatchFactoryBuilder.Create();
             if (options == null || options.RealtimeLogging || string.IsNullOrWhiteSpace(options.WatchDomainName) || string.IsNullOrWhiteSpace(options.WatchEventStoreUri))
-            {
-//                maker.UseRealtime(Level.Debug, Color.LightPink);
-            }
+                maker.UseRealtime(Level.Debug, Color.LightPink);
             else
                 maker.UseMongo(options);
 

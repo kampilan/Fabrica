@@ -6,6 +6,7 @@ using Fabrica.Configuration.Yaml;
 using Fabrica.Utilities.Drawing;
 using Fabrica.Watch;
 using Fabrica.Watch.Mongo;
+using Fabrica.Watch.Realtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -75,7 +76,7 @@ namespace Fabrica.One
                 var builder = WatchFactoryBuilder.Create();
                 if (options.RealtimeLogging || string.IsNullOrWhiteSpace(options.WatchDomainName) || string.IsNullOrWhiteSpace(options.WatchEventStoreUri))
                 {
-//                    builder.UseRealtime(Level.Debug, Color.LightPink);
+                    builder.UseRealtime(Level.Debug, Color.LightPink);
                 }
                 else
                     builder.UseMongo(options);

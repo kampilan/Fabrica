@@ -1,12 +1,11 @@
-﻿using Fabrica.Api.Support.Conventions;
-using Fabrica.Api.Support.Filters;
-using Fabrica.Api.Support.Identity.Proxy;
+﻿using Fabrica.Api.Support.Filters;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Drawing;
 using Fabrica.Watch;
+using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +26,7 @@ namespace Fabrica.Work.Appliance
         {
 
             var maker = WatchFactoryBuilder.Create();
-//            maker.UseRealtime();
+            maker.UseRealtime();
             maker.UseLocalSwitchSource()
                 .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
                 .WhenNotMatched(Level.Debug, Color.Azure);

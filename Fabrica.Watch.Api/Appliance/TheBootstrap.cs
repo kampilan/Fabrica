@@ -8,6 +8,7 @@ using Fabrica.Api.Support.One;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Drawing;
+using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ namespace Fabrica.Watch.Api.Appliance
         {
 
             var maker = WatchFactoryBuilder.Create();
-
+            maker.UseRealtime();
             maker.UseLocalSwitchSource()
                 .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
                 .WhenNotMatched(Level.Debug, Color.Azure);
