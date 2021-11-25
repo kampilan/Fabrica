@@ -4,6 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Fabrica</RootNamespace>
     <LangVersion>latest</LangVersion>
+    <Authors>The Kampilan Group Inc.</Authors>
+    <Product>Fabrica SDK</Product>
+    <Description>Fabrica SDK for building REST APIs</Description>
+    <Copyright>The Kampilan Group Inc (c) 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

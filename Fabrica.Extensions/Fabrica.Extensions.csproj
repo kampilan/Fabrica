@@ -6,6 +6,7 @@
     <Product>Fabrica SDK</Product>
     <Description>Fabrica SDK for building REST APIs</Description>
     <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
+    <RootNamespace>Fabrica</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
