@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Fabrica.Watch.Sink
 {
@@ -35,21 +36,21 @@ namespace Fabrica.Watch.Sink
         }
 
 
-        public void Accept(ILogEvent logEvent)
+        public async Task Accept(ILogEvent logEvent)
         {
 
             foreach (var sink in Sinks)
-                sink.Accept( logEvent );
+                await sink.Accept( logEvent );
 
         }
 
-        public void Accept(IEnumerable<ILogEvent> batch)
+        public async Task Accept(IEnumerable<ILogEvent> batch)
         {
 
 
             if( Sinks.Count == 1 )
             {
-                Sinks.First().Accept(batch);
+                await Sinks.First().Accept(batch);
                 return;
             }
 
@@ -60,7 +61,7 @@ namespace Fabrica.Watch.Sink
 
             var list = batch.ToList();
             foreach (var sink in Sinks)
-                sink.Accept(list);
+                await sink.Accept(list);
 
         }
 

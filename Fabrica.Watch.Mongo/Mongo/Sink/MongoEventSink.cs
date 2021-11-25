@@ -24,15 +24,17 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Fabrica.Watch.Sink;
-using JetBrains.Annotations;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using ProtoBuf;
 using ProtoBuf.Meta;
+
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+// ReSharper disable UnusedMember.Local
 
 namespace Fabrica.Watch.Mongo.Sink
 {
@@ -41,10 +43,9 @@ namespace Fabrica.Watch.Mongo.Sink
     {
 
         // ReSharper disable once ClassNeverInstantiated.Local
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
         private class DomainModel
         {
+
 
             public ObjectId Id { get; set; }
 
@@ -160,12 +161,12 @@ namespace Fabrica.Watch.Mongo.Sink
 
 
         private IMongoCollection<BsonDocument> Collection { get; set; }
-        private MemoryStream Stream { get; } = new MemoryStream();
+        private MemoryStream Stream { get; } = new();
 
 
-        private ConsoleEventSink DebugSink { get; } = new ConsoleEventSink();
+        private ConsoleEventSink DebugSink { get; } = new();
 
-        public void Accept( [JetBrains.Annotations.NotNull] ILogEvent logEvent )
+        public async Task Accept( [JetBrains.Annotations.NotNull] ILogEvent logEvent )
         {
 
             try
@@ -173,7 +174,7 @@ namespace Fabrica.Watch.Mongo.Sink
 
                 var document = _buildDocument(logEvent);
 
-                Collection.InsertOne( document );
+                await Collection.InsertOneAsync( document );
 
             }
             catch (Exception cause)
@@ -186,14 +187,14 @@ namespace Fabrica.Watch.Mongo.Sink
                     Payload  = cause.StackTrace
                 };
 
-                DebugSink.Accept( le );
+                await DebugSink.Accept( le );
 
             }
 
 
         }
 
-        public void Accept( [JetBrains.Annotations.NotNull] IEnumerable<ILogEvent> batch )
+        public async Task Accept( [JetBrains.Annotations.NotNull] IEnumerable<ILogEvent> batch )
         {
 
             try
@@ -201,7 +202,7 @@ namespace Fabrica.Watch.Mongo.Sink
 
                 var list = batch.Select(_buildDocument).ToList();
 
-                Collection.InsertMany(list);
+                await Collection.InsertManyAsync(list);
 
             }
             catch (Exception cause)
@@ -215,7 +216,7 @@ namespace Fabrica.Watch.Mongo.Sink
                     Payload  = cause.StackTrace
                 };
 
-                DebugSink.Accept( le );
+                await DebugSink.Accept( le );
 
             }
 

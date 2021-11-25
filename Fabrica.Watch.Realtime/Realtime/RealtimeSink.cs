@@ -24,6 +24,7 @@ SOFTWARE.
 
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Fabrica.Watch.Sink;
 using Gurock.SmartInspect;
 
@@ -54,47 +55,38 @@ namespace Fabrica.Watch.Realtime
             Si.Dispose();
         }
 
-        public void Accept(ILogEvent logEvent)
+        public Task Accept(ILogEvent logEvent)
         {
 
             var entry = _mapToLogEntry(logEvent);
             Si.SendLogEntry( entry );
 
+            return Task.CompletedTask;
+
         }
 
-        public void Accept(IEnumerable<ILogEvent> batch)
+        public Task Accept(IEnumerable<ILogEvent> batch)
         {
+
             foreach( var le in batch )
                 Accept(le);
+
+            return Task.CompletedTask;
+
         }
 
 
         private static Gurock.SmartInspect.Level _mapToSILevel(Level level)
         {
-
-            switch (level)
+            return level switch
             {
-
-                case Level.Trace:
-                    return Gurock.SmartInspect.Level.Debug;
-
-                case Level.Debug:
-                    return Gurock.SmartInspect.Level.Debug;
-
-                case Level.Info:
-                    return Gurock.SmartInspect.Level.Message;
-
-                case Level.Warning:
-                    return Gurock.SmartInspect.Level.Warning;
-
-                case Level.Error:
-                    return Gurock.SmartInspect.Level.Error;
-
-                default:
-                    return Gurock.SmartInspect.Level.Fatal;
-
-            }
-
+                Level.Trace => Gurock.SmartInspect.Level.Debug,
+                Level.Debug => Gurock.SmartInspect.Level.Debug,
+                Level.Info => Gurock.SmartInspect.Level.Message,
+                Level.Warning => Gurock.SmartInspect.Level.Warning,
+                Level.Error => Gurock.SmartInspect.Level.Error,
+                _ => Gurock.SmartInspect.Level.Fatal
+            };
         }
 
 

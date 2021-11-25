@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Fabrica.Watch.Sink
 {
@@ -39,12 +40,14 @@ namespace Fabrica.Watch.Sink
         {
         }
 
-        public void Accept(ILogEvent logEvent)
+        public Task Accept(ILogEvent logEvent)
         {
+            return Task.CompletedTask;
         }
 
-        public void Accept(IEnumerable<ILogEvent> batch)
+        public Task Accept(IEnumerable<ILogEvent> batch)
         {
+            return Task.CompletedTask;
         }
 
     }

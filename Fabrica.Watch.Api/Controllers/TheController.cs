@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Controllers;
@@ -31,113 +31,16 @@ namespace Fabrica.Watch.Api.Controllers
         private WatchOptions Options { get; }
 
 
-        [HttpPost]
-        [SwaggerOperation(Summary = "Create", Description = "Create Log Event")]
+        [HttpPost("{domain}")]
+        [SwaggerOperation(Summary = "Create", Description = "Create Log Event Batch from JSON body")]
         [SwaggerResponse(200, "Success")]
-        public async Task<StatusCodeResult> Post( [FromQuery] LogModel model )
+        public Task<StatusCodeResult> PostBatch( [FromRoute] string domain, [FromBody] List<LogModel> batch )
         {
 
 
             using var logger = EnterMethod();
 
-            logger.LogObject(nameof(Options), Options);
-            logger.LogObject(nameof(model), model);
-
-
-            if (string.IsNullOrWhiteSpace(Options.WatchEventStoreUri))
-                return BadRequest();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build LogEvent components");
-            if (!TryParse(model.Level, out Level level))
-                level = Level.Error;
-
-            if (!TryParse(model.PayloadType, out PayloadType pt))
-                pt = PayloadType.Text;
-
-            using var reader  = new StreamReader(Request.Body, leaveOpen: true);
-            var payload = await reader.ReadToEndAsync();
-
-            var domain = model.Domain;
-            if (string.IsNullOrWhiteSpace(domain))
-                domain = Options.DefaultWatchDomain;
-
-            logger.Inspect(nameof(domain), domain);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build Watch Factory");
-            var maker = new WatchFactoryBuilder();
-            maker.UseMongo( Options.WatchEventStoreUri, domain, false );
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to start Watch Factory");
-            var factory = maker.BuildNoSet();
-            factory.Start();
-
-            try
-            {
-
-                // *****************************************************************
-                logger.Debug("Attempting to get logger for request Category");
-                var exLogger = factory.GetLogger(model.Category);
-
-                logger.Inspect(nameof(exLogger.IsTraceEnabled), exLogger.IsTraceEnabled);
-                logger.Inspect(nameof(exLogger.IsDebugEnabled), exLogger.IsDebugEnabled);
-                logger.Inspect(nameof(exLogger.IsInfoEnabled), exLogger.IsInfoEnabled);
-                logger.Inspect(nameof(exLogger.IsWarningEnabled), exLogger.IsWarningEnabled);
-                logger.Inspect(nameof(exLogger.IsErrorEnabled), exLogger.IsErrorEnabled);
-
-                if ((level == Level.Error && exLogger.IsErrorEnabled) ||
-                    (level == Level.Warning && exLogger.IsWarningEnabled) ||
-                    (level == Level.Info && exLogger.IsInfoEnabled) ||
-                    (level == Level.Debug && exLogger.IsDebugEnabled) ||
-                    (level == Level.Trace && exLogger.IsTraceEnabled))
-                {
-
-                    // *****************************************************************
-                    logger.Debug("Attempting to create and log event");
-                    var le = exLogger.CreateEvent(level, model.Title, pt, payload);
-
-                    exLogger.LogEvent(le);
-
-                }
-
-
-            }
-            finally
-            {
-
-                // *****************************************************************
-                logger.Debug("Attempting to stop factory");
-                factory.Stop();
-
-            }
-
-
-
-            // *****************************************************************
-            return Ok();
-
-        }
-
-
-
-        [HttpPost("/json")]
-        [SwaggerOperation(Summary = "Create", Description = "Create Log Event from JSON body")]
-        [SwaggerResponse(200, "Success")]
-        public Task<StatusCodeResult> PostJson([FromBody] LogModelWithBody model)
-        {
-
-
-            using var logger = EnterMethod();
-
-            logger.LogObject(nameof(model), model);
+            logger.Inspect(nameof(batch.Count), batch.Count);
             logger.LogObject(nameof(Options), Options);
 
 
@@ -145,22 +48,7 @@ namespace Fabrica.Watch.Api.Controllers
                 return Task.FromResult( (StatusCodeResult)BadRequest() );
 
 
-
-            // *****************************************************************
-            logger.Debug("Attempting to build LogEvent components");
-            if (!TryParse(model.Level, out Level level))
-                level = Level.Error;
-
-            if (!TryParse(model.PayloadType, out PayloadType pt))
-                pt = PayloadType.Text;
-
-            var buff    = Convert.FromBase64String(model.Payload);
-            var payload = Encoding.UTF8.GetString(buff);
-
-
-
-            var domain = model.Domain;
-            if( string.IsNullOrWhiteSpace(domain) )
+            if ( string.IsNullOrWhiteSpace(domain) )
                 domain = Options.DefaultWatchDomain;
 
             logger.Inspect(nameof(domain), domain);
@@ -169,7 +57,7 @@ namespace Fabrica.Watch.Api.Controllers
             // *****************************************************************
             logger.Debug("Attempting to build Watch Factory");
             var maker = new WatchFactoryBuilder();
-            maker.UseMongo(Options.WatchEventStoreUri, domain, false);
+            maker.UseMongo(Options.WatchEventStoreUri, domain);
 
 
 
@@ -181,34 +69,59 @@ namespace Fabrica.Watch.Api.Controllers
             try
             {
 
-
-                // *****************************************************************
-                logger.Debug("Attempting to get logger for request Category");
-                var exLogger = factory.GetLogger(model.Category);
-
-
-                logger.Inspect(nameof(exLogger.IsTraceEnabled), exLogger.IsTraceEnabled);
-                logger.Inspect(nameof(exLogger.IsDebugEnabled), exLogger.IsDebugEnabled);
-                logger.Inspect(nameof(exLogger.IsInfoEnabled), exLogger.IsInfoEnabled);
-                logger.Inspect(nameof(exLogger.IsWarningEnabled), exLogger.IsWarningEnabled);
-                logger.Inspect(nameof(exLogger.IsErrorEnabled), exLogger.IsErrorEnabled);
-
-
-                if ((level == Level.Error && exLogger.IsErrorEnabled) ||
-                    (level == Level.Warning && exLogger.IsWarningEnabled) ||
-                    (level == Level.Info && exLogger.IsInfoEnabled) ||
-                    (level == Level.Debug && exLogger.IsDebugEnabled) ||
-                    (level == Level.Trace && exLogger.IsTraceEnabled))
+                foreach( var model in batch )
                 {
 
-                    // *****************************************************************
-                    logger.Debug("Attempting to create and log event");
-                    var le = exLogger.CreateEvent(level, model.Title, pt, payload);
 
-                    exLogger.LogEvent(le);
+                    // *****************************************************************
+                    logger.Debug("Attempting to build LogEvent components");
+                    if (!TryParse(model.Level, out Level level))
+                        level = Level.Error;
+
+                    if (!TryParse(model.PayloadType, out PayloadType pt))
+                        pt = PayloadType.Text;
+
+
+                    string payload = "";
+                    if( !string.IsNullOrWhiteSpace(model.Payload) )
+                    {
+                        var buff = Convert.FromBase64String(model.Payload);
+                        payload  = Encoding.UTF8.GetString(buff);
+                    }
+
+
+                    // *****************************************************************
+                    logger.Debug("Attempting to get logger for request Category");
+                    var exLogger = factory.GetLogger(model, false);
+
+
+                    logger.Inspect(nameof(exLogger.IsTraceEnabled), exLogger.IsTraceEnabled);
+                    logger.Inspect(nameof(exLogger.IsDebugEnabled), exLogger.IsDebugEnabled);
+                    logger.Inspect(nameof(exLogger.IsInfoEnabled), exLogger.IsInfoEnabled);
+                    logger.Inspect(nameof(exLogger.IsWarningEnabled), exLogger.IsWarningEnabled);
+                    logger.Inspect(nameof(exLogger.IsErrorEnabled), exLogger.IsErrorEnabled);
+
+
+                    if ((level == Level.Error && exLogger.IsErrorEnabled) ||
+                        (level == Level.Warning && exLogger.IsWarningEnabled) ||
+                        (level == Level.Info && exLogger.IsInfoEnabled) ||
+                        (level == Level.Debug && exLogger.IsDebugEnabled) ||
+                        (level == Level.Trace && exLogger.IsTraceEnabled))
+                    {
+
+                        // *****************************************************************
+                        logger.Debug("Attempting to create and log event");
+                        ILogEvent le;
+                        if( !string.IsNullOrWhiteSpace(payload) )
+                            le = exLogger.CreateEvent(level, model.Title, pt, payload);
+                        else
+                            le = exLogger.CreateEvent(level, model.Title );
+
+                        exLogger.LogEvent(le);
+
+                    }
 
                 }
-
 
 
             }
@@ -236,25 +149,19 @@ namespace Fabrica.Watch.Api.Controllers
     public class LogModel
     {
 
-        public string Domain { get; set; } = "";
+        public static implicit operator LoggerRequest(LogModel m) => new() { Category = m.Category, CorrelationId = m.CorrelationId, Subject = m.Subject, Tenant = m.Tenant };
+
+
+        public bool Debug { get; set; } = false;
+
+        public string Tag { get; set; } = "";
+        public string Tenant { get; set; } = "";
+        public string Subject { get; set; } = "";
+
+        public string CorrelationId { get; set; } = "";
 
         public string Category { get; set; } = "";
-        public string Level { get; set; } = "";
 
-        public string Title { get; set; } = "";
-
-        public string PayloadType { get; set; } = "";
-
-
-    }
-
-
-    public class LogModelWithBody
-    {
-
-        public string Domain { get; set; } = "";
-
-        public string Category { get; set; } = "";
         public string Level { get; set; } = "";
 
         public string Title { get; set; } = "";
@@ -263,9 +170,7 @@ namespace Fabrica.Watch.Api.Controllers
 
         public string Payload { get; set; } = "";
 
-
     }
-
 
 
 

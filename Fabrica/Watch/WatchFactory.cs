@@ -220,9 +220,9 @@ namespace Fabrica.Watch
             {
 
                 var found = false;
-                foreach( var f in request.FilterKeys )
+                foreach( var (key, target) in request.FilterKeys )
                 {
-                    found = Switches.Lookup(f.Key, f.Target, request.Category, out sw);
+                    found = Switches.Lookup(key, target, request.Category, out sw);
                     if( found )
                         break;
                 }

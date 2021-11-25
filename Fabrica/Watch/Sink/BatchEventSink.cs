@@ -62,7 +62,7 @@ namespace Fabrica.Watch.Sink
 
             TargetSink.Start();
 
-            var task = new Task(_process);
+            var task = new Task( ()=>_process() );
             task.Start();
 
             Started = true;
@@ -80,34 +80,37 @@ namespace Fabrica.Watch.Sink
         }
 
 
-        public virtual void Accept(ILogEvent logEvent)
+        public virtual Task Accept(ILogEvent logEvent)
         {
             Queue.Enqueue(logEvent);
+            return Task.CompletedTask;
         }
 
-        public virtual void Accept( [NotNull] IEnumerable<ILogEvent> batch )
+        public virtual Task Accept( [NotNull] IEnumerable<ILogEvent> batch )
         {
 
             foreach ( var le in batch )
                 Queue.Enqueue( le );
 
+            return Task.CompletedTask;
+
         }
 
 
-        private void _process()
+        private async Task _process()
         {
 
             while( !MustStop.WaitOne(PollingInterval) )
-                Drain(false);
+                await Drain(false);
 
-            Drain(true);
+            await Drain(true);
 
             Stopped.Set();
 
         }
 
 
-        protected virtual void Drain( bool all )
+        protected virtual async Task Drain( bool all )
         {
 
             if( Queue.IsEmpty )
@@ -129,7 +132,7 @@ namespace Fabrica.Watch.Sink
             }
 
             if( batch.Count > 0 )
-                TargetSink.Accept(batch);
+                await TargetSink.Accept(batch);
 
         }
 

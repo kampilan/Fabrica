@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Fabrica.Watch.Sink
 {
@@ -25,7 +25,7 @@ namespace Fabrica.Watch.Sink
         }
 
 
-        public void Accept( ILogEvent logEvent )
+        public Task Accept( ILogEvent logEvent )
         {
 
             Interlocked.Add(ref _accepted, 1);
@@ -35,12 +35,18 @@ namespace Fabrica.Watch.Sink
 
             Queue.Enqueue( logEvent );
 
+            return Task.CompletedTask;
+
         }
 
-        public void Accept( IEnumerable<ILogEvent> batch )
+        public Task Accept( IEnumerable<ILogEvent> batch )
         {
+
             foreach( var le in batch )
                 Accept(le);
+
+            return Task.CompletedTask;
+
         }
 
         private int _accepted = 0;

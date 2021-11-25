@@ -24,6 +24,7 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Fabrica.Watch.Sink
@@ -44,17 +45,20 @@ namespace Fabrica.Watch.Sink
         }
 
 
-        public virtual void Accept( [NotNull] ILogEvent logEvent )
+        public virtual Task Accept( [NotNull] ILogEvent logEvent )
         {
             _write( logEvent );
+            return Task.CompletedTask;
         }
 
 
-        public virtual void Accept( [NotNull] IEnumerable<ILogEvent> batch )
+        public virtual Task Accept( [NotNull] IEnumerable<ILogEvent> batch )
         {
 
             foreach ( var le in batch )
                 _write(le);
+
+            return Task.CompletedTask;
 
         }
 
