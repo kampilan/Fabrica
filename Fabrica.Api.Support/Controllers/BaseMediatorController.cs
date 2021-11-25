@@ -11,6 +11,7 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
+using Fabrica.Rql.Parser;
 using Fabrica.Utilities.Container;
 using JetBrains.Annotations;
 using MediatR;
@@ -250,7 +251,11 @@ namespace Fabrica.Api.Support.Controllers
             logger.Debug("Attempting to produce filters from supplied RQL");
             var filters = new List<IRqlFilter<TExplorer>>();
             if (rqls.Count > 0)
-                filters.AddRange(rqls.Select( RqlFilterBuilder<TExplorer>.FromRql));
+                filters.AddRange(rqls.Select(s =>
+                {
+                    var tree = RqlLanguageParser.ToCriteria(s);
+                    return new RqlFilterBuilder<TExplorer>(tree);
+                }));
 
 
 
@@ -289,7 +294,11 @@ namespace Fabrica.Api.Support.Controllers
             var filters = new List<IRqlFilter<TExplorer>>();
             if (rqls.Count > 0)
             {
-                filters.AddRange(rqls.Select(RqlFilterBuilder<TExplorer>.FromRql));
+                filters.AddRange(rqls.Select(s =>
+                {
+                    var tree = RqlLanguageParser.ToCriteria(s);
+                    return new RqlFilterBuilder<TExplorer>(tree);
+                }));
             }
             else
             {

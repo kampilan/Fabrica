@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
+using Fabrica.Rql.Parser;
 using JetBrains.Annotations;
 
 namespace Fabrica.Mediator.Requests
@@ -50,7 +51,9 @@ namespace Fabrica.Mediator.Requests
 
             if (string.IsNullOrWhiteSpace(rql)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(rql));
 
-            var builder = RqlFilterBuilder<TModel>.FromRql( rql );
+            var tree = RqlLanguageParser.ToCriteria(rql);
+
+            var builder = new RqlFilterBuilder<TModel>(tree);
             Filters.Add(builder);
 
             return builder;
@@ -77,7 +80,11 @@ namespace Fabrica.Mediator.Requests
                 var filters = new List<IRqlFilter<TModel>>();
 
                 if( Criteria is not null && Criteria.Rql is not null && Criteria.Rql.Length > 0)
-                    filters.AddRange( Criteria.Rql.Select(RqlFilterBuilder<TModel>.FromRql) );
+                    filters.AddRange( Criteria.Rql.Select(s =>
+                    {
+                        var tree = RqlLanguageParser.ToCriteria(s);
+                        return new RqlFilterBuilder<TModel>(tree);
+                    }) );
                 else if( Criteria is not null )
                     filters.Add( RqlFilterBuilder<TModel>.Create().Introspect(Criteria) );
 

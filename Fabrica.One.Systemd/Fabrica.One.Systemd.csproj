@@ -15,7 +15,7 @@
     <ProjectReference Include="..\Fabrica.One.Support\Fabrica.One.Support.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
-    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

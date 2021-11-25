@@ -17,21 +17,21 @@ namespace Fabrica.Watch.Sink
         private class Model
         {
 
-            public string Tag { get; init; } = "";
-            public string Tenant { get; init; } = "";
-            public string Subject { get; init; } = "";
+            public string Tag { get; set; } = "";
+            public string Tenant { get; set; } = "";
+            public string Subject { get; set; } = "";
 
-            public string CorrelationId { get; init; } = "";
+            public string CorrelationId { get; set; } = "";
 
-            public string Category { get; init; } = "";
+            public string Category { get; set; } = "";
 
-            public string Level { get; init; } = "";
+            public string Level { get; set; } = "";
 
-            public string Title { get; init; } = "";
+            public string Title { get; set; } = "";
 
-            public string PayloadType { get; init; } = "";
+            public string PayloadType { get; set; } = "";
 
-            public string Payload { get; init; } = "";
+            public string Payload { get; set; } = "";
 
         }
 

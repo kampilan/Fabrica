@@ -24,9 +24,9 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
-using Fabrica.Utilities.Drawing;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Switching;
 using JetBrains.Annotations;

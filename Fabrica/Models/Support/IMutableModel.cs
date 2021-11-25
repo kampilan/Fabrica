@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using Fabrica.Models.Patch.Builder;
-using Fabrica.Persistence.Rules;
 using JetBrains.Annotations;
 
 namespace Fabrica.Models.Support

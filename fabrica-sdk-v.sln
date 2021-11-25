@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica", "Fabrica\Fabrica.csproj", "{3B437107-DFAA-4694-8CEA-3A876773EC62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Extensions", "Fabrica.Extensions\Fabrica.Extensions.csproj", "{3B437107-DFAA-4694-8CEA-3A876773EC62}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Bridges", "Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj", "{A1954C96-AF2F-410A-861C-5EF5D3A392E7}"
 EndProject
@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Api", "Fabric
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Realtime", "Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj", "{B6F8F586-09C6-45BC-AEE6-1F58065FA739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Fake", "Fabrica.Fake\Fabrica.Fake.csproj", "{D89769EF-6F4A-4589-BD28-9A3341948367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Fake", "Fabrica.Fake\Fabrica.Fake.csproj", "{D89769EF-6F4A-4589-BD28-9A3341948367}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica", "Fabrica\Fabrica.csproj", "{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,10 @@ Global
 		{D89769EF-6F4A-4589-BD28-9A3341948367}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D89769EF-6F4A-4589-BD28-9A3341948367}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D89769EF-6F4A-4589-BD28-9A3341948367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{5A3DB926-8BD2-4A4C-95A2-427250FB7DAB} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
 		{B6F8F586-09C6-45BC-AEE6-1F58065FA739} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 		{D89769EF-6F4A-4589-BD28-9A3341948367} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
+		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE8638D5-DE76-4377-8051-B8525AC1799D}

@@ -5,6 +5,7 @@ using Bogus;
 using Bogus.DataSets;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Rql.Builder;
+using Fabrica.Rql.Parser;
 using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Types;
@@ -48,7 +49,8 @@ namespace Fabrica.Fake.Controllers
             if( !string.IsNullOrWhiteSpace(rql) )
             {
 
-                var filter = RqlFilterBuilder<Person>.FromRql(rql);
+                var tree = RqlLanguageParser.ToCriteria(rql);
+                var filter = new RqlFilterBuilder<Person>(tree);
                 var lambda = filter.ToLambda();
 
                 var subset = list.Where(lambda);
@@ -91,7 +93,8 @@ namespace Fabrica.Fake.Controllers
             if( !string.IsNullOrWhiteSpace(rql) )
             {
 
-                var filter = RqlFilterBuilder<Company>.FromRql(rql);
+                var tree   = RqlLanguageParser.ToCriteria(rql);
+                var filter = new RqlFilterBuilder<Company>(tree);
                 var lambda = filter.ToLambda();
 
                 var subset = list.Where(lambda);

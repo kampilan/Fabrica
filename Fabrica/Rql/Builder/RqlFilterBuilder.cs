@@ -39,16 +39,6 @@ namespace Fabrica.Rql.Builder
             return new RqlFilterBuilder<TTarget>();
         }
 
-        public static RqlFilterBuilder<TTarget> FromRql( string rql )
-        {
-
-            var tree = RqlLanguageParser.ToCriteria( rql );
-
-            var builder = new RqlFilterBuilder<TTarget>( tree );
-
-            return builder;
-
-        }
 
         public static RqlFilterBuilder<TTarget> Where<TValue>([NotNull] Expression<Func<TTarget, TValue>> prop )
         {
@@ -121,50 +111,6 @@ namespace Fabrica.Rql.Builder
 
     public class RqlFilterBuilder : AbstractFilterBuilder<RqlFilterBuilder>
     {
-
-
-        public static IRqlFilter Create([NotNull] Type target, [NotNull] RqlTree tree)
-        {
-
-            if (target == null) throw new ArgumentNullException(nameof(target));
-            if (tree == null) throw new ArgumentNullException(nameof(tree));
-
-            var generic = typeof(RqlFilterBuilder<>).MakeGenericType(target);
-
-            var instance = Activator.CreateInstance(generic, 0, new object[] { tree });
-
-            return instance as IRqlFilter;
-
-        }
-
-        public static IRqlFilter Create( [NotNull] Type target, [NotNull] string rql )
-        {
-
-            if (target == null) throw new ArgumentNullException(nameof(target));
-            if (string.IsNullOrWhiteSpace(rql))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(rql));
-
-            var tree = RqlLanguageParser.ToCriteria(rql);
-
-            var generic = typeof(RqlFilterBuilder<>).MakeGenericType(target);
-
-            var instance = Activator.CreateInstance( generic, tree );
-
-            return instance as IRqlFilter;
-
-        }
-
-
-        public static RqlFilterBuilder FromRql(string rql)
-        {
-
-            var tree = RqlLanguageParser.ToCriteria(rql);
-
-            var builder = new RqlFilterBuilder(tree);
-
-            return builder;
-
-        }
 
 
         public static RqlFilterBuilder Create()

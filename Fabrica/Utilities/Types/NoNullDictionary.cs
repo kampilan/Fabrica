@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Fabrica.Utilities.Types
 {
@@ -15,7 +13,7 @@ namespace Fabrica.Utilities.Types
 
         }
 
-        public NoNullDictionary(IEnumerable<KeyValuePair<string, object>> src)
+        public NoNullDictionary(IDictionary<string, object> src )
         {
             Inner = new Dictionary<string, object>(src);
         }

@@ -24,13 +24,13 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Fabrica.Exceptions;
 using Fabrica.Rules.Exceptions;
-using Fabrica.Utilities.Drawing;
 using Fabrica.Watch.Sink;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;

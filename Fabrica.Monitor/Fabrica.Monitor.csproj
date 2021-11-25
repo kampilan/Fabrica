@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Api.Support\Fabrica.Api.Support.csproj" />
-    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

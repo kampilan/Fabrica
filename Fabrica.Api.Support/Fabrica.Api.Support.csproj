@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -9,7 +9,7 @@
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
-    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

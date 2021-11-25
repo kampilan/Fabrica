@@ -24,7 +24,6 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Reflection;
 using Fabrica.Rql.Parser;
@@ -131,18 +130,6 @@ namespace Fabrica.Rql.Builder
 
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-
-            if( source.Rql is { Length: > 0 } )
-            {
-
-                var tree = RqlLanguageParser.ToCriteria(source.Rql[0]);
-        
-                ProjectedProperties = new HashSet<string>(tree.Projection);
-                Predicates          = new List<IRqlPredicate>(tree.Criteria);
-
-                return (TBuilder)this;
-
-            }
 
             var parts = new Dictionary<string, RqlPredicate>();
 

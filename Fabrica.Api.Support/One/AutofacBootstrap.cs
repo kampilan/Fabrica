@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Drawing;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Drawing;
 using Fabrica.Utilities.Process;
 using Fabrica.Watch;
 using Fabrica.Watch.Bridges.MicrosoftImpl;

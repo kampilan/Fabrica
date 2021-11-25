@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
     <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.1" />
     <PackageReference Include="AWSSDK.Core" Version="3.7.5.1" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.4.9" />

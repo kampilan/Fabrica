@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 using System;
-using Fabrica.Utilities.Drawing;
+using System.Drawing;
 using JetBrains.Annotations;
 
 namespace Fabrica.Watch
