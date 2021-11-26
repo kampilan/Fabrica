@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Switching;
 using JetBrains.Annotations;
@@ -58,11 +59,16 @@ namespace Fabrica.Watch
         }
 
 
-        public static HttpEventSink UseHttpSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain, bool useBatching=true )
+        public static HttpEventSink UseHttpSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain, bool useBatching=true, TimeSpan pollingInterval=default )
         {
 
-            if (useBatching)
-                builder.UseBatching(20);
+            if( useBatching )
+            {
+                if( pollingInterval == default )
+                    pollingInterval = TimeSpan.FromMilliseconds(50);
+                
+                builder.UseBatching(20, pollingInterval );
+            }
 
             var sink = new HttpEventSink
             {
