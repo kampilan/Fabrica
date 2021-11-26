@@ -62,8 +62,7 @@ namespace Fabrica.Watch.Sink
 
             TargetSink.Start();
 
-            var task = new Task( ()=>_process() );
-            task.Start();
+            Task.Run( _process );
 
             Started = true;
 
