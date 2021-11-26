@@ -27,7 +27,7 @@ namespace Fabrica.Watch.Api.Appliance
                     var corr = c.Resolve<ICorrelation>();
                     var options = c.Resolve<WatchOptions>();
 
-                    var comp = new WatchFactoryCache(corr, options);
+                    var comp = new WatchSinkCache(corr, options);
 
                     return comp;
 

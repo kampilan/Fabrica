@@ -59,11 +59,10 @@ namespace Fabrica.Watch.Api.Appliance
 
             services.AddMvc(builder =>
             {
-#if DEBUG
+                
+                if( Options.RequiresAuthentication )
+                    builder.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
 
-#else
-                builder.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
-#endif
                 builder.Filters.Add(typeof(ExceptionFilter));
                 builder.Filters.Add(typeof(ResultFilter));
 
@@ -87,13 +86,12 @@ namespace Fabrica.Watch.Api.Appliance
 
             });
 
-#if DEBUG
 
-#else
-            services.AddProxyTokenAuthentication();
-            services.AddProxyTokenAuthorization();
-#endif
-
+            if( Options.RequiresAuthentication )
+            {
+                services.AddProxyTokenAuthentication();
+                services.AddProxyTokenAuthorization();
+            }
 
 
             services.AddSwaggerGen(c =>
@@ -138,12 +136,13 @@ namespace Fabrica.Watch.Api.Appliance
 
             builder.UseRouting();
 
-#if DEBUG
 
-#else
-            builder.UseAuthentication();
-            builder.UseAuthorization();
-#endif
+            if (Options.RequiresAuthentication)
+            {
+                builder.UseAuthentication();
+                builder.UseAuthorization();
+            }
+
 
             builder.UseEndpoints(endpoints =>
             {

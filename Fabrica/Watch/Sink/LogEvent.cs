@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using System;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -76,6 +77,8 @@ namespace Fabrica.Watch.Sink
 
         public int Nesting { get; set; } = 0;
         public int Color { get; set; } = 0;
+
+        [Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
         public Level Level { get; set; } = Level.Trace;
 
 
@@ -84,6 +87,8 @@ namespace Fabrica.Watch.Sink
 
         public DateTime Occurred { get; set; } = DateTime.UtcNow;
 
+
+        [Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
         public PayloadType Type { get; set; } = PayloadType.None;
         public string Payload { get; set; } = "";
 
@@ -92,7 +97,6 @@ namespace Fabrica.Watch.Sink
             Type = PayloadType.Json;
             Payload = ToJson(source);
         }
-
 
 
     }

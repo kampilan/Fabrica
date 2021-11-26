@@ -1,5 +1,7 @@
 ﻿namespace Fabrica.Api.Support.One
 {
+
+
     public class ApplianceOptions : IApplianceOptions
     {
 
@@ -10,6 +12,8 @@
 
         public string MissionName { get; set; } = "";
         public bool RunningAsMission => !string.IsNullOrWhiteSpace(MissionName);
+
+        public bool RequiresAuthentication { get; set; } = true;
 
     }
 

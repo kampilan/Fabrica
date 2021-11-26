@@ -13,6 +13,8 @@
         string MissionName { get;  }
         bool RunningAsMission { get; }
 
+        bool RequiresAuthentication { get; }
+
     }
 
 }
