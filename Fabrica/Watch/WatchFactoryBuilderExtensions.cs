@@ -58,8 +58,11 @@ namespace Fabrica.Watch
         }
 
 
-        public static HttpEventSink UseHttpSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain )
+        public static HttpEventSink UseHttpSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain, bool useBatching=true )
         {
+
+            if (useBatching)
+                builder.UseBatching(20);
 
             var sink = new HttpEventSink
             {
