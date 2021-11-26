@@ -5,8 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+using Fabrica.Http;
+
+
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace Fabrica.Watch.Sink
 {
@@ -48,11 +50,9 @@ namespace Fabrica.Watch.Sink
         public void Start()
         {
 
-            var services = new ServiceCollection();
-            services.AddHttpClient( "", c => c.BaseAddress = new Uri(WatchEndpoint));
-
             var builder = new ContainerBuilder();
-            builder.Populate(services);
+
+            builder.AddHttpClient( "", WatchEndpoint );
 
             Container = builder.Build();
 
@@ -95,11 +95,10 @@ namespace Fabrica.Watch.Sink
             try
             {
 
-                using( var client = Factory.CreateClient() )
-                {
-                    var response = await client.PostAsJsonAsync( $"{Domain}", models );
-                    response.EnsureSuccessStatusCode();
-                }
+                using var client = Factory.CreateClient();
+
+                var response = await client.PostAsJsonAsync( $"{Domain}", models );
+                response.EnsureSuccessStatusCode();
 
 
             }
@@ -114,7 +113,7 @@ namespace Fabrica.Watch.Sink
                     Payload = cause.StackTrace
                 };
 
-                DebugSink.Accept(le);
+                await DebugSink.Accept(le);
 
             }
 

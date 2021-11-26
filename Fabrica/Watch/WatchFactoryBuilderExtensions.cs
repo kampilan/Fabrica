@@ -57,6 +57,23 @@ namespace Fabrica.Watch
 
         }
 
+
+        public static HttpEventSink UseHttpSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain )
+        {
+
+            var sink = new HttpEventSink
+            {
+                WatchEndpoint = uri,
+                Domain        = domain
+            };
+
+            builder.Sinks.AddSink( sink );
+
+            return sink;
+
+        }
+
+
         [NotNull]
         public static SwitchSource UseLocalSwitchSource( [NotNull] this WatchFactoryBuilder builder )
         {
