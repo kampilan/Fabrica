@@ -79,6 +79,26 @@ namespace Fabrica.Watch
 
         }
 
+
+        private bool WillUseTimerBatching { get; set; }
+
+        [NotNull]
+        public WatchFactoryBuilder UseTimerBatching(int batchSize = 10, TimeSpan pollingInterval = default )
+        {
+
+            WillUseTimerBatching = true;
+
+            BatchSize = batchSize;
+
+            if (pollingInterval != default(TimeSpan))
+                PollingInterval = pollingInterval;
+
+            return this;
+
+        }
+
+
+
         private IEventSink _buildSink()
         {
 
@@ -89,6 +109,12 @@ namespace Fabrica.Watch
                     BatchSize = BatchSize,
                     PollingInterval = PollingInterval
                 };
+                return sinks;
+            }
+            
+            if( WillUseTimerBatching )
+            {
+                var sinks = new TimerBatchEventSink(Sinks);
                 return sinks;
             }
 
