@@ -251,7 +251,7 @@ namespace Fabrica.One.Installer
                     {
 
                         logger.Debug("Attempting to initial SHA1 managed");
-                        var sha = new SHA1Managed();
+                        var sha = SHA1.Create();
                         sha.Initialize();
 
 

@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Fabrica</RootNamespace>
     <Authors>The Kampilan Group Inc.</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.1" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.4.9" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.92" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.9.4" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.7.1.45" />
+    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.5" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.94" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.10" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.2" />
   </ItemGroup>
 
   <ItemGroup>

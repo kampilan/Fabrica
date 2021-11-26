@@ -27,7 +27,7 @@ namespace Fabrica.Identity
         private IAccessTokenSource Source { get; }
         private string Domain { get; }
 
-        private RandomNumberGenerator Rng { get; } = new RNGCryptoServiceProvider();
+        private RandomNumberGenerator Rng { get; } = RandomNumberGenerator.Create();
 
         private ManagementApiClient Client { get; set; }
 

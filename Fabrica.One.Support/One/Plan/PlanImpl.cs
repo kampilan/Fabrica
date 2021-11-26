@@ -51,7 +51,7 @@ namespace Fabrica.One.Plan
             if( string.IsNullOrWhiteSpace(TokenSigningKey) )
             {
 
-                var rng = new RNGCryptoServiceProvider();
+                var rng = RandomNumberGenerator.Create();
                 var key = new byte[64];
                 rng.GetNonZeroBytes(key);
 

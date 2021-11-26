@@ -23,7 +23,6 @@ namespace Fabrica.Static.Appliance
                     o.Filters.Add(typeof(ExceptionFilter));
                     o.Filters.Add(typeof(ResultFilter));
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(ConfigureJsonForRto);
 
         }

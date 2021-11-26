@@ -65,7 +65,6 @@ namespace Fabrica.Work.Appliance
                 builder.Filters.Add(typeof(ExceptionFilter));
                 builder.Filters.Add(typeof(ResultFilter));
             })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = new ModelContractResolver();
