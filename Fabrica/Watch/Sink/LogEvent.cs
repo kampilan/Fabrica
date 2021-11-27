@@ -65,24 +65,19 @@ namespace Fabrica.Watch.Sink
         }
 
 
+        public string Category { get; set; } = "";
+        public string CorrelationId { get; set; } = "";
+
+        public string Title { get; set; } = "";
 
         public string Tenant { get; set; }
         public string Subject { get; set; }
         public string Tag { get; set; }
 
-
-        public string Category { get; set; } = "";
-        public string CorrelationId { get; set; } = "";
-
-
-        public int Nesting { get; set; } = 0;
-        public int Color { get; set; } = 0;
-
         [JsonConverter(typeof(StringEnumConverter))]
         public Level Level { get; set; } = Level.Trace;
-
-
-        public string Title { get; set; } = "";
+        public int Color { get; set; } = 0;
+        public int Nesting { get; set; } = 0;
 
 
         public DateTime Occurred { get; set; } = DateTime.UtcNow;

@@ -30,22 +30,21 @@ namespace Fabrica.Watch.Sink
     public interface ILogEvent
     {
 
+        string Category { get; set; }
+        string CorrelationId { get; set; }
+
+        string Title { get; set; }
 
         string Tenant { get; set; }
         string Subject { get; set; }
         string Tag { get; set; }
 
-
-        string Category { get; set; }
-        string CorrelationId { get; set; }
-
-
-        int Nesting { get; set; }
-        int Color { get; set; }
         Level Level { get; set; }
-        string Title { get; set; }
+        int Color { get; set; }
+        int Nesting { get; set; }
 
         DateTime Occurred { get; set; }
+
         PayloadType Type { get; set; }
         string Payload { get; set; }
 

@@ -26,12 +26,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Fabrica.Watch.Sink;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ProtoBuf;
-using ProtoBuf.Meta;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 // ReSharper disable UnusedMember.Local
@@ -60,17 +59,6 @@ namespace Fabrica.Watch.Mongo.Sink
             public string Collection { get; set; } = "";
 
         }
-
-
-
-        private static readonly string[] MemberNames = { "Tenant", "Subject", "Tag", "Category", "CorrelationId", "Nesting", "Color", "Level", "Title", "Occurred", "Type", "Payload" };
-
-
-        static MongoEventSink()
-        {
-            RuntimeTypeModel.Default.Add(typeof(LogEvent), false).Add(MemberNames);
-        }
-
 
 
         public string ServerUri { get; set; } = "";
@@ -230,9 +218,6 @@ namespace Fabrica.Watch.Mongo.Sink
         private BsonDocument _buildDocument( [JetBrains.Annotations.NotNull] ILogEvent logEvent )
         {
 
-            Stream.SetLength(0);
-            Serializer.SerializeWithLengthPrefix(Stream, (LogEvent)logEvent, PrefixStyle.Fixed32);
-
 
             var timeToLive = NonDebugTimeToLive;
             if (logEvent.Level == Level.Debug || logEvent.Level == Level.Trace)
@@ -241,16 +226,33 @@ namespace Fabrica.Watch.Mongo.Sink
 
             var entity = new MongoLogEntity
             {
+                Category      = logEvent.Category,
+                CorrelationId = logEvent.CorrelationId,
+
+                Title         = logEvent.Title,
+
                 Tenant        = logEvent.Tenant,
                 Subject       = logEvent.Subject,
                 Tag           = logEvent.Tag,
-                Category      = logEvent.Category,
-                CorrelationId = logEvent.CorrelationId,
+
                 Level         = (int)logEvent.Level,
+                Color         = logEvent.Color,
+                Nesting       = logEvent.Nesting,
+
+                Type          = (int)logEvent.Type,
+                
                 Occurred      = logEvent.Occurred,
                 TimeToLive    = (logEvent.Occurred + timeToLive),
-                Content       = Stream.ToArray()
+            
             };
+
+            if( !string.IsNullOrWhiteSpace(logEvent.Payload) )
+            {
+                var buf = Encoding.ASCII.GetBytes(logEvent.Payload);
+                var base64 = Convert.ToBase64String(buf);
+                entity.Payload = base64;
+            }
+
 
             var document = entity.ToBsonDocument();
 
