@@ -83,30 +83,6 @@ namespace Fabrica.Watch
         }
 
 
-        public static HttpEventSink UseHttpTimerSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain, bool useBatching = true, TimeSpan pollingInterval = default)
-        {
-
-            if (useBatching)
-            {
-                if (pollingInterval == default)
-                    pollingInterval = TimeSpan.FromMilliseconds(50);
-
-                builder.UseTimerBatching(20, pollingInterval);
-            }
-
-            var sink = new HttpEventSink
-            {
-                WatchEndpoint = uri,
-                Domain = domain
-            };
-
-            builder.Sinks.AddSink(sink);
-
-            return sink;
-
-        }
-
-
 
         [NotNull]
         public static SwitchSource UseLocalSwitchSource( [NotNull] this WatchFactoryBuilder builder )

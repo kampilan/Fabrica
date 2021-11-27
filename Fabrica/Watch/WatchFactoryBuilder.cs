@@ -44,14 +44,14 @@ namespace Fabrica.Watch
         public int InitialPoolSize { get; set; } = 1000;
 
 
-        public CompositeSink Sinks { get; } = new CompositeSink();
+        public CompositeSink Sinks { get; } = new ();
 
         public ISwitchSource Source { get; set; } = new SwitchSource();
 
         public IList<object> Infrastructure { get; } = new List<object>();
 
 
-        private bool Quiet { get; set; } = false;
+        private bool Quiet { get; set; }
 
         public WatchFactoryBuilder WithQuiet( bool quiet )
         {
@@ -65,7 +65,7 @@ namespace Fabrica.Watch
         private int BatchSize { get; set; } = 10;
         private TimeSpan PollingInterval { get; set; } = TimeSpan.FromMilliseconds(50);
         [NotNull]
-        public WatchFactoryBuilder UseBatching( int batchSize=10, TimeSpan pollingInterval=default(TimeSpan) ) 
+        public WatchFactoryBuilder UseBatching( int batchSize=10, TimeSpan pollingInterval=default ) 
         {
 
             WillUseBatching = true;
@@ -73,24 +73,6 @@ namespace Fabrica.Watch
             BatchSize = batchSize;
 
             if ( pollingInterval != default(TimeSpan))
-                PollingInterval = pollingInterval;
-
-            return this;
-
-        }
-
-
-        private bool WillUseTimerBatching { get; set; }
-
-        [NotNull]
-        public WatchFactoryBuilder UseTimerBatching(int batchSize = 10, TimeSpan pollingInterval = default )
-        {
-
-            WillUseTimerBatching = true;
-
-            BatchSize = batchSize;
-
-            if (pollingInterval != default(TimeSpan))
                 PollingInterval = pollingInterval;
 
             return this;
@@ -112,12 +94,6 @@ namespace Fabrica.Watch
                 return sinks;
             }
             
-            if( WillUseTimerBatching )
-            {
-                var sinks = new TimerBatchEventSink(Sinks);
-                return sinks;
-            }
-
             return Sinks;
 
         }
