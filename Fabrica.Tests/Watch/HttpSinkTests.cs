@@ -19,7 +19,8 @@ namespace Fabrica.Tests.Watch
         public void Setup()
         {
             var maker = new WatchFactoryBuilder();
-            maker.UseHttpSink("https://kampilan.ngrok.io/watch/", "After.Client" );
+            maker.UseConsoleSink();
+            //maker.UseHttpSink("https://kampilan.ngrok.io/watch/", "After.Client" );
             maker.UseLocalSwitchSource().WhenNotMatched(Level.Debug, Color.Azure);
 
             maker.Build();

@@ -58,6 +58,20 @@ namespace Fabrica.Watch
 
         }
 
+        public static RelayEventSink UseRelaySink([NotNull] this WatchFactoryBuilder builder, int port = 5246, [CanBeNull] string domain=null )
+        {
+
+            var sink = new RelayEventSink
+            {
+                Port = port
+            };
+
+            builder.Sinks.AddSink( sink );
+
+            return sink;
+
+        }
+
 
         public static HttpEventSink UseHttpSink([NotNull] this WatchFactoryBuilder builder, [NotNull] string uri, [NotNull] string domain, bool useBatching=true, TimeSpan pollingInterval=default )
         {

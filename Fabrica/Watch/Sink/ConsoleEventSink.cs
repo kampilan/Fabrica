@@ -94,11 +94,11 @@ namespace Fabrica.Watch.Sink
             Console.WriteLine("================================================================================");
 
             var message = $"{le.Occurred:T} - {le.Level.ToString().ToUpper()} - {le.Category} - {le.Title}";
-            Console.WriteLine(message);
+            Console.Out.WriteLine(message);
             if (le.Type != PayloadType.None)
             {
-                Console.WriteLine("--------------------------------------------------------------------------------");
-                Console.WriteLine(le.Payload);
+                Console.Out.WriteLine("--------------------------------------------------------------------------------");
+                Console.Out.WriteLine(le.Payload);
             }
             Console.ResetColor();
 
