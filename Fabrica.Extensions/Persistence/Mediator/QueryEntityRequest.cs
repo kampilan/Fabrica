@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
@@ -57,5 +58,36 @@ public class QueryEntityRequest<TEntity>: IRequest<Response<List<TEntity>>> wher
 
     }
 
+
+}
+
+
+public class QueryEntityRequest<TModel,TCriteria> : IRequest<Response<List<TModel>>> where TModel: class, IModel where TCriteria : class, ICriteria, new()
+{
+
+    public TCriteria Criteria { get; set; } = new();
+
+    public List<IRqlFilter<TModel>> Filters
+    {
+
+        get
+        {
+
+            var filters = new List<IRqlFilter<TModel>>();
+
+            if (Criteria is not null && Criteria.Rql is not null && Criteria.Rql.Length > 0)
+                filters.AddRange(Criteria.Rql.Select(s =>
+                {
+                    var tree = RqlLanguageParser.ToCriteria(s);
+                    return new RqlFilterBuilder<TModel>(tree);
+                }));
+            else if (Criteria is not null)
+                filters.Add(RqlFilterBuilder<TModel>.Create().Introspect(Criteria));
+
+            return filters;
+
+        }
+
+    }
 
 }
