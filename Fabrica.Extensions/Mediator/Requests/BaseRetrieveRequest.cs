@@ -1,4 +1,6 @@
-﻿namespace Fabrica.Mediator.Requests
+﻿using Fabrica.Persistence.Mediator;
+
+namespace Fabrica.Mediator.Requests
 {
 
     public abstract class BaseRetrieveRequest: IRetrieveRequest

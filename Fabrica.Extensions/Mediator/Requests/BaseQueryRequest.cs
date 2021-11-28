@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Fabrica.Models.Support;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Fabrica.Mediator;
+using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
@@ -12,11 +13,12 @@ using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class QueryEntityRequest<TEntity>: IRequest<Response<List<TEntity>>> where TEntity: class, IModel
+public class QueryEntityRequest<TEntity>: IQueryRequest, IRequest<Response<List<TEntity>>> where TEntity: class, IModel
 {
 
     public List<IRqlFilter<TEntity>> Filters { get; set; } = new();
-    
+
+    bool IQueryRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
 
     public RqlFilterBuilder<TEntity> AddFilter( ICriteria criteria = null )
     {
@@ -62,10 +64,13 @@ public class QueryEntityRequest<TEntity>: IRequest<Response<List<TEntity>>> wher
 }
 
 
-public class QueryEntityRequest<TModel,TCriteria> : IRequest<Response<List<TModel>>> where TModel: class, IModel where TCriteria : class, ICriteria, new()
+public class QueryEntityRequest<TModel,TCriteria> : IQueryRequest<TModel>, IRequest<Response<List<TModel>>> where TModel: class, IModel where TCriteria : class, ICriteria, new()
 {
 
     public TCriteria Criteria { get; set; } = new();
+
+    public bool HasCriteria => Criteria is not null;
+
 
     public List<IRqlFilter<TModel>> Filters
     {

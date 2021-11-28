@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
-using Fabrica.Mediator;
+﻿using Fabrica.Mediator;
+using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class CreateEntityRequest<TEntity>: IRequest<Response<TEntity>> where TEntity: class, IModel
+
+public class CreateEntityRequest<TEntity,TDelta>: ICreateRequest, IRequest<Response<TEntity>> where TEntity: class, IModel where TDelta: BaseDelta, new()
 {
 
     public string Uid { get; set; } = "";
 
-    public Dictionary<string,object> Properties { get; set; } = new();
+    public TDelta Delta { get; set; } = new();
 
+    BaseDelta ICreateRequest.Delta => Delta;
 
 }

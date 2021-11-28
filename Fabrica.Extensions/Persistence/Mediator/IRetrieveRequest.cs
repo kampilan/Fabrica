@@ -1,4 +1,4 @@
-﻿namespace Fabrica.Mediator.Requests
+﻿namespace Fabrica.Persistence.Mediator
 {
     public interface IRetrieveRequest
     {

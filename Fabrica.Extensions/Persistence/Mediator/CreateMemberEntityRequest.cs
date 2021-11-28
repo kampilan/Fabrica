@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Fabrica.Mediator;
+﻿using Fabrica.Mediator;
+using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using MediatR;
 
@@ -7,14 +7,16 @@ using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class CreateMemberEntityRequest<TParent,TMember>: IRequest<Response<TMember>> where TParent: class, IModel where TMember: class, IModel
+public class CreateMemberEntityRequest<TParent,TMember,TDelta>: ICreateMemberRequest, IRequest<Response<TMember>> where TParent: class, IModel where TMember: class, IModel where TDelta: BaseDelta, new()
 {
 
     public string ParentUid { get; set; } = "";
 
-    public string MemberUid { get; set; } = "";
+    public string Uid { get; set; } = "";
 
-    public Dictionary<string, object> Properties { get; set; } = new();
+    public TDelta Delta { get; set; } = new();
+
+    BaseDelta ICreateRequest.Delta => Delta;
 
 
 }

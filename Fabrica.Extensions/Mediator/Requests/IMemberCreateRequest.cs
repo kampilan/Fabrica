@@ -1,6 +1,4 @@
-﻿using Fabrica.Models.Support;
-
-namespace Fabrica.Mediator.Requests
+﻿namespace Fabrica.Mediator.Requests
 {
 
 

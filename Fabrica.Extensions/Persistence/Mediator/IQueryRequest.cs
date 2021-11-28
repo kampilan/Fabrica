@@ -2,7 +2,7 @@
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 
-namespace Fabrica.Mediator.Requests
+namespace Fabrica.Persistence.Mediator
 {
 
     public interface IQueryRequest
