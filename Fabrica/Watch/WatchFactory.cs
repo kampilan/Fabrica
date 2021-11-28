@@ -161,7 +161,7 @@ namespace Fabrica.Watch
                 return Silencer;
 
 
-            var corrId = ShortGuid.NewSequentialGuid().ToString();
+            var corrId = ShortGuid.NewGuid().ToString();
             var sw     = Switches.Lookup( category );
 
 

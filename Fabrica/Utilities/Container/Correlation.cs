@@ -35,7 +35,7 @@ namespace Fabrica.Utilities.Container
     {
 
 
-        public string Uid { get; } = ShortGuid.NewSequentialGuid().ToString();
+        public string Uid { get; } = ShortGuid.NewGuid().ToString();
 
         public string Tenant { get; set; } = "";
 

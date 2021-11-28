@@ -66,7 +66,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
             var set = new HashSet<TResponse>();
             foreach (var queryable in filterList.Select(filter => filter.ToExpression()).Select(predicate => Many(Context).Where(predicate)))
             {
-                var result = await queryable.ToListAsync(cancellationToken: token);
+                var result = await queryable.AsNoTracking().ToListAsync(cancellationToken: token);
                 set.UnionWith(result);
             }
 

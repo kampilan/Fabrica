@@ -33,7 +33,7 @@ namespace Fabrica.Fake.Controllers
             
             var ruleSet = new Faker<Person>();
 
-            ruleSet.RuleFor(p=>p.Uid, _=> ShortGuid.NewSequentialGuid().ToString() )
+            ruleSet.RuleFor(p=>p.Uid, _=> ShortGuid.NewGuid().ToString() )
                 .RuleFor(p => p.Gender, f => f.Person.Random.Enum<Person.GenderKind>())
                 .RuleFor(p => p.FirstName, (f, p) => f.Name.FirstName(p.Gender == Person.GenderKind.Female ? Name.Gender.Female : Name.Gender.Male))
                 .RuleFor(p => p.MiddleName, (f, p) => f.Name.FirstName(p.Gender == Person.GenderKind.Female ? Name.Gender.Female : Name.Gender.Male))
@@ -75,7 +75,7 @@ namespace Fabrica.Fake.Controllers
 
             var ruleSet = new Faker<Company>();
 
-            ruleSet.RuleFor(p => p.Uid, _ => ShortGuid.NewSequentialGuid().ToString() )
+            ruleSet.RuleFor(p => p.Uid, _ => ShortGuid.NewGuid().ToString() )
                 .RuleFor(c => c.Name, f => f.Company.CompanyName())
                 .RuleFor(c => c.Address1, f => f.Address.StreetAddress())
                 .RuleFor(c => c.Address2, f => f.Address.SecondaryAddress())
