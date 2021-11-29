@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
@@ -13,7 +12,7 @@ using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class QueryEntityRequest<TEntity>: IQueryRequest, IRequest<Response<List<TEntity>>> where TEntity: class, IModel
+public class QueryEntityRequest<TEntity>: IQueryRequest<TEntity>, IRequest<Response<List<TEntity>>> where TEntity: class, IModel
 {
 
     public List<IRqlFilter<TEntity>> Filters { get; set; } = new();
