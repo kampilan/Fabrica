@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Persistence.Thin;
@@ -23,7 +22,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
     
-    public abstract class BaseThinQueryHandler<TRequest,TResponse> : BaseHandler<TRequest, MemoryStream> where TRequest : class, IRequest<Response<MemoryStream>>, IQueryRequest<TResponse> where TResponse : class, IModel
+    public abstract class BaseThinQueryHandler<TRequest,TResponse> : BaseHandler<TRequest, MemoryStream> where TRequest : class, IRequest<Response<MemoryStream>>, IQueryEntityRequest<TResponse> where TResponse : class, IModel
     {
 
 

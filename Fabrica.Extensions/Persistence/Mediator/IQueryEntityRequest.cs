@@ -5,13 +5,13 @@ using Fabrica.Rql;
 namespace Fabrica.Persistence.Mediator
 {
 
-    public interface IQueryRequest
+    public interface IQueryEntityRequest
     {
         bool HasCriteria { get; }
     }
     
     
-    public interface IQueryRequest<TModel>: IQueryRequest where TModel: class, IModel
+    public interface IQueryEntityRequest<TModel>: IQueryEntityRequest where TModel: class, IModel
     {
 
         List<IRqlFilter<TModel>> Filters { get; }

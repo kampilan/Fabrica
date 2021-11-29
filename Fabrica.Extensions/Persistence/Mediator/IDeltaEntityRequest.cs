@@ -2,8 +2,10 @@
 
 namespace Fabrica.Persistence.Mediator;
 
-public interface ICreateRequest
+public interface IDeltaEntityRequest
 {
+
+    public OperationType Operation { get; set; }
 
     public string Uid { get; }
 

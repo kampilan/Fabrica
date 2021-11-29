@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Rql;
@@ -19,7 +18,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryRequest<TResponse> where TResponse: class, IModel where TDbContext: ReplicaDbContext
+    public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse: class, IModel where TDbContext: ReplicaDbContext
     {
 
 

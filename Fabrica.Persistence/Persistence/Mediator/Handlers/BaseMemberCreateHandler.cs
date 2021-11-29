@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Persistence.UnitOfWork;
@@ -17,7 +16,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseMemberCreateHandler<TRequest,TParent,TChild,TDbContext> : BaseDeltaHandler<TRequest, TChild, TDbContext> where TRequest : class, IMemberCreateRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : OriginDbContext
+    public abstract class BaseMemberCreateHandler<TRequest,TParent,TChild,TDbContext> : BaseDeltaHandler<TRequest, TChild, TDbContext> where TRequest : class, ICreateMemberEntityRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : OriginDbContext
     {
 
 

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Persistence.UnitOfWork;
@@ -21,7 +20,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
 
-    public abstract class BaseDeltaHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IDeltaRequest where TResponse : class, IModel, new() where TDbContext : OriginDbContext
+    public abstract class BaseDeltaHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IDeltaEntityRequest where TResponse : class, IModel, new() where TDbContext : OriginDbContext
     {
 
 
@@ -274,17 +273,18 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
-            if (string.IsNullOrWhiteSpace(Request.Uid))
+            if( Request.Operation == OperationType.Create )
             {
                 logger.Debug("Attempting to create entity");
                 Entity = await CreateEntity();
             }
-            else
+            else if (Request.Operation == OperationType.Update)
             {
                 logger.Debug("Attempting to create entity");
                 Entity = await RetrieveEntity();
             }
-
+            else
+                throw new InvalidOperationException( $"Invalid Operation Type: ({Request.Operation}) for Delta Handler: {GetType().FullName}" );
 
         }
 

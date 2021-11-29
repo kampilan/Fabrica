@@ -12,12 +12,12 @@ using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class QueryEntityRequest<TEntity>: IQueryRequest<TEntity>, IRequest<Response<List<TEntity>>> where TEntity: class, IModel
+public class QueryEntityRequest<TEntity>: IQueryEntityRequest<TEntity>, IRequest<Response<List<TEntity>>> where TEntity: class, IModel
 {
 
     public List<IRqlFilter<TEntity>> Filters { get; set; } = new();
 
-    bool IQueryRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
+    bool IQueryEntityRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
 
     public RqlFilterBuilder<TEntity> AddFilter( ICriteria criteria = null )
     {
@@ -63,7 +63,7 @@ public class QueryEntityRequest<TEntity>: IQueryRequest<TEntity>, IRequest<Respo
 }
 
 
-public class QueryEntityRequest<TModel,TCriteria> : IQueryRequest<TModel>, IRequest<Response<List<TModel>>> where TModel: class, IModel where TCriteria : class, ICriteria, new()
+public class QueryEntityRequest<TModel,TCriteria> : IQueryEntityRequest<TModel>, IRequest<Response<List<TModel>>> where TModel: class, IModel where TCriteria : class, ICriteria, new()
 {
 
     public TCriteria Criteria { get; set; } = new();

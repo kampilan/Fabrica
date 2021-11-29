@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Utilities.Container;
@@ -15,7 +14,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
     
-    public abstract class BaseRetrieveHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IRetrieveRequest where TResponse : class, IModel where TDbContext : OriginDbContext
+    public abstract class BaseRetrieveHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IRetrieveEntityRequest where TResponse : class, IModel where TDbContext : OriginDbContext
     {
 
 

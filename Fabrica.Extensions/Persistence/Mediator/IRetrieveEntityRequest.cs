@@ -1,13 +1,9 @@
 ﻿namespace Fabrica.Persistence.Mediator
 {
-
-    
-    public interface IDeleteRequest
+    public interface IRetrieveEntityRequest
     {
 
         string Uid { get; set; }
 
     }
-
-
 }

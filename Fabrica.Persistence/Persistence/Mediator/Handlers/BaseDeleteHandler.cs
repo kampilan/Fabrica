@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Mediator.Requests;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Contexts;
 using Fabrica.Persistence.UnitOfWork;
@@ -16,7 +15,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 {
 
     
-    public abstract class BaseDeleteHandler<TRequest,TModel,TDbContext> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>, IDeleteRequest where TModel: class, IModel where TDbContext: OriginDbContext
+    public abstract class BaseDeleteHandler<TRequest,TModel,TDbContext> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>, IDeleteEntityRequest where TModel: class, IModel where TDbContext: OriginDbContext
     {
 
 
