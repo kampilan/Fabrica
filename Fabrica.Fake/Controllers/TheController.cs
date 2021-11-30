@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.S3.Model;
 using Bogus;
 using Bogus.DataSets;
 using Fabrica.Api.Support.Controllers;
@@ -110,12 +111,27 @@ namespace Fabrica.Fake.Controllers
 
         }
 
+        [HttpPost("s3-events/{topic}")]
+        public Task<StatusCodeResult> AcceptWorkRequest( [FromRoute] string topic, [FromBody] S3Event s3 )
+        {
 
+            using var logger = EnterMethod();
 
+            logger.Inspect(nameof(topic), topic);
+            logger.LogObject(nameof(s3), s3);
 
+            return Task.FromResult(new StatusCodeResult(200) );
+
+        }
 
     }
 
+    public class S3Event
+    {
+
+        
+
+    }
 
 
     public class Person

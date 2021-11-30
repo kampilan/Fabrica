@@ -9,6 +9,7 @@ using Fabrica.Identity;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Work.Processor;
+using Fabrica.Work.Processor.Parsers;
 using Fabrica.Work.Queue;
 using Fabrica.Work.Topics;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,7 @@ namespace Fabrica.Work.Appliance
 
 
         public string WorkQueueName { get; set; } = "";
+        public string S3EventQueueName { get; set; } = "";
 
         public int PollingDurationSecs { get; set; } = 20;
         public int AcknowledgementTimeoutSecs { get; set; } = 30;
@@ -139,25 +141,60 @@ namespace Fabrica.Work.Appliance
                 .AutoActivate();
 
 
-            builder.Register(c =>
+
+            if( !string.IsNullOrWhiteSpace(WorkQueueName) )
             {
 
-                var queue     = c.Resolve<IQueueComponent>();
-                var processor = c.Resolve<IWorkProcessor>();
+                builder.Register(c =>
+                    {
 
-                var comp = new QueueWorkListener(queue, processor)
-                {
-                    QueueName              = WorkQueueName,
-                    PollingDuration        = TimeSpan.FromSeconds(PollingDurationSecs),
-                    AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
-                };
+                        var queue = c.Resolve<IQueueComponent>();
+                        var parser = new WorkMessageBodyParser();
+                        var processor = c.Resolve<IWorkProcessor>();
 
-                return comp;
 
-            })
-                .As<IStartable>()
-                .SingleInstance()
-                .AutoActivate();
+                        var comp = new QueueWorkListener(queue, parser, processor)
+                        {
+                            QueueName = WorkQueueName,
+                            PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
+                            AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
+                        };
+
+                        return comp;
+
+                    })
+                    .As<IStartable>()
+                    .SingleInstance()
+                    .AutoActivate();
+
+            }
+
+
+            if( !string.IsNullOrWhiteSpace(S3EventQueueName) )
+            {
+
+                builder.Register(c =>
+                    {
+
+                        var queue = c.Resolve<IQueueComponent>();
+                        var parser = new S3EventMessageBodyParser();
+                        var processor = c.Resolve<IWorkProcessor>();
+
+                        var comp = new QueueWorkListener(queue, parser, processor)
+                        {
+                            QueueName = S3EventQueueName,
+                            PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
+                            AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
+                        };
+
+                        return comp;
+
+                    })
+                    .As<IStartable>()
+                    .SingleInstance()
+                    .AutoActivate();
+
+            }
 
 
 

@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Fabrica.Watch;
 using Fabrica.Work.Processor;
-using Newtonsoft.Json;
+using Fabrica.Work.Processor.Parsers;
 
 namespace Fabrica.Work.Queue
 {
@@ -36,17 +36,20 @@ namespace Fabrica.Work.Queue
     public class QueueWorkListener : IStartable, IDisposable
     {
 
-        public QueueWorkListener(IQueueComponent queue, IWorkProcessor processor)
+        public QueueWorkListener(IQueueComponent queue, IMessageBodyParser parser, IWorkProcessor processor)
         {
 
-            Queue = queue;
+            Queue     = queue;
+            Parser    = parser;
             Processor = processor;
 
         }
 
 
         private IQueueComponent Queue { get; }
+        private IMessageBodyParser Parser { get; }
         private IWorkProcessor Processor { get; }
+
 
         private Task Listener { get; set; }
         private CancellationTokenSource MustStop { get; set; }
@@ -150,13 +153,18 @@ namespace Fabrica.Work.Queue
 
                     // *********************************************************
                     logger.Debug("Attempting to build request from message body");
-                    request = JsonConvert.DeserializeObject<WorkRequest>(body);
+                    var result = await Parser.Parse(body);
+                    if( result.ok )
+                    {
+
+                        request = result.request;
 
 
+                        // *********************************************************
+                        logger.Debug("Attempting to submit request to processor");
+                        await Processor.Process(request, async ok => await _onCompletion(ok, message.ReceiptHandle));
 
-                    // *********************************************************
-                    logger.Debug("Attempting to submit request to processor");
-                    await Processor.Process(request, async ok => await _onCompletion(ok, message.ReceiptHandle));
+                    }
 
 
 
