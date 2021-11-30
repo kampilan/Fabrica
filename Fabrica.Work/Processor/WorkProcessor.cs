@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -143,7 +144,7 @@ namespace Fabrica.Work.Processor
 
                 // *****************************************************************
                 logger.Debug("Attempting to get TopicEndpoint for requested Topic");
-                if( !Map.TryGetEndpoint(args.Request.Topic, out var ep) )
+                if (!Map.TryGetEndpoint(args.Request.Topic, out var ep))
                     throw new PredicateException($"Could not find requested Topic ({args.Request.Topic})");
 
                 logger.LogObject(nameof(ep), ep);
@@ -161,13 +162,13 @@ namespace Fabrica.Work.Processor
 
                 // *****************************************************************
                 logger.Debug("Attempting to build Request message");
-                var message = new HttpRequestMessage( HttpMethod.Post, ep.Path )
+                var message = new HttpRequestMessage(HttpMethod.Post, ep.Path)
                 {
                     Content = content
                 };
 
                 var token = await TokenSource.GetToken();
-                message.Headers.Add( TokenConstants.HeaderName, token );
+                message.Headers.Add(TokenConstants.HeaderName, token);
 
 
 
@@ -185,6 +186,20 @@ namespace Fabrica.Work.Processor
                 response.EnsureSuccessStatusCode();
 
 
+                logger.Debug("Attempting to call the completion handler");
+                args.CompletionHandler(true);
+
+
+            }
+            catch (HttpRequestException cause)
+            {
+
+                if( cause.StatusCode == HttpStatusCode.UnprocessableEntity )
+                {
+                    logger.Debug("Attempting to call the completion handler for Unrecoverable error");
+                    args.CompletionHandler(true);
+                }
+
             }
             catch( Exception cause )
             {
@@ -193,12 +208,7 @@ namespace Fabrica.Work.Processor
             }
             finally
             {
-
-                logger.Debug("Attempting to call the completion handler");
-                args.CompletionHandler(true);
-
                 Interlocked.Decrement(ref _workerCounter);
-
             }
 
 

@@ -124,6 +124,34 @@ namespace Fabrica.Fake.Controllers
 
         }
 
+        [HttpPost("s3-events-bad/{topic}")]
+        public Task<StatusCodeResult> AcceptBadWorkRequest([FromRoute] string topic, [FromBody] S3Event s3)
+        {
+
+            using var logger = EnterMethod();
+
+            logger.Inspect(nameof(topic), topic);
+            logger.LogObject(nameof(s3), s3);
+
+            return Task.FromResult(new StatusCodeResult(422));
+
+        }
+
+        [HttpPost("s3-events-transient/{topic}")]
+        public Task<StatusCodeResult> AcceptTransientWorkRequest([FromRoute] string topic, [FromBody] S3Event s3)
+        {
+
+            using var logger = EnterMethod();
+
+            logger.Inspect(nameof(topic), topic);
+            logger.LogObject(nameof(s3), s3);
+
+            return Task.FromResult(new StatusCodeResult(500));
+
+        }
+
+
+
     }
 
     public class S3Event
