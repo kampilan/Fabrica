@@ -129,6 +129,11 @@ namespace Fabrica.Fake.Controllers
     public class S3Event
     {
 
+        public string Region { get; set; }
+        public string Bucket { get; set; }
+        public string Key { get; set; }
+
+        public long Size { get; set; }
         
 
     }

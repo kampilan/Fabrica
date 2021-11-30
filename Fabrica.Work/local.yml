@@ -24,4 +24,4 @@ WatchEventStoreUri: "mongodb://watch:w1FfV1qfZQJKTFv0zpme@10.78.142.10:27017"
 Topics:
     Tester1: "http://localhost:8282/hooks/tester2"
     Tester2: "http://localhost:8282/hooks/tester1"
-    text-files: "http://localhost:8282/hooks/test-files"
+    test-files: "https://kmapilan.ngrok.io/fake/s3-events/test-files"
