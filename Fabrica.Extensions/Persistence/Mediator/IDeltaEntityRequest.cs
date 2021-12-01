@@ -1,4 +1,4 @@
-﻿using Fabrica.Models.Support;
+﻿using System.Collections.Generic;
 
 namespace Fabrica.Persistence.Mediator;
 
@@ -9,7 +9,7 @@ public interface IDeltaEntityRequest
 
     public string Uid { get; }
 
-    public BaseDelta Delta { get; }
+    public IDictionary<string,object> Delta { get; }
 
 
 }

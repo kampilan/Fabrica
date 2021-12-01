@@ -1,4 +1,5 @@
-﻿using Fabrica.Mediator;
+﻿using System.Collections.Generic;
+using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using MediatR;
 
@@ -6,7 +7,7 @@ using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class CreateMemberEntityRequest<TParent,TMember,TDelta>: ICreateMemberEntityRequest, IRequest<Response<TMember>> where TParent: class, IModel where TMember: class, IModel where TDelta: BaseDelta, new()
+public class CreateMemberEntityRequest<TParent,TMember>: ICreateMemberEntityRequest, IRequest<Response<TMember>> where TParent: class, IModel where TMember: class, IModel
 {
 
     public OperationType Operation
@@ -19,9 +20,7 @@ public class CreateMemberEntityRequest<TParent,TMember,TDelta>: ICreateMemberEnt
 
     public string Uid { get; set; } = "";
 
-    public TDelta Delta { get; set; } = new();
-
-    BaseDelta IDeltaEntityRequest.Delta => Delta;
+    public IDictionary<string,object> Delta { get; set; } = new Dictionary<string,object>();
 
 
 }

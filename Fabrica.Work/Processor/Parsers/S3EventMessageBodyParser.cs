@@ -28,7 +28,7 @@ public class S3EventMessageBodyParser: IMessageBodyParser
         {
             s3Event = JsonConvert.DeserializeObject<S3Event>(body);
             if (s3Event is null)
-                throw new Exception($"Could not parse S3 Event JSON message");
+                throw new Exception("Could not parse S3 Event JSON message");
 
             logger.LogObject(nameof(s3Event), s3Event);
 
@@ -52,7 +52,7 @@ public class S3EventMessageBodyParser: IMessageBodyParser
 
         // *****************************************************************
         logger.Debug("Attempting to build WorkRequest payload");
-        var payload = new { Region=record.AwsRegion, Bucket = record.S3.Bucket.Name, record.S3.Object.Key, record.S3.Object.Size };
+        var payload = new { Region=record.AwsRegion, Bucket = record.S3.Bucket.Name, record.S3.Object.Key, record.S3.Object.Size, Operation=record.EventName, Timestamp=record.EventTime };
 
         logger.LogObject(nameof(payload), payload);
 
@@ -151,7 +151,7 @@ public class S3EventObject
     [JsonProperty("key")]
     public string Key { get; set; } = "";
     [JsonProperty("size")]
-    public long Size { get; set; } = 0;
+    public long Size { get; set; }
     [JsonProperty("eTag")]
     public string ETag { get; set; } = "";
     [JsonProperty("versionId")]

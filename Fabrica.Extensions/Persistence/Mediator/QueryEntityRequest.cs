@@ -62,36 +62,3 @@ public class QueryEntityRequest<TEntity>: IQueryEntityRequest<TEntity>, IRequest
 
 }
 
-
-public class QueryEntityRequest<TModel,TCriteria> : IQueryEntityRequest<TModel>, IRequest<Response<List<TModel>>> where TModel: class, IModel where TCriteria : class, ICriteria, new()
-{
-
-    public TCriteria Criteria { get; set; } = new();
-
-    public bool HasCriteria => Criteria is not null;
-
-
-    public List<IRqlFilter<TModel>> Filters
-    {
-
-        get
-        {
-
-            var filters = new List<IRqlFilter<TModel>>();
-
-            if (Criteria is not null && Criteria.Rql is not null && Criteria.Rql.Length > 0)
-                filters.AddRange(Criteria.Rql.Select(s =>
-                {
-                    var tree = RqlLanguageParser.ToCriteria(s);
-                    return new RqlFilterBuilder<TModel>(tree);
-                }));
-            else if (Criteria is not null)
-                filters.Add(RqlFilterBuilder<TModel>.Create().Introspect(Criteria));
-
-            return filters;
-
-        }
-
-    }
-
-}

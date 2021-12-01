@@ -1,18 +1,18 @@
-﻿using Fabrica.Mediator;
+﻿using System.Collections.Generic;
+using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class DeltaEntityRequest<TEntity,TDelta>: IDeltaEntityRequest, IRequest<Response<TEntity>> where TEntity: class, IModel where TDelta: BaseDelta, new()
+public class DeltaEntityRequest<TEntity>: IDeltaEntityRequest, IRequest<Response<TEntity>> where TEntity: class, IModel
 {
 
     public OperationType Operation { get; set; }
 
     public string Uid { get; set; } = "";
 
-    public TDelta Delta { get; set; } = new();
+    public IDictionary<string,object> Delta { get; set; } = new Dictionary<string, object>();
 
-    BaseDelta IDeltaEntityRequest.Delta => Delta;
 
 }

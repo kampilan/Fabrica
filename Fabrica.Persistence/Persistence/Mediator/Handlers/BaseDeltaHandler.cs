@@ -172,7 +172,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
                 // *****************************************************************
                 logger.Debug("Attempting to fetch reference using uid");
-                var re = await EntityFrameworkQueryableExtensions.SingleOrDefaultAsync(Context.Set<TReference>(), e => e.Uid == uid, cancellationToken: token);
+                var re = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
                 if (re == null)
                     throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
 
@@ -242,7 +242,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to fetch reference using uid");
-            var replacement = await EntityFrameworkQueryableExtensions.SingleOrDefaultAsync(Context.Set<TReference>(), e => e.Uid == uid, cancellationToken: token);
+            var replacement = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
             if (replacement == null)
                 throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({name}) using ({uid})");
 
@@ -299,7 +299,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to get property set from delta");
-            Properties = Request.Delta?.GetPropertySet() ?? new DeltaPropertySet();
+            Properties = Request.Delta ?? new Dictionary<string, object>();
             logger.LogObject(nameof(Properties), Properties);
 
 
@@ -309,12 +309,12 @@ namespace Fabrica.Persistence.Mediator.Handlers
             foreach( var re in Context.Entry(Entity).References )
             {
 
-                if( Properties.ContainsKey( re.Metadata.PropertyInfo.Name ) )
-                {
-                    var call = GetType().GetMethod("ApplyReferenceByName", (BindingFlags.Instance | BindingFlags.NonPublic))?.MakeGenericMethod(re.Metadata.PropertyInfo.PropertyType);
-                    if (call?.Invoke(this, new object[] {Entity, re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
-                        await task;
-                }
+                if( re.Metadata.PropertyInfo is null || !Properties.ContainsKey(re.Metadata.PropertyInfo.Name) )
+                    continue;
+
+                var call = GetType().GetMethod("ApplyReferenceByName", (BindingFlags.Instance | BindingFlags.NonPublic))?.MakeGenericMethod(re.Metadata.PropertyInfo.PropertyType);
+                if (call?.Invoke(this, new object[] {Entity, re.Metadata.PropertyInfo.Name, cancellationToken}) is Task task)
+                    await task;
 
             }
 
