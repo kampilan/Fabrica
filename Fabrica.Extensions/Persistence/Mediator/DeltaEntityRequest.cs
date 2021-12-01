@@ -18,7 +18,7 @@ public class DeltaEntityRequest<TEntity>: IDeltaEntityRequest, IRequest<Response
 
     public Dictionary<string,object> Delta { get; set; } = new();
 
-    public void FromDelta( [NotNull] BaseDelta source )
+    public void FromObject( [NotNull] object source )
     {
 
         if (source == null) throw new ArgumentNullException(nameof(source));

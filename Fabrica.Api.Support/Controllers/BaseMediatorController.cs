@@ -265,7 +265,40 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer,TCriteria>( ICriteria criteria=null ) where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>( ICriteria criteria ) where TExplorer : class, IModel
+        {
+
+            using var logger = EnterMethod();
+
+
+            var filters = new List<IRqlFilter<TExplorer>>();
+            if( criteria.Rql.Length > 0 )
+            {
+                filters.AddRange(criteria.Rql.Select(s =>
+                {
+                    var tree = RqlLanguageParser.ToCriteria(s);
+                    return new RqlFilterBuilder<TExplorer>(tree);
+                }));
+            }
+            else
+            {
+
+                // *****************************************************************
+                logger.Debug("Attempting to introspect criteria RQL");
+                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+
+
+                // *****************************************************************
+                filters.Add(filter);
+
+            }
+
+            return filters;
+
+        }
+
+
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer,TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
         {
 
             using var logger = EnterMethod();
@@ -303,18 +336,16 @@ namespace Fabrica.Api.Support.Controllers
             else
             {
 
+
                 // *****************************************************************
-                if (criteria is null)
-                {
-                    logger.Debug("Attempting to map parameters to criteria model");
-                    var jo = JObject.FromObject(parameters);
-                    criteria = jo.ToObject<TCriteria>();
+                logger.Debug("Attempting to map parameters to criteria model");
+                var jo = JObject.FromObject(parameters);
+                var criteria = jo.ToObject<TCriteria>();
 
-                    criteria ??= new TCriteria();
+                criteria ??= new TCriteria();
 
-                    logger.LogObject(nameof(criteria), criteria);
+                logger.LogObject(nameof(criteria), criteria);
 
-                }
 
 
                 // *****************************************************************
