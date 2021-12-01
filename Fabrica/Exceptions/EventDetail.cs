@@ -25,8 +25,9 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Fabrica.Exceptions
 {
@@ -94,7 +95,7 @@ namespace Fabrica.Exceptions
             return new EventDetail();
         }
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public EventCategory Category { get; set; } = EventCategory.Error;
 
         [DefaultValue("")]
