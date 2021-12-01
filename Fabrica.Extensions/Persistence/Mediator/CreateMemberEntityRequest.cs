@@ -20,7 +20,7 @@ public class CreateMemberEntityRequest<TParent,TMember>: ICreateMemberEntityRequ
 
     public string Uid { get; set; } = "";
 
-    public IDictionary<string,object> Delta { get; set; } = new Dictionary<string,object>();
+    public Dictionary<string,object> Delta { get; set; } = new Dictionary<string,object>();
 
 
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Fabrica.Models.Support;
 using NUnit.Framework;
 
@@ -57,27 +58,6 @@ namespace Fabrica.Tests.Models
             Assert.IsTrue(dd.Count == 4);
 
         }
-
-
-        [Test]
-        public void Test0001_0400_PopulateNullables()
-        {
-
-            var delta = new TestDelta
-            {
-                Active    = true,
-                BirthDate = new DateTime(1962, 1, 21, 7, 0, 0, 0, 0),
-                Count     = 23,
-                Salary    = 45678.90m
-            };
-
-            var dd = delta.GetPropertySet();
-
-            Assert.IsTrue(dd.Count == 4);
-
-        }
-
-
 
 
     }

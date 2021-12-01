@@ -9,7 +9,7 @@ public interface IDeltaEntityRequest
 
     public string Uid { get; }
 
-    public IDictionary<string,object> Delta { get; }
+    public Dictionary<string,object> Delta { get; }
 
 
 }

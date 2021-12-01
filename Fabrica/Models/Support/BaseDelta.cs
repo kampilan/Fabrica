@@ -2,25 +2,17 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Fabrica.Models.Support
+namespace Fabrica.Models.Support;
+
+public class BaseDelta
 {
 
+    [JsonExtensionData]
+    private Dictionary<string,JToken> Overposts { get; } = new ();
 
-    public class BaseDelta
-    {
+    public bool IsOverposted() => Overposts.Count > 0;
 
-
-        [JsonExtensionData]
-        private Dictionary<string,JToken> Overposts { get; } = new ();
-
-        public bool IsOverposted() => Overposts.Count > 0;
-
-        public IEnumerable<string> GetOverpostNames() => Overposts.Keys;
-
-        public DeltaPropertySet GetPropertySet() => new (this);
-
-
-    }
+    public IEnumerable<string> GetOverpostNames() => Overposts.Keys;
 
 
 }
