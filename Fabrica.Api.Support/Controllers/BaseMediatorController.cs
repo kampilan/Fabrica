@@ -370,18 +370,41 @@ namespace Fabrica.Api.Support.Controllers
 
 
 
-        protected virtual bool TryValidate( [NotNull] BaseDelta delta, out IActionResult error )
+        protected virtual bool TryValidate( [CanBeNull] BaseDelta delta, out IActionResult error )
         {
-
-            if (delta == null) throw new ArgumentNullException(nameof(delta));
-
 
             using var logger = EnterMethod();
 
             logger.LogObject(nameof(delta), delta);
 
-
             error = null;
+
+            if ( delta == null )
+            {
+
+                var info = new ExceptionInfoModel
+                {
+                    Kind = ErrorKind.BadRequest,
+                    ErrorCode = "ModelInvalid",
+                    Explanation = "Errors occurred while parsing model"
+                };
+
+                if( !ModelState.IsValid )
+                {
+
+                    var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
+
+                    foreach (var e in errors)
+                        info.Details.Add( new EventDetail{Category = EventDetail.EventCategory.Violation, Explanation = e.ErrorMessage, Group = "Model"});
+
+                }
+
+                error = BuildErrorResult(info);
+
+                return false;
+
+            }
+
 
             if( delta.IsOverposted() )
             {
