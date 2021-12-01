@@ -55,7 +55,7 @@ namespace Fabrica.Api.Support.Controllers
                     break;
 
                 case ErrorKind.NotFound:
-                    statusCode = HttpStatusCode.UnprocessableEntity;
+                    statusCode = HttpStatusCode.NoContent;
                     break;
 
                 case ErrorKind.NotImplemented:
@@ -265,14 +265,17 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>( ICriteria criteria ) where TExplorer : class, IModel
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>( [NotNull] ICriteria criteria ) where TExplorer : class, IModel
         {
+
+            if (criteria == null) throw new ArgumentNullException(nameof(criteria));
+
 
             using var logger = EnterMethod();
 
 
             var filters = new List<IRqlFilter<TExplorer>>();
-            if( criteria.Rql.Length > 0 )
+            if( criteria.Rql?.Length > 0 )
             {
                 filters.AddRange(criteria.Rql.Select(s =>
                 {
