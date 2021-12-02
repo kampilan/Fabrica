@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Fabrica.Models.Support;
 
-public class BaseDelta
+public class BaseDelta: IApiModel
 {
 
     [JsonExtensionData]

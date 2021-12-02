@@ -370,16 +370,16 @@ namespace Fabrica.Api.Support.Controllers
 
 
 
-        protected virtual bool TryValidate( [CanBeNull] BaseDelta delta, out IActionResult error )
+        protected virtual bool TryValidate( [CanBeNull] IApiModel model, out IActionResult error )
         {
 
             using var logger = EnterMethod();
 
-            logger.LogObject(nameof(delta), delta);
+            logger.LogObject(nameof(model), model);
 
             error = null;
 
-            if ( delta == null )
+            if ( model == null )
             {
 
                 var info = new ExceptionInfoModel
@@ -406,14 +406,14 @@ namespace Fabrica.Api.Support.Controllers
             }
 
 
-            if( delta.IsOverposted() )
+            if( model.IsOverposted() )
             {
 
                 var info = new ExceptionInfoModel
                 {
                     Kind = ErrorKind.BadRequest,
                     ErrorCode = "DisallowedProperties",
-                    Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})"
+                    Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', model.GetOverpostNames())})"
                 };
 
                 error = BuildErrorResult(info);
