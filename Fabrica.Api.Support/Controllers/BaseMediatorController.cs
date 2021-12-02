@@ -26,7 +26,7 @@ namespace Fabrica.Api.Support.Controllers
     {
 
 
-        protected BaseMediatorController( IMessageMediator mediator, ICorrelation correlation ) : base( correlation )
+        protected BaseMediatorController(IMessageMediator mediator, ICorrelation correlation) : base(correlation)
         {
 
             Mediator = mediator;
@@ -104,7 +104,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual IActionResult BuildResult<TValue>( Response<TValue> response )
+        protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
         {
 
             using var logger = EnterMethod();
@@ -129,7 +129,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual IActionResult BuildResult( Response<MemoryStream> response )
+        protected virtual IActionResult BuildResult(Response<MemoryStream> response)
         {
 
             using var logger = EnterMethod();
@@ -139,7 +139,7 @@ namespace Fabrica.Api.Support.Controllers
             // *****************************************************************
             logger.Debug("Attempting to check for success");
             logger.Inspect(nameof(response.Ok), response.Ok);
-            if( response.Ok )
+            if (response.Ok)
                 return new JsonStreamResult(response.Value);
 
 
@@ -191,9 +191,9 @@ namespace Fabrica.Api.Support.Controllers
             logger.Debug("Attempting to build ErrorResponseModel");
             var model = new ErrorResponseModel
             {
-                ErrorCode     = error.ErrorCode,
-                Explanation   = error.Explanation,
-                Details       = new List<EventDetail>(error.Details),
+                ErrorCode = error.ErrorCode,
+                Explanation = error.Explanation,
+                Details = new List<EventDetail>(error.Details),
                 CorrelationId = Correlation.Uid
             };
 
@@ -240,7 +240,7 @@ namespace Fabrica.Api.Support.Controllers
                 logger.Inspect(nameof(key), key);
                 logger.LogObject("values", Request.Query[key]);
 
-                if( key == "rql" )
+                if (key == "rql")
                     rqls.AddRange(Request.Query[key].ToArray());
 
             }
@@ -265,7 +265,7 @@ namespace Fabrica.Api.Support.Controllers
 
         }
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>( [NotNull] ICriteria criteria ) where TExplorer : class, IModel
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>([NotNull] ICriteria criteria) where TExplorer : class, IModel
         {
 
             if (criteria == null) throw new ArgumentNullException(nameof(criteria));
@@ -275,7 +275,7 @@ namespace Fabrica.Api.Support.Controllers
 
 
             var filters = new List<IRqlFilter<TExplorer>>();
-            if( criteria.Rql?.Length > 0 )
+            if (criteria.Rql?.Length > 0)
             {
                 filters.AddRange(criteria.Rql.Select(s =>
                 {
@@ -301,7 +301,7 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer,TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
+        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
         {
 
             using var logger = EnterMethod();
@@ -379,7 +379,8 @@ namespace Fabrica.Api.Support.Controllers
 
             error = null;
 
-            if ( model == null )
+
+            if( !ModelState.IsValid )
             {
 
                 var info = new ExceptionInfoModel
@@ -389,15 +390,10 @@ namespace Fabrica.Api.Support.Controllers
                     Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
                 };
 
-                if( !ModelState.IsValid )
-                {
+                var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
 
-                    var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
-
-                    foreach (var e in errors)
-                        info.Details.Add( new EventDetail {Category = EventDetail.EventCategory.Violation, RuleName="ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model"} );
-
-                }
+                foreach (var e in errors)
+                    info.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Violation, RuleName = "ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model" });
 
                 error = BuildErrorResult(info);
 
@@ -406,7 +402,25 @@ namespace Fabrica.Api.Support.Controllers
             }
 
 
-            if( model.IsOverposted() )
+            if( model is null )
+            {
+
+                var info = new ExceptionInfoModel
+                {
+                    Kind = ErrorKind.BadRequest,
+                    ErrorCode = "ModelInvalid",
+                    Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
+                };
+
+                error = BuildErrorResult(info);
+
+                return false;
+
+            }
+
+
+
+            if (  model.IsOverposted() )
             {
 
                 var info = new ExceptionInfoModel
@@ -430,7 +444,7 @@ namespace Fabrica.Api.Support.Controllers
 
 
 
-        protected virtual async Task<IActionResult> Send<TValue>( [NotNull] IRequest<Response<TValue>> request )
+        protected virtual async Task<IActionResult> Send<TValue>([NotNull] IRequest<Response<TValue>> request)
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -460,7 +474,7 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual async Task<IActionResult> Send( [NotNull] IRequest<Response<MemoryStream>> request )
+        protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response<MemoryStream>> request)
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -490,7 +504,7 @@ namespace Fabrica.Api.Support.Controllers
         }
 
 
-        protected virtual async Task<IActionResult> Send( [NotNull] IRequest<Response> request )
+        protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response> request)
         {
 
             if (request == null) throw new ArgumentNullException(nameof(request));
