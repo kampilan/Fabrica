@@ -386,7 +386,7 @@ namespace Fabrica.Api.Support.Controllers
                 {
                     Kind = ErrorKind.BadRequest,
                     ErrorCode = "ModelInvalid",
-                    Explanation = "Errors occurred while parsing model"
+                    Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
                 };
 
                 if( !ModelState.IsValid )
@@ -395,7 +395,7 @@ namespace Fabrica.Api.Support.Controllers
                     var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
 
                     foreach (var e in errors)
-                        info.Details.Add( new EventDetail{Category = EventDetail.EventCategory.Violation, Source="ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model"});
+                        info.Details.Add( new EventDetail {Category = EventDetail.EventCategory.Violation, RuleName="ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model"} );
 
                 }
 
