@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
+using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using FileHelpers;
 using JetBrains.Annotations;
@@ -14,14 +15,30 @@ public abstract class BaseEtlController: BaseController
 {
 
 
-    protected BaseEtlController(ICorrelation correlation, IMapper mapper ) : base(correlation)
+    protected BaseEtlController(ICorrelation correlation, IMapper mapper, IRuleSet rules ) : base(correlation)
     {
 
         Mapper = mapper;
+        Rules  = rules;
 
     }
 
     private IMapper Mapper { get; }
+    private IRuleSet Rules { get; }
+
+
+    protected EvaluationResults Evaluate( params object[] facts )
+    {
+
+        var ec = Rules.GetEvaluationContext();
+        ec.AddAllFacts(facts);
+        ec.ThrowNoRulesException = false;
+
+        var er = Rules.Evaluate(ec);
+
+        return er;
+
+    }
 
 
     protected async Task ProcessStream<TSpec>( [NotNull] Stream inbound, [NotNull] Func<TSpec,Task> sink, bool stopOnError=true ) where TSpec : class
@@ -54,6 +71,7 @@ public abstract class BaseEtlController: BaseController
 
                 try
                 {
+                    Evaluate(spec);
                     await sink(spec);
                 }
                 catch (Exception cause)
@@ -101,8 +119,13 @@ public abstract class BaseEtlController: BaseController
 
                 try
                 {
+
                     var target = Mapper.Map<TTarget>(spec);
+
+                    Evaluate(spec, target);
+
                     await sink(target);
+
                 }
                 catch (Exception cause)
                 {
@@ -149,8 +172,13 @@ public abstract class BaseEtlController: BaseController
 
                 try
                 {
+
                     var target = Mapper.Map<TTarget>(spec);
+
+                    Evaluate(spec, target);
+
                     results.Add(target);
+
                 }
                 catch (Exception cause)
                 {
