@@ -173,4 +173,75 @@ public abstract class BaseEtlController: BaseController
     }
 
 
+    protected void ProduceStream<TSpec>( Stream outbound, IEnumerable<TSpec> sources ) where TSpec : class
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build filer helper engine");
+        var engine = new FileHelperAsyncEngine<TSpec>();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to loop through source specs");
+        using( var writer = new StreamWriter(outbound, leaveOpen:true) )
+        using( engine.BeginWriteStream(writer) )
+        {
+
+            foreach (var spec in sources)
+            {
+
+                if( logger.IsTraceEnabled )
+                    logger.LogObject(nameof(spec), spec);
+                
+                engine.WriteNext(spec);
+
+            }
+
+        }
+
+
+    }
+
+    protected void ProduceStream<TSpec,TTarget>( Stream outbound, IEnumerable<TTarget> sources ) where TSpec : class where TTarget: class
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build filer helper engine");
+        var engine = new FileHelperAsyncEngine<TSpec>();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to loop through source specs");
+        using ( var writer = new StreamWriter(outbound, leaveOpen: true) )
+        using( engine.BeginWriteStream(writer) )
+        {
+
+            foreach( var source in sources )
+            {
+
+                var spec = Mapper.Map<TSpec>(source);
+
+                if( logger.IsTraceEnabled )
+                {
+                    logger.LogObject(nameof(source), source);
+                    logger.LogObject(nameof(spec), spec);
+                }
+
+                engine.WriteNext(spec);
+
+            }
+
+        }
+
+
+    }
+
+
 }
