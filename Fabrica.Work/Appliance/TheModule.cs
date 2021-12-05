@@ -33,6 +33,7 @@ namespace Fabrica.Work.Appliance
 
 
         public string OneStoreUri { get; set; } = "";
+        public string OneDatabase { get; set; } = "fabrica_one";
 
 
         public string WorkQueueName { get; set; } = "";
@@ -59,6 +60,8 @@ namespace Fabrica.Work.Appliance
 
 
             builder.AddCorrelation();
+
+            builder.UseOnePersitence( OneStoreUri, OneDatabase );
 
             builder.UseAws(this);
 

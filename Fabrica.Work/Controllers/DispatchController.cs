@@ -72,8 +72,11 @@ namespace Fabrica.Work.Controllers
 
 
             // *****************************************************************
-            logger.Debug("Attempting to verify a TopicEndpoint exists");
-            var topic = await Repository.GetTopic("", options.Topic);
+            logger.Debug("Attempting to verify a Topic exists");
+            var exists = await Repository.HasTopic( options.Topic );
+            if( !exists )
+                throw new NotFoundException( $"Requested Topic ({options.Topic}) does not exist" );
+
 
 
             // *****************************************************************

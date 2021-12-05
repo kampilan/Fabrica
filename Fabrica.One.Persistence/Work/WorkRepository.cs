@@ -19,31 +19,45 @@ public class WorkRepository: CorrelatedObject
     private IMongoDatabase Database { get; }
 
 
-    public async Task<WorkTopic> GetTopic(string environment, string name)
-    {
+    private IMongoCollection<WorkTopic> Topics => Database.GetCollection<WorkTopic>("worktopics");
 
-        if (string.IsNullOrWhiteSpace(environment)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
-        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+
+    public async Task<bool> HasTopic( string name )
+    {
 
         using var logger = EnterMethod();
 
-        logger.Inspect(nameof(environment), environment);
         logger.Inspect(nameof(name), name);
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to get Topic collection");
-        var collection = Database.GetCollection<WorkTopic>("topics");
+        logger.Debug("Attempting to find Topic by Enviroment and Name");
+        var query  = await Topics.FindAsync(e => e.TopicName == name);
+        var exists = await query.AnyAsync();
+
+
+
+        // *****************************************************************
+        return exists;
+
+    }
+
+    public async Task<WorkTopic> GetTopic( string name )
+    {
+
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+
+        using var logger = EnterMethod();
+
+        logger.Inspect(nameof(name), name);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to find Topic by Enviroment and Name");
-        var query = await collection.FindAsync(e => e.Environment == environment && e.TopicName == name);
+        var query = await Topics.FindAsync(e =>e.TopicName == name);
         var topic = await query.SingleOrDefaultAsync();
-        if (topic is null)
-            throw new NotFoundException($"Could not find Topic using Environment ({environment}) and Name ({name})");
 
         logger.LogObject(nameof(topic), topic);
         

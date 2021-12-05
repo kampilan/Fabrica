@@ -102,7 +102,11 @@ namespace Fabrica.Work.Processor
                 {
                     logger.Debug("Attempting to submit request to thread pool");
                     Interlocked.Increment(ref _workerCounter);
-                    ThreadPool.QueueUserWorkItem(async _ => await _doWork(args));
+
+                    ThreadPool.QueueUserWorkItem(CallBack);
+
+                    async void CallBack(object _) => await _doWork(args);
+
                 }
                 else
                 {
@@ -143,7 +147,7 @@ namespace Fabrica.Work.Processor
 
                 // *****************************************************************
                 logger.Debug("Attempting to get TopicEndpoint for requested Topic");
-                var topic = await Repository.GetTopic("Development", args.Request.Topic);
+                var topic = await Repository.GetTopic( args.Request.Topic );
 
                 logger.LogObject(nameof(topic), topic);
 
@@ -160,28 +164,47 @@ namespace Fabrica.Work.Processor
 
                 // *****************************************************************
                 logger.Debug("Attempting to build Request message");
-                var message = new HttpRequestMessage(HttpMethod.Post, topic.Endpoint)
+                var message = new HttpRequestMessage(HttpMethod.Post, topic.Path)
                 {
                     Content = content
                 };
 
-                var token = await TokenSource.GetToken();
-                message.Headers.Add(TokenConstants.HeaderName, token);
 
 
-
+                // *****************************************************************
                 logger.Debug("Attempting to create HTTP client from factory");
-                using var client = Factory.CreateClient("");
+                HttpClient client;
+                if( string.IsNullOrWhiteSpace(topic.Endpoint) )
+                {
+
+                    var token = await TokenSource.GetToken();
+                    message.Headers.Add(TokenConstants.HeaderName, token);
+
+                    client = Factory.CreateClient("WebhookEndpoint");
+
+                }
+                else
+                {
+
+                    client = Factory.CreateClient();
+                    client.BaseAddress = new Uri(topic.Endpoint);
+
+                }
 
 
+                // *****************************************************************
+                using ( client )
+                {
 
-                logger.Debug("Attempting to send message ");
-                var response = await client.SendAsync(message);
+                    logger.Debug("Attempting to send message ");
+                    var response = await client.SendAsync(message);
 
-                logger.Inspect(nameof(response.IsSuccessStatusCode), response.IsSuccessStatusCode);
-                logger.Inspect(nameof(response.StatusCode), response.StatusCode);
+                    logger.Inspect(nameof(response.IsSuccessStatusCode), response.IsSuccessStatusCode);
+                    logger.Inspect(nameof(response.StatusCode), response.StatusCode);
 
-                response.EnsureSuccessStatusCode();
+                    response.EnsureSuccessStatusCode();
+
+                }
 
 
                 logger.Debug("Attempting to call the completion handler");

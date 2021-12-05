@@ -8,7 +8,15 @@
     <Product>Fabrica SDK</Product>
     <Description>Fabrica SDK for building REST APIs</Description>
     <Copyright>The Kampilan Group Inc (c) 2021</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\smithy.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />

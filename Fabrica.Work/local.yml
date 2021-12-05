@@ -20,8 +20,3 @@ Environment: Development
 ListeningPort: 8181
 WatchDomainName: Connect.Api.Development
 WatchEventStoreUri: "mongodb://watch:w1FfV1qfZQJKTFv0zpme@10.78.142.10:27017"
-
-Topics:
-    Tester1: "http://localhost:8282/hooks/tester2"
-    Tester2: "http://localhost:8282/hooks/tester1"
-    test-files: "https://kampilan.ngrok.io/fake/api/s3-events/test-files"
