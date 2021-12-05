@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.S3;
 using Amazon.S3.Model;
 using Bogus;
 using Bogus.DataSets;
@@ -20,10 +21,14 @@ namespace Fabrica.Fake.Controllers
     public class TheController: BaseController
     {
 
-        public TheController(ICorrelation correlation) : base(correlation)
+        public TheController(ICorrelation correlation, IAmazonS3 client) : base(correlation)
         {
 
+            Client = client;
+
         }
+
+        private IAmazonS3 Client { get; }
 
 
         [HttpGet("people")]
@@ -112,7 +117,7 @@ namespace Fabrica.Fake.Controllers
         }
 
         [HttpPost("s3-events/{topic}")]
-        public Task<StatusCodeResult> AcceptWorkRequest( [FromRoute] string topic, [FromBody] S3Event s3 )
+        public async Task<StatusCodeResult> AcceptWorkRequest( [FromRoute] string topic, [FromBody] S3Event s3 )
         {
 
             using var logger = EnterMethod();
@@ -120,7 +125,28 @@ namespace Fabrica.Fake.Controllers
             logger.Inspect(nameof(topic), topic);
             logger.LogObject(nameof(s3), s3);
 
-            return Task.FromResult(new StatusCodeResult(200) );
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build delete object request");
+            var request = new DeleteObjectRequest
+            {
+                BucketName = s3.Bucket,
+                Key         = s3.Key
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send request to S3");
+            var response = await Client.DeleteObjectAsync(request);
+
+            logger.LogObject(nameof(response), response);
+
+
+
+            // *****************************************************************
+            return Ok();
 
         }
 
