@@ -43,7 +43,7 @@ namespace Fabrica.Work.Appliance
         public int AcknowledgementTimeoutSecs { get; set; } = 30;
 
 
-        public string WebhookEndpoint { get; set; } = "";
+        public string WebhookEndpoint { get; set; } = "http://localhost:8080";
 
 
         public string TokenSigningKey { get; set; } = "";
