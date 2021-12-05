@@ -195,10 +195,10 @@ namespace Fabrica.Work.Processor
                 // *****************************************************************
                 using ( client )
                 {
-
                     logger.Debug("Attempting to send message ");
                     var response = await client.SendAsync(message);
 
+                    logger.Inspect(nameof(response.RequestMessage.RequestUri), response.RequestMessage?.RequestUri);
                     logger.Inspect(nameof(response.IsSuccessStatusCode), response.IsSuccessStatusCode);
                     logger.Inspect(nameof(response.StatusCode), response.StatusCode);
 
