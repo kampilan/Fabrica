@@ -62,7 +62,7 @@ namespace Fabrica.Persistence
 
                 })
                 .AsSelf()
-                .As<IPatchResolverComponent>()
+                .As<IPatchResolver>()
                 .InstancePerLifetimeScope();
 */
 

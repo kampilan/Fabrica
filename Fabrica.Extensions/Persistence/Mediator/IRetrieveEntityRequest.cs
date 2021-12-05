@@ -1,4 +1,6 @@
-﻿namespace Fabrica.Persistence.Mediator
+﻿using MediatR;
+
+namespace Fabrica.Persistence.Mediator
 {
     public interface IRetrieveEntityRequest
     {

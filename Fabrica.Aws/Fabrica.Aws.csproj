@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.2" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.2" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.5" />
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.94" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.10" />

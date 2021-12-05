@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31313.79
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Extensions", "Fabrica.Extensions\Fabrica.Extensions.csproj", "{3B437107-DFAA-4694-8CEA-3A876773EC62}"
 EndProject
@@ -49,7 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Realtime", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Fake", "Fabrica.Fake\Fabrica.Fake.csproj", "{D89769EF-6F4A-4589-BD28-9A3341948367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica", "Fabrica\Fabrica.csproj", "{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica", "Fabrica\Fabrica.csproj", "{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Test.Models", "Fabrica.Test.Models\Fabrica.Test.Models.csproj", "{E9770CCE-D753-4540-B335-3FF6D60A7119}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.One.Persistence", "Fabrica.One.Persistence\Fabrica.One.Persistence.csproj", "{E730F1E5-49D2-4347-B44E-28B0AB6706DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +141,14 @@ Global
 		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9770CCE-D753-4540-B335-3FF6D60A7119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9770CCE-D753-4540-B335-3FF6D60A7119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9770CCE-D753-4540-B335-3FF6D60A7119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9770CCE-D753-4540-B335-3FF6D60A7119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E730F1E5-49D2-4347-B44E-28B0AB6706DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E730F1E5-49D2-4347-B44E-28B0AB6706DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E730F1E5-49D2-4347-B44E-28B0AB6706DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E730F1E5-49D2-4347-B44E-28B0AB6706DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,6 +174,8 @@ Global
 		{B6F8F586-09C6-45BC-AEE6-1F58065FA739} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 		{D89769EF-6F4A-4589-BD28-9A3341948367} = {7A81AD66-EABD-448A-8CD9-DFF453B77107}
 		{3E4BB960-3AE2-485C-B7D2-9AC4CF0FD67E} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
+		{E9770CCE-D753-4540-B335-3FF6D60A7119} = {2E2E37FB-828B-4516-9A53-557B03BD4BC1}
+		{E730F1E5-49D2-4347-B44E-28B0AB6706DE} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE8638D5-DE76-4377-8051-B8525AC1799D}

@@ -2,7 +2,7 @@
 {
 
     
-    public interface IDeleteEntityRequest
+    public interface IDeleteEntityRequest: IEntityRequest
     {
 
         string Uid { get; set; }

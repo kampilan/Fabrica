@@ -8,19 +8,14 @@ using Fabrica.Models.Support;
 using JetBrains.Annotations;
 using MediatR;
 
-// ReSharper disable UnusedTypeParameter
-
 namespace Fabrica.Persistence.Mediator;
 
-public class CreateMemberEntityRequest<TParent,TMember>: ICreateMemberEntityRequest, IRequest<Response<TMember>> where TParent: class, IModel where TMember: class, IModel
+public class CreateEntityRequest<TEntity>: IRequest<Response<TEntity>>, ICreateEntityRequest where TEntity: class, IModel
 {
-
-    public string ParentUid { get; set; } = "";
 
     public string Uid { get; set; } = "";
 
-    public Dictionary<string,object> Delta { get; set; } = new ();
-
+    public Dictionary<string,object> Delta { get; set; } = new();
 
     public void FromObject([NotNull] object source)
     {

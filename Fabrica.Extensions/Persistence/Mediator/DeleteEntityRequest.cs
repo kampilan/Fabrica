@@ -1,4 +1,6 @@
-﻿using Fabrica.Mediator;
+﻿using System;
+using System.Threading.Tasks;
+using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using MediatR;
 
@@ -13,5 +15,6 @@ public class DeleteEntityRequest<TEntity>: IDeleteEntityRequest, IRequest<Respon
     
     public string Uid { get; set; } = "";
 
+    public Func<IMessageMediator, Task<IResponse>> Sender => async (m) => await m.Send(this);
 
 }

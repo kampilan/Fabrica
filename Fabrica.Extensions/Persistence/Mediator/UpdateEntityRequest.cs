@@ -7,20 +7,16 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using JetBrains.Annotations;
 using MediatR;
-
-// ReSharper disable UnusedTypeParameter
+using Newtonsoft.Json;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class CreateMemberEntityRequest<TParent,TMember>: ICreateMemberEntityRequest, IRequest<Response<TMember>> where TParent: class, IModel where TMember: class, IModel
+public class UpdateEntityRequest<TEntity>: IRequest<Response<TEntity>>, IUpdateEntityRequest where TEntity: class, IModel
 {
-
-    public string ParentUid { get; set; } = "";
 
     public string Uid { get; set; } = "";
 
-    public Dictionary<string,object> Delta { get; set; } = new ();
-
+    public Dictionary<string, object> Delta { get; set; } = new();
 
     public void FromObject([NotNull] object source)
     {
@@ -36,6 +32,7 @@ public class CreateMemberEntityRequest<TParent,TMember>: ICreateMemberEntityRequ
 
     }
 
+    [JsonIgnore]
     public Func<IMessageMediator, Task<IResponse>> Sender => async (m) => await m.Send(this);
 
 }

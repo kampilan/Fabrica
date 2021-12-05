@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.1" />
     <PackageReference Include="Polly" Version="7.2.2" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Api.Support\Fabrica.Api.Support.csproj" />
+    <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />

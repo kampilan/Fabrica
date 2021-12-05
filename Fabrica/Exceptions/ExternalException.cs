@@ -57,6 +57,19 @@ namespace Fabrica.Exceptions
 
         }
 
+        protected ExternalException( IExceptionInfo info ) : base(info.Explanation)
+        {
+
+            Kind             = info.Kind;
+            ErrorCode        = GetType().Name.Replace("Exception", "");
+            Explanation      = info.Explanation;
+            InnerExplanation = info.Explanation;
+
+            Details = new List<EventDetail>(info.Details);
+
+        }
+
+
 
         public ErrorKind Kind        { get; protected set; } = ErrorKind.System;
         public string ErrorCode   { get; protected set; }

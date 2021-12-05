@@ -25,6 +25,8 @@ SOFTWARE.
 using System;
 using Amazon;
 using Amazon.AppConfig;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
@@ -266,6 +268,18 @@ namespace Fabrica.Aws
                 .SingleInstance()
                 .AutoActivate();
 
+            // ******************************************************************
+            builder.Register(c => new AmazonDynamoDBClient(endpoint))
+                .As<IAmazonDynamoDB>()
+                .SingleInstance()
+                .AutoActivate();
+
+            // ******************************************************************
+            builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
+                .As<IDynamoDBContext>()
+                .InstancePerDependency();
+
+
         }
 
         private static void _addServices( ContainerBuilder builder,  AWSCredentials credentials, string regionName )
@@ -308,6 +322,18 @@ namespace Fabrica.Aws
                 .As<IAmazonAppConfig>()
                 .SingleInstance()
                 .AutoActivate();
+
+            // ******************************************************************
+            builder.Register(c => new AmazonDynamoDBClient( credentials, endpoint))
+                .As<IAmazonDynamoDB>()
+                .SingleInstance()
+                .AutoActivate();
+
+            // ******************************************************************
+            builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
+                .As<IDynamoDBContext>()
+                .InstancePerDependency();
+
 
         }
 

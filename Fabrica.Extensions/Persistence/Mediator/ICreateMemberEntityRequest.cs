@@ -1,10 +1,8 @@
 ﻿namespace Fabrica.Persistence.Mediator;
 
-public  interface ICreateMemberEntityRequest: IDeltaEntityRequest
+public  interface ICreateMemberEntityRequest: IDeltaEntityRequest, IEntityRequest
 {
 
-
-    public string ParentUid { get; }
-
+    public string ParentUid { get; set; }
 
 }

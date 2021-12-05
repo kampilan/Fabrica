@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
+using MediatR;
 
 namespace Fabrica.Persistence.Mediator
 {

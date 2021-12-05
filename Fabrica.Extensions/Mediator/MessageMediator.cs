@@ -5,31 +5,24 @@ using Autofac;
 using Fabrica.Rules;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
-using Fabrica.Watch;
+using JetBrains.Annotations;
 using MediatR;
 
 namespace Fabrica.Mediator
 {
-
-
-    public class MessageMediator : IMessageMediator
+    public class MessageMediator: CorrelatedObject, IMessageMediator
     {
 
 
-        public MessageMediator(ICorrelation correlation, IRuleSet rules, ILifetimeScope root)
+        public MessageMediator(ICorrelation correlation, IRuleSet rules, ILifetimeScope root): base(correlation)
         {
-            Correlation = correlation;
             Rules = rules;
             RootScope = root;
         }
 
-        private ICorrelation Correlation { get; }
         private IRuleSet Rules { get; }
 
         private ILifetimeScope RootScope { get; }
-
-        private ILogger GetLogger() => Correlation.GetLogger(this);
-
 
         private void Evaluatate(params object[] facts)
         {
@@ -65,7 +58,47 @@ namespace Fabrica.Mediator
         }
 
 
-        public async Task<TResponse> Send<TResponse>( IRequest<TResponse> request, CancellationToken cancellationToken = default )
+        public async Task<TResponse> Send<TResponse>([NotNull] IRequest<TResponse> request, CancellationToken cancellationToken = default )
+        {
+
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            using var logger = EnterMethod();
+
+
+            logger.LogObject(nameof(request), request);
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to evaluate request");
+            Evaluatate(request);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build inner Mediator");
+            object Factory(Type type) => RootScope.Resolve(type);
+            var mediator = new MediatR.Mediator(Factory);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send request through the mediator");
+            var response = await mediator.Send(request, cancellationToken);
+
+            logger.LogObject(nameof(response), response);
+
+
+
+            // *****************************************************************
+            return response;
+
+
+
+        }
+
+
+        public async Task<object> Send( IRequest request, CancellationToken cancellationToken = default )
         {
 
             var logger = GetLogger();
@@ -111,6 +144,14 @@ namespace Fabrica.Mediator
 
 
         }
+
+
+
+
+
+
+
+
 
 
         public async Task Publish<TNotification>( TNotification notification, CancellationToken cancellationToken = default ) where TNotification : INotification

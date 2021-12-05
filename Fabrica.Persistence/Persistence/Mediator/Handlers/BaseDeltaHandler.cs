@@ -41,7 +41,7 @@ namespace Fabrica.Persistence.Mediator.Handlers
         protected TDbContext Context { get; }
         protected IMapper Mapper { get; }
 
-
+        protected abstract OperationType Operation { get; }
         protected abstract Func<TDbContext,IQueryable<TResponse>> One { get; }
 
 
@@ -273,18 +273,18 @@ namespace Fabrica.Persistence.Mediator.Handlers
 
 
             // *****************************************************************
-            if( Request.Operation == OperationType.Create )
+            if( Operation == OperationType.Create )
             {
                 logger.Debug("Attempting to create entity");
                 Entity = await CreateEntity();
             }
-            else if (Request.Operation == OperationType.Update)
+            else if (Operation == OperationType.Update)
             {
                 logger.Debug("Attempting to create entity");
                 Entity = await RetrieveEntity();
             }
             else
-                throw new InvalidOperationException( $"Invalid Operation Type: ({Request.Operation}) for Delta Handler: {GetType().FullName}" );
+                throw new InvalidOperationException( $"Invalid Operation Type: ({Operation}) for Delta Handler: {GetType().FullName}" );
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.SQS;
 using Autofac;
 using Fabrica.Api.Support.Identity.Token;
@@ -32,6 +33,9 @@ namespace Fabrica.Work.Appliance
         public bool RunningOnEC2 { get; set; } = true;
 
 
+        public string OneStoreUri { get; set; } = "";
+
+
         public string WorkQueueName { get; set; } = "";
         public string S3EventQueueName { get; set; } = "";
 
@@ -56,7 +60,6 @@ namespace Fabrica.Work.Appliance
 
 
             builder.AddCorrelation();
-
 
             builder.UseAws(this);
 
