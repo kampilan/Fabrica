@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Net.Http;
-using Amazon.DynamoDBv2.DataModel;
 using Amazon.SQS;
 using Autofac;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
 using Fabrica.Http;
 using Fabrica.Identity;
+using Fabrica.One.Persistence;
+using Fabrica.One.Persistence.Work;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Work.Processor;
 using Fabrica.Work.Processor.Parsers;
 using Fabrica.Work.Queue;
-using Fabrica.Work.Topics;
-using Microsoft.Extensions.Configuration;
 using Module = Autofac.Module;
 
 namespace Fabrica.Work.Appliance
 {
 
     
-    public class TheModule: Module, IAwsCredentialModule, IWorkModule
+    public class TheModule: Module, IAwsCredentialModule, IWorkModule, IOnePersistenceModule
     {
 
 
@@ -82,30 +81,8 @@ namespace Fabrica.Work.Appliance
 
             builder.AddProxyTokenEncoder(TokenSigningKey);
 
-            builder.Register(c =>
-                {
-
-                    var config  = c.Resolve<IConfiguration>();
-                    var section = config.GetSection("Topics");
- 
-                    var corr = c.Resolve<ICorrelation>();
-                    
-                    var comp = new TopicMap( corr );
-                    comp.Load( "WebhookEndpoint", section );
-
-                    return comp;
-
-                })
-                .AsSelf()
-                .As<ITopicMap>()
-                .SingleInstance()
-                .AutoActivate();
-
-
             builder.Register( c =>
                 {
-
-
 
                     var claims = new ClaimSetModel
                     {
@@ -129,12 +106,11 @@ namespace Fabrica.Work.Appliance
             builder.Register(c =>
                 {
 
-
                     var factory     = c.Resolve<IHttpClientFactory>();
-                    var map         = c.Resolve<TopicMap>();
+                    var repository  = c.Resolve<WorkRepository>();
                     var tokenSource = c.Resolve<IAccessTokenSource>();
 
-                    var comp = new WorkProcessor( factory, map, tokenSource );
+                    var comp = new WorkProcessor( factory, repository, tokenSource );
 
                     return comp;
 

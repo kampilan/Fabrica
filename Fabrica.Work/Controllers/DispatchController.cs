@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Exceptions;
+using Fabrica.One.Persistence.Work;
 using Fabrica.Utilities.Container;
 using Fabrica.Work.Processor;
-using Fabrica.Work.Topics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -20,14 +20,14 @@ namespace Fabrica.Work.Controllers
     {
 
 
-        public DispatchController( ICorrelation correlation, ITopicMap map, IWorkDispatcher dipatcher ) : base(correlation)
+        public DispatchController( ICorrelation correlation, WorkRepository repository, IWorkDispatcher dipatcher ) : base(correlation)
         {
-            Map        = map;
+            Repository = repository;
             Dispatcher = dipatcher;
 
         }
 
-        private ITopicMap Map { get; }
+        private WorkRepository Repository { get; }
         private IWorkDispatcher Dispatcher { get; }
 
 
@@ -73,10 +73,7 @@ namespace Fabrica.Work.Controllers
 
             // *****************************************************************
             logger.Debug("Attempting to verify a TopicEndpoint exists");
-
-            if( !Map.HasTopic( options.Topic ) )
-                throw new NotFoundException($"Topic ({options.Topic}) was not found");
-
+            var topic = await Repository.GetTopic("", options.Topic);
 
 
             // *****************************************************************
