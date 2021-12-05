@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Exceptions;
 using Fabrica.Identity;
+using Fabrica.One.Persistence.Work;
 using Fabrica.Watch;
 using Fabrica.Work.Topics;
 using JetBrains.Annotations;
@@ -51,18 +52,18 @@ namespace Fabrica.Work.Processor
         }
 
 
-        public WorkProcessor( IHttpClientFactory factory, ITopicMap map, IAccessTokenSource tokenSource )
+        public WorkProcessor( IHttpClientFactory factory, WorkRepository repository, IAccessTokenSource tokenSource )
         {
 
-            Factory      = factory;
-            Map          = map;
+            Factory     = factory;
+            Repository  = repository;
             TokenSource = tokenSource;
 
         }
 
 
         private IHttpClientFactory Factory { get; }
-        private ITopicMap Map { get; }
+        private WorkRepository Repository { get; }
 
         private IAccessTokenSource TokenSource { get; }
 
@@ -144,10 +145,9 @@ namespace Fabrica.Work.Processor
 
                 // *****************************************************************
                 logger.Debug("Attempting to get TopicEndpoint for requested Topic");
-                if (!Map.TryGetEndpoint(args.Request.Topic, out var ep))
-                    throw new PredicateException($"Could not find requested Topic ({args.Request.Topic})");
+                var topic = await Repository.GetTopic("Development", args.Request.Topic);
 
-                logger.LogObject(nameof(ep), ep);
+                logger.LogObject(nameof(topic), topic);
 
 
 
@@ -162,7 +162,7 @@ namespace Fabrica.Work.Processor
 
                 // *****************************************************************
                 logger.Debug("Attempting to build Request message");
-                var message = new HttpRequestMessage(HttpMethod.Post, ep.Path)
+                var message = new HttpRequestMessage(HttpMethod.Post, topic.Endpoint)
                 {
                     Content = content
                 };
@@ -173,7 +173,7 @@ namespace Fabrica.Work.Processor
 
 
                 logger.Debug("Attempting to create HTTP client from factory");
-                using var client = Factory.CreateClient(ep.Name);
+                using var client = Factory.CreateClient("");
 
 
 
