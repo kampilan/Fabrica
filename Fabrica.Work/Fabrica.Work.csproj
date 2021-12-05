@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Api.Support\Fabrica.Api.Support.csproj" />
     <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
+    <ProjectReference Include="..\Fabrica.One.Persistence\Fabrica.One.Persistence.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
