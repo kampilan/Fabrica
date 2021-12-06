@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Fabrica.Mediator;
 
@@ -24,9 +27,14 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
             throw new MediatorException(this);
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public ErrorKind Kind { get; protected set; } = ErrorKind.System;
-    public string ErrorCode { get; protected set; }
-    public string Explanation { get; protected set; }
+
+    [DefaultValue("")] 
+    public string ErrorCode { get; protected set; } = "";
+
+    [DefaultValue("")] 
+    public string Explanation { get; protected set; } = "";
 
     [ExcludeEmpty]
     public List<EventDetail> Details { get; protected set; } = new ();

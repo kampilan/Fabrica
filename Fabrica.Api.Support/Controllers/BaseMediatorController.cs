@@ -145,10 +145,6 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
-
-
-
-
     protected virtual IActionResult BuildResult(Response response)
     {
 
