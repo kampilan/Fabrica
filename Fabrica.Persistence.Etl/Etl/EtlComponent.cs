@@ -1,33 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Data;
 using AutoMapper;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using FileHelpers;
-using JetBrains.Annotations;
+using RepoDb;
 
-namespace Fabrica.Api.Support.Controllers;
+namespace Fabrica.Persistence.Etl;
 
-
-public abstract class BaseEtlController: BaseController
+public class EtlComponent: CorrelatedObject
 {
 
 
-    protected BaseEtlController(ICorrelation correlation, IMapper mapper, IRuleSet rules ) : base(correlation)
+    public EtlComponent(ICorrelation correlation, IMapper mapper, IRuleSet rules) : base(correlation)
     {
 
         Mapper = mapper;
-        Rules  = rules;
+        Rules = rules;
 
     }
+
 
     private IMapper Mapper { get; }
     private IRuleSet Rules { get; }
 
 
-    protected EvaluationResults Evaluate( params object[] facts )
+    protected EvaluationResults Evaluate(params object[] facts)
     {
 
         var ec = Rules.GetEvaluationContext();
@@ -41,7 +38,7 @@ public abstract class BaseEtlController: BaseController
     }
 
 
-    protected async Task ProcessStream<TSpec>( [NotNull] Stream inbound, [NotNull] Func<TSpec,Task> sink, bool stopOnError=true ) where TSpec : class
+    public async Task ProcessStream<TSpec>( Stream inbound, Func<TSpec,Task> sink, bool stopOnError = true) where TSpec : class
     {
 
         if (inbound == null) throw new ArgumentNullException(nameof(inbound));
@@ -59,14 +56,14 @@ public abstract class BaseEtlController: BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to process each inbound record");
-        using (var reader = new StreamReader(inbound, leaveOpen: true) )
-        using( engine.BeginReadStream(reader) )
+        using (var reader = new StreamReader(inbound, leaveOpen: true))
+        using (engine.BeginReadStream(reader))
         {
 
             foreach (var spec in engine)
             {
 
-                if( logger.IsTraceEnabled )
+                if (logger.IsTraceEnabled)
                     logger.LogObject(nameof(spec), spec);
 
                 try
@@ -76,8 +73,8 @@ public abstract class BaseEtlController: BaseController
                 }
                 catch (Exception cause)
                 {
-                    logger.ErrorWithContext( cause, spec, "Caught Exception processing inbound file" );
-                    if( stopOnError)
+                    logger.ErrorWithContext(cause, spec, "Caught Exception processing inbound file");
+                    if (stopOnError)
                         throw;
                 }
 
@@ -87,8 +84,7 @@ public abstract class BaseEtlController: BaseController
 
     }
 
-
-    protected async Task ProcessStream<TSpec,TTarget>( [NotNull] Stream inbound, [NotNull] Func<TTarget, Task> sink, bool stopOnError = true ) where TSpec : class where TTarget: class
+    public async Task ProcessStream<TSpec, TTarget>(Stream inbound, Func<TTarget, Task> sink, bool stopOnError = true) where TSpec : class where TTarget : class
     {
 
         if (inbound == null) throw new ArgumentNullException(nameof(inbound));
@@ -106,14 +102,14 @@ public abstract class BaseEtlController: BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to process each inbound record");
-        using( var reader = new StreamReader(inbound, leaveOpen: true) )
-        using( engine.BeginReadStream( reader ) )
+        using (var reader = new StreamReader(inbound, leaveOpen: true))
+        using (engine.BeginReadStream(reader))
         {
 
-            foreach( var spec in engine )
+            foreach (var spec in engine)
             {
 
-                if( logger.IsTraceEnabled )
+                if (logger.IsTraceEnabled)
                     logger.LogObject(nameof(spec), spec);
 
 
@@ -140,8 +136,7 @@ public abstract class BaseEtlController: BaseController
 
     }
 
-
-    protected List<TTarget> ProcessStream<TSpec, TTarget>( [NotNull] Stream inbound, bool stopOnError = true ) where TSpec : class where TTarget : class
+    public List<TTarget> ProcessStream<TSpec, TTarget>(Stream inbound, bool stopOnError = true) where TSpec : class where TTarget : class
     {
 
         if (inbound == null) throw new ArgumentNullException(nameof(inbound));
@@ -201,7 +196,73 @@ public abstract class BaseEtlController: BaseController
     }
 
 
-    protected void ProduceStream<TSpec>( Stream outbound, IEnumerable<TSpec> sources ) where TSpec : class
+    public async Task<int> LoadStream<TSpec,TTarget>( Stream inbound, IDbConnection connection,  bool stopOnError = true ) where TSpec : class where TTarget : class
+    {
+
+        if (inbound == null) throw new ArgumentNullException(nameof(inbound));
+
+        using var logger = EnterMethod();
+
+
+        var results = new List<TTarget>();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build processing engine");
+        var engine = new FileHelperAsyncEngine<TSpec>();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to process each inbound record");
+        using (var reader = new StreamReader(inbound, leaveOpen: true))
+        using (engine.BeginReadStream(reader))
+        {
+
+            foreach (var spec in engine)
+            {
+
+                if (logger.IsTraceEnabled)
+                    logger.LogObject(nameof(spec), spec);
+
+
+                try
+                {
+
+                    var target = Mapper.Map<TTarget>(spec);
+
+                    Evaluate(spec, target);
+
+                    results.Add(target);
+
+                }
+                catch (Exception cause)
+                {
+                    logger.ErrorWithContext(cause, spec, "Caught Exception processing inbound file");
+                    if (stopOnError)
+                        throw;
+                }
+
+            }
+
+        }
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to Load objects to database");
+        logger.Inspect(nameof(results.Count), results.Count);
+        var count = await connection.InsertAllAsync(results);
+
+        logger.Inspect(nameof(count), count);
+
+
+        return count;
+
+    }
+
+
+
+
+    public void ProduceStream<TSpec>(Stream outbound, IEnumerable<TSpec> sources) where TSpec : class
     {
 
         using var logger = EnterMethod();
@@ -215,16 +276,16 @@ public abstract class BaseEtlController: BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to loop through source specs");
-        using( var writer = new StreamWriter(outbound, leaveOpen:true) )
-        using( engine.BeginWriteStream(writer) )
+        using (var writer = new StreamWriter(outbound, leaveOpen: true))
+        using (engine.BeginWriteStream(writer))
         {
 
             foreach (var spec in sources)
             {
 
-                if( logger.IsTraceEnabled )
+                if (logger.IsTraceEnabled)
                     logger.LogObject(nameof(spec), spec);
-                
+
                 engine.WriteNext(spec);
 
             }
@@ -234,7 +295,7 @@ public abstract class BaseEtlController: BaseController
 
     }
 
-    protected void ProduceStream<TSpec,TTarget>( Stream outbound, IEnumerable<TTarget> sources ) where TSpec : class where TTarget: class
+    public void ProduceStream<TSpec, TTarget>(Stream outbound, IEnumerable<TTarget> sources) where TSpec : class where TTarget : class
     {
 
         using var logger = EnterMethod();
@@ -247,16 +308,16 @@ public abstract class BaseEtlController: BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to loop through source specs");
-        using ( var writer = new StreamWriter(outbound, leaveOpen: true) )
-        using( engine.BeginWriteStream(writer) )
+        using (var writer = new StreamWriter(outbound, leaveOpen: true))
+        using (engine.BeginWriteStream(writer))
         {
 
-            foreach( var source in sources )
+            foreach (var source in sources)
             {
 
                 var spec = Mapper.Map<TSpec>(source);
 
-                if( logger.IsTraceEnabled )
+                if (logger.IsTraceEnabled)
                 {
                     logger.LogObject(nameof(source), source);
                     logger.LogObject(nameof(spec), spec);
@@ -270,6 +331,7 @@ public abstract class BaseEtlController: BaseController
 
 
     }
+
 
 
 }

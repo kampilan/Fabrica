@@ -10,7 +10,7 @@ using MediatR;
 namespace Fabrica.Persistence.Mediator;
 
 
-public class DeleteEntityRequest<TEntity>: IDeleteEntityRequest, IRequest<Response> where TEntity: class, IModel
+public class DeleteEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response>, IDeleteEntityRequest where TEntity: class, IModel
 {
     
     public string Uid { get; set; } = "";

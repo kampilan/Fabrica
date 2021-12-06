@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class CreateEntityRequest<TEntity>: IRequest<Response<TEntity>>, ICreateEntityRequest where TEntity: class, IModel
+public class CreateEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<TEntity>>, ICreateEntityRequest where TEntity: class, IModel
 {
 
     public string Uid { get; set; } = "";

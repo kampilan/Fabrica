@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class UpdateEntityRequest<TEntity>: IRequest<Response<TEntity>>, IUpdateEntityRequest where TEntity: class, IModel
+public class UpdateEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<TEntity>>, IUpdateEntityRequest where TEntity: class, IModel
 {
 
     public string Uid { get; set; } = "";
