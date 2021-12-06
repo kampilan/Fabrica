@@ -52,7 +52,7 @@ public abstract class BaseMediatorController : BaseController
                 break;
 
             case ErrorKind.NotFound:
-                statusCode = HttpStatusCode.NoContent;
+                statusCode = HttpStatusCode.NotFound;
                 break;
 
             case ErrorKind.NotImplemented:

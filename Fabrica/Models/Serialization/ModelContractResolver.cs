@@ -35,7 +35,7 @@ namespace Fabrica.Models.Serialization
 
 
             // ****************************************************************************
-                var nea = member.GetCustomAttribute<ExcludeEmptyAttribute>();
+            var nea = member.GetCustomAttribute<ExcludeEmptyAttribute>();
             if( nea != null && property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType) )
             {
                 property.ShouldSerialize = instance =>
