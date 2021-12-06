@@ -8,9 +8,7 @@ using Fabrica.Api.Support.ActionResult;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Patch;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
@@ -20,571 +18,514 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
-namespace Fabrica.Api.Support.Controllers
+namespace Fabrica.Api.Support.Controllers;
+
+public abstract class BaseMediatorController : BaseController
 {
 
 
-    public abstract class BaseMediatorController : BaseController
+    protected BaseMediatorController(ICorrelation correlation, IMessageMediator mediator ) : base(correlation)
+    {
+
+        Mediator = mediator;
+
+    }
+
+
+    protected IMessageMediator Mediator { get; }
+
+    protected virtual HttpStatusCode MapErrorToStatus(ErrorKind kind)
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Inspect(nameof(kind), kind);
+
+
+        var statusCode = HttpStatusCode.InternalServerError;
+
+        switch (kind)
+        {
+
+            case ErrorKind.None:
+                statusCode = HttpStatusCode.OK;
+                break;
+
+            case ErrorKind.NotFound:
+                statusCode = HttpStatusCode.NoContent;
+                break;
+
+            case ErrorKind.NotImplemented:
+                statusCode = HttpStatusCode.NotImplemented;
+                break;
+
+            case ErrorKind.Predicate:
+                statusCode = HttpStatusCode.BadRequest;
+                break;
+
+            case ErrorKind.Conflict:
+                statusCode = HttpStatusCode.Conflict;
+                break;
+
+            case ErrorKind.Functional:
+                statusCode = HttpStatusCode.InternalServerError;
+                break;
+
+            case ErrorKind.Concurrency:
+                statusCode = HttpStatusCode.Gone;
+                break;
+
+            case ErrorKind.BadRequest:
+                statusCode = HttpStatusCode.BadRequest;
+                break;
+
+            case ErrorKind.AuthenticationRequired:
+                statusCode = HttpStatusCode.Unauthorized;
+                break;
+
+            case ErrorKind.NotAuthorized:
+                statusCode = HttpStatusCode.Forbidden;
+                break;
+
+            case ErrorKind.System:
+            case ErrorKind.Unknown:
+                statusCode = HttpStatusCode.InternalServerError;
+                break;
+
+        }
+
+        logger.Inspect(nameof(statusCode), statusCode);
+
+
+        return statusCode;
+
+    }
+
+    protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
+    {
+
+        using var logger = EnterMethod();
+
+
+        logger.LogObject(nameof(response), response);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        logger.Inspect(nameof(response.Ok), response.Ok);
+        if (response.Ok && typeof(TValue).IsValueType)
+            return Ok();
+
+        if (response.Ok)
+            return Ok(response.Value);
+
+
+        return BuildErrorResult(response);
+
+
+    }
+
+    protected virtual IActionResult BuildResult(Response<MemoryStream> response)
+    {
+
+        using var logger = EnterMethod();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        logger.Inspect(nameof(response.Ok), response.Ok);
+        if (response.Ok)
+            return new JsonStreamResult(response.Value);
+
+
+        return BuildErrorResult(response);
+
+
+    }
+
+
+
+
+
+    protected virtual IActionResult BuildResult(Response response)
+    {
+
+        using var logger = EnterMethod();
+
+
+
+        logger.LogObject(nameof(response), response);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        logger.Inspect(nameof(response.Ok), response.Ok);
+        if (response.Ok)
+            return Ok();
+
+
+        return BuildErrorResult(response);
+
+
+
+    }
+
+    protected IActionResult BuildErrorResult(IExceptionInfo error)
     {
 
 
-        protected BaseMediatorController(ICorrelation correlation, IMessageMediator mediator, IPatchResolver resolver ) : base(correlation)
+        using var logger = EnterMethod();
+
+
+        logger.LogObject(nameof(error), error);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build ErrorResponseModel");
+        var model = new ErrorResponseModel
+        {
+            ErrorCode = error.ErrorCode,
+            Explanation = error.Explanation,
+            Details = new List<EventDetail>(error.Details),
+            CorrelationId = Correlation.Uid
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to map error Kind to HttpStatusCode");
+        var status = MapErrorToStatus(error.Kind);
+
+        logger.Inspect(nameof(status), status);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build ObjectResult");
+        var result = new ObjectResult(model)
+        {
+            StatusCode = (int)status
+        };
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+
+    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>() where TExplorer : class, IModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to digout RQL query parameters");
+
+        var rqls = new List<string>();
+        foreach (var key in Request.Query.Keys)
         {
 
-            Mediator = mediator;
-            Resolver = resolver;
+            logger.Inspect(nameof(key), key);
+            logger.LogObject("values", Request.Query[key]);
+
+            if (key == "rql")
+                rqls.AddRange(Request.Query[key].ToArray());
 
         }
 
 
-        protected IMessageMediator Mediator { get; }
-        protected IPatchResolver Resolver { get; }
 
-        protected virtual HttpStatusCode MapErrorToStatus(ErrorKind kind)
-        {
-
-            using var logger = EnterMethod();
-
-            logger.Inspect(nameof(kind), kind);
-
-
-            var statusCode = HttpStatusCode.InternalServerError;
-
-            switch (kind)
+        // *****************************************************************
+        logger.Debug("Attempting to produce filters from supplied RQL");
+        var filters = new List<IRqlFilter<TExplorer>>();
+        if (rqls.Count > 0)
+            filters.AddRange(rqls.Select(s =>
             {
-
-                case ErrorKind.None:
-                    statusCode = HttpStatusCode.OK;
-                    break;
-
-                case ErrorKind.NotFound:
-                    statusCode = HttpStatusCode.NoContent;
-                    break;
-
-                case ErrorKind.NotImplemented:
-                    statusCode = HttpStatusCode.NotImplemented;
-                    break;
-
-                case ErrorKind.Predicate:
-                    statusCode = HttpStatusCode.BadRequest;
-                    break;
-
-                case ErrorKind.Conflict:
-                    statusCode = HttpStatusCode.Conflict;
-                    break;
-
-                case ErrorKind.Functional:
-                    statusCode = HttpStatusCode.InternalServerError;
-                    break;
-
-                case ErrorKind.Concurrency:
-                    statusCode = HttpStatusCode.Gone;
-                    break;
-
-                case ErrorKind.BadRequest:
-                    statusCode = HttpStatusCode.BadRequest;
-                    break;
-
-                case ErrorKind.AuthenticationRequired:
-                    statusCode = HttpStatusCode.Unauthorized;
-                    break;
-
-                case ErrorKind.NotAuthorized:
-                    statusCode = HttpStatusCode.Forbidden;
-                    break;
-
-                case ErrorKind.System:
-                case ErrorKind.Unknown:
-                    statusCode = HttpStatusCode.InternalServerError;
-                    break;
-
-            }
-
-            logger.Inspect(nameof(statusCode), statusCode);
+                var tree = RqlLanguageParser.ToCriteria(s);
+                return new RqlFilterBuilder<TExplorer>(tree);
+            }));
 
 
-            return statusCode;
 
-        }
+        // *****************************************************************
+        return filters;
 
-        protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
+
+    }
+
+    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>([NotNull] ICriteria criteria) where TExplorer : class, IModel
+    {
+
+        if (criteria == null) throw new ArgumentNullException(nameof(criteria));
+
+
+        using var logger = EnterMethod();
+
+
+        var filters = new List<IRqlFilter<TExplorer>>();
+        if (criteria.Rql?.Length > 0)
         {
-
-            using var logger = EnterMethod();
-
-
-            logger.LogObject(nameof(response), response);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to check for success");
-            logger.Inspect(nameof(response.Ok), response.Ok);
-            if (response.Ok && typeof(TValue).IsValueType)
-                return Ok();
-
-            if (response.Ok)
-                return Ok(response.Value);
-
-
-            return BuildErrorResult(response);
-
-
-        }
-
-        protected virtual IActionResult BuildResult(Response<MemoryStream> response)
-        {
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to check for success");
-            logger.Inspect(nameof(response.Ok), response.Ok);
-            if (response.Ok)
-                return new JsonStreamResult(response.Value);
-
-
-            return BuildErrorResult(response);
-
-
-        }
-
-
-
-
-
-        protected virtual IActionResult BuildResult(Response response)
-        {
-
-            using var logger = EnterMethod();
-
-
-
-            logger.LogObject(nameof(response), response);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to check for success");
-            logger.Inspect(nameof(response.Ok), response.Ok);
-            if (response.Ok)
-                return Ok();
-
-
-            return BuildErrorResult(response);
-
-
-
-        }
-
-        protected IActionResult BuildErrorResult(IExceptionInfo error)
-        {
-
-
-            using var logger = EnterMethod();
-
-
-            logger.LogObject(nameof(error), error);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build ErrorResponseModel");
-            var model = new ErrorResponseModel
+            filters.AddRange(criteria.Rql.Select(s =>
             {
-                ErrorCode = error.ErrorCode,
-                Explanation = error.Explanation,
-                Details = new List<EventDetail>(error.Details),
-                CorrelationId = Correlation.Uid
+                var tree = RqlLanguageParser.ToCriteria(s);
+                return new RqlFilterBuilder<TExplorer>(tree);
+            }));
+        }
+        else
+        {
+
+            // *****************************************************************
+            logger.Debug("Attempting to introspect criteria RQL");
+            var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+
+
+            // *****************************************************************
+            filters.Add(filter);
+
+        }
+
+        return filters;
+
+    }
+
+
+    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to digout query parameters");
+
+        var rqls = new List<string>();
+        var parameters = new Dictionary<string, string>();
+        foreach (var key in Request.Query.Keys)
+        {
+
+            logger.Inspect(nameof(key), key);
+            logger.LogObject("values", Request.Query[key]);
+
+            if (key == "rql")
+                rqls.AddRange(Request.Query[key].ToArray());
+            else
+                parameters[key] = Request.Query[key].First();
+
+        }
+
+
+
+        var filters = new List<IRqlFilter<TExplorer>>();
+        if (rqls.Count > 0)
+        {
+            filters.AddRange(rqls.Select(s =>
+            {
+                var tree = RqlLanguageParser.ToCriteria(s);
+                return new RqlFilterBuilder<TExplorer>(tree);
+            }));
+        }
+        else
+        {
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to map parameters to criteria model");
+            var jo = JObject.FromObject(parameters);
+            var criteria = jo.ToObject<TCriteria>();
+
+            criteria ??= new TCriteria();
+
+            logger.LogObject(nameof(criteria), criteria);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to introspect criteria RQL");
+            var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+
+
+            // *****************************************************************
+            filters.Add(filter);
+
+
+        }
+
+
+        return filters;
+
+
+    }
+
+
+
+    protected virtual bool TryValidate( [CanBeNull] IApiModel model, out IActionResult error )
+    {
+
+        using var logger = EnterMethod();
+
+        logger.LogObject(nameof(model), model);
+
+        error = null;
+
+
+        if( !ModelState.IsValid )
+        {
+
+            var info = new ExceptionInfoModel
+            {
+                Kind = ErrorKind.BadRequest,
+                ErrorCode = "ModelInvalid",
+                Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
             };
 
+            var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
+
+            foreach (var e in errors)
+                info.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Violation, RuleName = "ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model" });
+
+            error = BuildErrorResult(info);
+
+            return false;
+
+        }
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to map error Kind to HttpStatusCode");
-            var status = MapErrorToStatus(error.Kind);
+        if( model is null )
+        {
 
-            logger.Inspect(nameof(status), status);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build ObjectResult");
-            var result = new ObjectResult(model)
+            var info = new ExceptionInfoModel
             {
-                StatusCode = (int)status
+                Kind = ErrorKind.BadRequest,
+                ErrorCode = "ModelInvalid",
+                Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
             };
 
+            error = BuildErrorResult(info);
 
-
-            // *****************************************************************
-            return result;
-
+            return false;
 
         }
 
 
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>() where TExplorer : class, IModel
+        if (  model.IsOverposted() )
         {
 
-            using var logger = EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to digout RQL query parameters");
-
-            var rqls = new List<string>();
-            foreach (var key in Request.Query.Keys)
+            var info = new ExceptionInfoModel
             {
+                Kind = ErrorKind.BadRequest,
+                ErrorCode = "DisallowedProperties",
+                Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', model.GetOverpostNames())})"
+            };
 
-                logger.Inspect(nameof(key), key);
-                logger.LogObject("values", Request.Query[key]);
+            error = BuildErrorResult(info);
 
-                if (key == "rql")
-                    rqls.AddRange(Request.Query[key].ToArray());
-
-            }
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to produce filters from supplied RQL");
-            var filters = new List<IRqlFilter<TExplorer>>();
-            if (rqls.Count > 0)
-                filters.AddRange(rqls.Select(s =>
-                {
-                    var tree = RqlLanguageParser.ToCriteria(s);
-                    return new RqlFilterBuilder<TExplorer>(tree);
-                }));
-
-
-
-            // *****************************************************************
-            return filters;
-
-
-        }
-
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>([NotNull] ICriteria criteria) where TExplorer : class, IModel
-        {
-
-            if (criteria == null) throw new ArgumentNullException(nameof(criteria));
-
-
-            using var logger = EnterMethod();
-
-
-            var filters = new List<IRqlFilter<TExplorer>>();
-            if (criteria.Rql?.Length > 0)
-            {
-                filters.AddRange(criteria.Rql.Select(s =>
-                {
-                    var tree = RqlLanguageParser.ToCriteria(s);
-                    return new RqlFilterBuilder<TExplorer>(tree);
-                }));
-            }
-            else
-            {
-
-                // *****************************************************************
-                logger.Debug("Attempting to introspect criteria RQL");
-                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-
-
-                // *****************************************************************
-                filters.Add(filter);
-
-            }
-
-            return filters;
+            return false;
 
         }
 
 
-        protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
-        {
+        return true;
 
-            using var logger = EnterMethod();
 
+    }
 
-            // *****************************************************************
-            logger.Debug("Attempting to digout query parameters");
 
-            var rqls = new List<string>();
-            var parameters = new Dictionary<string, string>();
-            foreach (var key in Request.Query.Keys)
-            {
 
-                logger.Inspect(nameof(key), key);
-                logger.LogObject("values", Request.Query[key]);
+    protected virtual async Task<IActionResult> Send<TValue>([NotNull] IRequest<Response<TValue>> request)
+    {
 
-                if (key == "rql")
-                    rqls.AddRange(Request.Query[key].ToArray());
-                else
-                    parameters[key] = Request.Query[key].First();
+        if (request == null) throw new ArgumentNullException(nameof(request));
 
-            }
+        using var logger = EnterMethod();
 
 
 
-            var filters = new List<IRqlFilter<TExplorer>>();
-            if (rqls.Count > 0)
-            {
-                filters.AddRange(rqls.Select(s =>
-                {
-                    var tree = RqlLanguageParser.ToCriteria(s);
-                    return new RqlFilterBuilder<TExplorer>(tree);
-                }));
-            }
-            else
-            {
+        // *****************************************************************
+        logger.Debug("Attempting to send request via Mediator");
+        var response = await Mediator.Send(request);
 
+        logger.Inspect(nameof(response.Ok), response.Ok);
 
-                // *****************************************************************
-                logger.Debug("Attempting to map parameters to criteria model");
-                var jo = JObject.FromObject(parameters);
-                var criteria = jo.ToObject<TCriteria>();
 
-                criteria ??= new TCriteria();
 
-                logger.LogObject(nameof(criteria), criteria);
+        // *****************************************************************
+        logger.Debug("Attempting to build result");
+        var result = BuildResult(response);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to introspect criteria RQL");
-                var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
+        // *****************************************************************
+        return result;
 
 
-                // *****************************************************************
-                filters.Add(filter);
+    }
 
 
-            }
+    protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response<MemoryStream>> request)
+    {
 
+        if (request == null) throw new ArgumentNullException(nameof(request));
 
-            return filters;
+        using var logger = EnterMethod();
 
 
-        }
 
+        // *****************************************************************
+        logger.Debug("Attempting to send request via Mediator");
+        var response = await Mediator.Send(request);
 
+        logger.Inspect(nameof(response.Ok), response.Ok);
 
-        protected virtual bool TryValidate( [CanBeNull] IApiModel model, out IActionResult error )
-        {
 
-            using var logger = EnterMethod();
 
-            logger.LogObject(nameof(model), model);
+        // *****************************************************************
+        logger.Debug("Attempting to build result");
+        var result = BuildResult(response);
 
-            error = null;
 
 
-            if( !ModelState.IsValid )
-            {
+        // *****************************************************************
+        return result;
 
-                var info = new ExceptionInfoModel
-                {
-                    Kind = ErrorKind.BadRequest,
-                    ErrorCode = "ModelInvalid",
-                    Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
-                };
 
-                var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
+    }
 
-                foreach (var e in errors)
-                    info.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Violation, RuleName = "ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model" });
 
-                error = BuildErrorResult(info);
+    protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response> request)
+    {
 
-                return false;
+        if (request == null) throw new ArgumentNullException(nameof(request));
 
-            }
+        using var logger = EnterMethod();
 
 
-            if( model is null )
-            {
 
-                var info = new ExceptionInfoModel
-                {
-                    Kind = ErrorKind.BadRequest,
-                    ErrorCode = "ModelInvalid",
-                    Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
-                };
+        // *****************************************************************
+        logger.Debug("Attempting to send request via Mediator");
+        var response = await Mediator.Send(request);
 
-                error = BuildErrorResult(info);
+        logger.Inspect(nameof(response.Ok), response.Ok);
 
-                return false;
 
-            }
 
+        // *****************************************************************
+        logger.Debug("Attempting to build result");
+        var result = BuildResult(response);
 
 
-            if (  model.IsOverposted() )
-            {
 
-                var info = new ExceptionInfoModel
-                {
-                    Kind = ErrorKind.BadRequest,
-                    ErrorCode = "DisallowedProperties",
-                    Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', model.GetOverpostNames())})"
-                };
-
-                error = BuildErrorResult(info);
-
-                return false;
-
-            }
-
-
-            return true;
-
-
-        }
-
-
-
-        protected virtual async Task<IActionResult> Send<TValue>([NotNull] IRequest<Response<TValue>> request)
-        {
-
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to send request via Mediator");
-            var response = await Mediator.Send(request);
-
-            logger.Inspect(nameof(response.Ok), response.Ok);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build result");
-            var result = BuildResult(response);
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-
-
-        protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response<MemoryStream>> request)
-        {
-
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to send request via Mediator");
-            var response = await Mediator.Send(request);
-
-            logger.Inspect(nameof(response.Ok), response.Ok);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build result");
-            var result = BuildResult(response);
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-
-
-        protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response> request)
-        {
-
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
-            using var logger = EnterMethod();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to send request via Mediator");
-            var response = await Mediator.Send(request);
-
-            logger.Inspect(nameof(response.Ok), response.Ok);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build result");
-            var result = BuildResult(response);
-
-
-
-            // *****************************************************************
-            return result;
-
-        }
-
-
-        protected virtual async Task<IActionResult> Send( [NotNull] IEnumerable<ModelPatch> source )
-        {
-
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
-            using var logger = EnterMethod();
-
-            // *****************************************************************
-            logger.Debug("Attempting to build patch set");
-            var set = new PatchSet();
-            set.Add(source);
-
-            logger.Inspect(nameof(set.Count), set.Count);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to resolve patch set");
-            var requests = Resolver.Resolve(set);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to send request via Mediator");
-            var response = await Mediator.Send(requests);
-
-            logger.Inspect(nameof(response.HasErrors), response.HasErrors);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to BatchResponse for success");
-            response.EnsureSuccess();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build result");
-            var result = Ok();
-
-
-
-            // *****************************************************************
-            return result;
-
-        }
-
-
-
+        // *****************************************************************
+        return result;
 
     }
 
