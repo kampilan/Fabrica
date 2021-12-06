@@ -108,7 +108,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
         using var logger = EnterMethod();
 
 
-        var obj = _makeRequest(typeof(DeltaEntityRequest<>), entity);
+        var obj = _makeRequest(typeof(DeleteEntityRequest<>), entity);
         if (obj is IDeleteEntityRequest request)
         {
             request.Uid = uid;
