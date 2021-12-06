@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Fabrica.Exceptions
+namespace Fabrica.Exceptions;
+
+public interface IExceptionInfo
 {
 
+    ErrorKind Kind { get; }
+    string ErrorCode { get; }
+    string Explanation { get; }
 
-    public interface IExceptionInfo
-    {
-
-        ErrorKind Kind { get; }
-        string ErrorCode { get; }
-        string Explanation { get; }
-
-        List<EventDetail> Details { get; }
-
-    }
-
+    List<EventDetail> Details { get; }
 
 }
