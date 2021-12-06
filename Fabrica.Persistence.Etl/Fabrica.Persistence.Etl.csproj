@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Fabrica.Persistence</RootNamespace>
+    <Authors>The Kampilan Group Inc. </Authors>
+    <Company>The Kampilan Group Inc</Company>
+    <Product>Fabrica Persistence ETL</Product>
+    <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
