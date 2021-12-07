@@ -105,6 +105,11 @@ namespace Fabrica.Identity
                     var list = await Client.Users.GetUsersByEmailAsync(request.CurrentEmail);
                     user =  list.FirstOrDefault();
                 }
+                else if (string.IsNullOrWhiteSpace(request.IdentityUid) && string.IsNullOrWhiteSpace(request.CurrentEmail) && !string.IsNullOrWhiteSpace(request.NewEmail))
+                {
+                    var list = await Client.Users.GetUsersByEmailAsync(request.NewEmail);
+                    user = list.FirstOrDefault();
+                }
                 else
                     user = null;
 
@@ -232,7 +237,7 @@ namespace Fabrica.Identity
             logger.Debug("Attempting to check for items to update");
             if (string.IsNullOrWhiteSpace(request.NewEmail) && string.IsNullOrWhiteSpace(request.NewFirstName) && string.IsNullOrWhiteSpace(request.NewLastName))
             {
-                logger.Debug("Attempting to no items to update");
+                logger.Debug("No items to update");
                 var response = new SyncUserResponse {Created = false, IdentityUid = existing.UserId};
                 return response;
             }
