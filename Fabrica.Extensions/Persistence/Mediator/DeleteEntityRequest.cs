@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using MediatR;
+using Newtonsoft.Json;
 
 
 // ReSharper disable UnusedTypeParameter
@@ -15,6 +16,7 @@ public class DeleteEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response>
     
     public string Uid { get; set; } = "";
 
+    [JsonIgnore]
     public Func<IMessageMediator, Task<IResponse>> Sender => async (m) => await m.Send(this);
 
 }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -220,6 +221,36 @@ public class TheModule : Module
             .InstancePerLifetimeScope();
 
     }
+
+
+}
+
+
+public class LocalMediatorRequestFactory: MediatorRequestFactory
+{
+
+    public LocalMediatorRequestFactory(ICorrelation correlation) : base(correlation)
+    {
+    }
+
+    public ICreateEntityRequest GetCustomCreateEntityRequest( Type entity )
+    {
+
+        switch (entity)
+        {
+            case not null when entity == typeof(Person):
+                return new CreateEntityRequest<Person>();
+            case not null when entity == typeof(Company):
+                return new CreateEntityRequest<Company>();
+            default:
+                return null;
+        }
+        
+        
+
+    }
+
+
 
 
 }

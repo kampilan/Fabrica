@@ -7,6 +7,7 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using JetBrains.Annotations;
 using MediatR;
+using Newtonsoft.Json;
 
 // ReSharper disable UnusedTypeParameter
 
@@ -36,6 +37,7 @@ public class CreateMemberEntityRequest<TParent,TMember>: BaseEntityRequest, IReq
 
     }
 
+    [JsonIgnore]
     public Func<IMessageMediator, Task<IResponse>> Sender => async (m) => await m.Send(this);
 
 }

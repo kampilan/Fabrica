@@ -195,11 +195,11 @@ public class EtlComponent: CorrelatedObject
 
     }
 
-
     public async Task<int> LoadStream<TSpec,TTarget>( Stream inbound, IDbConnection connection,  bool stopOnError = true, int batchSize=50 ) where TSpec : class where TTarget : class
     {
 
         if (inbound == null) throw new ArgumentNullException(nameof(inbound));
+        if (connection == null) throw new ArgumentNullException(nameof(connection));
 
         using var logger = EnterMethod();
 

@@ -7,6 +7,7 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using JetBrains.Annotations;
 using MediatR;
+using Newtonsoft.Json;
 
 namespace Fabrica.Persistence.Mediator;
 
@@ -31,6 +32,7 @@ public class CreateEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<
 
     }
 
+    [JsonIgnore]
     public Func<IMessageMediator, Task<IResponse>> Sender => async (m) => await m.Send(this);
 
 }
