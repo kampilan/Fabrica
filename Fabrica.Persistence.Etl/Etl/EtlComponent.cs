@@ -196,7 +196,7 @@ public class EtlComponent: CorrelatedObject
     }
 
 
-    public async Task<int> LoadStream<TSpec,TTarget>( Stream inbound, IDbConnection connection,  bool stopOnError = true ) where TSpec : class where TTarget : class
+    public async Task<int> LoadStream<TSpec,TTarget>( Stream inbound, IDbConnection connection,  bool stopOnError = true, int batchSize=50 ) where TSpec : class where TTarget : class
     {
 
         if (inbound == null) throw new ArgumentNullException(nameof(inbound));
@@ -204,6 +204,11 @@ public class EtlComponent: CorrelatedObject
         using var logger = EnterMethod();
 
 
+        logger.Inspect("TSpec Type", typeof(TSpec));
+        logger.Inspect("TTarget Type", typeof(TTarget));
+
+
+        var total = 0;
         var results = new List<TTarget>();
 
 
@@ -212,50 +217,84 @@ public class EtlComponent: CorrelatedObject
         var engine = new FileHelperAsyncEngine<TSpec>();
 
 
+
         // *****************************************************************
-        logger.Debug("Attempting to process each inbound record");
-        using (var reader = new StreamReader(inbound, leaveOpen: true))
-        using (engine.BeginReadStream(reader))
+        logger.Debug("Attempting to beginning Transaction");
+        using( var trx = (await connection.EnsureOpenAsync()).BeginTransaction() )
         {
 
-            foreach (var spec in engine)
+
+            // *****************************************************************
+            logger.Debug("Attempting to process each inbound record");
+            using (var reader = new StreamReader(inbound, leaveOpen: true))
+            using (engine.BeginReadStream(reader))
             {
 
-                if (logger.IsTraceEnabled)
-                    logger.LogObject(nameof(spec), spec);
-
-
-                try
+                foreach( var spec in engine )
                 {
 
-                    var target = Mapper.Map<TTarget>(spec);
+                    if( logger.IsTraceEnabled )
+                        logger.LogObject(nameof(spec), spec);
 
-                    Evaluate(spec, target);
 
-                    results.Add(target);
+                    try
+                    {
 
-                }
-                catch (Exception cause)
-                {
-                    logger.ErrorWithContext(cause, spec, "Caught Exception processing inbound file");
-                    if (stopOnError)
-                        throw;
+                        var target = Mapper.Map<TTarget>(spec);
+
+                        Evaluate(spec, target);
+
+                        results.Add(target);
+
+                        if (results.Count >= batchSize)
+                        {
+                            logger.DebugFormat("Attempting to persist batch of {0} to database", results.Count);
+                            logger.Inspect(nameof(results.Count), results.Count);
+                            await Persist();
+                        }
+
+                    }
+                    catch (Exception cause)
+                    {
+                        logger.ErrorWithContext(cause, spec, "Caught Exception processing inbound file");
+                        if( stopOnError )
+                            throw;
+                    }
+
                 }
 
             }
 
+
+            // *****************************************************************
+            logger.Debug("Attempting to persist last objects");
+            await Persist();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to commit Transaction");
+            trx.Commit();
+
+
         }
 
 
+        async Task Persist()
+        {
+
+            if( results.Count == 0 )
+                return;
+
+            total =+ await connection.InsertAllAsync( results, batchSize );
+
+            results.Clear();
+
+        }
+
+
+
         // *****************************************************************
-        logger.Debug("Attempting to Load objects to database");
-        logger.Inspect(nameof(results.Count), results.Count);
-        var count = await connection.InsertAllAsync(results);
-
-        logger.Inspect(nameof(count), count);
-
-
-        return count;
+        return total;
 
     }
 
