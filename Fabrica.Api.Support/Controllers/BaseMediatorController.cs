@@ -9,6 +9,7 @@ using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
@@ -16,6 +17,7 @@ using Fabrica.Utilities.Container;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Fabrica.Api.Support.Controllers;
@@ -258,6 +260,29 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
+    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>( IEnumerable<string> rqls ) where TExplorer : class, IModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to produce filters from supplied RQL");
+        var filters = new List<IRqlFilter<TExplorer>>();
+        filters.AddRange(rqls.Select(s =>
+        {
+            var tree = RqlLanguageParser.ToCriteria(s);
+            return new RqlFilterBuilder<TExplorer>(tree);
+        }));
+
+
+        // *****************************************************************
+        return filters;
+
+
+    }
+
+
     protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>([NotNull] ICriteria criteria) where TExplorer : class, IModel
     {
 
@@ -358,6 +383,23 @@ public abstract class BaseMediatorController : BaseController
 
         return filters;
 
+
+    }
+
+
+    protected virtual async Task<Dictionary<string, object>> FromBody()
+    {
+
+        using var logger = EnterMethod();
+
+
+        using var reader = new StreamReader(Request.Body, leaveOpen: true);
+        using var jreader = new JsonTextReader(reader);
+        
+        var jo    = await JObject.LoadAsync( jreader );
+        var delta = jo.ToObject<Dictionary<string, object>>();
+
+        return delta;
 
     }
 
@@ -524,6 +566,384 @@ public abstract class BaseMediatorController : BaseController
         return result;
 
     }
+
+
+
+    protected virtual async Task<IActionResult> HandleQuery<TExplorer,TCriteria>() where TExplorer : class, IExplorableModel where TCriteria : class, ICriteria, new()
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to produce filters");
+
+        var filters = ProduceFilters<TExplorer,TCriteria>();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new QueryEntityRequest<TExplorer>
+        {
+            Filters = filters
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+    protected virtual async Task<IActionResult> HandleQuery<TExplorer,TCriteria>( TCriteria criteria ) where TExplorer : class, IExplorableModel where TCriteria : class, ICriteria, IApiModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to validate criteria model");
+        if (!TryValidate(criteria, out var error))
+            return error;
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to produce filters");
+
+        var filters = ProduceFilters<TExplorer>(criteria);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new QueryEntityRequest<TExplorer>
+        {
+            Filters = filters
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+    protected virtual async Task<IActionResult> HandleQuery<TExplorer>( IEnumerable<string> rqls ) where TExplorer : class, IExplorableModel
+    {
+
+        using var logger = EnterMethod();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to produce filters");
+
+        var filters = ProduceFilters<TExplorer>( rqls );
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new QueryEntityRequest<TExplorer>
+        {
+            Filters = filters
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+    protected virtual async Task<IActionResult> HandleQuery<TExplorer>() where TExplorer : class, IExplorableModel
+    {
+
+        using var logger = EnterMethod();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to produce filters");
+
+        var filters = ProduceFilters<TExplorer>();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new QueryEntityRequest<TExplorer>
+        {
+            Filters = filters
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+
+    protected virtual async Task<IActionResult> HandleRetrieve<TEntity>( string uid ) where TEntity : class, IModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        var request = new RetrieveEntityRequest<TEntity>
+        {
+            Uid = uid
+        };
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+
+    protected virtual async Task<IActionResult> HandleCreate<TEntity>() where TEntity : class, IMutableModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to read delta from body");
+        var delta = await FromBody();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new CreateEntityRequest<TEntity>
+        {
+            Delta = delta
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+
+    }
+
+
+    protected virtual async Task<IActionResult> HandleCreate<TEntity,TDelta>( TDelta delta ) where TEntity: class, IMutableModel where TDelta: BaseDelta
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to validate delta model");
+        if (!TryValidate(delta, out var error))
+            return error;
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new CreateEntityRequest<TEntity>();
+
+        request.FromObject(delta);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+
+    }
+
+
+
+    protected virtual async Task<IActionResult> HandleUpdate<TEntity>() where TEntity : class, IMutableModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to read delta from body");
+        var delta = await FromBody();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new UpdateEntityRequest<TEntity>
+        {
+            Delta = delta
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+
+    }
+
+
+    protected virtual async Task<IActionResult> HandleUpdate<TEntity, TDelta>(TDelta delta) where TEntity : class, IMutableModel where TDelta : BaseDelta
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to validate delta model");
+        if (!TryValidate(delta, out var error))
+            return error;
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = new UpdateEntityRequest<TEntity>();
+
+        request.FromObject(delta);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+
+    }
+
+
+
+    protected virtual async Task<IActionResult> HandleDelete<TEntity>(string uid) where TEntity : class, IModel
+    {
+
+        using var logger = EnterMethod();
+
+
+        var request = new DeleteEntityRequest<TEntity>
+        {
+            Uid = uid
+        };
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var result = await Send(request);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
+
+    protected virtual async Task<IActionResult> HandleJournal<TEntity>( string uid ) where TEntity : class, IMutableModel
+    {
+
+
+        using var logger = EnterMethod();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to dispatch request");
+        var request = new AuditJournalQueryRequest
+        {
+            Entity    = typeof(TEntity).FullName, 
+            EntityUid = uid
+        };
+
+        var response = await Mediator.Send(request);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build result");
+        var result = response.Ok ? new JsonStreamResult(response.Value) : BuildErrorResult(response);
+
+
+
+        // *****************************************************************
+        return result;
+
+
+    }
+
+
 
 
 }

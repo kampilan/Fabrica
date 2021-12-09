@@ -1,24 +1,24 @@
 ﻿using Autofac;
 using Fabrica.Persistence.Connection;
+using Fabrica.Persistence.Mediator.Handlers;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rql;
 using Fabrica.Rql.Parser;
 using Fabrica.Utilities.Container;
 
 // ReSharper disable UnusedMember.Global
-namespace Fabrica.Persistence
+namespace Fabrica.Persistence;
+
+public static class AutofacExtensions
 {
 
-    public static class AutofacExtensions
+
+    public static ContainerBuilder UsePersistence(this ContainerBuilder builder )
     {
 
 
-        public static ContainerBuilder UsePersistence(this ContainerBuilder builder )
-        {
-
-
-            // ************************************************
-            builder.Register(c =>
+        // ************************************************
+        builder.Register(c =>
             {
 
                 var correlation = c.Resolve<ICorrelation>();
@@ -28,14 +28,14 @@ namespace Fabrica.Persistence
                 return comp;
 
             })
-                .As<IUnitOfWork>()
-                .AsSelf()
-                .InstancePerLifetimeScope();
+            .As<IUnitOfWork>()
+            .AsSelf()
+            .InstancePerLifetimeScope();
 
 
 
-            // ************************************************
-            builder.Register(c =>
+        // ************************************************
+        builder.Register(c =>
             {
 
                 var correlation = c.Resolve<ICorrelation>();
@@ -44,7 +44,7 @@ namespace Fabrica.Persistence
                 return comp;
 
             })
-                .As<IRqlParserComponent>();
+            .As<IRqlParserComponent>();
 
 
 /*
@@ -66,16 +66,20 @@ namespace Fabrica.Persistence
                 .InstancePerLifetimeScope();
 */
 
-            // ************************************************
-            return builder;
-
-        }
-
-
-
+        // ************************************************
+        return builder;
 
     }
 
+    public static ContainerBuilder AddAuditJournalHandler(this ContainerBuilder builder)
+    {
+
+        builder.RegisterType<AuditJournalQueryHandler>()
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+        
+        
+        return builder;
+    }
 
 }
-
