@@ -25,6 +25,7 @@ SOFTWARE.
 using System;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
+using Fabrica.Utilities.Text;
 using Fabrica.Utilities.Types;
 
 namespace Fabrica.Models
@@ -43,7 +44,7 @@ namespace Fabrica.Models
         public override long Id { get; protected set; }
 
         [ModelMeta(Scope = PropertyScope.Immutable)]
-        public override string Uid { get; set; } = ShortGuid.NewGuid();
+        public override string Uid { get; set; } = Base62Converter.NewGuid();
 
         [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string UnitOfWorkUid { get; set; } = "";

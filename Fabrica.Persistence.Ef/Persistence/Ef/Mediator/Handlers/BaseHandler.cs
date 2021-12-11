@@ -2,7 +2,7 @@
 using Fabrica.Utilities.Container;
 using MediatR;
 
-namespace Fabrica.Persistence.Mediator.Handlers
+namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
     

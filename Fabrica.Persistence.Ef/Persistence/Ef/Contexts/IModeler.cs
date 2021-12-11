@@ -1,7 +1,7 @@
 ﻿using Fabrica.Models.Support;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Fabrica.Persistence.Contexts
+namespace Fabrica.Persistence.Ef.Contexts
 {
 
 

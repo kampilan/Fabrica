@@ -5,7 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
@@ -14,7 +15,7 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabrica.Persistence.Mediator.Handlers
+namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
 

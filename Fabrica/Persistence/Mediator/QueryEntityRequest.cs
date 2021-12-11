@@ -6,7 +6,6 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
-using Fabrica.Rql.Parser;
 using JetBrains.Annotations;
 using MediatR;
 
@@ -33,26 +32,12 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 
     }
 
-    public RqlFilterBuilder<TEntity> Where<TValue>([NotNull] Expression<Func<TEntity, TValue>> predicate)
+    public RqlFilterBuilder<TEntity> Where<TValue>([NotNull] Expression<Func<TEntity,TValue>> predicate)
     {
 
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
         var builder = RqlFilterBuilder<TEntity>.Where(predicate);
-        Filters.Add(builder);
-
-        return builder;
-
-    }
-
-    public RqlFilterBuilder<TEntity> FromRql([NotNull] string rql)
-    {
-
-        if (string.IsNullOrWhiteSpace(rql)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(rql));
-
-        var tree = RqlLanguageParser.ToCriteria(rql);
-
-        var builder = new RqlFilterBuilder<TEntity>(tree);
         Filters.Add(builder);
 
         return builder;

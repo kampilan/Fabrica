@@ -6,13 +6,14 @@ using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Utilities.Container;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabrica.Persistence.Mediator.Handlers;
+namespace Fabrica.Persistence.Ef.Mediator.Handlers;
 
 public abstract class BaseCreateMemberHandler<TRequest,TParent,TChild,TDbContext> : BaseDeltaHandler<TRequest, TChild, TDbContext> where TRequest : class, ICreateMemberEntityRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : OriginDbContext
 {

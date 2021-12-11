@@ -32,7 +32,6 @@ using Fabrica.Identity;
 using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Audit;
-using Fabrica.Persistence.Rules;
 using Fabrica.Rules;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
@@ -43,7 +42,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 
-namespace Fabrica.Persistence.Contexts
+namespace Fabrica.Persistence.Ef.Contexts
 {
 
 

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Bogus;
 using Fabrica.Mediator;
 using Fabrica.Models;
 using Fabrica.Models.Patch.Builder;
@@ -13,15 +13,15 @@ using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.Patch;
 using Fabrica.Rules;
 using Fabrica.Test.Models;
-using Fabrica.Test.Models.Handlers;
 using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Container;
+using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
-using MediatR;
 using NUnit.Framework;
 using IContainer = Autofac.IContainer;
 using Module = Autofac.Module;
+using Person = Fabrica.Test.Models.Patch.Person;
 
 namespace Fabrica.Tests.Models;
 
@@ -61,6 +61,37 @@ public class PatchTests
 
     private IContainer TheContainer { get; set; }
 
+    private Company _buildCompany( int employees, bool asNew=false  )
+    {
+
+        var compRules = new Faker<Company>();
+
+        compRules
+            .RuleFor(p => p.Uid, _ => Base62Converter.NewGuid())
+            .RuleFor(c => c.Name, f => f.Company.CompanyName())
+            .RuleFor(c => c.City, f => f.Address.City());
+
+        var company = compRules.Generate();
+
+        var personRules = new Faker<Person>();
+
+        personRules
+            .RuleFor(p => p.Uid, _ => Base62Converter.NewGuid())
+            .RuleFor(p => p.FirstName, f => f.Name.FirstName())
+            .RuleFor(p => p.LastName, f => f.Name.LastName());
+
+        var emps = personRules.Generate(employees);
+
+        company.Employees = emps;
+
+        if( ! asNew )
+            company.Post();
+
+        return company;
+
+    }
+
+
 
     [Test]
     public void Test_0501_0100_PatchCreateToRequest()
@@ -69,28 +100,23 @@ public class PatchTests
         using (var scope = TheContainer.BeginLifetimeScope())
         {
 
-            var model = new Person();
-            model.Added();
-
-            model.FirstName = "James";
-            model.LastName = "Moring";
+            var company = _buildCompany(2, true);
 
             var set = PatchSet.Create();
-            set.Add(model);
+            set.Add(company);
 
-            var meta    = scope.Resolve<IModelMetaService>();
-            var factory = scope.Resolve<IMediatorRequestFactory>();
+            var json = set.ToJson();
 
-            var patch = set.GetPatches().First();
+            var set2 = PatchSet.FromJsonMany(json);
 
-            var type = meta.GetMetaFromAlias(patch.Model);
-            var request = factory.GetCreateRequest(type.Target, patch.Uid, patch.Properties);
 
-            Assert.IsNotNull(request);
-            Assert.IsInstanceOf<ICreateEntityRequest>(request);
-            Assert.IsInstanceOf<CreateEntityRequest<Person>>(request);
-            Assert.IsNotEmpty(request.Delta);
-            Assert.AreEqual(2, request.Delta.Count);
+            var resolver = scope.Resolve<IPatchResolver>();
+
+            var requests = resolver.Resolve(set2).ToList();
+
+            Assert.IsNotNull(requests);
+            Assert.IsNotEmpty(requests);
+            Assert.AreEqual(3, requests.Count);
 
         }
 
@@ -98,39 +124,41 @@ public class PatchTests
     }
 
 
+
+
     [Test]
-    public void Test_0501_0100_PatchUpdateToRequest()
+    public void Test_0501_0200_PatchUpdateToRequest()
     {
 
         using (var scope = TheContainer.BeginLifetimeScope())
         {
 
-            var model = new Person();
+            var company = _buildCompany(2);
 
-            model.EnterSuspendTracking();
-            model.FirstName = "James";
-            model.LastName = "Moring";
-            model.ExitSuspendTracking();
 
-            model.FirstName = "Jim";
+            company.Employees.First().FirstName = "Jim";
+            company.City = "Vestal";
+
+            var deleted = company.Employees.TakeLast(1).First();
+
+            company.Employees.Remove(deleted);
 
 
             var set = PatchSet.Create();
-            set.Add(model);
+            set.Add(company);
 
-            var meta = scope.Resolve<IModelMetaService>();
-            var factory = scope.Resolve<IMediatorRequestFactory>();
+            var json = set.ToJson();
 
-            var patch = set.GetPatches().First();
+            var set2 = PatchSet.FromJsonMany(json);
 
-            var type = meta.GetMetaFromAlias(patch.Model);
-            var request = factory.GetUpdateRequest(type.Target, patch.Uid, patch.Properties);
 
-            Assert.IsNotNull(request);
-            Assert.IsInstanceOf<IUpdateEntityRequest>(request);
-            Assert.IsInstanceOf<UpdateEntityRequest<Person>>(request);
-            Assert.IsNotEmpty(request.Delta);
-            Assert.AreEqual( 1, request.Delta.Count);
+            var resolver = scope.Resolve<IPatchResolver>();
+
+            var requests = resolver.Resolve(set2).ToList();
+
+            Assert.IsNotNull(requests);
+            Assert.IsNotEmpty(requests);
+            Assert.AreEqual(3, requests.Count);
 
         }
 

@@ -4,13 +4,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Mediator;
-using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.Thin;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Sql;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabrica.Persistence.Mediator.Handlers
+namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
     

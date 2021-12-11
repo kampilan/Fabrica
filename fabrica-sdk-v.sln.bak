@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Monitor", "Fabrica.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Static", "Fabrica.Static\Fabrica.Static.csproj", "{A59937EF-E00F-46E1-8BBB-8CDB1D2022FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence.Ef", "Fabrica.Persistence.Ef\Fabrica.Persistence.Ef.csproj", "{CB60F29D-610D-41B6-8B08-5CF69D57C03A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence", "Fabrica.Persistence\Fabrica.Persistence.csproj", "{CB60F29D-610D-41B6-8B08-5CF69D57C03A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2E2E37FB-828B-4516-9A53-557B03BD4BC1}"
 EndProject

@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Fabrica.Persistence.Connection;
-using Fabrica.Persistence.Mediator.Handlers;
+using Fabrica.Persistence.Ef.Mediator.Handlers;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rql;
 using Fabrica.Rql.Parser;

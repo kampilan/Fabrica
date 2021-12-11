@@ -9,14 +9,15 @@ using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Utilities.Container;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabrica.Persistence.Mediator.Handlers
+namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
 

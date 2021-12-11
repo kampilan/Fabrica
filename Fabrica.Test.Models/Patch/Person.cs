@@ -1,7 +1,11 @@
 ﻿using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
-using Fabrica.Utilities.Types;
 using System.ComponentModel;
+using Fabrica.Utilities.Text;
+
+#pragma warning disable CS8618
+// ReSharper disable ArrangeAccessorOwnerBody
+// ReSharper disable ConvertToAutoProperty
 
 namespace Fabrica.Test.Models.Patch
 {
@@ -11,7 +15,7 @@ namespace Fabrica.Test.Models.Patch
     {
 
 
-        private long _id = 0;
+        private long _id;
         public override long Id
         {
             get => _id;
@@ -19,7 +23,7 @@ namespace Fabrica.Test.Models.Patch
         }
 
 
-        private string _uid = ShortGuid.NewGuid();
+        private string _uid = Base62Converter.NewGuid();
         [ModelMeta(Scope = PropertyScope.Immutable)]
         public override string Uid
         {
@@ -28,7 +32,7 @@ namespace Fabrica.Test.Models.Patch
         }
 
 
-        private Company _parent = default;
+        private Company _parent;
         public Company Parent
         {
             get { return _parent; }

@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabrica.Persistence.Mediator.Handlers
+namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
     

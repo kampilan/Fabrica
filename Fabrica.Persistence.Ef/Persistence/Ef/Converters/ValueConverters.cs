@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Fabrica.Persistence.Converters
+namespace Fabrica.Persistence.Ef.Converters
 {
 
     public static class ValueConverters

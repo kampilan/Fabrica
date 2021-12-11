@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Contexts;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Utilities.Container;
 using MediatR;
 
-namespace Fabrica.Persistence.Mediator.Handlers;
+namespace Fabrica.Persistence.Ef.Mediator.Handlers;
 
 public abstract class BaseCreateHandler<TRequest, TResponse, TDbContext> : BaseDeltaHandler<TRequest, TResponse, TDbContext> where TRequest : class, IRequest<Response<TResponse>>, ICreateEntityRequest where TResponse : class, IModel, new() where TDbContext : OriginDbContext
 {
