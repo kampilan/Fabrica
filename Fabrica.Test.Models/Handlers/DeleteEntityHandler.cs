@@ -1,6 +1,6 @@
 ﻿using Fabrica.Models.Support;
+using Fabrica.Persistence.Ef.Mediator.Handlers;
 using Fabrica.Persistence.Mediator;
-using Fabrica.Persistence.Mediator.Handlers;
 using Fabrica.Utilities.Container;
 
 namespace Fabrica.Test.Models.Handlers;

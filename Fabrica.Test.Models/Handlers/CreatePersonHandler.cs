@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Fabrica.Persistence.Ef.Mediator.Handlers;
 using Fabrica.Persistence.Mediator;
-using Fabrica.Persistence.Mediator.Handlers;
 using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Container;
 

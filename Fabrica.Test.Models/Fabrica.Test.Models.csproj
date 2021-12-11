@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
-    <ProjectReference Include="..\Fabrica.Persistence\Fabrica.Persistence.csproj" />
+    <ProjectReference Include="..\Fabrica.Persistence.Ef\Fabrica.Persistence.Ef.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 
