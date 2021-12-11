@@ -921,7 +921,7 @@ public abstract class BaseMediatorController : BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to dispatch request");
-        var request = new AuditJournalQueryRequest
+        var request = new AuditJournalStreamRequest
         {
             Entity    = typeof(TEntity).FullName, 
             EntityUid = uid

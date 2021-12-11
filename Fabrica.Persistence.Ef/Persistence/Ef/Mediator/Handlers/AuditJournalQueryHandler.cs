@@ -15,7 +15,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
     
-    public class AuditJournalQueryHandler: AbstractRequestHandler<AuditJournalQueryRequest,MemoryStream>
+    public class AuditJournalQueryHandler: AbstractRequestHandler<AuditJournalStreamRequest,MemoryStream>
     {
 
         private const string QueryJournal = "select * from AuditJournals as oaj where oaj.UnitOfWorkUid in (select distinct iaj.UnitOfWorkUid from AuditJournals as iaj where iaj.Entity={0} and iaj.EntityUid = {1}) and oaj.TypeCode <> 'UnmodifiedRoot'";

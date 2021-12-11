@@ -45,17 +45,17 @@ namespace Fabrica.Rql.Serialization
             // ***************************************************************************
             var kindMap = new Dictionary<RqlOperator, KindSpec>
             {
-                [RqlOperator.Equals]             = new KindSpec { Operation = "eq", MultiValue = false },
-                [RqlOperator.NotEquals]          = new KindSpec { Operation = "ne", MultiValue = false },
-                [RqlOperator.Contains]           = new KindSpec { Operation = "cn", MultiValue = false },
-                [RqlOperator.StartsWith]         = new KindSpec { Operation = "sw", MultiValue = false },
-                [RqlOperator.LesserThan]         = new KindSpec { Operation = "lt", MultiValue = false },
-                [RqlOperator.GreaterThan]        = new KindSpec { Operation = "gt", MultiValue = false },
-                [RqlOperator.LesserThanOrEqual]  = new KindSpec { Operation = "le", MultiValue = false },
-                [RqlOperator.GreaterThanOrEqual] = new KindSpec { Operation = "ge", MultiValue = false },
-                [RqlOperator.Between]            = new KindSpec { Operation = "bt", MultiValue = true },
-                [RqlOperator.In]                 = new KindSpec { Operation = "in", MultiValue = true },
-                [RqlOperator.NotIn]              = new KindSpec { Operation = "ni", MultiValue = true }
+                [RqlOperator.Equals]             = new() { Operation = "eq", MultiValue = false },
+                [RqlOperator.NotEquals]          = new() { Operation = "ne", MultiValue = false },
+                [RqlOperator.Contains]           = new() { Operation = "cn", MultiValue = false },
+                [RqlOperator.StartsWith]         = new() { Operation = "sw", MultiValue = false },
+                [RqlOperator.LesserThan]         = new() { Operation = "lt", MultiValue = false },
+                [RqlOperator.GreaterThan]        = new() { Operation = "gt", MultiValue = false },
+                [RqlOperator.LesserThanOrEqual]  = new() { Operation = "le", MultiValue = false },
+                [RqlOperator.GreaterThanOrEqual] = new() { Operation = "ge", MultiValue = false },
+                [RqlOperator.Between]            = new() { Operation = "bt", MultiValue = true },
+                [RqlOperator.In]                 = new() { Operation = "in", MultiValue = true },
+                [RqlOperator.NotIn]              = new() { Operation = "ni", MultiValue = true }
             };
 
 
@@ -67,7 +67,7 @@ namespace Fabrica.Rql.Serialization
             var typeMap = new Dictionary<Type, TypeSpec>();
 
             string DefaultFormatter(object o) => o.ToString();
-            string LowerCaseFormatter(object o) => o.ToString().ToLowerInvariant();
+            string LowerCaseFormatter(object o) => o.ToString()?.ToLowerInvariant();
 
             typeMap[typeof(string)]   = new TypeSpec { NeedsQuotes = true,  Prefix = "",  Formatter  = DefaultFormatter };
             typeMap[typeof(bool)]     = new TypeSpec { NeedsQuotes = false, Prefix = "",  Formatter  = LowerCaseFormatter };
@@ -87,10 +87,10 @@ namespace Fabrica.Rql.Serialization
 
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (!(source is DateTime))
+            if (source is not DateTime time)
                 throw new InvalidOperationException($"Object of type: {source.GetType().FullName} can not be cast to a DateTime");
 
-            var dtStr = ((DateTime)source).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+            var dtStr = time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
 
             return dtStr;
 

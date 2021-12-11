@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using JetBrains.Annotations;
 
@@ -23,35 +22,6 @@ namespace Fabrica.Rql.Serialization
             var lambda = expression.Compile();
 
             return lambda;
-
-        }
-
-        public static Func<TEntity, bool> ToLambda<TEntity>( [NotNull]this string rql, bool insensitive = false) where TEntity : class
-        {
-
-            if (string.IsNullOrWhiteSpace(rql))
-                throw new ArgumentException("RQL cannot be null or whitespace.", nameof(rql));
-
-            var tree   = RqlLanguageParser.ToFilter(rql);
-            var filter = new RqlFilterBuilder<TEntity>(tree);
-            var lambda = filter.ToLambda(insensitive);
-
-            return lambda;
-
-        }
-
-        public static Expression<Func<TEntity, bool>> ToExpression<TEntity>( [NotNull]this string rql, bool insensitive = false) where TEntity : class
-        {
-
-            if (string.IsNullOrWhiteSpace(rql))
-                throw new ArgumentException("RQL cannot be null or whitespace.", nameof(rql));
-
-            var tree   = RqlLanguageParser.ToFilter(rql);
-            var filter = new RqlFilterBuilder<TEntity>(tree);
-
-            var exp = filter.ToExpression(insensitive);
-
-            return exp;
 
         }
 
