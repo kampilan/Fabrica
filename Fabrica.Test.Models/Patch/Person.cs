@@ -13,7 +13,7 @@ namespace Fabrica.Test.Models.Patch
 {
 
     [JsonObject(MemberSerialization.OptIn)]
-    [Model(Alias = nameof(Person))]
+    [Model]
     public class Person : BaseMutableModel<Person>, IAggregateModel, INotifyPropertyChanged
     {
 

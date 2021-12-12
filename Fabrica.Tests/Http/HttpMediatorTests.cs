@@ -7,7 +7,6 @@ using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Fabrica.Http;
 using Fabrica.Mediator;
 using Fabrica.Models;
-using Fabrica.Models.Support;
 using Fabrica.Persistence.Http.Mediator;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Rql;
@@ -242,9 +241,7 @@ public class HttpMediatorTests
             person.FirstName = "Mark";
 
 
-            var req2 = new PatchEntityRequest<Person>();
-            req2.Uid = person.Uid;
-            req2.FromModel( person );
+            var req2 = PatchEntityRequest<Person>.FromModel(person);
 
             var res2 = await mm.Send(req2);
 
@@ -257,8 +254,7 @@ public class HttpMediatorTests
             Assert.AreEqual(person.LastName, res2.Value.LastName);
 
 
-            var req3 = new RetrieveEntityRequest<Person>();
-            req3.Uid = res2.Value.Uid;
+            var req3 = RetrieveEntityRequest<Person>.ForUid(res2.Value.Uid);
 
             var res3 = await mm.Send(req3);
 
@@ -323,31 +319,3 @@ public class PersonCritera: BaseCriteria
 
 }
 
-
-
-
-[Model]
-public class Company : BaseMutableModel<Company>, IRootModel, IExplorableModel
-{
-
-    public override long Id { get; protected set; }
-    public override string Uid { get; set; } = "";
-
-    public string Name { get; set; } = "";
-
-    public string Address1 { get; set; } = "";
-    public string Address2 { get; set; } = "";
-
-    public string City { get; set; } = "";
-    public string State { get; set; } = "";
-    public string Zip { get; set; } = "";
-
-    public string MainPhone { get; set; } = "";
-    public string Fax { get; set; } = "";
-
-    public string Website { get; set; } = "";
-
-    public int EmployeeCount { get; set; } = 0;
-
-
-}
