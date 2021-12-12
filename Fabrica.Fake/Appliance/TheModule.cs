@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using AutoMapper;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
 using Fabrica.Fake.Services;
+using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 
 namespace Fabrica.Fake.Appliance
@@ -31,6 +33,10 @@ namespace Fabrica.Fake.Appliance
             builder.AddCorrelation();
 
             builder.UseAws(this);
+
+            builder.UseRules();
+
+            builder.RegisterAutoMapper();
 
             if(!string.IsNullOrWhiteSpace(TokenSigningKey) )
                 builder.AddProxyTokenEncoder(TokenSigningKey);
