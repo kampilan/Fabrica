@@ -17,6 +17,9 @@ namespace Fabrica.Fake.Services;
 public class FakeDataComponent: IStartable
 {
 
+    public int PersonCount { get; set; }
+    public int CompanyCount { get; set; }
+
     private ConcurrentBag<Person> People { get; set; }
     private ConcurrentBag<Company> Companies { get; set; }
 
@@ -38,7 +41,7 @@ public class FakeDataComponent: IStartable
             .RuleFor(p => p.PhoneNumber, f => f.Person.Phone);
 
 
-        var people = ruleSetP.Generate(100000);
+        var people = ruleSetP.Generate(PersonCount);
 
         People = new ConcurrentBag<Person>(people);
 
@@ -59,7 +62,7 @@ public class FakeDataComponent: IStartable
             .RuleFor(c => c.EmployeeCount, f => f.Random.Number(5, 50000));
 
 
-        var companies = ruleSetC.Generate(100000);
+        var companies = ruleSetC.Generate(CompanyCount);
 
 
         Companies = new ConcurrentBag<Company>(companies);

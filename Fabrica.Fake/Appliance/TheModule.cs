@@ -2,8 +2,6 @@
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
 using Fabrica.Fake.Services;
-using Fabrica.Persistence;
-using Fabrica.Persistence.Connection;
 using Fabrica.Utilities.Container;
 
 namespace Fabrica.Fake.Appliance
@@ -21,7 +19,11 @@ namespace Fabrica.Fake.Appliance
 
 
         public string TokenSigningKey { get; set; }
-        
+
+        public int PersonCount { get; set; } = 1000;
+        public int CompanyCount { get; set; } = 1000;
+
+
         protected override void Load(ContainerBuilder builder)
         {
 
@@ -32,7 +34,14 @@ namespace Fabrica.Fake.Appliance
             if(!string.IsNullOrWhiteSpace(TokenSigningKey) )
                 builder.AddProxyTokenEncoder(TokenSigningKey);
 
-            builder.RegisterType<FakeDataComponent>()
+            builder.Register(c =>
+                {
+
+                    var comp = new FakeDataComponent();
+
+                    return comp;
+
+                })
                 .AsSelf()
                 .As<IStartable>()
                 .SingleInstance();
