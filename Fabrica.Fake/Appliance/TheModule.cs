@@ -37,7 +37,11 @@ namespace Fabrica.Fake.Appliance
             builder.Register(c =>
                 {
 
-                    var comp = new FakeDataComponent();
+                    var comp = new FakeDataComponent
+                    {
+                        PersonCount = PersonCount,
+                        CompanyCount = CompanyCount
+                    };
 
                     return comp;
 
