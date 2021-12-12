@@ -14,8 +14,7 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
     {
 
         Factory = factory;
-
-        Meta = meta;
+        Meta    = meta;
 
     }
 
@@ -31,24 +30,32 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
         using var logger = EnterMethod();
 
 
+
+        // *****************************************************************
+        logger.Debug("Attempting to create Api HttpClient");
+        using var client = Factory.CreateClient(request.HttpClientName);
+
+        if (client.BaseAddress is null)
+            throw new InvalidOperationException($"HttpClient: ({request.HttpClientName}) has a null BaseAddress");
+
+
+
+        logger.Inspect(nameof(client.BaseAddress), client.BaseAddress);
         logger.Inspect(nameof(request.Method), request.Method);
         logger.Inspect(nameof(request.Path), request.Path);
         logger.Inspect(nameof(request.BodyContent), request.BodyContent is not null);
+
+
+
 
 
         // *****************************************************************
         logger.Debug("Attempting to build Inner Request");
         var innerRequest = new HttpRequestMessage
         {
-            Method = request.Method,
+            Method     = request.Method,
+            RequestUri = new Uri( client.BaseAddress, request.Path )
         };
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to set RequestUri");
-        innerRequest.RequestUri = new Uri( request.Path );
-
 
 
         // *****************************************************************
@@ -65,12 +72,6 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
         logger.Debug("Attempting to add body content");
         if (request.BodyContent is not null)
             innerRequest.Content = request.BodyContent;
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to create HttpClient");
-        using var client = Factory.CreateClient();
 
 
 

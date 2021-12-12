@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Identity.Auth0\Fabrica.Identity.Auth0.csproj" />
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+    <ProjectReference Include="..\Fabrica.Persistence.Http\Fabrica.Persistence.Http.csproj" />
     <ProjectReference Include="..\Fabrica.Test.Models\Fabrica.Test.Models.csproj" />
     <ProjectReference Include="..\Fabrica.Work\Fabrica.Work.csproj" />
   </ItemGroup>

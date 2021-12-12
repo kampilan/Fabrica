@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Bogus;
-using Bogus.DataSets;
 using Fabrica.Api.Support.Controllers;
+using Fabrica.Fake.Services;
+using Fabrica.Models.Support;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
-using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabrica.Fake.Controllers
@@ -21,56 +18,55 @@ namespace Fabrica.Fake.Controllers
     public class TheController: BaseController
     {
 
-        public TheController(ICorrelation correlation, IAmazonS3 client) : base(correlation)
+        public TheController(ICorrelation correlation, FakeDataComponent faker, IAmazonS3 client) : base(correlation)
         {
 
+            Faker = faker;
             Client = client;
 
         }
 
+        private FakeDataComponent Faker { get; }
         private IAmazonS3 Client { get; }
 
 
         [HttpGet("people")]
-        public Task<IActionResult> GeneratePeople( [FromQuery] int count=1000, [FromQuery] string rql = "" )
+        public Task<IActionResult> QueryPeople( [FromQuery] string rql )
         {
 
             using var logger = EnterMethod();
             
-            var ruleSet = new Faker<Person>();
-
-            ruleSet.RuleFor(p=>p.Uid, _=> ShortGuid.NewGuid().ToString() )
-                .RuleFor(p => p.Gender, f => f.Person.Random.Enum<Person.GenderKind>())
-                .RuleFor(p => p.FirstName, (f, p) => f.Name.FirstName(p.Gender == Person.GenderKind.Female ? Name.Gender.Female : Name.Gender.Male))
-                .RuleFor(p => p.MiddleName, (f, p) => f.Name.FirstName(p.Gender == Person.GenderKind.Female ? Name.Gender.Female : Name.Gender.Male))
-                .RuleFor(p => p.LastName, f => f.Person.LastName)
-                .RuleFor(p => p.BirthDate, f => f.Date.Past(90, DateTime.Now.AddYears(-18)))
-                .RuleFor(p => p.Salary, f => f.Random.Decimal(20000, 500000))
-                .RuleFor(p => p.Email, f => f.Person.Email)
-                .RuleFor(p => p.PhoneNumber, f => f.Person.Phone);
 
 
-            var list = ruleSet.Generate(count);
+            var tree = RqlLanguageParser.ToCriteria(rql);
+            var filter = new RqlFilterBuilder<Person>(tree);
 
-            if( !string.IsNullOrWhiteSpace(rql) )
-            {
-
-                var tree = RqlLanguageParser.ToCriteria(rql);
-                var filter = new RqlFilterBuilder<Person>(tree);
-                var lambda = filter.ToLambda();
-
-                var subset = list.Where(lambda);
-                list = subset.ToList();
-
-            }
-
+            var list = Faker.QueryPeople(filter);
 
             var result = Ok(list);
 
+            
             return Task.FromResult((IActionResult)result);
 
+        }
+
+
+        [HttpGet("people/{uid}")]
+        public Task<IActionResult> RetrievePeople( string uid )
+        {
+
+            using var logger = EnterMethod();
+
+
+            var person = Faker.RetrievePerson(uid);
+
+            var result = Ok(person);
+
+
+            return Task.FromResult((IActionResult)result);
 
         }
+
 
 
         [HttpGet("companies")]
@@ -79,42 +75,37 @@ namespace Fabrica.Fake.Controllers
 
             using var logger = EnterMethod();
 
-            var ruleSet = new Faker<Company>();
 
-            ruleSet.RuleFor(p => p.Uid, _ => ShortGuid.NewGuid().ToString() )
-                .RuleFor(c => c.Name, f => f.Company.CompanyName())
-                .RuleFor(c => c.Address1, f => f.Address.StreetAddress())
-                .RuleFor(c => c.Address2, f => f.Address.SecondaryAddress())
-                .RuleFor(c => c.City, f => f.Address.City())
-                .RuleFor(c => c.State, f => f.Address.StateAbbr())
-                .RuleFor(c => c.Zip, f => f.Address.ZipCode())
-                .RuleFor(c => c.MainPhone, f => f.Phone.PhoneNumber())
-                .RuleFor(c => c.Fax, f => f.Phone.PhoneNumber())
-                .RuleFor(c => c.Website, f => f.Internet.Url())
-                .RuleFor(c => c.EmployeeCount, f => f.Random.Number(5, 50000));
+            var tree = RqlLanguageParser.ToCriteria(rql);
+            var filter = new RqlFilterBuilder<Company>(tree);
 
-
-            var list = ruleSet.Generate(count);
-
-            if( !string.IsNullOrWhiteSpace(rql) )
-            {
-
-                var tree   = RqlLanguageParser.ToCriteria(rql);
-                var filter = new RqlFilterBuilder<Company>(tree);
-                var lambda = filter.ToLambda();
-
-                var subset = list.Where(lambda);
-                list = subset.ToList();
-
-            }
-
-
+            var list = Faker.QueryCompanies(filter);
 
             var result = Ok(list);
+
+
+            return Task.FromResult((IActionResult)result);
+
+
+        }
+
+
+        [HttpGet("companies/{uid}")]
+        public Task<IActionResult> RetrieveCompany(string uid)
+        {
+
+            using var logger = EnterMethod();
+
+
+            var company = Faker.RetrieveCompany(uid);
+
+            var result = Ok(company);
+
 
             return Task.FromResult((IActionResult)result);
 
         }
+
 
         [HttpPost("s3-events/{topic}")]
         public async Task<StatusCodeResult> AcceptWorkRequest( [FromRoute] string topic, [FromBody] S3Event s3 )
@@ -193,13 +184,19 @@ namespace Fabrica.Fake.Controllers
     }
 
 
-    public class Person
+    public class Person: BaseMutableModel<Person>, IRootModel, IExplorableModel
     {
 
         public enum GenderKind { Female, Male }
 
+        private long _id;
+        public override long Id
+        {
+            get=>_id;
+            protected set { }
+        }
 
-        public string Uid { get; set; } = "";
+        public override string Uid { get; set; } = "";
 
         public string FirstName { get; set; } = "";
         public string MiddleName { get; set; } = "";
@@ -217,11 +214,17 @@ namespace Fabrica.Fake.Controllers
 
     }
 
-    public class Company
+    public class Company: BaseMutableModel<Company>, IRootModel, IExplorableModel
     {
 
+        private long _id;
+        public override long Id
+        {
+            get => _id;
+            protected set { }
+        }
 
-        public string Uid { get; set; } = "";
+        public override string Uid { get; set; } = "";
 
         public string Name { get; set; } = "";
 

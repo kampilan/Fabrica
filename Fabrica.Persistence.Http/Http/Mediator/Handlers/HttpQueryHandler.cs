@@ -32,7 +32,7 @@ public class HttpQueryHandler<TExplorer>: BaseHttpHandler<QueryEntityRequest<TEx
         // *****************************************************************
         logger.Debug("Attempting to build request");
         var request = HttpRequestBuilder.Get()
-            .ForResource( meta.Resource )
+            .ForResource( meta )
             .WithRql(Request.Filters);
 
         logger.Inspect(nameof(request), request);

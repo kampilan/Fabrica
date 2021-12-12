@@ -37,6 +37,8 @@ namespace Fabrica.Http
     public class HttpRequest
     {
 
+        public string HttpClientName { get; set; } = "Api";
+
         public string Path { get; set; }
 
         public HttpMethod Method { get; set; } = HttpMethod.Get;

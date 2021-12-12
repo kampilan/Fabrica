@@ -1,6 +1,9 @@
 ﻿using Autofac;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
+using Fabrica.Fake.Services;
+using Fabrica.Persistence;
+using Fabrica.Persistence.Connection;
 using Fabrica.Utilities.Container;
 
 namespace Fabrica.Fake.Appliance
@@ -28,6 +31,11 @@ namespace Fabrica.Fake.Appliance
 
             if(!string.IsNullOrWhiteSpace(TokenSigningKey) )
                 builder.AddProxyTokenEncoder(TokenSigningKey);
+
+            builder.RegisterType<FakeDataComponent>()
+                .AsSelf()
+                .As<IStartable>()
+                .SingleInstance();
 
         }
 

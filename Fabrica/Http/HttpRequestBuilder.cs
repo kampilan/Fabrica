@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Serialization;
-using Fabrica.Utilities.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Serialization;
 
@@ -28,10 +26,11 @@ namespace Fabrica.Http
 
 
         [NotNull]
-        public static HttpRequestBuilder Get()
+        public static HttpRequestBuilder Get( string httpClientName="Api" )
         {
             var builder = new HttpRequestBuilder
             {
+                HttpClientName = httpClientName,
                 Method = HttpMethod.Get
             };
 
@@ -39,21 +38,23 @@ namespace Fabrica.Http
         }
 
         [NotNull]
-        public static HttpRequestBuilder Post()
+        public static HttpRequestBuilder Post(string httpClientName = "Api")
         {
             var builder = new HttpRequestBuilder
             {
-                Method = HttpMethod.Post
+                HttpClientName = httpClientName,
+                Method         = HttpMethod.Post
             };
 
             return builder;
         }
 
         [NotNull]
-        public static HttpRequestBuilder Put()
+        public static HttpRequestBuilder Put(string httpClientName = "Api")
         {
             var builder = new HttpRequestBuilder
             {
+                HttpClientName = httpClientName,
                 Method = HttpMethod.Put
             };
 
@@ -61,10 +62,11 @@ namespace Fabrica.Http
         }
 
         [NotNull]
-        public static HttpRequestBuilder Patch()
+        public static HttpRequestBuilder Patch(string httpClientName = "Api")
         {
             var builder = new HttpRequestBuilder
             {
+                HttpClientName = httpClientName,
                 Method = HttpMethod.Patch
             };
 
@@ -73,10 +75,11 @@ namespace Fabrica.Http
 
 
         [NotNull]
-        public static HttpRequestBuilder Delete()
+        public static HttpRequestBuilder Delete(string httpClientName = "Api")
         {
             var builder = new HttpRequestBuilder
             {
+                HttpClientName = httpClientName,
                 Method = HttpMethod.Delete
             };
 
@@ -89,9 +92,6 @@ namespace Fabrica.Http
 
             var path = builder.ToString();
 
-            if (!string.IsNullOrWhiteSpace(builder.Host))
-                return $"{builder.Host}/{path}";
-
             return path;
 
         }
@@ -103,9 +103,10 @@ namespace Fabrica.Http
 
             var request = new HttpRequest
             {
-                DebugMode  = builder.DebugMode,
-                Method     = builder.Method,
-                Path       = builder.ToString(),
+                DebugMode      = builder.DebugMode,
+                HttpClientName = builder.HttpClientName,
+                Method         = builder.Method,
+                Path           = builder.ToString(),
             };
 
 
@@ -139,9 +140,9 @@ namespace Fabrica.Http
         private bool DebugMode { get; set; }
 
 
-        private string Host { get; set; }
+        private string HttpClientName { get; init; } = "";
 
-
+        private bool AtRoot { get; set; }
         private string Path { get; set; } = "";
         private string Uid { get; set; } = "";
         private string SubResource { get; set; } = "";
@@ -185,45 +186,14 @@ namespace Fabrica.Http
         }
 
 
-        [NotNull]
-        public HttpRequestBuilder ForResource( string resource )
-        {
 
-            Path = resource;
-            return this;
-
-        }
 
         [NotNull]
-        public HttpRequestBuilder ForResource( [NotNull] object resource )
+        public HttpRequestBuilder ForResource( string resource, bool atRoot=false )
         {
 
-            var attr = resource.GetType().GetCustomAttribute<ModelAttribute>();
-
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if( attr == null)
-                Path = resource.GetType().Name.Pluralize().ToLowerInvariant();
-            else
-                Path = attr.Resource;
-
-
-            return this;
-
-        }
-
-        [NotNull]
-
-        public HttpRequestBuilder ForResource( [NotNull] Type resource )
-        {
-
-            var attr = resource.GetCustomAttribute<ModelAttribute>();
-
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (attr == null)
-                Path = resource.Name.Pluralize().ToLowerInvariant();
-            else
-                Path = attr.Resource;
-
+            Path   = resource;
+            AtRoot = atRoot;
 
             return this;
 
@@ -231,21 +201,17 @@ namespace Fabrica.Http
 
 
         [NotNull]
-        public HttpRequestBuilder ForResource<TResource>() where TResource: class
+        public HttpRequestBuilder ForResource( ModelMeta meta, bool atRoot = false )
         {
 
-            var attr = typeof(TResource).GetCustomAttribute<ModelAttribute>();
+            Path   = meta.Resource;
+            AtRoot = atRoot;
 
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if( attr == null )
-                Path = typeof(TResource).Name.Pluralize().ToLowerInvariant();
-            else
-                Path = attr.Resource;
-
-            
             return this;
 
         }
+
+
 
         [NotNull]
         public HttpRequestBuilder WithIdentifier( string uid )
@@ -383,7 +349,7 @@ namespace Fabrica.Http
 
             if ( !string.IsNullOrWhiteSpace(Path) )
             {
-                if( !Path.StartsWith("/") )
+                if( AtRoot && !Path.StartsWith("/") )
                     builder.Append("/");
                 builder.Append(Path);
             }

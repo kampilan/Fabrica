@@ -47,25 +47,6 @@ public static class AutofacExtensions
             .As<IRqlParserComponent>();
 
 
-/*
-            // ************************************************
-            builder.Register(c =>
-                {
-
-                    var meta       = c.Resolve<IModelMetaService>();
-                    var repository = c.Resolve<IMasterRepository>();
-                    var mapper     = c.Resolve<IMappingComponent>();
-
-                    var comp = new PatchResolverComponent( meta, repository, mapper);
-
-                    return comp;
-
-                })
-                .AsSelf()
-                .As<IPatchResolver>()
-                .InstancePerLifetimeScope();
-*/
-
         // ************************************************
         return builder;
 

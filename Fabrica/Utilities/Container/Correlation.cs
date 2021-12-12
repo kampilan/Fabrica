@@ -25,6 +25,7 @@ SOFTWARE.
 using System.Security.Claims;
 using System.Security.Principal;
 using Fabrica.Identity;
+using Fabrica.Utilities.Text;
 using Fabrica.Utilities.Types;
 
 namespace Fabrica.Utilities.Container
@@ -35,7 +36,7 @@ namespace Fabrica.Utilities.Container
     {
 
 
-        public string Uid { get; } = ShortGuid.NewGuid().ToString();
+        public string Uid { get; } = Base62Converter.NewGuid();
 
         public string Tenant { get; set; } = "";
 

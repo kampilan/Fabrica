@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="34.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Api.Support\Fabrica.Api.Support.csproj" />
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+    <ProjectReference Include="..\Fabrica.Persistence.Ef\Fabrica.Persistence.Ef.csproj" />
   </ItemGroup>
 
   <ItemGroup>
