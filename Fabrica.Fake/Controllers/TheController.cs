@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Fake.Services;
+using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
@@ -66,6 +68,33 @@ namespace Fabrica.Fake.Controllers
             return Task.FromResult((IActionResult)result);
 
         }
+
+
+        [HttpPut("people/{uid}")]
+        public Task<IActionResult> UpdatePeople(string uid, [FromBody] List<ModelPatch> patches )
+        {
+
+            using var logger = EnterMethod();
+
+
+            var set = new PatchSet();
+            set.Add(patches);
+
+
+            foreach (var p in set.GetPatches())
+                Faker.UpdatePerson(p.Uid, p.Properties);
+
+            var person = Faker.RetrievePerson(uid);
+
+            var result = Ok(person);
+
+
+            return Task.FromResult((IActionResult)result);
+
+        }
+
+
+
 
 
 

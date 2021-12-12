@@ -14,17 +14,39 @@ namespace Fabrica.Persistence.Mediator;
 public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<List<TEntity>>>, IQueryEntityRequest<TEntity> where TEntity: class, IModel
 {
 
+
+    public static QueryEntityRequest<TEntity> Where( [NotNull] ICriteria criteria )
+    {
+
+        var request = new QueryEntityRequest<TEntity>();
+        request.AddCriteria(criteria);
+
+        return request;
+
+    }
+
+    public static QueryEntityRequest<TEntity> Where( [NotNull] IRqlFilter<TEntity> filter )
+    {
+
+        var request = new QueryEntityRequest<TEntity>();
+        request.Filters.Add(filter);
+
+        return request;
+
+    }
+
+
     public List<IRqlFilter<TEntity>> Filters { get; set; } = new();
 
     bool IQueryEntityRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
 
-    public RqlFilterBuilder<TEntity> AddFilter( ICriteria criteria = null )
+    public RqlFilterBuilder<TEntity> AddCriteria( ICriteria criteria = null )
     {
 
         var builder = RqlFilterBuilder<TEntity>.Create();
         Filters.Add(builder);
 
-        if (criteria is not null)
+        if( criteria is not null )
             builder.Introspect(criteria);
 
 
@@ -32,7 +54,7 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 
     }
 
-    public RqlFilterBuilder<TEntity> Where<TValue>([NotNull] Expression<Func<TEntity,TValue>> predicate)
+    public RqlFilterBuilder<TEntity>Where<TValue>([NotNull] Expression<Func<TEntity,TValue>> predicate)
     {
 
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));

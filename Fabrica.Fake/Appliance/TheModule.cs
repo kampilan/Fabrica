@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
 using Fabrica.Fake.Services;
@@ -37,7 +38,10 @@ namespace Fabrica.Fake.Appliance
             builder.Register(c =>
                 {
 
-                    var comp = new FakeDataComponent
+                    var corr = c.Resolve<ICorrelation>();
+                    var mapper = c.Resolve<IMapper>();
+
+                    var comp = new FakeDataComponent( corr, mapper )
                     {
                         PersonCount = PersonCount,
                         CompanyCount = CompanyCount

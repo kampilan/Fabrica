@@ -3,19 +3,30 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using AutoMapper;
 using Bogus;
 using Bogus.DataSets;
 using Fabrica.Exceptions;
 using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Company = Fabrica.Fake.Controllers.Company;
 using Person = Fabrica.Fake.Controllers.Person;
 
 namespace Fabrica.Fake.Services;
 
-public class FakeDataComponent: IStartable
+public class FakeDataComponent: CorrelatedObject, IStartable
 {
+
+
+    public FakeDataComponent(ICorrelation correlation, IMapper mapper): base(correlation)
+    {
+        Mapper = mapper;
+    }
+
+    private IMapper Mapper { get; }
+
 
     public int PersonCount { get; set; }
     public int CompanyCount { get; set; }
@@ -74,6 +85,8 @@ public class FakeDataComponent: IStartable
     public IEnumerable<Person> QueryPeople(IRqlFilter<Person> filter)
     {
 
+        using var logger = EnterMethod();
+
         var predicate = filter.ToLambda();
 
         var result = People.Where(predicate);
@@ -84,6 +97,8 @@ public class FakeDataComponent: IStartable
 
     public IEnumerable<Company> QueryCompanies(IRqlFilter<Company> filter)
     {
+
+        using var logger = EnterMethod();
 
         var predicate = filter.ToLambda();
 
@@ -97,6 +112,7 @@ public class FakeDataComponent: IStartable
     public Person RetrievePerson( string uid )
     {
 
+        using var logger = EnterMethod();
 
         var result = People.SingleOrDefault(p=>p.Uid == uid );
         if (result is null)
@@ -110,6 +126,8 @@ public class FakeDataComponent: IStartable
     public Company RetrieveCompany( string uid )
     {
 
+        using var logger = EnterMethod();
+
         var result = Companies.SingleOrDefault(p => p.Uid == uid);
         if (result is null)
             throw new NotFoundException($"Could not find Company using Uid = ({uid})");
@@ -118,6 +136,38 @@ public class FakeDataComponent: IStartable
         return result;
 
     }
+
+
+    public Person UpdatePerson(string uid, IDictionary<string, object> delta)
+    {
+
+        using var logger = EnterMethod();
+
+        var result = People.SingleOrDefault(p => p.Uid == uid);
+        if( result is null )
+            throw new NotFoundException($"Could not find Person using Uid = ({uid})");
+
+        Mapper.Map(result, delta);
+
+        return result;
+
+    }
+
+    public Company UpdateCompany( string uid, IDictionary<string, object> delta )
+    {
+
+        using var logger = EnterMethod();
+
+        var result = Companies.SingleOrDefault(p => p.Uid == uid);
+        if (result is null)
+            throw new NotFoundException($"Could not find Company using Uid = ({uid})");
+
+        Mapper.Map(result, delta);
+
+        return result;
+
+    }
+
 
 
 }
