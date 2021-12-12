@@ -3,20 +3,20 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Persistence.Http.Handlers;
+namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
-public  class HttpRetrieveHandler<TEntity>: BaseHttpHandler<RetrieveEntityRequest<TEntity>,TEntity> where TEntity: class, IModel
+public class HttpPatchHandler<TEntity>: BaseHttpHandler<PatchEntityRequest<TEntity>,TEntity> where TEntity: class, IMutableModel
 {
 
-    public HttpRetrieveHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta ) : base( correlation, factory, meta )
+    public HttpPatchHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta ) : base(correlation, factory, meta)
     {
     }
 
     protected override async Task<TEntity> Perform(CancellationToken cancellationToken = default)
     {
 
-        using var logger = EnterMethod();
 
+        using var logger = EnterMethod();
 
         logger.Inspect("Entity Type", typeof(TEntity).FullName);
 
@@ -30,9 +30,10 @@ public  class HttpRetrieveHandler<TEntity>: BaseHttpHandler<RetrieveEntityReques
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = HttpRequestBuilder.Get()
+        var request = HttpRequestBuilder.Put()
             .ForResource(meta.Resource)
-            .WithIdentifier(Request.Uid);
+            .WithIdentifier(Request.Uid)
+            .WithPatch(Request.Patches);
 
 
 
@@ -53,6 +54,5 @@ public  class HttpRetrieveHandler<TEntity>: BaseHttpHandler<RetrieveEntityReques
 
 
     }
-
 
 }

@@ -1,22 +1,25 @@
 ﻿using Fabrica.Http;
+using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Persistence.Http.Handlers;
+namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
-public class HttpPatchHandler<TEntity>: BaseHttpHandler<PatchEntityRequest<TEntity>,TEntity> where TEntity: class, IMutableModel
+public class HttpAuditJournalQueryHandler<TEntity>: BaseHttpHandler<AuditJournalQueryRequest<TEntity>,List<AuditJournalModel>> where TEntity: class, IMutableModel
 {
 
-    public HttpPatchHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta ) : base(correlation, factory, meta)
+
+    public HttpAuditJournalQueryHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
     {
     }
 
-    protected override async Task<TEntity> Perform(CancellationToken cancellationToken = default)
+
+    protected override async Task<List<AuditJournalModel>> Perform(CancellationToken cancellationToken = default)
     {
 
-
         using var logger = EnterMethod();
+
 
         logger.Inspect("Entity Type", typeof(TEntity).FullName);
 
@@ -30,27 +33,27 @@ public class HttpPatchHandler<TEntity>: BaseHttpHandler<PatchEntityRequest<TEnti
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = HttpRequestBuilder.Put()
+        var request = HttpRequestBuilder.Get()
             .ForResource(meta.Resource)
             .WithIdentifier(Request.Uid)
-            .WithPatch(Request.Patches);
+            .WithSubResource("journal");
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to send request");
-        var response = await SendAsync(request, cancellationToken);
+        var response = await SendAsync(request,cancellationToken);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to build entity from body");
-        var entity = response.FromBody<TEntity>();
+        var list = response.FromBodyToList<AuditJournalModel>();
 
 
 
         // *****************************************************************
-        return entity;
+        return list;
 
 
     }

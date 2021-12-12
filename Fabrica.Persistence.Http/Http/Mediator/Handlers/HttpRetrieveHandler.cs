@@ -1,21 +1,18 @@
 ﻿using Fabrica.Http;
-using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Persistence.Http.Handlers;
+namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
-public class HttpAuditJournalQueryHandler<TEntity>: BaseHttpHandler<AuditJournalQueryRequest<TEntity>,List<AuditJournalModel>> where TEntity: class, IMutableModel
+public  class HttpRetrieveHandler<TEntity>: BaseHttpHandler<RetrieveEntityRequest<TEntity>,TEntity> where TEntity: class, IModel
 {
 
-
-    public HttpAuditJournalQueryHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
+    public HttpRetrieveHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta ) : base( correlation, factory, meta )
     {
     }
 
-
-    protected override async Task<List<AuditJournalModel>> Perform(CancellationToken cancellationToken = default)
+    protected override async Task<TEntity> Perform(CancellationToken cancellationToken = default)
     {
 
         using var logger = EnterMethod();
@@ -35,27 +32,27 @@ public class HttpAuditJournalQueryHandler<TEntity>: BaseHttpHandler<AuditJournal
         logger.Debug("Attempting to build request");
         var request = HttpRequestBuilder.Get()
             .ForResource(meta.Resource)
-            .WithIdentifier(Request.Uid)
-            .WithSubResource("journal");
+            .WithIdentifier(Request.Uid);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to send request");
-        var response = await SendAsync(request,cancellationToken);
+        var response = await SendAsync(request, cancellationToken);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to build entity from body");
-        var list = response.FromBodyToList<AuditJournalModel>();
+        var entity = response.FromBody<TEntity>();
 
 
 
         // *****************************************************************
-        return list;
+        return entity;
 
 
     }
+
 
 }

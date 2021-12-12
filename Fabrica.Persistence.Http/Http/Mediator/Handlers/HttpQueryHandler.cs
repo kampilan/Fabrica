@@ -4,7 +4,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Persistence.Http.Handlers;
+namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
 public class HttpQueryHandler<TExplorer>: BaseHttpHandler<QueryEntityRequest<TExplorer>,List<TExplorer>> where TExplorer: class, IModel
 {

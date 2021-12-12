@@ -4,7 +4,7 @@ using Fabrica.Models.Support;
 using Fabrica.Utilities.Container;
 using MediatR;
 
-namespace Fabrica.Persistence.Http.Handlers;
+namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
 public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>
 {
