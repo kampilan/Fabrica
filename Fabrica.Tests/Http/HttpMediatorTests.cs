@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Fabrica.Http;
 using Fabrica.Mediator;
 using Fabrica.Models;
-using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Http.Mediator;
 using Fabrica.Persistence.Mediator;
@@ -257,6 +255,21 @@ public class HttpMediatorTests
 
             Assert.AreEqual(person.Uid, res2.Value.Uid);
             Assert.AreEqual(person.LastName, res2.Value.LastName);
+
+
+            var req3 = new RetrieveEntityRequest<Person>();
+            req3.Uid = res2.Value.Uid;
+
+            var res3 = await mm.Send(req3);
+
+
+            Assert.IsNotNull(res3);
+            Assert.IsTrue(res3.Ok);
+            Assert.IsNotNull(res3.Value);
+
+            Assert.AreEqual(person.Uid, res3.Value.Uid);
+            Assert.AreEqual(person.LastName, res3.Value.LastName);
+
 
 
         }

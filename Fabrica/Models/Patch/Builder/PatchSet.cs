@@ -309,9 +309,9 @@ namespace Fabrica.Models.Patch.Builder
 
                 var patch = new ModelPatch
                 {
-                    Model      = source.ToAlias(),
-                    Uid        = source.Uid,
-                    Verb      = state,
+                    Model = source.ToAlias(),
+                    Uid   = source.Uid,
+                    Verb  = state,
                 };
 
                 if( !string.IsNullOrWhiteSpace(parentType) )
@@ -348,17 +348,10 @@ namespace Fabrica.Models.Patch.Builder
                 foreach (var prop in source.GetDelta().Values)
                 {
 
-                    if( prop.IsReference && prop.Current == null && prop.Original != null && prop.Original is IReferenceModel orig )
-                    {
-                        var key = $"{orig.ToAlias()}:{prop.Name}";
-                        patch.Properties[key] = "";
-                    }
+                    if( prop.IsReference && prop.Current == null && prop.Original is IReferenceModel )
+                        patch.Properties[prop.Name] = "";
                     else if ( prop.IsReference && prop.Current is IReferenceModel cur )
-                    {
-                        var key   = $"{cur.ToAlias()}:{prop.Name}";
-                        var value = cur.Uid;
-                        patch.Properties[key] = value;
-                    }
+                        patch.Properties[prop.Name] = cur.Uid;
                     else if( prop.IsCollection && prop.Current is IAggregateCollection collection )
                         HandlCollection(prop.Parent, prop.ParentUid, prop.Name, collection);
                     else
