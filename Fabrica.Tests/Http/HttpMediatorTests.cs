@@ -241,7 +241,7 @@ public class HttpMediatorTests
 
             var person = response.Value.First();
 
-            person.LastName = "Mark";
+            person.FirstName = "Mark";
 
 
             var req2 = new PatchEntityRequest<Person>();

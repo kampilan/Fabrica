@@ -147,7 +147,7 @@ public class FakeDataComponent: CorrelatedObject, IStartable
         if( result is null )
             throw new NotFoundException($"Could not find Person using Uid = ({uid})");
 
-        Mapper.Map(result, delta);
+        Mapper.Map(delta, result);
 
         return result;
 
@@ -162,7 +162,7 @@ public class FakeDataComponent: CorrelatedObject, IStartable
         if (result is null)
             throw new NotFoundException($"Could not find Company using Uid = ({uid})");
 
-        Mapper.Map(result, delta);
+        Mapper.Map(delta, result);
 
         return result;
 
