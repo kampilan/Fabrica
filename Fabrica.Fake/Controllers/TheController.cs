@@ -72,7 +72,7 @@ namespace Fabrica.Fake.Controllers
         }
 
 
-        [HttpPut("people/{uid}")]
+        [HttpPatch("people/{uid}")]
         public Task<IActionResult> UpdatePeople(string uid, [FromBody] List<ModelPatch> patches )
         {
 
@@ -94,10 +94,6 @@ namespace Fabrica.Fake.Controllers
             return Task.FromResult((IActionResult)result);
 
         }
-
-
-
-
 
 
         [HttpGet("companies")]

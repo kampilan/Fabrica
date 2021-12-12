@@ -30,7 +30,7 @@ public class HttpPatchHandler<TEntity>: BaseHttpHandler<PatchEntityRequest<TEnti
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = HttpRequestBuilder.Put()
+        var request = HttpRequestBuilder.Patch()
             .ForResource(meta.Resource)
             .WithIdentifier(Request.Uid)
             .WithPatch(Request.Patches);
