@@ -11,6 +11,8 @@ using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Fabrica.Fake.Controllers
 {
@@ -231,8 +233,8 @@ namespace Fabrica.Fake.Controllers
         public string MiddleName { get; set; } = "";
         public string LastName { get; set; } = "";
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public GenderKind Gender { get; set; } = GenderKind.Female;
-
 
         public DateTime BirthDate { get; set; } = DateTime.Now.AddYears(-25).Date;
 

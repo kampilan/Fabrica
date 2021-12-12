@@ -38,7 +38,7 @@ public  class HttpRetrieveHandler<TEntity>: BaseHttpHandler<RetrieveEntityReques
 
         // *****************************************************************
         logger.Debug("Attempting to send request");
-        var response = await SendAsync(request, cancellationToken);
+        var response = await Send(request, cancellationToken);
 
 
 

@@ -23,7 +23,7 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
     protected IModelMetaService Meta { get; }
 
 
-    protected virtual async Task<HttpResponse> SendAsync(HttpRequest request, CancellationToken token)
+    protected virtual async Task<HttpResponse> Send(HttpRequest request, CancellationToken token)
     {
 
 

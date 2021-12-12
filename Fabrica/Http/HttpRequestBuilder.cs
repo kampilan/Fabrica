@@ -117,7 +117,7 @@ namespace Fabrica.Http
             if( string.IsNullOrWhiteSpace(builder.Json) && builder.Body != null )
                 request.ToBody(builder.Body, builder.Resolver);
             else if( !string.IsNullOrWhiteSpace(builder.Json) )
-                request.JsonBody = builder.Json;
+                request.ToBody( builder.Json );
             else if( builder.BodyStream != null )
             {
 

@@ -2,6 +2,8 @@
 using Fabrica.Models.Support;
 using System.ComponentModel;
 using Fabrica.Utilities.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 #pragma warning disable CS8618
 // ReSharper disable ArrangeAccessorOwnerBody
@@ -10,9 +12,12 @@ using Fabrica.Utilities.Text;
 namespace Fabrica.Test.Models.Patch
 {
 
+    [JsonObject(MemberSerialization.OptIn)]
     [Model(Alias = nameof(Person))]
     public class Person : BaseMutableModel<Person>, IAggregateModel, INotifyPropertyChanged
     {
+
+        public enum GenderKind { Female, Male }
 
 
         private long _id;
@@ -22,7 +27,7 @@ namespace Fabrica.Test.Models.Patch
             protected set => _id = value;
         }
 
-
+        [JsonProperty("Uid")]
         private string _uid = Base62Converter.NewGuid();
         [ModelMeta(Scope = PropertyScope.Immutable)]
         public override string Uid
@@ -43,6 +48,7 @@ namespace Fabrica.Test.Models.Patch
         {
         }
 
+        [JsonProperty("FirstName")]
         private string _firstName = "";
         public string FirstName
         {
@@ -50,6 +56,15 @@ namespace Fabrica.Test.Models.Patch
             set { _firstName = value; }
         }
 
+        [JsonProperty("MiddleName")]
+        private string _middleName = "";
+        public string MiddleName
+        {
+            get { return _middleName; }
+            set { _middleName = value; }
+        }
+
+        [JsonProperty("LastName")]
         private string _lastName = "";
         public string LastName
         {
@@ -57,6 +72,46 @@ namespace Fabrica.Test.Models.Patch
             set { _lastName = value; }
         }
 
+        [JsonProperty("Gender")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        private GenderKind _gender = GenderKind.Female;
+        public GenderKind Gender
+        {
+            get { return _gender;}
+            set { _gender = value; }
+        }
+
+        [JsonProperty("BirthDate")]
+        private DateTime _birthDate = DateTime.Now.AddYears(-25).Date;
+        public DateTime BirthDate
+        {
+            get { return _birthDate; }
+            set { _birthDate = value; }
+        }
+
+        [JsonProperty("PhoneNumber")]
+        private string _phoneNumber = "";
+        public string PhoneNumber
+        {
+            get { return _phoneNumber; }
+            set { _phoneNumber = value; }
+        }
+
+        [JsonProperty("Email")]
+        private string _email = "";
+        public string Email
+        {
+            get { return _email; }
+            set { _email = value; }
+        }
+
+        [JsonProperty("Salary")]
+        private decimal _salary = 0;
+        public decimal Salary
+        {
+            get { return _salary;}
+            set { _salary = value; }
+        }
 
 
     }

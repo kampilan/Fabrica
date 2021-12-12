@@ -42,7 +42,7 @@ public class HttpAuditJournalQueryHandler<TEntity>: BaseHttpHandler<AuditJournal
 
         // *****************************************************************
         logger.Debug("Attempting to send request");
-        var response = await SendAsync(request,cancellationToken);
+        var response = await Send(request,cancellationToken);
 
 
 

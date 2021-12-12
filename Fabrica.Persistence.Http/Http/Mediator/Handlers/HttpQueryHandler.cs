@@ -41,7 +41,7 @@ public class HttpQueryHandler<TExplorer>: BaseHttpHandler<QueryEntityRequest<TEx
 
         // *****************************************************************
         logger.Debug("Attempting to send request");
-        var response = await SendAsync(request, cancellationToken);
+        var response = await Send(request, cancellationToken);
 
 
 

@@ -16,6 +16,7 @@ using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Rules;
+using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
@@ -244,6 +245,7 @@ public class HttpMediatorTests
 
 
             var req2 = new PatchEntityRequest<Person>();
+            req2.Uid = person.Uid;
             req2.FromModel( person );
 
             var res2 = await mm.Send(req2);
@@ -309,31 +311,6 @@ public class PersonCritera: BaseCriteria
 }
 
 
-[Model]
-public class Person: BaseMutableModel<Person>, IRootModel, IExplorableModel
-{
-
-    public enum GenderKind { Female, Male }
-
-
-    public override long Id { get; protected set; }
-    public override string Uid { get; set; } = "";
-
-    public string FirstName { get; set; } = "";
-    public string MiddleName { get; set; } = "";
-    public string LastName { get; set; } = "";
-
-    public GenderKind Gender { get; set; } = GenderKind.Female;
-
-
-    public DateTime BirthDate { get; set; } = DateTime.Now.AddYears(-25).Date;
-
-    public string PhoneNumber { get; set; } = "";
-    public string Email { get; set; } = "";
-
-    public decimal Salary { get; set; } = 0;
-
-}
 
 
 [Model]

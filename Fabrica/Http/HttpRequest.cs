@@ -25,6 +25,8 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -44,10 +46,8 @@ namespace Fabrica.Http
         public HttpMethod Method { get; set; } = HttpMethod.Get;
 
 
-        public IDictionary<string,string> CustomHeaders { get; } = new Dictionary<string, string>();
+        public IDictionary<string, string> CustomHeaders { get; } = new Dictionary<string, string>();
 
-
-        public string JsonBody { get; set; } = "";
 
         public HttpContent BodyContent { get; set; } = null;
 
@@ -56,19 +56,19 @@ namespace Fabrica.Http
 
 
         [NotNull]
-        protected virtual JsonSerializerSettings GetSerializerSettings( [CanBeNull] IContractResolver resolver = null )
+        protected virtual JsonSerializerSettings GetSerializerSettings([CanBeNull] IContractResolver resolver = null)
         {
 
             var settings = new JsonSerializerSettings
             {
-                DateTimeZoneHandling       = DateTimeZoneHandling.Utc,
-                DefaultValueHandling       = DefaultValueHandling.Populate,
-                DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-                DateParseHandling          = DateParseHandling.DateTime,
-                Formatting                 = Formatting.None,
-                MissingMemberHandling      = MissingMemberHandling.Ignore,
-                NullValueHandling          = NullValueHandling.Ignore,
-                ReferenceLoopHandling      = ReferenceLoopHandling.Serialize,
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                DefaultValueHandling = DefaultValueHandling.Populate,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                DateParseHandling = DateParseHandling.DateTime,
+                Formatting = Formatting.None,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects
             };
 
@@ -81,36 +81,33 @@ namespace Fabrica.Http
         }
 
 
-        public string ToBody([NotNull] object model, [CanBeNull] IContractResolver resolver = null )
+        public void ToBody([NotNull] object model, [CanBeNull] IContractResolver resolver = null)
         {
 
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
+            using var logger = this.EnterMethod();
 
 
-                var settings = GetSerializerSettings( resolver );
-                var json     = JsonConvert.SerializeObject(model, settings);
+            var settings = GetSerializerSettings(resolver);
+            var json = JsonConvert.SerializeObject(model, settings);
 
-                logger.Inspect( nameof(json), json );
+            ToBody(json);
 
-                JsonBody = json;
-
-
-                return json;
+        }
 
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+        public void ToBody([NotNull] string json )
+        {
 
+            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(json));
+
+
+            using var logger = this.EnterMethod();
+
+            logger.Inspect(nameof(json), json);
+
+            BodyContent = new StringContent(json, Encoding.UTF8, "application/json");
 
         }
 
