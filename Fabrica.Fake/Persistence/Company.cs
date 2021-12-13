@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Fabrica.Models.Support;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fabrica.Fake.Persistence;
 
+[Index(nameof(Uid))]
+[Index(nameof(Name))]
 public class Company : BaseMutableModel<Company>, IRootModel, IExplorableModel
 {
 

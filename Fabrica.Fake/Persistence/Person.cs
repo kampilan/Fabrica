@@ -2,11 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Fabrica.Models.Support;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Fabrica.Fake.Persistence;
 
+
+[Index(nameof(Uid))]
+[Index(nameof(LastName),nameof(FirstName))]
 public class Person : BaseMutableModel<Person>, IRootModel, IExplorableModel
 {
 
@@ -25,6 +29,7 @@ public class Person : BaseMutableModel<Person>, IRootModel, IExplorableModel
         get => _id;
         protected set { }
     }
+
 
     [StringLength(25)]
     public override string Uid { get; set; } = "";
