@@ -4,9 +4,11 @@ using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
 using Fabrica.Fake.Persistence;
-using Fabrica.Fake.Services;
+using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Fake.Appliance
 {
@@ -42,9 +44,49 @@ namespace Fabrica.Fake.Appliance
             if(!string.IsNullOrWhiteSpace(TokenSigningKey) )
                 builder.AddProxyTokenEncoder(TokenSigningKey);
 
-            builder.RegisterType<TheDbContext>()
+
+            builder.RegisterType<InMemoryUnitOfWork>()
+                .As<IUnitOfWork>()
+                .InstancePerLifetimeScope();
+
+
+            builder.Register(c =>
+                {
+
+                    var corr    = c.Resolve<ICorrelation>();
+                    var rules   = c.Resolve<IRuleSet>();
+                    var factory = c.ResolveOptional<ILoggerFactory>();
+
+
+                    var ob = new DbContextOptionsBuilder();
+                    ob.UseInMemoryDatabase("Faker");
+
+                    var ctx = new FakeOriginDbContext(corr, rules, ob.Options, factory);
+
+                    return ctx;
+
+                })
                 .AsSelf()
                 .InstancePerLifetimeScope();
+
+
+            builder.Register(c =>
+                {
+
+                    var corr    = c.Resolve<ICorrelation>();
+                    var factory = c.ResolveOptional<ILoggerFactory>();
+
+                    var ob = new DbContextOptionsBuilder();
+                    ob.UseInMemoryDatabase("Faker");
+
+                    var ctx = new FakeReplicaDbContext(corr, ob.Options, factory);
+
+                    return ctx;
+
+                })
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
 
         }
 

@@ -10,54 +10,53 @@ using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
-namespace Fabrica.Fake.Appliance
-{
+namespace Fabrica.Fake.Appliance;
 
-    
-    public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions>
-    {
+public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions>
+{
 
 
 
 #if DEBUG
 
-        protected override void ConfigureWatch()
-        {
+    protected override void ConfigureWatch()
+    {
 
-            var maker = WatchFactoryBuilder.Create();
-            maker.UseRealtime();
-            maker.UseLocalSwitchSource()
-                .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
-                .WhenNotMatched(Level.Debug, Color.Azure);
+        var maker = WatchFactoryBuilder.Create();
+        maker.UseRealtime();
+        maker.UseLocalSwitchSource()
+            .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
+            .WhenNotMatched(Level.Debug, Color.Azure);
 
-            maker.Build();
+        maker.Build();
 
-        }
+    }
 
 
-        protected override void ConfigureApp(ConfigurationBuilder builder)
-        {
+    protected override void ConfigureApp(ConfigurationBuilder builder)
+    {
 
-            // *****************************************************************
-            builder
-                .AddYamlFile("configuration.yml", true)
-                .AddYamlFile("local.yml", true);
+        // *****************************************************************
+        builder
+            .AddYamlFile("configuration.yml", true)
+            .AddYamlFile("local.yml", true);
 
-        }
+    }
 
 #endif
 
 
-        protected override void ConfigureServices(IServiceCollection services)
-        {
+    protected override void ConfigureServices(IServiceCollection services)
+    {
 
+        services.AddHostedService<InitService>();
 
-            services.AddMvc(builder =>
+        services.AddMvc(builder =>
             {
 
 
@@ -70,70 +69,64 @@ namespace Fabrica.Fake.Appliance
                 builder.Filters.Add(typeof(ResultFilter));
 
             })
-                .AddNewtonsoftJson(opt =>
-                {
-                    opt.SerializerSettings.ContractResolver = new ModelContractResolver();
-                    opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
-                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                    opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                    opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-                    opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                });
-
-
-            services.Configure<ForwardedHeadersOptions>(options =>
+            .AddNewtonsoftJson(opt =>
             {
-
-                options.RequireHeaderSymmetry = false;
-                options.ForwardedHeaders = ForwardedHeaders.All;
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-
+                opt.SerializerSettings.ContractResolver = new ModelContractResolver();
+                opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+                opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
             });
 
 
-            if( Options.RequiresAuthentication )
-            {
-                services.AddProxyTokenAuthentication();
-                services.AddProxyTokenAuthorization();
-            }
-
-
-        }
-
-
-        protected override void ConfigureWebApp(IApplicationBuilder builder)
+        services.Configure<ForwardedHeadersOptions>(options =>
         {
 
-            builder.UsePipelineMonitor();
-            builder.UseDebugMode();
+            options.RequireHeaderSymmetry = false;
+            options.ForwardedHeaders = ForwardedHeaders.All;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
 
-            builder.UseRequestLogging();
-
-            builder.UseForwardedHeaders();
-
-            builder.UseRouting();
-
-            if (Options.RequiresAuthentication)
-            {
-                builder.UseAuthentication();
-                builder.UseAuthorization();
-            }
+        });
 
 
-
-            builder.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-
+        if( Options.RequiresAuthentication )
+        {
+            services.AddProxyTokenAuthentication();
+            services.AddProxyTokenAuthorization();
         }
+
 
     }
 
 
+    protected override void ConfigureWebApp(IApplicationBuilder builder)
+    {
+
+        builder.UsePipelineMonitor();
+        builder.UseDebugMode();
+
+        builder.UseRequestLogging();
+
+        builder.UseForwardedHeaders();
+
+        builder.UseRouting();
+
+        if (Options.RequiresAuthentication)
+        {
+            builder.UseAuthentication();
+            builder.UseAuthorization();
+        }
+
+
+
+        builder.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+
+    }
+
 }
-
-
-

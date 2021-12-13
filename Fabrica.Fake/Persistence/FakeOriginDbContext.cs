@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using Bogus;
 using Bogus.DataSets;
+using Fabrica.Persistence.Ef.Contexts;
+using Fabrica.Rules;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Fake.Persistence;
 
-public class TheDbContext: DbContext
+public class FakeOriginDbContext: OriginDbContext
 {
 
-    public static  IEnumerable<Person> GetPeople()
+
+    public static IEnumerable<Person> GetPeople()
     {
 
         long personId = 1000;
@@ -18,7 +24,7 @@ public class TheDbContext: DbContext
         var ruleSetP = new Faker<Person>();
 
         ruleSetP
-            .RuleFor(p=>p.IdSetter, _=> personId++ )
+            .RuleFor(p => p.IdSetter, _ => personId++)
             .RuleFor(p => p.Uid, _ => Base62Converter.NewGuid())
             .RuleFor(p => p.Gender, f => f.Person.Random.Enum<Person.GenderKind>())
             .RuleFor(p => p.FirstName, (f, p) => f.Name.FirstName(p.Gender == Person.GenderKind.Female ? Name.Gender.Female : Name.Gender.Male))
@@ -65,20 +71,21 @@ public class TheDbContext: DbContext
     }
 
 
+    public FakeOriginDbContext(ICorrelation correlation, IRuleSet rules, [NotNull] DbContextOptions options, ILoggerFactory factory = null) : base(correlation, rules, options, factory)
+    {
+
+    }
+
+
     public DbSet<Company> Companies { get; set; }
     public DbSet<Person> People { get; set; }
 
 
-    protected override void OnConfiguring( DbContextOptionsBuilder ob )
-    {
-        ob.UseInMemoryDatabase(databaseName: "Faker");
-    }
-
-    protected override void OnModelCreating( ModelBuilder mb )
+    protected override void OnModelCreating(ModelBuilder mb)
     {
 
-        mb.Entity<Person>().HasData( GetPeople() );
-        mb.Entity<Company>().HasData( GetCompanies() );
+        mb.Entity<Person>().HasData(GetPeople());
+        mb.Entity<Company>().HasData(GetCompanies());
 
     }
 

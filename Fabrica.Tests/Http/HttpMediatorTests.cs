@@ -156,7 +156,7 @@ public class HttpMediatorTests
 
 
             var filter = RqlFilterBuilder<Person>
-                .Where(p => p.FirstName).StartsWith("J");
+                .Where(p => p.LastName).StartsWith("J");
 
             var request = QueryEntityRequest<Person>.Where(filter);
 
@@ -215,7 +215,7 @@ public class HttpMediatorTests
     }
 
 
-    [Test]
+    //[Test]
     public async Task Test0600_0300_UpdatePerson()
     {
 
@@ -274,11 +274,8 @@ public class HttpMediatorTests
     }
 
 
-
-
-
-
 }
+
 
 public class TheModule : Module
 {

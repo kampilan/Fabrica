@@ -22,7 +22,7 @@ namespace Fabrica.Fake.Controllers
     public class TheController: BaseController
     {
 
-        public TheController(ICorrelation correlation, TheDbContext context, IAmazonS3 client) : base(correlation)
+        public TheController(ICorrelation correlation, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation)
         {
 
             Context = context;
@@ -32,7 +32,7 @@ namespace Fabrica.Fake.Controllers
 
         }
 
-        private TheDbContext Context { get; }
+        private FakeReplicaDbContext Context { get; }
         private IAmazonS3 Client { get; }
 
 
