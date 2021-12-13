@@ -13,7 +13,7 @@ public class TheDbContext: DbContext
     public static  IEnumerable<Person> GetPeople()
     {
 
-        long personId = 0;
+        long personId = 1000;
 
         var ruleSetP = new Faker<Person>();
 
@@ -39,7 +39,7 @@ public class TheDbContext: DbContext
     public static IEnumerable<Company> GetCompanies()
     {
 
-        long companyId = 0;
+        long companyId = 1000;
 
         var ruleSetC = new Faker<Company>();
 
