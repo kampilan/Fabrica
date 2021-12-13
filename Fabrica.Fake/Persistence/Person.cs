@@ -12,6 +12,13 @@ public class Person : BaseMutableModel<Person>, IRootModel, IExplorableModel
 
     public enum GenderKind { Female, Male }
 
+    [NotMapped]
+    public long IdSetter
+    {
+        get { return _id;}
+        set { _id = value; }
+    }
+
     private long _id;
     public override long Id
     {

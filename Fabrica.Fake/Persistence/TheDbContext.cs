@@ -13,10 +13,12 @@ public class TheDbContext: DbContext
     public static  IEnumerable<Person> GetPeople()
     {
 
+        long personId = 0;
 
         var ruleSetP = new Faker<Person>();
 
         ruleSetP
+            .RuleFor(p=>p.IdSetter, _=> personId++ )
             .RuleFor(p => p.Uid, _ => Base62Converter.NewGuid())
             .RuleFor(p => p.Gender, f => f.Person.Random.Enum<Person.GenderKind>())
             .RuleFor(p => p.FirstName, (f, p) => f.Name.FirstName(p.Gender == Person.GenderKind.Female ? Name.Gender.Female : Name.Gender.Male))
@@ -37,9 +39,12 @@ public class TheDbContext: DbContext
     public static IEnumerable<Company> GetCompanies()
     {
 
+        long companyId = 0;
+
         var ruleSetC = new Faker<Company>();
 
         ruleSetC
+            .RuleFor(p => p.IdSetter, _ => companyId++)
             .RuleFor(p => p.Uid, _ => Base62Converter.NewGuid())
             .RuleFor(c => c.Name, f => f.Company.CompanyName())
             .RuleFor(c => c.Address1, f => f.Address.StreetAddress())

@@ -1,9 +1,18 @@
-﻿using Fabrica.Models.Support;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Fabrica.Models.Support;
 
 namespace Fabrica.Fake.Persistence;
 
 public class Company : BaseMutableModel<Company>, IRootModel, IExplorableModel
 {
+
+
+    [NotMapped]
+    public long IdSetter
+    {
+        get { return _id; }
+        set { _id = value; }
+    }
 
     private long _id;
     public override long Id
