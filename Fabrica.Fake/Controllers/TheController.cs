@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Api.Support.Controllers;
-using Fabrica.Fake.Services;
+using Fabrica.Fake.Persistence;
 using Fabrica.Models.Patch.Builder;
-using Fabrica.Models.Support;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
+using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using Microsoft.EntityFrameworkCore;
+using Person = Fabrica.Fake.Persistence.Person;
 
 namespace Fabrica.Fake.Controllers
 {
@@ -22,52 +22,59 @@ namespace Fabrica.Fake.Controllers
     public class TheController: BaseController
     {
 
-        public TheController(ICorrelation correlation, FakeDataComponent faker, IAmazonS3 client) : base(correlation)
+        public TheController(ICorrelation correlation, TheDbContext context, IAmazonS3 client) : base(correlation)
         {
 
-            Faker = faker;
+            Context = context;
             Client = client;
+
+            Context.Database.EnsureCreated();
 
         }
 
-        private FakeDataComponent Faker { get; }
+        private TheDbContext Context { get; }
         private IAmazonS3 Client { get; }
 
 
         [HttpGet("people")]
-        public Task<IActionResult> QueryPeople( [FromQuery] string rql )
+        public async Task<IActionResult> QueryPeople( [FromQuery] string rql )
         {
 
             using var logger = EnterMethod();
-            
 
 
             var tree = RqlLanguageParser.ToCriteria(rql);
             var filter = new RqlFilterBuilder<Person>(tree);
 
-            var list = Faker.QueryPeople(filter);
+            var predicate = filter.ToExpression();
+
+            var query= Context.People.Where(predicate);
+            var list = await query.ToListAsync();
+
 
             var result = Ok(list);
 
             
-            return Task.FromResult((IActionResult)result);
+            return result;
 
         }
 
 
         [HttpGet("people/{uid}")]
-        public Task<IActionResult> RetrievePeople( string uid )
+        public async Task<IActionResult> RetrievePeople( string uid )
         {
 
             using var logger = EnterMethod();
 
-
-            var person = Faker.RetrievePerson(uid);
-
-            var result = Ok(person);
+            logger.Inspect(nameof(uid), uid);
 
 
-            return Task.FromResult((IActionResult)result);
+            var person = await Context.People.SingleOrDefaultAsync(p => p.Uid == uid);
+
+            logger.LogObject(nameof(person), person);
+
+
+            return person is not null? Ok(person): NotFound();
 
         }
 
@@ -81,14 +88,9 @@ namespace Fabrica.Fake.Controllers
 
             var set = new PatchSet();
             set.Add(patches);
+               
 
-
-            foreach (var p in set.GetPatches())
-                Faker.UpdatePerson(p.Uid, p.Properties);
-
-            var person = Faker.RetrievePerson(uid);
-
-            var result = Ok(person);
+            var result = Ok(new Person());
 
 
             return Task.FromResult((IActionResult)result);
@@ -97,39 +99,42 @@ namespace Fabrica.Fake.Controllers
 
 
         [HttpGet("companies")]
-        public Task<IActionResult> GenerateCompanies( [FromQuery] int count=100, [FromQuery] string rql="" )
+        public async Task<IActionResult> QueryCompanies(  [FromQuery] string rql="" )
         {
-
-            using var logger = EnterMethod();
-
 
             var tree = RqlLanguageParser.ToCriteria(rql);
             var filter = new RqlFilterBuilder<Company>(tree);
 
-            var list = Faker.QueryCompanies(filter);
+            var predicate = filter.ToExpression();
+
+            var query = Context.Companies.Where(predicate);
+            var list = await query.ToListAsync();
+
 
             var result = Ok(list);
 
 
-            return Task.FromResult((IActionResult)result);
+            return result;
 
 
         }
 
 
         [HttpGet("companies/{uid}")]
-        public Task<IActionResult> RetrieveCompany(string uid)
+        public async Task<IActionResult> RetrieveCompany(string uid)
         {
 
             using var logger = EnterMethod();
 
-
-            var company = Faker.RetrieveCompany(uid);
-
-            var result = Ok(company);
+            logger.Inspect(nameof(uid), uid);
 
 
-            return Task.FromResult((IActionResult)result);
+            var company = await Context.Companies.SingleOrDefaultAsync(p => p.Uid == uid);
+
+            logger.LogObject( nameof(company), company );
+
+
+            return company is not null ? Ok(company) : NotFound();
 
         }
 
@@ -211,66 +216,6 @@ namespace Fabrica.Fake.Controllers
     }
 
 
-    public class Person: BaseMutableModel<Person>, IRootModel, IExplorableModel
-    {
-
-        public enum GenderKind { Female, Male }
-
-        private long _id;
-        public override long Id
-        {
-            get=>_id;
-            protected set { }
-        }
-
-        public override string Uid { get; set; } = "";
-
-        public string FirstName { get; set; } = "";
-        public string MiddleName { get; set; } = "";
-        public string LastName { get; set; } = "";
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public GenderKind Gender { get; set; } = GenderKind.Female;
-
-        public DateTime BirthDate { get; set; } = DateTime.Now.AddYears(-25).Date;
-
-        public string PhoneNumber { get; set; } = "";
-        public string Email { get; set; } = "";
-
-        public decimal Salary { get; set; } = 0;
-
-    }
-
-    public class Company: BaseMutableModel<Company>, IRootModel, IExplorableModel
-    {
-
-        private long _id;
-        public override long Id
-        {
-            get => _id;
-            protected set { }
-        }
-
-        public override string Uid { get; set; } = "";
-
-        public string Name { get; set; } = "";
-
-        public string Address1 { get; set; } = "";
-        public string Address2 { get; set; } = "";
-
-        public string City { get; set; } = "";
-        public string State { get; set; } = "";
-        public string Zip { get; set; } = "";
-
-        public string MainPhone { get; set; } = "";
-        public string Fax { get; set; } = "";
-
-        public string Website { get; set; } = "";
-
-        public int EmployeeCount { get; set; } = 0;
-
-
-    }
 
 
 

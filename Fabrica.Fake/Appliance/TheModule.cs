@@ -3,6 +3,7 @@ using AutoMapper;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
+using Fabrica.Fake.Persistence;
 using Fabrica.Fake.Services;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
@@ -41,24 +42,9 @@ namespace Fabrica.Fake.Appliance
             if(!string.IsNullOrWhiteSpace(TokenSigningKey) )
                 builder.AddProxyTokenEncoder(TokenSigningKey);
 
-            builder.Register(c =>
-                {
-
-                    var corr = c.Resolve<ICorrelation>();
-                    var mapper = c.Resolve<IMapper>();
-
-                    var comp = new FakeDataComponent( corr, mapper )
-                    {
-                        PersonCount = PersonCount,
-                        CompanyCount = CompanyCount
-                    };
-
-                    return comp;
-
-                })
+            builder.RegisterType<TheDbContext>()
                 .AsSelf()
-                .As<IStartable>()
-                .SingleInstance();
+                .InstancePerLifetimeScope();
 
         }
 

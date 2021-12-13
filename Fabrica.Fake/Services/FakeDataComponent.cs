@@ -11,8 +11,8 @@ using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
-using Company = Fabrica.Fake.Controllers.Company;
-using Person = Fabrica.Fake.Controllers.Person;
+using Company = Fabrica.Fake.Persistence.Company;
+using Person = Fabrica.Fake.Persistence.Person;
 
 namespace Fabrica.Fake.Services;
 
