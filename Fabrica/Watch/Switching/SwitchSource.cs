@@ -89,7 +89,7 @@ namespace Fabrica.Watch.Switching
 
 
         public ISwitch DefaultSwitch { get; set; } = new Switch { Level = Level.Error, Color = Color.LightGray };
-        public ISwitch DebugSwitch { get; set; } = new Switch { Level = Level.Debug, Color = Color.HotPink };
+        public ISwitch DebugSwitch { get; set; } = new Switch { Level = Level.Debug, Color = Color.LightSalmon };
 
 
         private readonly ReaderWriterLockSlim _switchLock = new ReaderWriterLockSlim();

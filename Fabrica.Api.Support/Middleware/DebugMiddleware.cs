@@ -56,11 +56,11 @@ namespace Fabrica.Api.Support.Middleware
 
                 // *****************************************************************
                 logger.Debug("Attempting to check for Fabrica-Watch-Debug header");
-                if (context.Request.Headers.ContainsKey("Fabrica-Watch-Debug"))
+                if (context.Request.Headers.ContainsKey("X-Fabrica-Watch-Debug"))
                 {
 
                     logger.Debug("Fabrica-Watch-Debug IS present");
-                    var candidate = context.Request.Headers["Fabrica-Watch-Debug"];
+                    var candidate = context.Request.Headers["X-Fabrica-Watch-Debug"];
 
                     logger.Inspect(nameof(candidate), candidate);
 
@@ -74,7 +74,7 @@ namespace Fabrica.Api.Support.Middleware
                 }
                 else
                 {
-                    logger.Debug("Fabrica-Watch-Debug IS NOT present");
+                    logger.Debug("X-Fabrica-Watch-Debug IS NOT present");
                 }
 
 
