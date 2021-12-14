@@ -10,6 +10,8 @@ public class InitService: IHostedService
 {
 
 
+
+
     public InitService(ILifetimeScope scope)
     {
         RootScope = scope;
@@ -23,7 +25,7 @@ public class InitService: IHostedService
         using( var scope = RootScope.BeginLifetimeScope() )
         {
 
-            var ctx = scope.Resolve<FakeOriginDbContext>();
+            var ctx = scope.Resolve<FakeReplicaDbContext>();
 
             await ctx.Database.EnsureCreatedAsync(cancellationToken);
 

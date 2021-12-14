@@ -31,7 +31,9 @@ public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions>
         maker.UseRealtime();
         maker.UseLocalSwitchSource()
             .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
-            .WhenNotMatched(Level.Debug, Color.Azure);
+            .WhenMatched("Fabrica.Fake", "", Level.Debug, Color.LightSalmon)
+            .WhenMatched("Microsoft", "", Level.Warning, Color.BurlyWood)
+            .WhenNotMatched(Level.Warning, Color.Azure);
 
         maker.Build();
 

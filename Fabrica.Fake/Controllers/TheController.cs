@@ -5,12 +5,15 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Fake.Persistence;
+using Fabrica.Mediator;
 using Fabrica.Models.Patch.Builder;
+using Fabrica.Persistence.Mediator;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Person = Fabrica.Fake.Persistence.Person;
 
@@ -19,10 +22,10 @@ namespace Fabrica.Fake.Controllers
 
 
     [Route("api")]
-    public class TheController: BaseController
+    public class TheController: BaseMediatorController
     {
 
-        public TheController(ICorrelation correlation, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation)
+        public TheController(ICorrelation correlation, IMessageMediator mediator, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation, mediator)
         {
 
             Context = context;
@@ -79,21 +82,39 @@ namespace Fabrica.Fake.Controllers
         }
 
 
-        [HttpPatch("people/{uid}")]
-        public Task<IActionResult> UpdatePeople(string uid, [FromBody] List<ModelPatch> patches )
+        [HttpPost("people")]
+        public async Task<IActionResult> CreatePeople([FromBody] Dictionary<string, object> delta)
         {
 
             using var logger = EnterMethod();
 
+            var request = new CreateEntityRequest<Person>
+            {
+                Delta = delta
+            };
 
-            var set = new PatchSet();
-            set.Add(patches);
-               
+            var result = await Send(request);
 
-            var result = Ok(new Person());
+            return result;
+
+        }
 
 
-            return Task.FromResult((IActionResult)result);
+        [HttpPut("people/{uid}")]
+        public async Task<IActionResult> UpdatePeople(string uid, [FromBody] Dictionary<string,object> delta )
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new UpdateEntityRequest<Person>
+            {
+                Uid   = uid,
+                Delta = delta
+            };
+
+            var result = await Send(request);
+
+            return result;
 
         }
 

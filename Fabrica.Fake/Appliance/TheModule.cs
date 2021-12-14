@@ -1,14 +1,19 @@
-﻿using Autofac;
+﻿using System.Reflection;
+using Autofac;
 using AutoMapper;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Aws;
 using Fabrica.Fake.Persistence;
+using Fabrica.Mediator;
+using Fabrica.Models;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Module = Autofac.Module;
 
 namespace Fabrica.Fake.Appliance
 {
@@ -30,6 +35,8 @@ namespace Fabrica.Fake.Appliance
         public int CompanyCount { get; set; } = 1000;
 
 
+        private static InMemoryDatabaseRoot _root = new();
+
         protected override void Load(ContainerBuilder builder)
         {
 
@@ -40,6 +47,12 @@ namespace Fabrica.Fake.Appliance
             builder.UseRules();
 
             builder.RegisterAutoMapper();
+
+            builder.UseModelMeta()
+                .AddModelMetaSource(Assembly.GetExecutingAssembly());
+
+            builder.UseMediator(Assembly.GetExecutingAssembly());
+
 
             if(!string.IsNullOrWhiteSpace(TokenSigningKey) )
                 builder.AddProxyTokenEncoder(TokenSigningKey);
@@ -59,7 +72,7 @@ namespace Fabrica.Fake.Appliance
 
 
                     var ob = new DbContextOptionsBuilder();
-                    ob.UseInMemoryDatabase("Faker");
+                    ob.UseInMemoryDatabase("Faker", _root);
 
                     var ctx = new FakeOriginDbContext(corr, rules, ob.Options, factory);
 
@@ -77,7 +90,7 @@ namespace Fabrica.Fake.Appliance
                     var factory = c.ResolveOptional<ILoggerFactory>();
 
                     var ob = new DbContextOptionsBuilder();
-                    ob.UseInMemoryDatabase("Faker");
+                    ob.UseInMemoryDatabase("Faker", _root);
 
                     var ctx = new FakeReplicaDbContext(corr, ob.Options, factory);
 
