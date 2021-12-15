@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fabrica.Mediator;
 using Fabrica.Models.Patch.Builder;
+using Fabrica.Models.Support;
 using Fabrica.Persistence.Patch;
 using Fabrica.Utilities.Container;
 using JetBrains.Annotations;
@@ -14,7 +15,7 @@ public abstract class BasePatchController : BaseMediatorController
 {
 
 
-    protected BasePatchController(ICorrelation correlation, IMessageMediator mediator, IPatchResolver resolver) : base(correlation,mediator)
+    protected BasePatchController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, IPatchResolver resolver) : base(correlation, meta,mediator)
     {
 
         Resolver = resolver;

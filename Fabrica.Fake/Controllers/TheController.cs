@@ -7,13 +7,13 @@ using Fabrica.Api.Support.Controllers;
 using Fabrica.Fake.Persistence;
 using Fabrica.Mediator;
 using Fabrica.Models.Patch.Builder;
+using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Rql.Serialization;
 using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Person = Fabrica.Fake.Persistence.Person;
 
@@ -25,7 +25,7 @@ namespace Fabrica.Fake.Controllers
     public class TheController: BaseMediatorController
     {
 
-        public TheController(ICorrelation correlation, IMessageMediator mediator, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation, mediator)
+        public TheController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation, meta, mediator)
         {
 
             Context = context;
