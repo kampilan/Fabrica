@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using Amazon.S3;
 using Autofac;
 using Fabrica.Static.Providers.Mutable;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
 namespace Fabrica.Static.Monitors
 {
 
     
-    public class FixedPackageMonitor: AbstractPackageMonitor, IStartable, IDisposable
+    public class FixedPackageMonitor: AbstractPackageMonitor, IRequiresStart, IDisposable
     {
 
 

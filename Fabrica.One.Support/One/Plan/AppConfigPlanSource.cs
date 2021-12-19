@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using Amazon.AppConfig;
 using Amazon.AppConfig.Model;
 using Amazon.Util;
-using Autofac;
-using Fabrica.Utilities.Threading;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 using YamlDotNet.Serialization;
@@ -18,7 +17,7 @@ namespace Fabrica.One.Plan
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
     [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
-    public class AppConfigPlanSource: AbstractPlanSource, IPlanSource, IStartable
+    public class AppConfigPlanSource: AbstractPlanSource, IPlanSource, IRequiresStart
     {
 
 
@@ -49,7 +48,7 @@ namespace Fabrica.One.Plan
         public string ClientId { get; set; } = ShortGuid.NewGuid();
 
 
-        public void Start()
+        public async Task Start()
         {
 
             var logger = this.GetLogger();
@@ -72,8 +71,7 @@ namespace Fabrica.One.Plan
                 {
                     logger.Debug("Manually configured");
                     logger.Debug("Attempting to perform first CheckForUpdate");
-                    AsyncPump.Run( async ()=> await CheckForUpdate());
-                    return;
+                    await CheckForUpdate();
                 }
 
 
@@ -125,7 +123,7 @@ namespace Fabrica.One.Plan
 
                 // *****************************************************************
                 logger.Debug("Attempting to perform first CheckForUpdate");
-                AsyncPump.Run(async () => await CheckForUpdate());
+                await CheckForUpdate();
 
 
             }

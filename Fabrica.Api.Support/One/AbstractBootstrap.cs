@@ -106,7 +106,7 @@ namespace Fabrica.Api.Support.One
 
                     })
                     .As<ISignalController>()
-                    .As<IStartable>()
+                    .As<IRequiresStart>()
                     .SingleInstance()
                     .AutoActivate();
 
@@ -127,7 +127,7 @@ namespace Fabrica.Api.Support.One
 
                     })
                     .AsSelf()
-                    .As<IStartable>()
+                    .As<IRequiresStart>()
                     .SingleInstance()
                     .AutoActivate();
 

@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac;
 using Fabrica.Rules.Builder;
 using Fabrica.Rules.Factory;
+using Fabrica.Utilities.Container;
 
 namespace Fabrica.Rules
 {
@@ -28,7 +29,7 @@ namespace Fabrica.Rules
 
                 })
                 .AsSelf()
-                .As<IStartable>()
+                .As<IRequiresStart>()
                 .SingleInstance()
                 .AutoActivate();
 

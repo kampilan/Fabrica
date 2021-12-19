@@ -4,13 +4,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
 namespace Fabrica.Utilities.Storage
 {
 
 
-    public class BackgroudStorageProvider: IRemoteStorageProvider, IStartable, IDisposable
+    public class BackgroudStorageProvider: IRemoteStorageProvider, IRequiresStart, IDisposable
     {
 
 
@@ -181,7 +182,7 @@ namespace Fabrica.Utilities.Storage
             return await Inner.GetReferenceAsync(root, key, timeToLive);
         }
 
-        public void Start()
+        public Task Start()
         {
 
             var logger = this.GetLogger();
@@ -192,6 +193,8 @@ namespace Fabrica.Utilities.Storage
                 logger.EnterMethod();
 
                 Task.Run(Poll);
+
+                return Task.CompletedTask;
 
             }
             finally

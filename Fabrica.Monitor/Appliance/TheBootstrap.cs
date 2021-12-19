@@ -15,7 +15,7 @@ namespace Fabrica.Monitor.Appliance
 
 
 
-    public class TheBootstrap: KestrelBootstrap<TheModule, MonitorOptions>
+    public class TheBootstrap: KestrelBootstrap<TheModule, MonitorOptions,InitService>
     {
 
 
@@ -40,7 +40,8 @@ namespace Fabrica.Monitor.Appliance
 
             // *****************************************************************
             builder
-                .AddYamlFile("configuration.yml", true);
+                .AddYamlFile("configuration.yml", true)
+                .AddYamlFile("e:/locals/monitor/local.yml", true);
 
         }
 #endif

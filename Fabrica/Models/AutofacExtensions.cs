@@ -2,6 +2,7 @@
 using System.Reflection;
 using Autofac;
 using Fabrica.Models.Support;
+using Fabrica.Utilities.Container;
 
 namespace Fabrica.Models
 {
@@ -25,7 +26,7 @@ namespace Fabrica.Models
 
                 })
                 .As<IModelMetaService>()
-                .As<IStartable>()
+                .As<IRequiresStart>()
                 .SingleInstance()
                 .AutoActivate();
 

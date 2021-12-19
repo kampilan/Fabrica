@@ -25,11 +25,12 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
+using System.Threading.Tasks;
 using Fabrica.Rules.Builder;
 using Fabrica.Rules.Evaluation;
 using Fabrica.Rules.Listeners;
 using Fabrica.Rules.Tree;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 
@@ -37,7 +38,7 @@ namespace Fabrica.Rules.Factory
 {
 
 
-    public class RuleSetFactory: IStartable
+    public class RuleSetFactory: IRequiresStart
     {
 
 
@@ -75,20 +76,15 @@ namespace Fabrica.Rules.Factory
         private bool Started { get; set; }
 
 
-        public void Start()
+        public Task Start()
         {
 
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
+            using var logger = this.EnterMethod();
 
                 logger.Inspect(nameof(Started), Started);
 
                 if (Started)
-                    return;
+                    return Task.CompletedTask;
 
                 Started = true;
 
@@ -97,11 +93,8 @@ namespace Fabrica.Rules.Factory
                 foreach (var b in builders.Where(b => b != null))
                     b.LoadRules(Tree);
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+
+            return Task.CompletedTask;
 
 
         }
@@ -109,25 +102,12 @@ namespace Fabrica.Rules.Factory
         public void Stop()
         {
 
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
+            using var logger = this.EnterMethod();
 
 
                 Tree.Clear();
 
                 Started = false;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
             
         }
 

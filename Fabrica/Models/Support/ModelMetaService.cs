@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using Autofac;
+using System.Threading.Tasks;
 using Fabrica.Models.Serialization;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 
 // ReSharper disable CollectionNeverUpdated.Local
 
 namespace Fabrica.Models.Support;
 
-public class ModelMetaService: IModelMetaService, IStartable
+public class ModelMetaService: IModelMetaService, IRequiresStart
 {
 
     public ModelMetaService(IEnumerable<ModelMetaSource> sources)
@@ -27,12 +28,12 @@ public class ModelMetaService: IModelMetaService, IStartable
     private IReadOnlyDictionary<string,ModelMeta> AliasMap { get; set; }
     private IReadOnlyDictionary<string,ModelMeta> ResourceMap { get; set; }
     private IReadOnlyDictionary<Type,ModelMeta> TypeMap { get; set; }
-    public void Start()
+    public Task Start()
     {
 
 
         if (AliasMap != null)
-            return;
+            return Task.CompletedTask;
 
             
         var amap = new Dictionary<string,ModelMeta>();
@@ -139,6 +140,9 @@ public class ModelMetaService: IModelMetaService, IStartable
         AliasMap    = new ReadOnlyDictionary<string, ModelMeta>(amap);
         ResourceMap = new ReadOnlyDictionary<string, ModelMeta>(rmap);
         TypeMap     = new ReadOnlyDictionary<Type, ModelMeta>(tmap);
+
+
+        return Task.CompletedTask;
 
     }
 

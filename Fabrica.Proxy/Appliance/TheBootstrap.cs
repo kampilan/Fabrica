@@ -25,7 +25,7 @@ namespace Fabrica.Proxy.Appliance
 {
 
 
-    public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions>
+    public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
     {
 
 
@@ -51,7 +51,7 @@ namespace Fabrica.Proxy.Appliance
             // *****************************************************************
             builder
                 .AddYamlFile("configuration.yml", true)
-                .AddYamlFile("local.yml", true);
+                .AddYamlFile("e:/locals/proxy/local.yml", true);
 
         }
 #endif

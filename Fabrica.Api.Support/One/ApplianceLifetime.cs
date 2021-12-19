@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Autofac;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Process;
 using Microsoft.Extensions.Hosting;
 
@@ -8,7 +8,7 @@ namespace Fabrica.Api.Support.One
 {
 
 
-    public class ApplianceLifetime : IStartable
+    public class ApplianceLifetime : IRequiresStart
     {
 
         public ApplianceLifetime( IHostApplicationLifetime lifetime, ISignalController controller )
@@ -24,13 +24,15 @@ namespace Fabrica.Api.Support.One
         private IHostApplicationLifetime Lifetime { get; }
         private ISignalController Controller { get; }
 
-        public void Start()
+        public Task Start()
         {
 
             Lifetime.ApplicationStarted.Register(() => Controller.Started());
             Lifetime.ApplicationStopped.Register(() => Controller.Stopped());
 
             Task.Run(_run);
+
+            return Task.CompletedTask;
 
         }
 

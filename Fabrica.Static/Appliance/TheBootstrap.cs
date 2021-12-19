@@ -4,14 +4,13 @@ using Fabrica.Api.Support.Filters;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabrica.Static.Appliance
 {
 
 
-    public class TheBootstrap: KestrelBootstrap<TheModule,ApplianceOptions>
+    public class TheBootstrap: KestrelBootstrap<TheModule,ApplianceOptions,InitService>
     {
 
 

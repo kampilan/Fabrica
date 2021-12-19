@@ -26,6 +26,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Work.Processor;
 using Fabrica.Work.Processor.Parsers;
@@ -33,7 +34,7 @@ using Fabrica.Work.Processor.Parsers;
 namespace Fabrica.Work.Queue
 {
 
-    public class QueueWorkListener : IStartable, IDisposable
+    public class QueueWorkListener : IRequiresStart, IDisposable
     {
 
         public QueueWorkListener(IQueueComponent queue, IMessageBodyParser parser, IWorkProcessor processor)
@@ -64,7 +65,7 @@ namespace Fabrica.Work.Queue
 
 
 
-        public void Start()
+        public Task Start()
         {
 
             using var logger = this.EnterMethod();
@@ -79,6 +80,8 @@ namespace Fabrica.Work.Queue
 
             logger.Debug("QueueWorkListener start completed");
 
+
+            return Task.CompletedTask;
 
         }
 

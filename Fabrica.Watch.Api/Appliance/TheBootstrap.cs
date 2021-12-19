@@ -10,7 +10,6 @@ using Fabrica.Models.Serialization;
 using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -20,7 +19,7 @@ namespace Fabrica.Watch.Api.Appliance
 {
 
 
-    public class TheBootstrap: KestrelBootstrap<TheModule,WatchOptions>
+    public class TheBootstrap: KestrelBootstrap<TheModule,WatchOptions,InitService>
     {
 
 
@@ -46,7 +45,7 @@ namespace Fabrica.Watch.Api.Appliance
             // *****************************************************************
             builder
                 .AddYamlFile("configuration.yml", true)
-                .AddYamlFile("local.yml", true);
+                .AddYamlFile("e:/locals/watch/local.yml", true);
 
         }
 

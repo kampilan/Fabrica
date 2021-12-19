@@ -8,6 +8,7 @@ using Autofac;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using Fabrica.One.Plan;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 
@@ -108,7 +109,7 @@ namespace Fabrica.One.Configuration
 
                         })
                         .As<IPlanSource>()
-                        .As<IStartable>()
+                        .As<IRequiresStart>()
                         .AutoActivate()
                         .SingleInstance();
 

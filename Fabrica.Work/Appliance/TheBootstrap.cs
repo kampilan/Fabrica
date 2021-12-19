@@ -1,7 +1,5 @@
 ﻿using System.Drawing;
-using Fabrica.Api.Support.Conventions;
 using Fabrica.Api.Support.Filters;
-using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Fabrica.Configuration.Yaml;
@@ -10,7 +8,6 @@ using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -18,7 +15,7 @@ using Newtonsoft.Json;
 namespace Fabrica.Work.Appliance
 {
 
-    public class TheBootstrap: KestrelBootstrap<TheModule,ApplianceOptions>
+    public class TheBootstrap: KestrelBootstrap<TheModule,ApplianceOptions,InitService>
     {
 
 
@@ -44,7 +41,7 @@ namespace Fabrica.Work.Appliance
             // *****************************************************************
             builder
                 .AddYamlFile("configuration.yml", true)
-                .AddYamlFile("local.yml", true);
+                .AddYamlFile("e:/locals/work/local.yml", true);
 
         }
 

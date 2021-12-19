@@ -10,7 +10,6 @@ using Fabrica.Static.Providers.Mutable;
 using Fabrica.Utilities.Threading;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Fabrica.Static.Monitors
 {
@@ -41,7 +40,7 @@ namespace Fabrica.Static.Monitors
         public int DeploymentMonitorIntervalSecs { get; set; } = 10;
 
 
-        public virtual void Start()
+        public virtual Task Start()
         {
 
             var logger = this.GetLogger();
@@ -62,6 +61,8 @@ namespace Fabrica.Static.Monitors
 
                 MonitorTask = Task.Run( Monitor );
 
+
+                return Task.CompletedTask;
 
             }
             finally

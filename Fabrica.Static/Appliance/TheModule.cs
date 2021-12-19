@@ -179,7 +179,7 @@ namespace Fabrica.Static.Appliance
                 })
                 .AsSelf()
                 .SingleInstance()
-                .As<IStartable>()
+                .As<IRequiresStart>()
                 .AutoActivate();
 
 
@@ -202,7 +202,7 @@ namespace Fabrica.Static.Appliance
             })
                 .AsSelf()
                 .SingleInstance()
-                .As<IStartable>()
+                .As<IRequiresStart>()
                 .AutoActivate();
 
         }
@@ -225,7 +225,7 @@ namespace Fabrica.Static.Appliance
                 })
                 .AsSelf()
                 .SingleInstance()
-                .As<IStartable>()
+                .As<IRequiresStart>()
                 .AutoActivate();
 
         }

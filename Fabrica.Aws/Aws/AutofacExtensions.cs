@@ -30,14 +30,17 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
+using Amazon.SecretsManager;
 using Amazon.SecurityToken;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SQS;
 using Autofac;
 using Fabrica.Aws.Repository;
+using Fabrica.Aws.Secrets;
 using Fabrica.Aws.Storage;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
+using Fabrica.Utilities.Secrets;
 using Fabrica.Utilities.Storage;
 using Fabrica.Watch;
 using JetBrains.Annotations;
@@ -268,6 +271,14 @@ namespace Fabrica.Aws
                 .SingleInstance()
                 .AutoActivate();
 
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSecretsManagerClient(endpoint))
+                .As<IAmazonSecretsManager>()
+                .SingleInstance()
+                .AutoActivate();
+
+
             // ******************************************************************
             builder.Register(c => new AmazonDynamoDBClient(endpoint))
                 .As<IAmazonDynamoDB>()
@@ -322,6 +333,14 @@ namespace Fabrica.Aws
                 .As<IAmazonAppConfig>()
                 .SingleInstance()
                 .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSecretsManagerClient( credentials, endpoint))
+                .As<IAmazonSecretsManager>()
+                .SingleInstance()
+                .AutoActivate();
+
 
             // ******************************************************************
             builder.Register(c => new AmazonDynamoDBClient( credentials, endpoint))
@@ -399,7 +418,32 @@ namespace Fabrica.Aws
         }
 
 
+        public static ContainerBuilder AddSecrets(this ContainerBuilder builder, IAwsSecretsManagerModule module)
+        {
 
+
+            builder.Register(c =>
+                {
+
+                    var corr   = c.Resolve<ICorrelation>();
+                    var client = c.Resolve<IAmazonSecretsManager>();
+                    var comp   = new AwsSecretComponent( corr, client )
+                    {
+                        SecretId = module.AwsSecretsId
+                    };
+
+                    return comp;
+
+
+                })
+                .As<ISecretComponent>()
+                .As<IRequiresStart>()
+                .SingleInstance();
+
+
+            return builder;
+
+        }
 
 
     }

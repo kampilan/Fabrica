@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Amazon.S3;
 using Autofac;
 using Fabrica.Static.Providers.Mutable;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
+using MediatR;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
@@ -16,7 +18,7 @@ namespace Fabrica.Static.Monitors
 {
 
 
-    public class MongoDbPackageMonitor : AbstractPackageMonitor, IStartable, IDisposable
+    public class MongoDbPackageMonitor : AbstractPackageMonitor, IRequiresStart, IDisposable
     {
 
 
@@ -60,14 +62,14 @@ namespace Fabrica.Static.Monitors
         private IMongoDatabase Database { get; set; }
         private IMongoCollection<DeploymentInfo> Collection { get; set; }
 
-        public override void Start()
+        public override async Task Start()
         {
 
             Client     = new MongoClient( MongoDbServerUri );
             Database   = Client.GetDatabase( MongoDbDatabase );
             Collection = Database.GetCollection<DeploymentInfo>( "Deployments" );
 
-            base.Start();
+            await base.Start();
 
         }
 

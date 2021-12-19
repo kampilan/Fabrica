@@ -11,7 +11,7 @@ namespace Fabrica.Api.Support.One
 {
 
 
-    public abstract class KestrelBootstrap<TModule,TOptions> : AbstractBootstrap<TModule,TOptions> where TModule : Module where TOptions: class, IApplianceOptions
+    public abstract class KestrelBootstrap<TModule,TOptions,TInit> : AbstractBootstrap<TModule,TOptions> where TModule : Module where TOptions: class, IApplianceOptions where TInit: InitService
     {
 
         protected abstract void ConfigureServices(IServiceCollection services);
@@ -31,7 +31,11 @@ namespace Fabrica.Api.Support.One
                         op.ListenLocalhost(Options.ListeningPort);
 
                 })
-                .ConfigureServices( ConfigureServices )
+                .ConfigureServices(c =>
+                {
+                    c.AddHostedService<TInit>();
+                    ConfigureServices(c);
+                })
                 .Configure( ConfigureWebApp );
 
         }

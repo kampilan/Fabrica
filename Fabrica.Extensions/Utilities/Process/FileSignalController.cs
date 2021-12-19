@@ -4,12 +4,13 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
 namespace Fabrica.Utilities.Process
 {
  
-    public class FileSignalController: ISignalController, IStartable, IDisposable
+    public class FileSignalController: ISignalController, IRequiresStart, IDisposable
     {
 
         public enum OwnerType { Host, Appliance }
@@ -238,12 +239,15 @@ namespace Fabrica.Utilities.Process
         public bool HasStopped => CheckSignal(SignalTypes.Stopped);
 
 
-        public void Start()
+        public Task Start()
         {
             if (Owner == OwnerType.Host)
                 Task.Run(WatchHost);
             else
                 Task.Run(WatchAppliance);
+
+            return Task.CompletedTask;
+
         }
 
         public void Dispose()

@@ -30,7 +30,7 @@ namespace Fabrica.Identity
                 })
                 .As<IAccessTokenSource>()
                 .Named<IAccessTokenSource>( tokenSourceName )
-                .As<IStartable>()
+                .As<IRequiresStart>()
                 .SingleInstance()
                 .AutoActivate();
 

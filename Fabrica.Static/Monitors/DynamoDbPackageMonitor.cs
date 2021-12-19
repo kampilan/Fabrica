@@ -6,6 +6,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.S3;
 using Autofac;
 using Fabrica.Static.Providers.Mutable;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
 namespace Fabrica.Static.Monitors
@@ -13,7 +14,7 @@ namespace Fabrica.Static.Monitors
 
     
 
-    public class DynamoDbPackageMonitor : AbstractPackageMonitor, IStartable, IDisposable
+    public class DynamoDbPackageMonitor : AbstractPackageMonitor, IRequiresStart, IDisposable
     {
 
 

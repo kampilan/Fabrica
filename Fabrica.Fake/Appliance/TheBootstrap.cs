@@ -12,12 +12,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Fabrica.Fake.Appliance;
 
-public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions>
+public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions,FakeInitService>
 {
 
 
@@ -46,7 +45,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions>
         // *****************************************************************
         builder
             .AddYamlFile("configuration.yml", true)
-            .AddYamlFile("local.yml", true);
+            .AddYamlFile("e:/local/fake/local.yml", true);
 
     }
 
@@ -56,7 +55,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,TheOptions>
     protected override void ConfigureServices(IServiceCollection services)
     {
 
-        services.AddHostedService<InitService>();
+        services.AddHostedService<FakeInitService>();
 
         services.AddMvc(builder =>
             {

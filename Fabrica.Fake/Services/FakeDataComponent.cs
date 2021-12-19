@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
+using System.Threading.Tasks;
 using AutoMapper;
 using Bogus;
 using Bogus.DataSets;
@@ -16,7 +16,7 @@ using Person = Fabrica.Fake.Persistence.Person;
 
 namespace Fabrica.Fake.Services;
 
-public class FakeDataComponent: CorrelatedObject, IStartable
+public class FakeDataComponent: CorrelatedObject, IRequiresStart
 {
 
 
@@ -34,7 +34,7 @@ public class FakeDataComponent: CorrelatedObject, IStartable
     private ConcurrentBag<Person> People { get; set; }
     private ConcurrentBag<Company> Companies { get; set; }
 
-    public void Start()
+    public Task Start()
     {
 
 
@@ -79,6 +79,7 @@ public class FakeDataComponent: CorrelatedObject, IStartable
         Companies = new ConcurrentBag<Company>(companies);
 
 
+        return Task.CompletedTask;
 
     }
 

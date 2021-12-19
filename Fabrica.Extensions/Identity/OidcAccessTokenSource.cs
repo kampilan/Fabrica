@@ -19,7 +19,7 @@ namespace Fabrica.Identity
 
     }
 
-    public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IStartable
+    public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequiresStart
     {
 
 
@@ -50,17 +50,7 @@ namespace Fabrica.Identity
         private TokenModel Token { get; set; }
 
 
-
-        public void Start()
-        {
-
-            using var logger = EnterMethod();
-
-            AsyncPump.Run(StartAsync);
-
-        }
-
-        protected async Task StartAsync()
+        public async Task Start()
         {
 
             using var logger = EnterMethod();

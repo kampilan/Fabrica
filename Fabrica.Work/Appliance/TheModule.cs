@@ -145,7 +145,7 @@ namespace Fabrica.Work.Appliance
                         return comp;
 
                     })
-                    .As<IStartable>()
+                    .As<IRequiresStart>()
                     .SingleInstance()
                     .AutoActivate();
 
@@ -172,7 +172,7 @@ namespace Fabrica.Work.Appliance
                         return comp;
 
                     })
-                    .As<IStartable>()
+                    .As<IRequiresStart>()
                     .SingleInstance()
                     .AutoActivate();
 
