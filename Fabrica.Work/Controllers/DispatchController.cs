@@ -30,36 +30,6 @@ public class DispatchController: BaseController
     private IWorkDispatcher Dispatcher { get; }
 
 
-    protected virtual async Task<JObject> FromBody()
-    {
-
-        var logger = GetLogger();
-
-        try
-        {
-
-            logger.EnterMethod();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to parse request body");
-            var jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
-
-
-            // *****************************************************************
-            return jo;
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
-
-    }
-
-
-
-
     [HttpPost("{topic}")]
     public async Task<IActionResult> Post( [FromRoute] string topic, [FromQuery] int delaySecs=0 )
     {
@@ -84,7 +54,7 @@ public class DispatchController: BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to parse request body");
-        var payload = await FromBody();
+        var jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
 
 
 
@@ -93,7 +63,7 @@ public class DispatchController: BaseController
         var request = new WorkRequest
         {
             Topic   = topic,
-            Payload = payload
+            Payload = jo
         };
 
 
