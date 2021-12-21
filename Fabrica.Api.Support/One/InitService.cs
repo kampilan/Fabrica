@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -28,15 +29,26 @@ public class InitService: IHostedService
         using var logger = this.EnterMethod();
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to resolve all components that require starting");
-        var startables = RootScope.Resolve<IEnumerable<IRequiresStart>>();
-        foreach (var c in startables)
+        var currentStartable = "";
+        try
         {
-            logger.Inspect("Component Type", c.GetType().FullName);
-            await c.Start();
-        }
+            // *****************************************************************
+            logger.Debug("Attempting to resolve all components that require starting");
+            var startables = RootScope.Resolve<IEnumerable<IRequiresStart>>();
+            foreach (var c in startables)
+            {
+                currentStartable = c.GetType().FullName;
+                logger.Inspect("Component Type", currentStartable);
+                await c.Start();
+            }
 
+        }
+        catch (Exception cause)
+        {
+            var ctx = new { FailedStartable = currentStartable };
+            logger.ErrorWithContext( cause, ctx, "InitService failed durring start");
+            throw;
+        }
 
     }
 
