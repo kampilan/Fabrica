@@ -8,5 +8,6 @@ public interface ISecretComponent
 {
 
     Task<string> GetSecret(string key);
+    Task<T> GetSecrets<T>() where T: class;
 
 }

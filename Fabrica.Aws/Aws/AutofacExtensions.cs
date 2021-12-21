@@ -42,6 +42,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
 using Fabrica.Utilities.Secrets;
 using Fabrica.Utilities.Storage;
+using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 // ReSharper disable UnusedParameter.Local
@@ -444,6 +445,51 @@ namespace Fabrica.Aws
             return builder;
 
         }
+
+
+        public static ContainerBuilder AddSecrets<T>(this ContainerBuilder builder, IAwsSecretsManagerModule module) where T: class
+        {
+
+
+            builder.Register(c =>
+                {
+
+                    var corr = c.Resolve<ICorrelation>();
+                    var client = c.Resolve<IAmazonSecretsManager>();
+                    var comp = new AwsSecretComponent(corr, client)
+                    {
+                        SecretId = module.AwsSecretsId
+                    };
+
+                    return comp;
+
+
+                })
+                .As<ISecretComponent>()
+                .As<IRequiresStart>()
+                .SingleInstance();
+
+
+            builder.Register(c =>
+                {
+
+                    var secrets = c.Resolve<ISecretComponent>();
+                    var comp    = AsyncPump.Run( async () => await secrets.GetSecrets<T>() );
+
+                    return comp;
+
+                })
+                .AsSelf()
+                .SingleInstance();
+
+
+            return builder;
+
+        }
+
+
+
+
 
 
     }
