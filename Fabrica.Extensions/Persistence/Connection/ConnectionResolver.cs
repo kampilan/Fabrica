@@ -47,8 +47,9 @@ namespace Fabrica.Persistence.Connection
 
         private ICorrelation Correlation { get; }
 
-        private string ReplicaConnectionStr { get; }
-        private string OriginConnectionStr { get; }
+
+        public string ReplicaConnectionStr { get; }
+        public string OriginConnectionStr { get; }
 
 
         public DbProviderFactory Factory { get; }

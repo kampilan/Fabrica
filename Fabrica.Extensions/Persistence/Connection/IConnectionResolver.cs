@@ -24,18 +24,18 @@ SOFTWARE.
 
 using System.Data.Common;
 
-namespace Fabrica.Persistence.Connection
+namespace Fabrica.Persistence.Connection;
+
+public interface IConnectionResolver
 {
 
-    public interface IConnectionResolver
-    {
+    string ReplicaConnectionStr { get; }
+    string OriginConnectionStr { get; }
 
-        DbConnection GetReplicaConnection();
-        DbConnection GetOriginConnection();
 
-        void CloseConnection( DbConnection connection );
+    DbConnection GetReplicaConnection();
+    DbConnection GetOriginConnection();
 
-    }
-
+    void CloseConnection( DbConnection connection );
 
 }
