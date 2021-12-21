@@ -25,6 +25,7 @@ SOFTWARE.
 using System.Data.Common;
 using Autofac;
 using Fabrica.Utilities.Container;
+using SmartFormat;
 
 namespace Fabrica.Persistence.Connection
 {
@@ -34,7 +35,7 @@ namespace Fabrica.Persistence.Connection
     {
 
 
-        public static ContainerBuilder AddSingleTenantResolver( this ContainerBuilder builder, DbProviderFactory factory, string readConnectionStr, string writeConnectionStr )
+        public static ContainerBuilder AddSingleTenantResolver( this ContainerBuilder builder, DbProviderFactory factory, string replicaConnectionStr, string originConnectionStr )
         {
 
             builder.Register(c =>
@@ -42,7 +43,7 @@ namespace Fabrica.Persistence.Connection
 
                 var correlation = c.Resolve<ICorrelation>();
 
-                var comp = new ConnectionResolver( correlation, factory, readConnectionStr, writeConnectionStr );
+                var comp = new ConnectionResolver( correlation, factory, replicaConnectionStr, originConnectionStr );
 
                 return comp;
 
@@ -54,6 +55,34 @@ namespace Fabrica.Persistence.Connection
             return builder;
 
         }
+
+        public static ContainerBuilder AddSingleTenantResolver<TSecrets>(this ContainerBuilder builder, DbProviderFactory factory, string replicaConnectionTemplate, string originConnectionTemplate) where TSecrets: class
+        {
+
+            builder.Register(c =>
+                {
+
+                    var correlation = c.Resolve<ICorrelation>();
+                    var secrets     = c.Resolve<TSecrets>();
+
+                    var replica = Smart.Format( replicaConnectionTemplate, secrets );
+                    var origin  = Smart.Format( originConnectionTemplate, secrets );
+
+                    var comp = new ConnectionResolver(correlation, factory, replica, origin );
+
+                    return comp;
+
+                })
+                .As<IConnectionResolver>()
+                .InstancePerLifetimeScope();
+
+
+            return builder;
+
+        }
+
+
+
 
         public static ContainerBuilder AddSingleTenantResolver( this ContainerBuilder builder, DbProviderFactory factory, ISingleTenantPersistenceModule module )
         {
