@@ -61,7 +61,7 @@ public class AwsSecretComponent: CorrelatedObject, ISecretComponent, IRequiresSt
         logger.Debug("Attempting to get AWS Secret json from Cache");
         var json = await Cache.GetSecretString( SecretId );
         if( string.IsNullOrWhiteSpace(json))
-            throw new InvalidOperationException("AWS Secrets Manager produced ablank of null json string");
+            throw new InvalidOperationException("AWS Secrets Manager produced a blank or null json string");
 
         logger.Inspect(nameof(json.Length), json.Length);
 
@@ -76,7 +76,7 @@ public class AwsSecretComponent: CorrelatedObject, ISecretComponent, IRequiresSt
 
 
         // *****************************************************************
-        logger.Debug("Attempting to get ket form dictionary");
+        logger.Debug("Attempting to get key from dictionary");
         if (dict.TryGetValue(key, out var secret))
             return secret;
 
@@ -84,6 +84,38 @@ public class AwsSecretComponent: CorrelatedObject, ISecretComponent, IRequiresSt
         // *****************************************************************
         throw new InvalidOperationException($" Key: ({key}) not found in AWS Secrets");
 
+
+    }
+
+
+
+    public async Task<T> GetSecrets<T>() where T: class
+    {
+
+
+        using var logger = EnterMethod();
+
+        logger.Inspect("Type Name", typeof(T).FullName);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to get AWS Secret json from Cache");
+        var json = await Cache.GetSecretString(SecretId);
+        if( string.IsNullOrWhiteSpace(json) )
+            throw new InvalidOperationException("AWS Secrets Manager produced a blank or null json string");
+
+        logger.Inspect(nameof(json.Length), json.Length);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to parse json into dictionary");
+        var obj = JsonConvert.DeserializeObject<T>(json);
+        if( obj is null )
+            throw new InvalidOperationException("AWS Secrets Manager produced an unparsable json string");
+
+        return obj;
 
     }
 
