@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
 using System.Data.Common;
 using Autofac;
 using Fabrica.Utilities.Container;
@@ -56,7 +57,7 @@ namespace Fabrica.Persistence.Connection
 
         }
 
-        public static ContainerBuilder AddSingleTenantResolver<TSecrets>(this ContainerBuilder builder, DbProviderFactory factory, string replicaConnectionTemplate, string originConnectionTemplate) where TSecrets: class
+        public static ContainerBuilder AddSingleTenantResolver<TSecrets>(this ContainerBuilder builder, DbProviderFactory factory, Action<TSecrets,DbCredentials> credBuilder, string replicaConnectionTemplate, string originConnectionTemplate) where TSecrets: class
         {
 
             builder.Register(c =>
@@ -65,8 +66,11 @@ namespace Fabrica.Persistence.Connection
                     var correlation = c.Resolve<ICorrelation>();
                     var secrets     = c.Resolve<TSecrets>();
 
-                    var replica = Smart.Format( replicaConnectionTemplate, secrets );
-                    var origin  = Smart.Format( originConnectionTemplate, secrets );
+                    var creds = new DbCredentials();
+                    credBuilder(secrets, creds);
+
+                    var replica = Smart.Format( replicaConnectionTemplate, creds );
+                    var origin  = Smart.Format( originConnectionTemplate, creds );
 
                     var comp = new ConnectionResolver(correlation, factory, replica, origin );
 

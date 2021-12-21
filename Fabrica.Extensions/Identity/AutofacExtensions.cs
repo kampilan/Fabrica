@@ -40,7 +40,7 @@ namespace Fabrica.Identity
 
         }
 
-        public static ContainerBuilder AddClientCredentialAccessTokenSource<T>(this ContainerBuilder builder, string tokenSourceName, Func<T, string> audEx, Func<T,string> idEx, Func<T, string> secretEx, string metaEndpoint = "", string tokenEndpoint = "") where T: class
+        public static ContainerBuilder AddClientCredentialAccessTokenSource<T>(this ContainerBuilder builder, Action<T, ClientCredentialGrant> grantBuilder, string tokenSourceName, string metaEndpoint = "", string tokenEndpoint = "") where T: class
         {
 
             var clientName = $"TokenSource:{tokenSourceName}";
@@ -49,18 +49,14 @@ namespace Fabrica.Identity
 
             builder.Register(c =>
                 {
-
                     
                     var corr    = c.Resolve<ICorrelation>();
                     var factory = c.Resolve<IHttpClientFactory>();
                     var secrets = c.Resolve<T>();
 
-                    var grant = new ClientCredentialGrant
-                    {
-                        Audience     = audEx(secrets),
-                        ClientId     = idEx(secrets),
-                        ClientSecret = secretEx(secrets)
-                    };
+                    var grant = new ClientCredentialGrant();
+
+                    grantBuilder(secrets, grant);
 
                     var comp = new OidcAccessTokenSource(corr, factory, clientName, grant, metaEndpoint, tokenEndpoint);
 
