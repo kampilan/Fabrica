@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -155,12 +156,8 @@ namespace Fabrica.Api.Support.One
 
             Options = Configuration.Get<TOptions>();
 
-            var logger = this.GetLogger();
-
             try
             {
-
-                logger.EnterMethod();
 
 
                 var hb = new HostBuilder()
@@ -172,11 +169,11 @@ namespace Fabrica.Api.Support.One
                         lb.AddProvider(new LoggerProvider());
                         lb.SetMinimumLevel(LogLevel.Trace);
                     })
-                    .ConfigureContainer<ContainerBuilder>( ConfigureContainer )
-                    .ConfigureWebHostDefaults( ConfigureWebHost );
+                    .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
+                    .ConfigureWebHostDefaults(ConfigureWebHost);
 
 
-                if( Options.RunningAsMission )
+                if (Options.RunningAsMission)
                     hb.UseApplianceConsoleLifetime();
                 else
                     hb.UseConsoleLifetime();
@@ -187,9 +184,11 @@ namespace Fabrica.Api.Support.One
 
 
             }
-            finally
+            catch (Exception cause)
             {
-                logger.LeaveMethod();
+                var logger = this.GetLogger();
+                logger.Error( cause, "Run failed");
+                Environment.Exit(500);
             }
 
         }
