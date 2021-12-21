@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace Fabrica.Aws.Secrets;
 
 
-public class AwsSecretComponent: CorrelatedObject, ISecretComponent, IRequiresStart
+public class AwsSecretComponent: CorrelatedObject, ISecretComponent
 {
 
 
@@ -19,32 +19,16 @@ public class AwsSecretComponent: CorrelatedObject, ISecretComponent, IRequiresSt
     {
 
         Manager = manager;
+        Cache = new SecretsManagerCache(manager);
 
     }
 
     private IAmazonSecretsManager Manager { get; }
-    private SecretsManagerCache Cache { get; set; }
+    private SecretsManagerCache Cache { get; }
 
 
     public string SecretId { get; set; } = "";
-
-
-    public Task Start()
-    {
-
-        using var logger = EnterMethod();
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to create AWSSecrets cache");
-        Cache = new SecretsManagerCache(Manager);
-
-
-        // *****************************************************************
-        return Task.CompletedTask;
-
-    }
-    
+   
     
     public async Task<string> GetSecret([NotNull] string key)
     {
