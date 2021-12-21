@@ -465,7 +465,6 @@ namespace Fabrica.Aws
 
                 })
                 .As<ISecretComponent>()
-                .As<IRequiresStart>()
                 .SingleInstance();
 
 

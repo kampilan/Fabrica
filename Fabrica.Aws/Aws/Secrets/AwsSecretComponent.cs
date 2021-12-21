@@ -18,12 +18,10 @@ public class AwsSecretComponent: CorrelatedObject, ISecretComponent
     public AwsSecretComponent(ICorrelation correlation,IAmazonSecretsManager manager): base(correlation)
     {
 
-        Manager = manager;
         Cache = new SecretsManagerCache(manager);
 
     }
 
-    private IAmazonSecretsManager Manager { get; }
     private SecretsManagerCache Cache { get; }
 
 
