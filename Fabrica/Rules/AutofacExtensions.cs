@@ -30,8 +30,7 @@ namespace Fabrica.Rules
                 })
                 .AsSelf()
                 .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
+                .SingleInstance();
 
 
 
