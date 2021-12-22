@@ -93,11 +93,17 @@ public class AwsSecretComponent: CorrelatedObject, ISecretComponent
 
         // *****************************************************************
         logger.Debug("Attempting to parse json into dictionary");
-        var obj = JsonConvert.DeserializeObject<T>(json);
-        if( obj is null )
+        var secrets = JsonConvert.DeserializeObject<T>(json);
+        if( secrets is null )
             throw new InvalidOperationException("AWS Secrets Manager produced an unparsable json string");
 
-        return obj;
+        logger.LogObject(nameof(secrets), secrets);
+
+
+
+        // *****************************************************************
+        return secrets;
+
 
     }
 

@@ -34,131 +34,127 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 
-namespace Fabrica.Rules.Factory
+namespace Fabrica.Rules.Factory;
+
+public class RuleSetFactory : IRequiresStart
 {
 
 
-    public class RuleSetFactory: IRequiresStart
+    public IEvaluationContextFactory ContextFactory { get; set; }
+    public IEvaluationListenerFactory ListenerFactory { get; set; }
+
+    private IDictionary<string, IEnumerable<string>> CompositeNamespaces { get; } = new Dictionary<string, IEnumerable<string>>();
+
+    public void RegisterCompositeNamespace(string name, IEnumerable<string> namespaces)
+    {
+        if (!(Started))
+            CompositeNamespaces[name] = namespaces;
+    }
+
+
+
+    private List<IRuleBuilderSource> Sources { get; } = new List<IRuleBuilderSource>();
+
+
+    public void AddAllSources(IEnumerable<IRuleBuilderSource> sources)
+    {
+        Sources.AddRange(sources);
+    }
+
+    public void AddSources(params IRuleBuilderSource[] sources)
+    {
+        Sources.AddRange(sources);
+    }
+
+
+    private RuleTree Tree { get; } = new ();
+
+    internal IRuleBase RuleBase => Tree;
+
+    private bool Started { get; set; }
+
+
+    public Task Start()
     {
 
+        using var logger = this.EnterMethod();
 
-        public IEvaluationContextFactory ContextFactory { get; set; }
-        public IEvaluationListenerFactory ListenerFactory { get; set; }
+        logger.Inspect(nameof(Started), Started);
 
-        private IDictionary<string, IEnumerable<string>> CompositeNamespaces { get; } = new Dictionary<string, IEnumerable<string>>();
-
-        public void RegisterCompositeNamespace( string name, IEnumerable<string> namespaces )
-        {
-            if( !(Started) )
-                CompositeNamespaces[name] = namespaces;
-        }
-
-
-
-        private List<IRuleBuilderSource> Sources { get; } = new List<IRuleBuilderSource>();
-
-
-        public void AddAllSources( IEnumerable<IRuleBuilderSource> sources )
-        {
-            Sources.AddRange( sources );
-        }
-
-        public void AddSources( params IRuleBuilderSource[] sources)
-        {
-            Sources.AddRange(sources);
-        }
-
-
-        private RuleTree Tree { get; } = new RuleTree();
-
-        internal IRuleBase RuleBase => Tree;
-
-        private bool Started { get; set; }
-
-
-        public Task Start()
-        {
-
-            using var logger = this.EnterMethod();
-
-                logger.Inspect(nameof(Started), Started);
-
-                if (Started)
-                    return Task.CompletedTask;
-
-                Started = true;
-
-                var builders = Sources.SelectMany(s => s.GetTypes()).Select(t => Activator.CreateInstance(t) as IBuilder);
-
-                foreach (var b in builders.Where(b => b != null))
-                    b.LoadRules(Tree);
-
-
+        if (Started)
             return Task.CompletedTask;
 
+        Started = true;
 
-        }
+        var builders = Sources.SelectMany(s => s.GetTypes()).Select(t => Activator.CreateInstance(t) as IBuilder);
 
-        public void Stop()
-        {
-
-            using var logger = this.EnterMethod();
-
-
-                Tree.Clear();
-
-                Started = false;
-            
-        }
+        foreach (var b in builders.Where(b => b != null))
+            b.LoadRules(Tree);
 
 
-
-        public EvaluationContext BuildContext()
-        {
-            var context = ContextFactory != null ? ContextFactory.CreateContext() : new EvaluationContext();
-
-            if( ListenerFactory != null )
-                context.Listener = ListenerFactory.CreateListener();
-
-            return context;
-        }
-
-
-        [NotNull]
-        public IRuleSet GetRuleSet()
-        {
-            var ruleSet = new FactoryRuleSetImpl( Tree, new HashSet<string>(), ContextFactory );
-            return ruleSet;
-        }
-
-
-        [NotNull]
-        public IRuleSet GetRuleSetForComposite( string name )
-        {
-            if( !(CompositeNamespaces.TryGetValue( name, out var composite )) )
-                throw new InvalidOperationException($"Could not find Composite Namespace for given name ({name}).");
-
-            var ruleSet = new FactoryRuleSetImpl( Tree, composite, ContextFactory );
-            return ruleSet;
-        }
-
-
-        [NotNull]
-        public IRuleSet GetRuleSet( params string[] namespaces )
-        {
-            var ruleSet = new FactoryRuleSetImpl( Tree, new HashSet<string>( namespaces ), ContextFactory );
-            return ruleSet;
-        }
-
-
-        [NotNull]
-        public IRuleSet GetRuleSet( IEnumerable<string> namespaces )
-        {
-            var ruleSet = new FactoryRuleSetImpl( Tree, new HashSet<string>( namespaces ), ContextFactory );
-            return ruleSet;
-        }
+        return Task.CompletedTask;
 
 
     }
+
+    public void Stop()
+    {
+
+        using var logger = this.EnterMethod();
+
+
+        Tree.Clear();
+
+        Started = false;
+
+    }
+
+
+
+    public EvaluationContext BuildContext()
+    {
+        var context = ContextFactory != null ? ContextFactory.CreateContext() : new EvaluationContext();
+
+        if (ListenerFactory != null)
+            context.Listener = ListenerFactory.CreateListener();
+
+        return context;
+    }
+
+
+    [NotNull]
+    public IRuleSet GetRuleSet()
+    {
+        var ruleSet = new FactoryRuleSetImpl(Tree, new HashSet<string>(), ContextFactory);
+        return ruleSet;
+    }
+
+
+    [NotNull]
+    public IRuleSet GetRuleSetForComposite(string name)
+    {
+        if (!(CompositeNamespaces.TryGetValue(name, out var composite)))
+            throw new InvalidOperationException($"Could not find Composite Namespace for given name ({name}).");
+
+        var ruleSet = new FactoryRuleSetImpl(Tree, composite, ContextFactory);
+        return ruleSet;
+    }
+
+
+    [NotNull]
+    public IRuleSet GetRuleSet(params string[] namespaces)
+    {
+        var ruleSet = new FactoryRuleSetImpl(Tree, new HashSet<string>(namespaces), ContextFactory);
+        return ruleSet;
+    }
+
+
+    [NotNull]
+    public IRuleSet GetRuleSet(IEnumerable<string> namespaces)
+    {
+        var ruleSet = new FactoryRuleSetImpl(Tree, new HashSet<string>(namespaces), ContextFactory);
+        return ruleSet;
+    }
+
 
 }
