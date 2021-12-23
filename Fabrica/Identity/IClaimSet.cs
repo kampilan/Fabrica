@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Fabrica.Identity
 {
@@ -8,6 +9,10 @@ namespace Fabrica.Identity
     {
 
         string AuthenticationType { get; }
+
+        long? Expiration { get; }
+
+        void SetExpiration(TimeSpan ttl);
 
         string Tenant { get; }
 

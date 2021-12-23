@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using Fabrica.Api.Support.Identity.Key;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
@@ -140,15 +139,6 @@ namespace Fabrica.Proxy.Appliance
                 {
                     schemas.Add(JwtBearerDefaults.AuthenticationScheme);
                     authBuilder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, ConfigureJwtBearer);
-                }
-
-
-                // *****************************************************************
-                logger.Inspect(nameof(Options.IncludeKeyAuthentication), Options.IncludeKeyAuthentication);
-                if (Options.IncludeKeyAuthentication)
-                {
-                    schemas.Add("ApiKey");
-                    authBuilder.AddApiKey();
                 }
 
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Autofac;
-using Fabrica.Api.Support.Identity.Key;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Utilities.Container;
@@ -16,15 +14,7 @@ namespace Fabrica.Proxy.Appliance
 
 
         public string TokenSigningKey { get; set; } = "";
-
-
-        public string ApiKey { get; set; } = "";
-        public string ApiKeyTenant { get; set; } = "";
-        public string ApiKeySubject { get; set; } = "";
-        public string ApiKeyName { get; set; } = "";
-        public string ApiKeyEmail { get; set; } = "";
-        public string ApiKeyRoles { get; set; } = "";
-
+        public int TokenTimeToLiveSecs { get; set; } = 30;
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -46,7 +36,8 @@ namespace Fabrica.Proxy.Appliance
 
                     var comp = new ProxyTokenJwtEncoder
                     {
-                        TokenSigningKey = key
+                        TokenSigningKey = key,
+                        TokenTimeToLive = TimeSpan.FromSeconds(TokenTimeToLiveSecs)
                     };
 
                     return comp;
@@ -64,32 +55,6 @@ namespace Fabrica.Proxy.Appliance
                 .As<IProxyTokenPayloadBuilder>()
                 .SingleInstance()
                 .AutoActivate();
-
-
-            if( !string.IsNullOrWhiteSpace(ApiKey) )
-            {
-
-                builder.Register(_ =>
-                    {
-
-                        var comp = new ApiKeyService
-                        {
-                            ApiKey  = ApiKey,
-                            Tenant  = ApiKeyTenant,
-                            Subject = ApiKeySubject,
-                            Name    = ApiKeyName,
-                            Email   = ApiKeyEmail,
-                            Roles   = new List<string>(ApiKeyRoles.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                        };
-
-                        return comp;
-
-                    })
-                    .AsSelf()
-                    .SingleInstance();
-
-            }
-
 
 
         }

@@ -35,7 +35,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
 
             // *****************************************************************
             logger.Debug("Attempting to check if current call is authenticated");
-            if( !context.User.Identity.IsAuthenticated )
+            if( context.User.Identity is {IsAuthenticated: false} )
             {
                 logger.Debug("Not authenticated");
                 await Next(context);

@@ -17,7 +17,6 @@ namespace Fabrica.Proxy.Appliance
 
         public bool IncludeUserAuthentication { get; set; } = true;
         public bool IncludeApiAuthentication { get; set; } = true;
-        public bool IncludeKeyAuthentication { get; set; } = false;
 
 
         public string MetadataAddress { get; set; } = "";
@@ -36,10 +35,6 @@ namespace Fabrica.Proxy.Appliance
         public string LogoutRoute { get; set; } = "/logout";
         public string PostLoginRedirectUri { get; set; } = "/";
         public string PostLogoutRedirectUri { get; set; } = "/";
-
-
-        public bool ConfigureHealthCheck => !string.IsNullOrWhiteSpace(HealthcheckRoute);
-        public string HealthcheckRoute { get; set; } = "/healthcheck";
 
 
     }

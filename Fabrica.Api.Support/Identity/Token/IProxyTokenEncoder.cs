@@ -8,7 +8,7 @@ namespace Fabrica.Api.Support.Identity.Token
     {
 
         string Encode( IClaimSet claims );
-        IClaimSet Decode( string authType, string token );
+        IClaimSet Decode( string authType, string token, bool validate=true );
 
 
     }
