@@ -19,6 +19,18 @@ public static class AutofacExtensions
             .AsImplementedInterfaces()
             .InstancePerDependency();
 
+        builder.RegisterGeneric(typeof(HttpCreateHandler<>))
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+
+        builder.RegisterGeneric(typeof(HttpUpdateHandler<>))
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+
+        builder.RegisterGeneric(typeof(HttpDeleteHandler<>))
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+
         builder.RegisterGeneric(typeof(HttpPatchHandler<>))
             .AsImplementedInterfaces()
             .InstancePerDependency();

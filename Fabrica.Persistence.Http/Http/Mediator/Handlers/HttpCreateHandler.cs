@@ -6,10 +6,10 @@ using Fabrica.Utilities.Container;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
-public class HttpCreateHandlerr<TEntity> : BaseHttpHandler<CreateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
+public class HttpCreateHandler<TEntity> : BaseHttpHandler<CreateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
 {
 
-    public HttpCreateHandlerr( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
+    public HttpCreateHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
     {
     }
 

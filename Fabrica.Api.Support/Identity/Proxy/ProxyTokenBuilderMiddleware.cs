@@ -24,7 +24,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
         public async Task Invoke(HttpContext context, ICorrelation correlation, IProxyTokenPayloadBuilder builder, IProxyTokenEncoder encoder )
         {
 
-            using var logger = this.EnterMethod();
+            using var logger = correlation.EnterMethod<ProxyTokenBuilderMiddleware>();
 
 
             // *****************************************************************
