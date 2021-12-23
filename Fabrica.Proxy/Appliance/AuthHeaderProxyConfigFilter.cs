@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ReverseProxy.Abstractions;
-using Microsoft.ReverseProxy.Abstractions.Config;
-using Microsoft.ReverseProxy.Service;
+using Yarp.ReverseProxy.Configuration;
+using Yarp.ReverseProxy.Transforms;
 
 namespace Fabrica.Proxy.Appliance
 {
@@ -11,18 +10,19 @@ namespace Fabrica.Proxy.Appliance
     {
 
 
-        public ValueTask<Cluster> ConfigureClusterAsync(Cluster cluster, CancellationToken cancel)
+        public ValueTask<ClusterConfig> ConfigureClusterAsync(ClusterConfig cluster, CancellationToken cancel)
         {
             return ValueTask.FromResult(cluster);
         }
 
-        public ValueTask<ProxyRoute> ConfigureRouteAsync(ProxyRoute route, CancellationToken cancel)
+        public ValueTask<RouteConfig> ConfigureRouteAsync(RouteConfig route, ClusterConfig? cluster, CancellationToken cancel)
         {
 
             route.WithTransformRequestHeader("Cookies", "", false);
             route.WithTransformRequestHeader("Authorization", "", false);
 
             return ValueTask.FromResult(route);
+
         }
 
 

@@ -3,7 +3,7 @@ using Autofac;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Utilities.Container;
-using Microsoft.ReverseProxy.Service;
+using Yarp.ReverseProxy.Configuration;
 
 namespace Fabrica.Proxy.Appliance
 {

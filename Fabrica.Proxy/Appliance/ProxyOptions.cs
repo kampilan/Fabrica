@@ -12,6 +12,8 @@ namespace Fabrica.Proxy.Appliance
         public string ApplicationDiscriminator { get; set; } = "";
         public string DataProtectionParameterName { get; set; } = "";
 
+        public bool UseSession { get; set; } = false;
+        public string RedisConnectionStr { get; set; } = "";
 
         public bool ConfigureForAuthentication => !string.IsNullOrWhiteSpace(MetadataAddress);
 

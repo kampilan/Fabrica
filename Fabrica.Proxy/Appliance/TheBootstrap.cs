@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -168,6 +169,20 @@ namespace Fabrica.Proxy.Appliance
                     op.AddPolicy("Authentication:User", defPolicy);
 
                 });
+
+                if (Options.UseSession)
+                {
+
+                    services.AddSession(o =>
+                    {
+                        o.IdleTimeout     = TimeSpan.FromMinutes(30);
+                        o.Cookie.Name     = "Fabrica.Proxy";
+                        o.Cookie.HttpOnly = true;
+                        o.Cookie.SameSite = SameSiteMode.Strict;
+                    });
+
+                }
+
 
 
             }

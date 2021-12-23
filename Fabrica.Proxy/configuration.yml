@@ -2,5 +2,8 @@
 ApplicationDiscriminator: "Fabrica-Proxy"
 DataProtectionParameterName: ""
 
+UseSession: true
+RedisConnectionStr: "localhost"
+
 AllowAnyIp: true
 
