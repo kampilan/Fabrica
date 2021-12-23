@@ -181,7 +181,7 @@ namespace Fabrica.Proxy.Appliance
                         o.Cookie.SameSite = SameSiteMode.Strict;
                     });
 
-                    services.AddDistributedRedisCache(o =>
+                    services.AddStackExchangeRedisCache(o=>
                     {
                         o.Configuration = Options.RedisConnectionStr;
                     });
