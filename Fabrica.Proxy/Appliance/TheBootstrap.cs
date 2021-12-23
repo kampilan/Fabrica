@@ -181,6 +181,11 @@ namespace Fabrica.Proxy.Appliance
                         o.Cookie.SameSite = SameSiteMode.Strict;
                     });
 
+                    services.AddDistributedRedisCache(o =>
+                    {
+                        o.Configuration = Options.RedisConnectionStr;
+                    });
+
                 }
 
 
@@ -215,6 +220,8 @@ namespace Fabrica.Proxy.Appliance
             }
 
             builder.UseMiddleware<ProxyTokenBuilderMiddleware>();
+
+            builder.UseSession();
 
             builder.UseEndpoints(ep =>
             {
