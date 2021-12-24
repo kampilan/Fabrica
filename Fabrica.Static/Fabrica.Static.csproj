@@ -24,4 +24,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Providers\S3\" />
+  </ItemGroup>
+
 </Project>

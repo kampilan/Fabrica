@@ -1,4 +1,7 @@
-﻿RunningOnEC2: true
+﻿RunningOnEc2: true
+RegionName: ""
+ProfileName: ""
+AwsSecretsKeyId: ""
 ApplicationDiscriminator: "Fabrica-Proxy"
 DataProtectionParameterName: ""
 

@@ -7,10 +7,16 @@ namespace Fabrica.Proxy.Appliance
     public class ProxyOptions: ApplianceOptions
     {
 
+        public bool RunningOnEc2 { get; set; } = true;
+        public string RegionName { get; set; } = "";
+        public string ProfileName { get; set; } = "";
 
-        public bool RunningOnEC2 { get; set; }
+
         public string ApplicationDiscriminator { get; set; } = "";
         public string DataProtectionParameterName { get; set; } = "";
+
+        public string AwsSecretsId { get; set; } = "";
+
 
         public bool UseSession { get; set; } = false;
         public string RedisConnectionStr { get; set; } = "";
@@ -22,8 +28,6 @@ namespace Fabrica.Proxy.Appliance
 
 
         public string MetadataAddress { get; set; } = "";
-        public string ClientId { get; set; } = "";
-        public string ClientSecret { get; set; } = "";
 
         public string Audience { get; set; }
 
