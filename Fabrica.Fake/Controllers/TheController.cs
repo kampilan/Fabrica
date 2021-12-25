@@ -9,6 +9,7 @@ using Fabrica.Mediator;
 using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
+using Fabrica.Persistence.Patch;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Rql.Serialization;
@@ -25,9 +26,10 @@ namespace Fabrica.Fake.Controllers
     public class TheController: BaseMediatorController
     {
 
-        public TheController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation, meta, mediator)
+        public TheController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, IPatchResolver resolver, FakeReplicaDbContext context, IAmazonS3 client) : base(correlation, meta, mediator)
         {
 
+            Resolver = resolver;
             Context = context;
             Client = client;
 
@@ -35,6 +37,7 @@ namespace Fabrica.Fake.Controllers
 
         }
 
+        private IPatchResolver Resolver { get; }
         private FakeReplicaDbContext Context { get; }
         private IAmazonS3 Client { get; }
 
@@ -117,6 +120,32 @@ namespace Fabrica.Fake.Controllers
             return result;
 
         }
+
+
+        [HttpPatch("people/{uid}")]
+        public async Task<IActionResult> PatchPeople(string uid, [FromBody] List<ModelPatch> patches )
+        {
+
+            using var logger = EnterMethod();
+
+            var set = new PatchSet();
+            set.Add(patches);
+
+            var requests = Resolver.Resolve(set);
+
+            var response = await Mediator.Send(requests);
+
+            response.EnsureSuccess();
+
+
+            var request = RetrieveEntityRequest<Person>.ForUid(uid);
+
+            var result = await Send(request);
+
+            return result;
+
+        }
+
 
 
         [HttpGet("companies")]

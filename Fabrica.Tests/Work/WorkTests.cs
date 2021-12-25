@@ -20,7 +20,7 @@ public class WorkTests
 {
 
     [OneTimeSetUp]
-    public void StartUp()
+    public async Task StartUp()
     {
 
         var maker = new WatchFactoryBuilder();
@@ -33,7 +33,7 @@ public class WorkTests
 
         builder.RegisterModule<WorkTestModule>();
 
-        Container = builder.Build();
+        Container = await builder.BuildAndStart();
 
     }
 
@@ -76,13 +76,15 @@ public class WorkTests
         using (var jreader = new JsonTextReader(reader))
         {
 
-            var body = reader.ReadToEnd();
+            var body = await reader.ReadToEndAsync();
 
             var parser = new S3EventMessageBodyParser();
 
             var request = await parser.Parse(body);
 
             Assert.IsNotNull(request);
+            Assert.IsTrue(request.ok);
+            Assert.IsNotNull(request.request);
 
         }
 
@@ -104,7 +106,9 @@ public class WorkTests
 
             var request = await parser.Parse(body);
 
-            Assert.IsNull(request);
+            Assert.IsNotNull(request);
+            Assert.IsFalse(request.ok);
+            Assert.IsNull(request.request);
 
         }
 
@@ -125,7 +129,10 @@ public class WorkTests
 
             var request = await parser.Parse(body);
 
-            Assert.IsNull(request);
+            Assert.IsNotNull(request);
+            Assert.IsFalse(request.ok);
+            Assert.IsNull(request.request);
+
 
         }
 
@@ -140,7 +147,7 @@ public class WorkTests
         {
 
             var repository = scope.Resolve<WorkRepository>();
-            var topic = await repository.GetTopic("inbound-test");
+            var topic = await repository.GetTopic("test-files");
 
             Assert.IsNotNull(topic);
 

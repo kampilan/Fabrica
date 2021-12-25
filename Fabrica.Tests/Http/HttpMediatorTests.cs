@@ -30,7 +30,7 @@ public class HttpMediatorTests
 
 
     [OneTimeSetUp]
-    public void Setup()
+    public async Task Setup()
     {
 
         var maker = new WatchFactoryBuilder();
@@ -44,7 +44,7 @@ public class HttpMediatorTests
 
         builder.RegisterModule<TheModule>();
 
-        TheContainer = builder.Build();
+        TheContainer = await builder.BuildAndStart();
 
 
     }
@@ -215,7 +215,7 @@ public class HttpMediatorTests
     }
 
 
-    //[Test]
+    [Test]
     public async Task Test0600_0300_UpdatePerson()
     {
 

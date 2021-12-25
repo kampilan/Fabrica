@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Identity;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
@@ -16,7 +17,7 @@ namespace Fabrica.Tests.Identity
 
 
         [OneTimeSetUp]
-        public void Setup()
+        public async Task Setup()
         {
 
             var maker = new WatchFactoryBuilder();
@@ -38,7 +39,7 @@ namespace Fabrica.Tests.Identity
             var module = TheConfiguration.Get<IdentityModule>();
             builder.RegisterModule( module );
 
-            TheContainer = builder.Build();
+            TheContainer = await builder.BuildAndStart();
 
         }
 
