@@ -7,6 +7,9 @@ using Fabrica.Aws;
 using Fabrica.Fake.Persistence;
 using Fabrica.Mediator;
 using Fabrica.Models;
+using Fabrica.Models.Support;
+using Fabrica.Persistence.Mediator;
+using Fabrica.Persistence.Patch;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
@@ -99,6 +102,36 @@ namespace Fabrica.Fake.Appliance
                 })
                 .AsSelf()
                 .InstancePerLifetimeScope();
+
+
+            builder.Register(c =>
+                {
+                    var corr = c.Resolve<ICorrelation>();
+                    var comp = new MediatorRequestFactory(corr);
+                    return comp;
+                })
+                .As<IMediatorRequestFactory>()
+                .SingleInstance();
+
+            builder.Register(c =>
+                {
+
+                    var corr = c.Resolve<ICorrelation>();
+                    var meta = c.Resolve<IModelMetaService>();
+                    var mediator = c.Resolve<IMessageMediator>();
+                    var factory = c.Resolve<IMediatorRequestFactory>();
+
+                    var comp = new PatchResolver(corr, meta, mediator, factory);
+                    return comp;
+
+
+
+                })
+                .AsSelf()
+                .As<IPatchResolver>()
+                .InstancePerLifetimeScope();
+
+
 
 
         }
