@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Middleware;
@@ -257,7 +259,13 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
                 {
 
                     var me = c.User.Identity?.IsAuthenticated??false ? await CreateUserInfo(c.User) : UserInfo.Anonymous;
-                    await c.Response.WriteAsJsonAsync(me);
+                    var options = new JsonSerializerOptions
+                    {
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                        PropertyNamingPolicy = null
+                    };
+
+                    await c.Response.WriteAsJsonAsync(me, options);
 
                 }).AllowAnonymous();
 
