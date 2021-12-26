@@ -257,14 +257,14 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
                     if( c.User.Identity?.IsAuthenticated??false )
                     {
 
-                        await c.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
-                        await c.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
                         c.Session.Clear();
                         await c.Session.CommitAsync();
 
-                        foreach( var ck in c.Request.Cookies.Keys )
+                        foreach (var ck in c.Request.Cookies.Keys)
                             c.Response.Cookies.Delete(ck);
+
+                        await c.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+                        await c.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
                     }
 
