@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Middleware;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -251,6 +253,13 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
                 });
 
 
+                ep.MapGet("/me", async c =>
+                {
+                    var me = c.User.Identity?.IsAuthenticated??false ? await CreateUserInfo(c.User) : UserInfo.Anonymous;
+                    await c.Response.WriteAsJsonAsync(me);
+                });
+
+
                 ep.Map( Options.LogoutRoute, async c =>
                 {
 
@@ -368,11 +377,78 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
     }
 
 
+    private Task<UserInfo> CreateUserInfo( ClaimsPrincipal claimsPrincipal )
+    {
+
+        var userInfo = new UserInfo
+        {
+            IsAuthenticated = true
+        };
+
+        if( claimsPrincipal.Identity is ClaimsIdentity claimsIdentity )
+        {
+            userInfo.NameClaimType = claimsIdentity.NameClaimType;
+            userInfo.RoleClaimType = claimsIdentity.RoleClaimType;
+        }
+        else
+        {
+            userInfo.NameClaimType = ClaimTypes.Name;
+            userInfo.RoleClaimType = ClaimTypes.Role;
+        }
+
+
+        if (!claimsPrincipal.Claims.Any())
+            return Task.FromResult(userInfo);
+
+
+        var nameClaims = claimsPrincipal.FindAll(userInfo.NameClaimType).ToList();
+
+        var claims = nameClaims.Select(claim => new ClaimValue(userInfo.NameClaimType, claim.Value)).ToList();
+
+        claims.AddRange(claimsPrincipal.Claims.Except(nameClaims).Select(claim => new ClaimValue(claim.Type, claim.Value)));
+
+        userInfo.Claims = claims;
+
+        return Task.FromResult(userInfo);
+
+    }
 
 }
+
 
 public class SecretsModel
 {
     public string OidcClientId { get; set; } = "";
     public string OidcClientSecret { get; set; } = "";
 }
+
+public class ClaimValue
+{
+    public ClaimValue()
+    {
+    }
+
+    public ClaimValue(string type, string value)
+    {
+        Type = type;
+        Value = value;
+    }
+
+    public string Type { get; set; }
+
+    public string Value { get; set; }
+}
+
+public class UserInfo
+{
+    public static readonly UserInfo Anonymous = new UserInfo();
+
+    public bool IsAuthenticated { get; set; }
+
+    public string NameClaimType { get; set; }
+
+    public string RoleClaimType { get; set; }
+
+    public ICollection<ClaimValue> Claims { get; set; }
+}
+
