@@ -250,14 +250,16 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 
                     await c.ChallengeAsync( OpenIdConnectDefaults.AuthenticationScheme, authProps );
 
-                });
+                }).AllowAnonymous();
 
 
                 ep.MapGet("/me", async c =>
                 {
+
                     var me = c.User.Identity?.IsAuthenticated??false ? await CreateUserInfo(c.User) : UserInfo.Anonymous;
                     await c.Response.WriteAsJsonAsync(me);
-                });
+
+                }).AllowAnonymous();
 
 
                 ep.Map( Options.LogoutRoute, async c =>
@@ -277,7 +279,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 
                     }
 
-                });
+                }).AllowAnonymous();
 
             }
 
