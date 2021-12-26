@@ -106,12 +106,16 @@ namespace Fabrica.Fake.Appliance
 
             builder.Register(c =>
                 {
+
                     var corr = c.Resolve<ICorrelation>();
                     var comp = new MediatorRequestFactory(corr);
+
                     return comp;
+
                 })
                 .As<IMediatorRequestFactory>()
                 .SingleInstance();
+
 
             builder.Register(c =>
                 {
@@ -125,13 +129,10 @@ namespace Fabrica.Fake.Appliance
                     return comp;
 
 
-
                 })
                 .AsSelf()
                 .As<IPatchResolver>()
                 .InstancePerLifetimeScope();
-
-
 
 
         }
