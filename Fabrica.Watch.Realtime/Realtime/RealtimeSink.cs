@@ -22,8 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Fabrica.Watch.Sink;
 using Gurock.SmartInspect;
@@ -132,9 +134,12 @@ namespace Fabrica.Watch.Realtime
             if( !string.IsNullOrWhiteSpace(le.Payload) )
             {
 
+                var buf = Convert.FromBase64String(le.Payload);
+                var clear = Encoding.ASCII.GetString(buf);
+
                 data = new MemoryStream();
                 var writer = new StreamWriter(data);
-                writer.Write(le.Payload);
+                writer.Write(clear);
                 writer.Flush();
                 data.Seek(0, SeekOrigin.Begin);
 

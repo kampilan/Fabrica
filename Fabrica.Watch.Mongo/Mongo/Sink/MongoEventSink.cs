@@ -240,18 +240,12 @@ namespace Fabrica.Watch.Mongo.Sink
                 Nesting       = logEvent.Nesting,
 
                 Type          = (int)logEvent.Type,
+                Payload       = logEvent.Payload,
                 
                 Occurred      = logEvent.Occurred,
                 TimeToLive    = (logEvent.Occurred + timeToLive),
             
             };
-
-            if( !string.IsNullOrWhiteSpace(logEvent.Payload) )
-            {
-                var buf = Encoding.ASCII.GetBytes(logEvent.Payload);
-                var base64 = Convert.ToBase64String(buf);
-                entity.Payload = base64;
-            }
 
 
             var document = entity.ToBsonDocument();

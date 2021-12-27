@@ -138,9 +138,15 @@ namespace Fabrica.Watch
                 Color         = Color.ToArgb(),
                 Title         = title?.ToString() ?? "",
                 Occurred      = DateTime.UtcNow,
-                Type          = type,
-                Payload       = payload
+                Type          = type
             };
+
+            if( !string.IsNullOrWhiteSpace(payload) )
+            {
+                var buf = Encoding.ASCII.GetBytes(payload);
+                var base64 = Convert.ToBase64String(buf);
+                le.Payload = base64;
+            }
 
             return le;
 
@@ -165,7 +171,13 @@ namespace Fabrica.Watch
                 Type          = PayloadType.Json
             };
 
-            le.ToPayload( payload );
+            var json = Watch.Sink.LogEvent.ToJson( payload );
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                var buf = Encoding.ASCII.GetBytes(json);
+                var base64 = Convert.ToBase64String(buf);
+                le.Payload = base64;
+            }
 
             return le;
 
@@ -241,9 +253,12 @@ namespace Fabrica.Watch
                 Color         = Color.ToArgb(),
                 Title         = title?.ToString() ?? "",
                 Occurred      = DateTime.UtcNow,
-                Type          = PayloadType.Text,
-                Payload       = builder.ToString()
+                Type          = PayloadType.Text
             };
+
+            var buf    = Encoding.ASCII.GetBytes(builder.ToString());
+            var base64 = Convert.ToBase64String(buf);
+            le.Payload = base64;
 
             return le;
 
