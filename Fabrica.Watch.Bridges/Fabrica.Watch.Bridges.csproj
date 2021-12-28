@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 
 </Project>
