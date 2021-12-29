@@ -243,11 +243,15 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
                 ep.Map( Options.LoginRoute, async c =>
                 {
 
+                    var returnTo = Options.PostLoginRedirectUri;
+                    if (c.Request.Query.TryGetValue("ReturnTo", out var value))
+                        returnTo = value.FirstOrDefault("");
+
                     var authProps = new AuthenticationProperties
                     {
                         IsPersistent = true,
                         ExpiresUtc   = DateTime.UtcNow.AddHours(24),
-                        RedirectUri  = Options.PostLoginRedirectUri
+                        RedirectUri  = returnTo
                     };
 
                     await c.ChallengeAsync( OpenIdConnectDefaults.AuthenticationScheme, authProps );
