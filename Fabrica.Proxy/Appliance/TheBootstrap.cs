@@ -286,7 +286,16 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
                         foreach (var ck in c.Request.Cookies.Keys)
                             c.Response.Cookies.Delete(ck);
 
-                        await c.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+                        var returnTo = Options.PostLoginRedirectUri;
+                        if (c.Request.Query.TryGetValue("ReturnTo", out var value))
+                            returnTo = value.FirstOrDefault("");
+
+                        var authProps = new AuthenticationProperties
+                        {
+                            RedirectUri = returnTo
+                        };
+
+                        await c.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, authProps);
                         await c.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
                     }
