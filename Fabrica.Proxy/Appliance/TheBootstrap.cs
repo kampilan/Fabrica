@@ -374,10 +374,18 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
             OnRedirectToIdentityProviderForSignOut = context =>
             {
 
-                context.ProtocolMessage.PostLogoutRedirectUri = $"{context.HttpContext.Request.Scheme}://{context.HttpContext.Request.Host}{Options.PostLogoutRedirectUri}";
+                var returnTo = "";
+                if( context.HttpContext.Request.Query.TryGetValue("ReturnTo", out var value) )
+                    returnTo = value;
+                else
+                    returnTo = $"{context.HttpContext.Request.Scheme}://{context.HttpContext.Request.Host}{Options.PostLogoutRedirectUri}";
+
+                context.ProtocolMessage.PostLogoutRedirectUri = returnTo;
+
                 if( !string.IsNullOrWhiteSpace(Options.ProviderSignOutUri) )
                 {
-                    context.Response.Redirect( Options.ProviderSignOutUri );
+                    var act = string.Format(Options.ProviderSignOutUri, returnTo);
+                    context.Response.Redirect( act );
                     context.HandleResponse();
                 }
 
