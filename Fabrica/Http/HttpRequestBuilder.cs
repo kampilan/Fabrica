@@ -67,7 +67,7 @@ namespace Fabrica.Http
             var builder = new HttpRequestBuilder
             {
                 HttpClientName = httpClientName,
-                Method = HttpMethod.Patch
+                Method = new HttpMethod("PATCH")
             };
 
             return builder;
@@ -135,12 +135,12 @@ namespace Fabrica.Http
         }
 
 
-        private HttpMethod Method { get; init; } = HttpMethod.Get;
+        private HttpMethod Method { get; set; } = HttpMethod.Get;
 
         private bool DebugMode { get; set; }
 
 
-        private string HttpClientName { get; init; } = "";
+        private string HttpClientName { get; set; } = "";
 
         private bool AtRoot { get; set; }
         private string Path { get; set; } = "";

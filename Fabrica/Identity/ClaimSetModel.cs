@@ -16,7 +16,8 @@ public class ClaimSetModel: IClaimSet
     public void SetExpiration(TimeSpan ttl)
     {
         var exp = DateTime.UtcNow + ttl;
-        Expiration = Convert.ToInt64((exp - DateTime.UnixEpoch).TotalSeconds);
+        var epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        Expiration = Convert.ToInt64((exp - epoch).TotalSeconds);
     }
 
     [JsonProperty("ten")]

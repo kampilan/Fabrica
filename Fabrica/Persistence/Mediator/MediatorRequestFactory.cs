@@ -25,7 +25,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
     }
 
 
-    public virtual ICreateEntityRequest GetCreateRequest(Type entity, [NotNull] string uid, [NotNull] IEnumerable<KeyValuePair<string, object>> delta)
+    public virtual ICreateEntityRequest GetCreateRequest(Type entity, [NotNull] string uid, [NotNull] IDictionary<string, object> delta)
     {
 
         if (delta == null) throw new ArgumentNullException(nameof(delta));
@@ -48,7 +48,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
 
     }
 
-    public virtual ICreateMemberEntityRequest GetCreateMemberRequest(Type parent, [NotNull] string parentUid, Type member, [NotNull] string uid, [NotNull] IEnumerable<KeyValuePair<string, object>> delta)
+    public virtual ICreateMemberEntityRequest GetCreateMemberRequest(Type parent, [NotNull] string parentUid, Type member, [NotNull] string uid, [NotNull] IDictionary<string, object> delta)
     {
 
         if (delta == null) throw new ArgumentNullException(nameof(delta));
@@ -75,7 +75,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
     }
 
 
-    public virtual IUpdateEntityRequest GetUpdateRequest(Type entity, [NotNull] string uid, [NotNull] IEnumerable<KeyValuePair<string, object>> delta)
+    public virtual IUpdateEntityRequest GetUpdateRequest(Type entity, [NotNull] string uid, [NotNull] IDictionary<string, object> delta)
     {
 
         if (delta == null) throw new ArgumentNullException(nameof(delta));

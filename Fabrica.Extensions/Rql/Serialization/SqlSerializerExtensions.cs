@@ -166,12 +166,12 @@ namespace Fabrica.Rql.Serialization
 
             if( string.IsNullOrWhiteSpace(pair.sql) )
             {
-                var query = $"select {string.Join(',',projection)} from {tableName}";
+                var query = $"select {string.Join(",",projection)} from {tableName}";
                 return (query, new object[]{});
             }
             else
             {
-                var query = $"select {string.Join(',', projection)} from {tableName} where {pair.sql}";
+                var query = $"select {string.Join(",", projection)} from {tableName} where {pair.sql}";
                 return (query, pair.parameters);
             }
 

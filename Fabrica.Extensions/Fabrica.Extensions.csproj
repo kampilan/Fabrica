@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>The Kampilan Group Inc.</Authors>
     <Product>Fabrica SDK</Product>
     <Description>Fabrica SDK for building REST APIs</Description>
