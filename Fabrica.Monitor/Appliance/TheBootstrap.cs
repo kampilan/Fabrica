@@ -19,33 +19,17 @@ namespace Fabrica.Monitor.Appliance
     {
 
 
-#if DEBUG
-
-        protected override void ConfigureWatch()
-        {
-
-            var maker = WatchFactoryBuilder.Create();
-            maker.UseRealtime();
-            maker.UseLocalSwitchSource()
-                .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
-                .WhenNotMatched(Level.Debug, Color.Azure);
-
-            maker.Build();
-
-        }
-
-
         protected override void ConfigureApp(ConfigurationBuilder builder)
         {
 
             // *****************************************************************
             builder
                 .AddYamlFile("configuration.yml", true)
-                .AddYamlFile("e:/locals/monitor/local.yml", true);
+                .AddJsonFile("environment.json", true)
+                .AddJsonFile("mission.json", true);
 
         }
-#endif
-
+        
 
         protected override void ConfigureServices(IServiceCollection services)
         {

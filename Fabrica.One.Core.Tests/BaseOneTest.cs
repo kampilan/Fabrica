@@ -239,9 +239,9 @@ public class BaseOneTest
         {
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
-            Build = "05324",
+            Build = "05325",
             Environment = "Development",
-            Checksum = "b1d81f94c649384c3f85441d6be2616984e45f61b212e8ccb5fded9a2a8672cd",
+            Checksum = "6ee21dfca03183089104d00763667230837625b3d9e3789c60392fbb63705bab",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances,
             ShowWindow = true

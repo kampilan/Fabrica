@@ -1,4 +1,5 @@
 ﻿using Fabrica.One.Plan;
+using JetBrains.Annotations;
 
 namespace Fabrica.One
 {
@@ -6,7 +7,7 @@ namespace Fabrica.One
     public interface IApplianceFactory
     {
 
-        IAppliance Create( DeploymentUnit unit );
+        IAppliance Create( [NotNull] IPlan plan, [NotNull] DeploymentUnit unit );
 
     }
 

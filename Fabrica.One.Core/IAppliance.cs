@@ -15,11 +15,8 @@ namespace Fabrica.One
         bool HasStarted { get; }
         bool HasStopped { get; }
 
-        Task Start();
-        bool WaitForStart(TimeSpan duration);
-
-        string GetStdOutput();
-        string GetErrorOutput();
+        void Start();
+        bool WaitForStart();
 
         void Stop();
 

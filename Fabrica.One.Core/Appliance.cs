@@ -1,47 +1,39 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Fabrica.One.Plan;
 using Fabrica.Utilities.Process;
 using Fabrica.Watch;
 using JetBrains.Annotations;
-using Medallion.Shell;
 
 namespace Fabrica.One
 {
 
-
-
     public class Appliance : IAppliance
     {
 
-
-        public Appliance( [NotNull] DeploymentUnit unit )
+        public Appliance( [NotNull] IPlan plan, [NotNull] DeploymentUnit unit )
         {
 
-            Unit = unit ?? throw new ArgumentNullException(nameof(unit));
+            Plan = plan;
+            Unit = unit;
 
             Controller = new FileSignalController(FileSignalController.OwnerType.Host, unit.InstallationLocation);
 
         }
 
 
-        public DeploymentUnit Unit { get; set; }
+        private IPlan Plan { get; }
+        public DeploymentUnit Unit { get; }
 
         private ISignalController Controller { get; set; }
 
-        private Command TheCommand { get; set; }
-
-        private List<string> StdOutput { get; } = new List<string>();
-        private List<string> ErrorOutput { get; } = new List<string>();
-
+        private Process TheProcess { get; set; }
 
         public bool HasStarted => Controller.HasStarted;
         public bool HasStopped => Controller.HasStopped;
 
 
-        public async Task Start()
+        public void Start()
         {
 
             var logger = this.GetLogger();
@@ -51,7 +43,6 @@ namespace Fabrica.One
 
                 logger.EnterMethod();
 
-                logger.LogObject(nameof(Unit), Unit);
 
 
                 // *****************************************************************
@@ -62,22 +53,26 @@ namespace Fabrica.One
 
                 // *****************************************************************
                 logger.Debug("Attempting to start appliance process");
-
-                void Config( Shell.Options o )
+                if (TheProcess == null)
                 {
-                    o.StartInfo(si =>
+
+                    logger.Debug("Process does not exist. Creating new");
+
+                    var startInfo = new ProcessStartInfo
                     {
-                        si.WorkingDirectory = Unit.InstallationLocation;
-                        si.CreateNoWindow = !Unit.ShowWindow;
-                    });
+                        FileName        = Unit.ExecutionCommand,
+                        Arguments       = Unit.ExecutionArguments,
+                        UseShellExecute = Unit.ShowWindow,
+                        CreateNoWindow  = true
+                    };
+
+                    TheProcess = Process.Start(startInfo);
                 }
-
-                TheCommand = Command.Run( Unit.ExecutionCommand, options: Config )
-                    .RedirectTo(StdOutput)
-                    .RedirectStandardErrorTo(ErrorOutput);
-
-
-                await TheCommand.Task;
+                else
+                {
+                    logger.Debug("Process existing. Reusing");
+                    TheProcess.Start();
+                }
 
 
             }
@@ -90,10 +85,10 @@ namespace Fabrica.One
         }
 
 
-        public bool WaitForStart(TimeSpan duration)
+        public bool WaitForStart()
         {
 
-            var until = DateTime.Now + duration;
+            var until = DateTime.Now + TimeSpan.FromSeconds(Plan.WaitForStartSeconds);
 
             while (until > DateTime.Now)
             {
@@ -101,63 +96,9 @@ namespace Fabrica.One
                 if (Controller.HasStarted)
                     return true;
 
-                if (HasStopped)
-                    return false;
-
             }
 
             return false;
-
-        }
-
-        public string GetStdOutput()
-        {
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                var sb = new StringBuilder();
-                foreach (var line in StdOutput)
-                    sb.AppendLine(line);
-
-                var output = sb.ToString();
-
-                return output;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-        }
-
-        public string GetErrorOutput()
-        {
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                var sb = new StringBuilder();
-                foreach (var line in ErrorOutput)
-                    sb.AppendLine(line);
-
-                var output = sb.ToString();
-
-                return output;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
 
         }
 
@@ -172,9 +113,7 @@ namespace Fabrica.One
 
                 logger.EnterMethod();
 
-
                 Controller.RequestStop();
-
 
             }
             finally
@@ -188,18 +127,14 @@ namespace Fabrica.One
         private void _cleanup()
         {
 
-            StdOutput.Clear();
-            ErrorOutput.Clear();
-
             Controller.Reset();
 
         }
 
         public void Dispose()
         {
-
-            //           _cleanup();
-
+            TheProcess?.Dispose();
+            TheProcess = null;
         }
 
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using NUnit.Framework;
@@ -32,18 +31,14 @@ public class ApplianceTests: BaseOneTest
         await installer.Install(plan, unit);
 
 
-        var app = new Appliance(unit);
+        var app = new Appliance(plan,unit);
 
-        await app.Start();
-        var started = app.WaitForStart(TimeSpan.FromSeconds(10));
+        app.Start();
+        var started = app.WaitForStart();
 
-        var std = app.GetStdOutput();
-        var err = app.GetErrorOutput();
 
         Assert.IsTrue(started);
 
-
-        await Task.Delay(TimeSpan.FromSeconds(60));
 
         app.Stop();
 

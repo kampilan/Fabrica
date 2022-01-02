@@ -200,7 +200,8 @@ namespace Fabrica.One.Plan
                     unit.EnvironmentConfigLocation = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}environment.json";
                     unit.MissionConfigLocation     = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}mission.json";
 
-                    unit.ExecutionCommand = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}{unit.Assembly}.exe";
+                    unit.ExecutionCommand   = "dotnet";
+                    unit.ExecutionArguments = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}{unit.Assembly}.dll";
 
                     unit.MissionConfiguration["MissionName"]     = plan.Name;
                     unit.MissionConfiguration["TokenSigningKey"] = tokenSigningKey;

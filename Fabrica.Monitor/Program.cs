@@ -18,7 +18,7 @@ class Program
         if (!headless)
         {
 
-            //Console.Clear();
+            Console.Clear();
             Console.WriteLine("Fabrica Monitor Appliance");
             Console.WriteLine("The Kampilan Group Inc. (c) 2021");
             Console.WriteLine("");
