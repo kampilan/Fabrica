@@ -1,22 +1,27 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Fabrica.Watch;
 
 // ReSharper disable UnusedMember.Global
 namespace Fabrica.One.Plan
 {
 
 
-    public class MemoryPlanSource: IPlanSource
+    public class MemoryPlanSource : AbstractPlanSource, IPlanSource
     {
 
 
         public void CopyFrom( Stream source )
         {
 
+            var logger = this.GetLogger();
+
             Lock.EnterWriteLock();
             try
             {
+
+                logger.EnterMethod();
 
                 var stream = new MemoryStream();
 
@@ -32,12 +37,14 @@ namespace Fabrica.One.Plan
             finally
             {
                 Lock.ExitWriteLock();
+                logger.LeaveMethod();
             }
+
 
         }
 
 
-        private ReaderWriterLockSlim Lock { get;  } = new ReaderWriterLockSlim();
+        private ReaderWriterLockSlim Lock { get; } = new ReaderWriterLockSlim();
 
         private bool Updated { get; set; }
         private MemoryStream Source { get; set; } = new MemoryStream();
@@ -46,9 +53,13 @@ namespace Fabrica.One.Plan
         public Task<Stream> GetSource()
         {
 
+            var logger = this.GetLogger();
+
             Lock.EnterReadLock();
             try
             {
+
+                logger.EnterMethod();
 
                 var stream = new MemoryStream( Source.ToArray() );
 
@@ -60,12 +71,36 @@ namespace Fabrica.One.Plan
             finally
             {
                 Lock.ExitReadLock();
+                logger.LeaveMethod();
             }
             
         }
 
+        public Task Reload()
+        {
+            Updated = true;
+            return Task.CompletedTask;
+        }
 
-        public Task<bool> HasUpdatedPlan() => Task.FromResult(Updated);
+        protected override Task<bool> CheckForUpdate()
+        {
+
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+                return Task.FromResult(Updated);
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+        }
 
 
     }

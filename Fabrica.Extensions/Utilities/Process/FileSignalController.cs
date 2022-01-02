@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
@@ -236,7 +235,7 @@ namespace Fabrica.Utilities.Process
 
         public bool MustStop => CheckSignal(SignalTypes.MustStop);
 
-        public bool HasStopped => CheckSignal(SignalTypes.Stopped);
+        public bool HasStopped => !HasStarted || CheckSignal(SignalTypes.Stopped);
 
 
         public Task Start()

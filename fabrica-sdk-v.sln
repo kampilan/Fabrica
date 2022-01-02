@@ -61,7 +61,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence.Http", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "One", "One", "{B816809F-425E-4E6C-8DA4-C2B927CD1A38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.One.Core", "Fabrica.One.Core\Fabrica.One.Core.csproj", "{CD0B25AA-6746-4996-A786-168AB32CF083}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.One.Core", "Fabrica.One.Core\Fabrica.One.Core.csproj", "{CD0B25AA-6746-4996-A786-168AB32CF083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.One.Core.Tests", "Fabrica.One.Core.Tests\Fabrica.One.Core.Tests.csproj", "{DD58CCAB-E30E-48C8-9659-ED51B41D23C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,6 +171,10 @@ Global
 		{CD0B25AA-6746-4996-A786-168AB32CF083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD0B25AA-6746-4996-A786-168AB32CF083}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD0B25AA-6746-4996-A786-168AB32CF083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD58CCAB-E30E-48C8-9659-ED51B41D23C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD58CCAB-E30E-48C8-9659-ED51B41D23C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD58CCAB-E30E-48C8-9659-ED51B41D23C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD58CCAB-E30E-48C8-9659-ED51B41D23C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,6 +205,7 @@ Global
 		{262D2AE4-F4E8-4823-98C3-677A3FF8E94B} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 		{D5201434-0012-4CF2-A245-C4FECB9E47B0} = {D4D77F2A-5F13-4104-87CD-04D9421395CC}
 		{CD0B25AA-6746-4996-A786-168AB32CF083} = {B816809F-425E-4E6C-8DA4-C2B927CD1A38}
+		{DD58CCAB-E30E-48C8-9659-ED51B41D23C8} = {2E2E37FB-828B-4516-9A53-557B03BD4BC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE8638D5-DE76-4377-8051-B8525AC1799D}

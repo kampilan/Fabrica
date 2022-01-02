@@ -9,7 +9,7 @@ namespace Fabrica.One.Plan
     {
 
 
-        protected TimeSpan CheckInterval { get; set; } = TimeSpan.FromSeconds(15);
+        public TimeSpan CheckInterval { get; set; } = TimeSpan.FromSeconds(5);
         protected DateTime LastCheck { get; set; } = DateTime.Now.AddHours(-24);
 
         protected abstract Task<bool> CheckForUpdate();

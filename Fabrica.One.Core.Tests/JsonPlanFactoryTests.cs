@@ -1,0 +1,157 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Threading.Tasks;
+using Fabrica.Exceptions;
+using Fabrica.One.Plan;
+using NUnit.Framework;
+
+namespace Fabrica.One.Core.Tests;
+
+[TestFixture]
+public class JsonPlanFactoryTests: BaseOneTest
+{
+
+
+    [Test]
+    public async Task Test0110_No_Appliance_Plan_Should_Not_Be_Valid()
+    {
+
+        var source = await NoAppliancePlanSource();
+
+        var act = await source.GetSource();
+
+        var factory = GetFactory();
+
+        Assert.Throws<PredicateException>(() => factory.Create(act));
+
+    }
+
+
+    [Test]
+    public async Task Test0111_Empty_Plan_Should_Not_Be_Valid()
+    {
+
+        var source = await EmptyPlanSource();
+
+        var act = await source.GetSource();
+
+        var factory = GetFactory();
+
+        Assert.Throws<PredicateException>(() => factory.Create(act));
+
+    }
+
+    [Test]
+    public async Task Test0112_Bad_Plan_Should_Not_Be_Valid()
+    {
+
+        var source = await BadJsonPlanSource();
+
+        var act = await source.GetSource();
+
+        var factory = GetFactory();
+
+        Assert.Throws<PredicateException>(() => factory.Create(act));
+
+    }
+
+
+    [Test]
+    public async Task Test0120_Load_Valid_Plan_One_Deployments()
+    {
+
+        var source = await OneAppliancePlanSourceWithNoChecksum();
+        var act = await source.GetSource();
+
+        var factory = GetFactory();
+
+        var plan = factory.Create(act);
+
+        Assert.IsNotNull(plan);
+        Assert.IsTrue(plan.Deployments.Count == 1);
+        var d1 = plan.Deployments[0];
+
+        Assert.IsNotNull(d1.EnvironmentConfiguration);
+
+        var cd = d1.EnvironmentConfiguration.Deserialize<Dictionary<string, object>>();
+        Assert.IsNotNull(cd);
+        Assert.IsNotEmpty(cd);
+
+        var json = JsonSerializer.Serialize(plan);
+
+
+
+    }
+
+
+
+    [Test]
+    public async Task Test0130_Load_Valid_Plan_Multi_Deployments()
+    {
+
+        var source = await MultiAppliancePlanSource();
+        var act = await source.GetSource();
+
+        var factory = GetFactory();
+
+        var plan = factory.Create(act);
+
+        Assert.IsNotNull(plan);
+        Assert.IsTrue(plan.Deployments.Count == 2);
+        var d1 = plan.Deployments[1];
+
+        Assert.IsNotNull(d1.EnvironmentConfiguration);
+
+        var cd = d1.EnvironmentConfiguration.Deserialize<Dictionary<string, object>>();
+        Assert.IsNotNull(cd);
+        Assert.IsNotEmpty(cd);
+
+
+        var json2 = d1.EnvironmentConfiguration.ToString();
+        Assert.IsNotEmpty(json2);
+
+
+    }
+
+
+    [Test]
+    public async Task Test0140_Write_Plan_To_Disk()
+    {
+
+        var source = await OneAppliancePlanSourceWithGoodChecksum();
+        var act = await source.GetSource();
+
+        var factory = GetFactory();
+
+        var plan = factory.Create(act);
+
+        Assert.IsNotNull(plan);
+
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        var json = JsonSerializer.Serialize( (PlanImpl)plan, options );
+
+        
+        await using var fs = new FileStream("c:/temp/test-mission-plan.json", FileMode.Create, FileAccess.Write);
+        await using var writer = new StreamWriter(fs);
+
+        await writer.WriteAsync(json);
+        await writer.FlushAsync();
+
+    }
+
+}
+
+public class Tester
+{
+
+    public JsonObject Config { get; set; } = new();
+
+
+}    

@@ -232,6 +232,17 @@ namespace Fabrica.Utilities.Types
         }
 
 
+        public static string ToHexString( [NotNull] this byte[] bytes )
+        {
+
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+
+            var hex = BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+            return hex;
+
+        }
+
+
     }
 
 }

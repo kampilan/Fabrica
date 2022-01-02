@@ -7,39 +7,27 @@ namespace Fabrica.One.Plan
     public interface IPlan
     {
 
-        string Name { get; set; }
-        string Environment { get; set; }
+        string Name { get;  }
+
+        string RepositoryVersion { get; }
+
+        bool DeployAppliances { get;  }
+        bool StartAppliances { get;  }
+        bool StartInParallel { get;  }
+        bool AllAppliancesMustDeploy { get; }
 
 
+        int WaitForDeploySeconds { get;  }
+        int WaitForStartSeconds { get;  }
+        int WaitForStopSeconds { get;  }
 
-        bool RealtimeLogging { get; }
-        string WatchEventStoreUri { get; }
-        string WatchDomainName { get; }
-
-
-        string RepositoryRoot { get; set; }
-        string InstallationRoot { get; set; }
-        string ConfigurationType { get; set; }
+        List<DeploymentUnit> Deployments { get;  }
 
 
-        bool DeployAppliances { get; set; }
-        bool StartAppliances { get; set; }
-        bool StartInParallel { get; set; }
-        bool AllAppliancesMustDeploy { get; set; }
+        string RepositoryRoot { get; }
 
+        string InstallationRoot { get; }
 
-        int WaitForDeploySeconds { get; set; }
-        int WaitForStartSeconds { get; set; }
-        int WaitForStopSeconds { get; set; }
-
-
-        Dictionary<string, object> Configuration { get; set; }
-
-
-        void Validate();
-
-
-        List<DeploymentUnit> Deployments { get; set; }
 
     }
 

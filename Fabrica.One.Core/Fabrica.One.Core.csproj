@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JsonSchema.Net.Generation" Version="1.8.2" />
+    <PackageReference Include="MedallionShell" Version="1.6.2" />
+    <PackageReference Include="System.Text.Json" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 

@@ -220,16 +220,16 @@ namespace Fabrica.Watch
 
                 if( inner is ExternalException ee )
                 {
+                    builder.AppendLine();
                     builder.AppendLine($"    ErrorKind:   {ee.Kind}");
                     builder.AppendLine($"    ErrorCode:   {ee.ErrorCode}");
                     builder.AppendLine($"    Explanation: {ee.Explanation}");
-                }
 
-                if( inner is ViolationsExistException ve )
-                {
-                    builder.AppendLine("--- Violations   --------------------------------------");
-                    foreach (var ev in ve.Violations)
-                        builder.AppendLine($"    {ev.Group} - {ev.Explanation}");
+                    builder.AppendLine();
+                    builder.AppendLine("--- Details      --------------------------------------");
+                    foreach (var ed in ee.Details)
+                        builder.AppendLine($"    {ed.Category} {ed.Group} - {ed.Explanation} (Rule: {ed.RuleName} @ {ed.Source})");
+
                 }
 
                 builder.AppendLine();

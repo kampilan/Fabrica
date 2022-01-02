@@ -11,6 +11,8 @@ namespace Fabrica.One.Plan
 
         Task<bool> HasUpdatedPlan();
 
+        Task Reload();
+
     }
 
 
