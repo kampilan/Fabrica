@@ -13,7 +13,8 @@ namespace Fabrica.One.Plan
         public string Name { get; set; } = "";
 
         [Required]
-        public string RepositoryVersion { get; set; }
+        [MinLength(0)]
+        public string RepositoryVersion { get; set; } = "";
 
         [Required]
         public bool DeployAppliances { get; set; }
@@ -54,6 +55,11 @@ namespace Fabrica.One.Plan
         [JsonIgnore]
         public string InstallationRoot { get; set; } = "";
 
+
+        public void SetRepositoryVersion( string version )
+        {
+            RepositoryVersion = version;
+        }
 
     }
 

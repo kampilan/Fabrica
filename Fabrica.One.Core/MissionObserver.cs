@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Autofac;
 using Fabrica.One.Plan;
@@ -7,19 +8,44 @@ using Fabrica.Watch;
 namespace Fabrica.One
 {
 
-    
+
     public class MissionObserver
     {
 
 
-        public MissionObserver( ILifetimeScope root )
+        public MissionObserver(ILifetimeScope rootScope)
         {
-
-            Root = root;
+            RootScope = rootScope;
         }
 
-        private ILifetimeScope Root { get; }
-        private ILifetimeScope CurrentScope{ get; set; }
+
+        public string MissionStatusDir { get; set; } = "";
+
+        public async Task UpdateMissionStatus()
+        {
+
+
+            if (CurrentMission == null || string.IsNullOrWhiteSpace(MissionStatusDir))
+                return;
+
+
+            var file = $"{MissionStatusDir}{Path.DirectorySeparatorChar}mission-status.json";
+            var json = CurrentMission.GetStatusAsJson();
+
+
+            using (var fo = new FileStream(file, FileMode.Create, FileAccess.Write))
+            using (var writer = new StreamWriter(fo))
+            {
+                await writer.WriteAsync(json);
+                await writer.FlushAsync();
+            }
+
+
+
+        }
+
+        private ILifetimeScope RootScope { get; }
+        private ILifetimeScope CurrentScope { get; set; }
 
         private Mission CurrentMission { get; set; }
 
@@ -34,36 +60,33 @@ namespace Fabrica.One
                 logger.EnterMethod();
 
 
-                if( CurrentScope != null )
-                {
-                    logger.Info("Mission already runnning");
+                if (CurrentMission != null)
                     return;
-                }
 
 
                 try
                 {
 
-                    CurrentScope = Root.BeginLifetimeScope();
+                    CurrentScope = RootScope.BeginLifetimeScope();
 
                     CurrentMission = CurrentScope.Resolve<Mission>();
 
                 }
-                catch( Exception cause )
+                catch (Exception cause)
                 {
-                    logger.Error( cause, "Mission acquisition failed." );
+                    logger.Error(cause, "Mission acquisition failed.");
                     throw;
                 }
-                
+
 
 
                 var result = CurrentMission.Run();
 
-                if( !result.Successful )
+                if (!result.Successful)
                 {
                     var ev = logger.CreateEvent(Level.Error, "MissionObserver Start failed.", result);
-                    logger.LogEvent( ev );
-                    throw new Exception( "Mission start failed.");
+                    logger.LogEvent(ev);
+                    throw new Exception("Mission start failed.");
                 }
 
 
@@ -75,35 +98,42 @@ namespace Fabrica.One
 
         }
 
-
+        private DateTime LastStatusUpdate { get; set; } = DateTime.Now.AddSeconds(-20);
         public async Task Check()
         {
 
-            var logger = this.GetLogger();
 
-            try
+            if (CurrentScope is null)
+                return;
+
+
+            var source = CurrentScope.Resolve<IPlanSource>();
+
+            var updated = await source.HasUpdatedPlan();
+
+
+            if (updated)
             {
 
-                logger.EnterMethod();
-
-
-                var source = CurrentScope.Resolve<IPlanSource>();
-
-                var updated = await source.HasUpdatedPlan();
-
-                logger.Inspect(nameof(updated), updated);
-
-                if( updated )
+                using (var logger = this.GetLogger())
                 {
+                    logger.Debug("Attempting to Stop and Start after update deteched");
+
                     Stop();
                     Start();
+
+                    logger.Debug("Update completed");
+
                 }
 
             }
-            finally
+
+            if (LastStatusUpdate + TimeSpan.FromSeconds(10) < DateTime.Now)
             {
-                logger.LeaveMethod();
+                await UpdateMissionStatus();
+                LastStatusUpdate = DateTime.Now;
             }
+
 
         }
 

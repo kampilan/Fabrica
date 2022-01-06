@@ -2,8 +2,8 @@
 Profile: kampilan
 RunningOnEC2: false
 
-#WatchEventStoreUri: "mongodb://watch:w1FfV1qfZQJKTFv0zpme@10.78.142.10:27017"
-#WatchDomainName: Fabrica.Watch.Development
+OneRoot: "e:/fabrica-one"
 
-#UseAppConfigPlanSource: true
-#AppConfigPlanSourceApplication: after-crm
+#WatchEventStoreUri: "mongodb://mongodb.fabricatio.io:27017"
+#WatchDomainName: Fabrica.One.Development
+

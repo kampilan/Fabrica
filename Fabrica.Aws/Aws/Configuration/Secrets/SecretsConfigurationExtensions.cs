@@ -1,21 +1,24 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 
-namespace Fabrica.Aws.Configuration.Secrets;
-
-public static class SecretsConfigurationExtensions
+namespace Fabrica.Aws.Configuration.Secrets
 {
-
-
-    public static IConfigurationBuilder AddAwsSecrets(this IConfigurationBuilder builder, Action<SecretsConfigurationSource> config)
+ 
+    public static class SecretsConfigurationExtensions
     {
 
-        builder.Add(config);
 
-        return builder;
+        public static IConfigurationBuilder AddAwsSecrets(this IConfigurationBuilder builder, Action<SecretsConfigurationSource> config)
+        {
+
+            builder.Add(config);
+
+            return builder;
+
+        }
+
+
 
     }
-
-
 
 }

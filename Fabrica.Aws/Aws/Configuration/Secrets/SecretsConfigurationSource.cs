@@ -2,30 +2,44 @@
 using Fabrica.Watch;
 using Microsoft.Extensions.Configuration;
 
-namespace Fabrica.Aws.Configuration.Secrets;
-
-public class SecretsConfigurationSource: IConfigurationSource
+namespace Fabrica.Aws.Configuration.Secrets
 {
-
-    public string SecretsKeyId { get; set; } = "";
-    public string Region { get; set; } = "";
-    public string ProfileName { get; set; } = "";
-    public bool RunningOnEc2 { get; set; } = true;
-
-
-    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    public class SecretsConfigurationSource : IConfigurationSource
     {
 
-        using var logger = this.EnterMethod();
+        public string SecretsKeyId { get; set; } = "";
+        public string Region { get; set; } = "";
+        public string ProfileName { get; set; } = "";
+        public bool RunningOnEc2 { get; set; } = true;
 
-        logger.LogObject("this", this);
 
-        var endpoint = RegionEndpoint.GetBySystemName(Region);
+        public IConfigurationProvider Build(IConfigurationBuilder builder)
+        {
 
-        var provider = new SecretsConfigurationProvider(SecretsKeyId, endpoint, RunningOnEc2, ProfileName);
+            var logger = this.GetLogger();
 
-        return provider;
+            try
+            {
+
+                logger.EnterMethod();
+
+                logger.LogObject("this", this);
+
+                var endpoint = RegionEndpoint.GetBySystemName(Region);
+
+                var provider = new SecretsConfigurationProvider(SecretsKeyId, endpoint, RunningOnEc2, ProfileName);
+
+                return provider;
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+        }
 
     }
+
 
 }

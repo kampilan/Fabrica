@@ -18,13 +18,10 @@ public class JsonPlanFactoryTests: BaseOneTest
     public async Task Test0110_No_Appliance_Plan_Should_Not_Be_Valid()
     {
 
-        var source = await NoAppliancePlanSource();
-
-        var act = await source.GetSource();
-
+        var source  = await NoAppliancePlanSource();
         var factory = GetFactory();
 
-        Assert.Throws<PredicateException>(() => factory.Create(act));
+        Assert.ThrowsAsync<PredicateException>( async () => await factory.Create(source) );
 
     }
 
@@ -33,13 +30,10 @@ public class JsonPlanFactoryTests: BaseOneTest
     public async Task Test0111_Empty_Plan_Should_Not_Be_Valid()
     {
 
-        var source = await EmptyPlanSource();
-
-        var act = await source.GetSource();
-
+        var source  = await EmptyJsonPlanSource();
         var factory = GetFactory();
 
-        Assert.Throws<PredicateException>(() => factory.Create(act));
+        Assert.ThrowsAsync<PredicateException>(async () => await factory.Create(source));
 
     }
 
@@ -47,13 +41,10 @@ public class JsonPlanFactoryTests: BaseOneTest
     public async Task Test0112_Bad_Plan_Should_Not_Be_Valid()
     {
 
-        var source = await BadJsonPlanSource();
-
-        var act = await source.GetSource();
-
+        var source  = await BadJsonPlanSource();
         var factory = GetFactory();
 
-        Assert.Throws<PredicateException>(() => factory.Create(act));
+        Assert.ThrowsAsync<PredicateException>(async () => await factory.Create(source));
 
     }
 
@@ -63,11 +54,9 @@ public class JsonPlanFactoryTests: BaseOneTest
     {
 
         var source = await OneAppliancePlanSourceWithNoChecksum();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
 
         Assert.IsNotNull(plan);
         Assert.IsTrue(plan.Deployments.Count == 1);
@@ -92,11 +81,9 @@ public class JsonPlanFactoryTests: BaseOneTest
     {
 
         var source = await MultiAppliancePlanSource();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
 
         Assert.IsNotNull(plan);
         Assert.IsTrue(plan.Deployments.Count == 2);
@@ -120,12 +107,10 @@ public class JsonPlanFactoryTests: BaseOneTest
     public async Task Test0140_Write_Plan_To_Disk()
     {
 
-        var source = await OneAppliancePlanSourceWithGoodChecksum();
-        var act = await source.GetSource();
-
+        var source  = await OneAppliancePlanSourceWithGoodChecksum();
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
 
         Assert.IsNotNull(plan);
 
@@ -138,7 +123,7 @@ public class JsonPlanFactoryTests: BaseOneTest
         var json = JsonSerializer.Serialize( (PlanImpl)plan, options );
 
         
-        await using var fs = new FileStream("c:/temp/test-mission-plan.json", FileMode.Create, FileAccess.Write);
+        await using var fs = new FileStream("e:/fabrica-one/mission-plan.json", FileMode.Create, FileAccess.Write);
         await using var writer = new StreamWriter(fs);
 
         await writer.WriteAsync(json);

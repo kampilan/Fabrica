@@ -18,11 +18,9 @@ public class ZipInstallerTests: BaseOneTest
 
 
         var source = await OneAppliancePlanSourceWithNoChecksum();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
         var unit = plan.Deployments[0];
 
         var loader = new ZipInstaller();
@@ -48,11 +46,9 @@ public class ZipInstallerTests: BaseOneTest
 
 
         var source = await OneAppliancePlanSourceWithNoChecksum();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
         var unit = plan.Deployments[0];
 
 
@@ -88,11 +84,9 @@ public class ZipInstallerTests: BaseOneTest
 
 
         var source = await OneAppliancePlanSourceWithNoChecksumNoDeploy();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
         var unit = plan.Deployments[0];
 
 
@@ -133,11 +127,9 @@ public class ZipInstallerTests: BaseOneTest
 
 
         var source = await OneAppliancePlanSourceWithGoodChecksum();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
         var unit = plan.Deployments[0];
 
 
@@ -175,11 +167,9 @@ public class ZipInstallerTests: BaseOneTest
 
 
         var source = await OneBogusAppliancePlanSource();
-        var act = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(act);
+        var plan = await factory.Create(source);
         var unit = plan.Deployments[0];
 
 

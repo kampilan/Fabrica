@@ -7,6 +7,8 @@ namespace Fabrica.One.Plan
     public interface IPlanSource
     {
 
+        bool IsEmpty();
+
         Task<Stream> GetSource();
 
         Task<bool> HasUpdatedPlan();

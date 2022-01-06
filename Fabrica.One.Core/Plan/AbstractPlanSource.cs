@@ -9,7 +9,7 @@ namespace Fabrica.One.Plan
     {
 
 
-        public TimeSpan CheckInterval { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan CheckInterval { get; set; } = TimeSpan.FromSeconds(1);
         protected DateTime LastCheck { get; set; } = DateTime.Now.AddHours(-24);
 
         protected abstract Task<bool> CheckForUpdate();
@@ -17,7 +17,7 @@ namespace Fabrica.One.Plan
         public async Task<bool> HasUpdatedPlan()
         {
 
-            if (DateTime.Now < LastCheck + CheckInterval)
+            if( DateTime.Now < LastCheck + CheckInterval )
                 return false;
 
             var updated = await CheckForUpdate();

@@ -40,14 +40,31 @@ namespace Fabrica.One.Loader
 
 
                 // *****************************************************************
+                logger.Debug("Attempting to check for RepositoryVersion");
+                if( string.IsNullOrWhiteSpace(plan.RepositoryVersion) )
+                {
+                    logger.Debug("RepositoryVersion is empty. Skipping Repository clean");
+                    return Task.CompletedTask;
+                }
+
+
+
+                // *****************************************************************
                 logger.Debug("Attempting to delete all repository versions except for the one in the current plan");
-                foreach (var rv in repoDir.EnumerateDirectories())
+                foreach( var rv in repoDir.EnumerateDirectories("v-*") )
                 {
 
-                    logger.Inspect(nameof(rv.FullName), rv.FullName);
+                    logger.Inspect( nameof(rv.FullName), rv.FullName );
+                    logger.Inspect( nameof(plan.RepositoryVersion), plan.RepositoryVersion );
 
-                    if( rv.Name != plan.RepositoryVersion )
-                        rv.Delete(true);
+                    var comp = string.Compare( rv.Name, plan.RepositoryVersion, StringComparison.InvariantCulture );
+                    logger.Inspect(nameof(comp), comp);
+
+                    if( comp >= 0 ) 
+                        continue;
+
+                    logger.Debug("Attempting to delete outdated repository version");
+                    rv.Delete(true);
 
                 }
 

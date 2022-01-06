@@ -1,20 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Fabrica.One</RootNamespace>
+    <RootNamespace>Fabrica.One.Orchestrator</RootNamespace>
     <Authors>The Kampilan Group Inc.</Authors>
     <Company>The Kampilan Group Inc.</Company>
-    <Description>Fabrica One Appliance execution engine</Description>
+    <Description>Fabrica One Orchestrator that uses various AWS services</Description>
     <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonSchema.Net.Generation" Version="1.8.2" />
-    <PackageReference Include="System.Text.Json" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
+    <ProjectReference Include="..\Fabrica.One.Core\Fabrica.One.Core.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 

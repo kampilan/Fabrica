@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Threading.Tasks;
 
 namespace Fabrica.One.Plan
 {
@@ -7,7 +7,11 @@ namespace Fabrica.One.Plan
     public interface IPlanFactory
     {
 
-        IPlan Create( Stream source );
+        Task<IPlan> Create( IPlanSource source, bool produceEmptyPlan=false );
+
+        Task CreateRepositoryVersion( IPlan plan );
+
+        Task Save( IPlan plan, IPlanWriter writer );
 
     }
 

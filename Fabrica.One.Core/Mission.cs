@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Nodes;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Exceptions;
@@ -13,44 +13,54 @@ using Fabrica.One.Plan;
 using Fabrica.Watch;
 using Fabrica.Watch.Sink;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Fabrica.One
 {
-
-
     public class Mission
     {
 
-        public class Result
-        {
-            public bool Successful { get; set; }
-
-            public List<EventDetail> Details { get; } = new List<EventDetail>();
-
-        }
 
 
 
-        public Mission( [NotNull] IPlan plan, [NotNull] IApplianceLoader appLoader, [NotNull] IApplianceInstaller appInstaller, [NotNull] IApplianceFactory appFactory )
+        public Mission([NotNull] IPlan plan, [NotNull] IApplianceLoader appLoader, [NotNull] IApplianceInstaller appInstaller, [NotNull] IApplianceFactory appFactory)
         {
 
             Plan = plan;
 
-            ApplianceLoader    = appLoader;
+            ApplianceLoader = appLoader;
             ApplianceInstaller = appInstaller;
-            ApplianceFactory   = appFactory;
+            ApplianceFactory = appFactory;
 
         }
 
         private IPlan Plan { get; }
 
-        private IApplianceLoader ApplianceLoader { get;  }
+        private IApplianceLoader ApplianceLoader { get; }
         private IApplianceInstaller ApplianceInstaller { get; }
         private IApplianceFactory ApplianceFactory { get; }
 
+
+        public void Reset()
+        {
+
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+                RunResult.Successful = false;
+                RunResult.Details.Clear();
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+        }
 
         public Result Clean()
         {
@@ -73,17 +83,19 @@ namespace Fabrica.One
                     logger.Debug("Mission is already running.");
                     result.Successful = false;
                     result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Violation, Group = "Clean", Explanation = "Mission is currently running", Source = "Mission" });
+
+                    RunResult.Successful = result.Successful;
+                    RunResult.Details.AddRange(result.Details);
+
+                    return result;
+
                 }
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to clean Repository");
-                ApplianceLoader.Clean(Plan);
-
 
                 // *****************************************************************
-                logger.Debug("Attempting to clean Installations");
-                ApplianceInstaller.Clean(Plan);
+                logger.Debug("Attempting to clean Mission");
+                _clean(Plan, RunResult);
 
 
 
@@ -114,31 +126,28 @@ namespace Fabrica.One
                 var result = new Result { Successful = true };
 
 
-                if( !Plan.DeployAppliances )
-                {
-                    logger.Debug("Skipping Deploy per Plan.DeployAppliances=false");
-                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Deployment", Explanation = "Skipping Deploy per Plan.DeployAppliances=false", Source = "Mission" });
-                    return result;
-                }
-
-
-
                 // *****************************************************************
                 logger.Debug("Attempting to check if mission is already running");
                 if (RunTask != null && !RunTask.IsCompleted)
                 {
+
                     logger.Debug("Mission is already running.");
                     result.Successful = true;
-                    result.Details.Add( new EventDetail{Category = EventDetail.EventCategory.Info, Group = "Deployment", Explanation = "Mission is already running", Source = "Mission"} );
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Deployment", Explanation = "Mission is already running", Source = "Mission" });
+
+                    RunResult.Successful = result.Successful;
+                    RunResult.Details.AddRange(result.Details);
+
                     return result;
+
                 }
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to deploy Mission");
-                logger.LogObject(nameof(Plan), Plan);
-                _deploy( Plan, result );
+                _deploy(Plan, RunResult);
+
 
 
                 // *****************************************************************
@@ -168,23 +177,20 @@ namespace Fabrica.One
                 var result = new Result { Successful = true };
 
 
-                if (!Plan.StartAppliances)
-                {
-                    logger.Debug("Skipping Start per Plan.StartAppliances=false");
-                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Start", Explanation = "Skipping Start per Plan.StartAppliances=false", Source = "Mission" });
-                    return result;
-                }
-
-
-
                 // *****************************************************************
                 logger.Debug("Attempting to check if mission is already running");
                 if (RunTask != null && !RunTask.IsCompleted)
                 {
+
                     logger.Debug("Mission is already running.");
                     result.Successful = true;
                     result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Start", Explanation = "Mission is already running", Source = "Mission" });
+
+                    RunResult.Successful = result.Successful;
+                    RunResult.Details.AddRange(result.Details);
+
                     return result;
+
                 }
 
 
@@ -192,7 +198,7 @@ namespace Fabrica.One
                 // *****************************************************************
                 logger.Debug("Attempting to start Mission");
                 logger.LogObject(nameof(Plan), Plan);
-                _start( Plan, result );
+                _start(Plan, RunResult);
 
 
 
@@ -223,21 +229,48 @@ namespace Fabrica.One
                 var result = new Result { Successful = true };
 
 
-                if (Appliances.Count == 0 )
+                if (Appliances.Count == 0 && StartComplete)
                 {
-                    logger.Debug("Mission is not running");
+
                     result.Successful = true;
-                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Stop", Explanation = "Mission is not running", Source = "Mission" });
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Stop", Explanation = "Mission was empty", Source = "Mission" });
+
+                    RunResult.Successful = result.Successful;
+                    RunResult.Details.AddRange(result.Details);
+
+
                     return result;
 
                 }
 
-                if( Appliances.All(a=>a.HasStopped) )
+
+                if (Appliances.Count == 0)
                 {
+
+                    logger.Debug("Mission is not running");
+                    result.Successful = true;
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Stop", Explanation = "Mission is not running", Source = "Mission" });
+
+                    RunResult.Successful = result.Successful;
+                    RunResult.Details.AddRange(result.Details);
+
+                    return result;
+
+                }
+
+
+                if (Appliances.All(a => a.HasStopped))
+                {
+
                     logger.Debug("Mission has already been stopped");
                     result.Successful = true;
                     result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Stop", Explanation = "Mission has already been stopped", Source = "Mission" });
+
+                    RunResult.Successful = result.Successful;
+                    RunResult.Details.AddRange(result.Details);
+
                     return result;
+
                 }
 
 
@@ -245,7 +278,7 @@ namespace Fabrica.One
                 // *****************************************************************
                 logger.Debug("Attempting to stop Mission");
                 logger.LogObject(nameof(Plan), Plan);
-                _stop( Plan, result );
+                _stop(Plan, result);
 
 
 
@@ -275,7 +308,8 @@ namespace Fabrica.One
                 logger.EnterMethod();
 
 
-                var result = new Result { Successful = true };
+                RunResult.Successful = false;
+                RunResult.Details.Clear();
 
 
                 // *****************************************************************
@@ -283,23 +317,25 @@ namespace Fabrica.One
                 if (RunTask != null && !RunTask.IsCompleted)
                 {
                     logger.Debug("Mission is already running.");
-                    result.Successful = true;
-                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Run", Explanation = "Mission is already running", Source = "Mission" });
-                    return result;
+                    RunResult.Successful = true;
+                    RunResult.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Run", Explanation = "Mission is already running", Source = "Mission" });
+                    return RunResult;
                 }
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to start background task");
-                logger.LogObject(nameof(Plan), Plan );
+                logger.LogObject(nameof(Plan), Plan);
                 MustStopToken = MustStopSource.Token;
-                RunTask = Task.Run( ()=>_run(Plan) );
+                RunTask = Task.Run(() => _run(Plan));
 
+
+                RunResult.Successful = true;
 
 
                 // *****************************************************************
-                return result;
+                return RunResult;
 
 
             }
@@ -359,7 +395,7 @@ namespace Fabrica.One
 
                 // *****************************************************************
                 logger.Debug("Attempting to wait for Mission to stop");
-                result.Successful = RunTask.Wait( TimeSpan.FromSeconds( Plan.WaitForStopSeconds + 10 ) );
+                result.Successful = RunTask.Wait(TimeSpan.FromSeconds(Plan.WaitForStopSeconds + 10));
 
                 RunTask = null;
 
@@ -378,67 +414,72 @@ namespace Fabrica.One
         }
 
 
-        public bool StartComplete =>  Appliances.Count > 0 && Appliances.All(a => a.HasStarted);
+        public bool StartComplete => Appliances.Count == 0 || Appliances.All(a => a.HasStarted);
 
         public IEnumerable<ApplianceInfo> GetAppliances()
         {
 
             return Appliances.Select(ap => new ApplianceInfo
-                {
-                    Id                        = ap.Unit.Id,
-                    Alias                     = ap.Unit.Alias,
-                    Name                      = ap.Unit.Name,
-                    Build                     = ap.Unit.Build,
-                    RepositoryLocation        = ap.Unit.RepositoryLocation,
-                    InstallationLocation      = ap.Unit.InstallationLocation,
-                    Environment               = ap.Unit.Environment,
-                    Assembly                  = ap.Unit.Assembly,
-                    EnvironmentConfiguration  = ElementToJson(ap.Unit.EnvironmentConfiguration),
-                    MissionConfiguration      = DictionaryToJson(ap.Unit.MissionConfiguration),
-                    HasLoaded                 = ap.Unit.HasLoaded,
-                    HasInstalled              = ap.Unit.HasInstalled,
-                    HasStarted                = ap.Unit.HasStarted,
-                    HasStopped                = ap.Unit.HasStopped
-                })
+            {
+                Id = ap.Unit.Id,
+                Alias = ap.Unit.Alias,
+                Name = ap.Unit.Name,
+                Build = ap.Unit.Build,
+                RepositoryLocation = ap.Unit.RepositoryLocation,
+                InstallationLocation = ap.Unit.InstallationLocation,
+                Environment = ap.Unit.Environment,
+                Assembly = ap.Unit.Assembly,
+                EnvironmentConfiguration = ap.Unit.EnvironmentConfiguration,
+                HasLoaded = ap.Unit.HasLoaded,
+                HasInstalled = ap.Unit.HasInstalled,
+                HasStarted = ap.HasStarted,
+                HasStopped = ap.HasStopped
+            })
                 .ToList();
-
-
-            string ElementToJson(JsonObject element)
-            {
-                return element.ToString();
-            }
-
-            string DictionaryToJson(IDictionary<string,object> dict )
-            {
-                var json = JsonSerializer.Serialize(dict);
-                return json;
-            }
-
 
         }
 
+        public string GetStatusAsJson()
+        {
 
+            var apps = GetAppliances();
+
+            var status = new { Results = RunResult, Appliances = apps.ToList() };
+
+            var options = new JsonSerializerOptions(JsonSerializerDefaults.General)
+            {
+                WriteIndented = true
+            };
+
+            var json = JsonSerializer.Serialize(status, options);
+
+
+            return json;
+
+
+        }
 
         private CancellationTokenSource MustStopSource { get; set; } = new CancellationTokenSource();
         private CancellationToken MustStopToken { get; set; } = new CancellationToken(true);
         private Task RunTask { get; set; }
 
+        private Result RunResult { get; set; } = new Result();
         private IList<IAppliance> Appliances { get; } = new List<IAppliance>();
 
 
-        private void _run( IPlan plan )
+        private void _run(IPlan plan)
         {
 
             var logger = this.GetLogger();
 
-            if( logger.IsInfoEnabled )
+            if (logger.IsInfoEnabled)
             {
 
                 var builder = new StringBuilder();
-                foreach( var u in plan.Deployments )
+                foreach (var u in plan.Deployments)
                     builder.AppendLine($"Appliance Alias: {u.Alias} Name: {u.Name} Build: {u.Build}");
 
-                var ev = logger.CreateEvent( Level.Info, "Appliance Info", PayloadType.Yaml, builder.ToString() );
+                var ev = logger.CreateEvent(Level.Info, "Appliance Info", PayloadType.Yaml, builder.ToString());
                 logger.LogEvent(ev);
 
             }
@@ -448,46 +489,52 @@ namespace Fabrica.One
             var sw = new Stopwatch();
             sw.Start();
 
-            var result = new Result();
 
 
             // *****************************************************************
-            logger.DebugFormat("Should deployment be performed{0}", plan.DeployAppliances);
-            if( plan.DeployAppliances )
-            {
-                _clean( plan, result );
-                _deploy( plan, result );
-            }
+            _clean(plan, RunResult);
 
-            logger.InfoFormat( "Deployment completed in {0} msec(s)", sw.ElapsedMilliseconds );
+            logger.InfoFormat("Clean completed in {0} msec(s)", sw.ElapsedMilliseconds);
 
 
 
             // *****************************************************************
-            logger.DebugFormat("Should appliance start be performed{0}", plan.StartAppliances);
-            if( plan.StartAppliances )
-                _start( plan, result );
-            else
-                return;
+            _deploy(plan, RunResult);
+
+            logger.InfoFormat("Deployment completed in {0} msec(s)", sw.ElapsedMilliseconds);
+
+
+
+            // *****************************************************************
+            _start(plan, RunResult);
+
+            logger.InfoFormat("Start completed in {0} msec(s)", sw.ElapsedMilliseconds);
 
 
 
             // *****************************************************************
             logger.Debug("Attempting to enter monitor loop");
-            while( !MustStopToken.IsCancellationRequested )
+            while (!MustStopToken.IsCancellationRequested)
             {
 
-                if( !started && Appliances.All(a=> !a.HasStarted) )
+                if (!started && Appliances.Count == 0)
                 {
                     sw.Stop();
-                    logger.InfoFormat( "{0} appliances deployed and started in {1} msec(s)", Appliances.Count, sw.ElapsedMilliseconds );
+                    logger.InfoFormat("Empty Mission deployed and started in {0} msec(s)", sw.ElapsedMilliseconds);
+                    started = true;
+                }
+
+                if (!started && Appliances.All(a => !a.HasStarted))
+                {
+                    sw.Stop();
+                    logger.InfoFormat("{0} appliances deployed and started in {1} msec(s)", Appliances.Count, sw.ElapsedMilliseconds);
                     started = true;
                 }
 
 
-                foreach( var mgr in Appliances.Where(a => a.HasStarted && a.HasStopped) )
+                foreach (var mgr in Appliances.Where(a => a.HasStarted && a.HasStopped))
                 {
-                    this.GetLogger().ErrorFormat( "Appliance: {0} has stopped unexpectedly, Restarting.", mgr.Unit.Alias );
+                    this.GetLogger().ErrorFormat("Appliance: {0} has stopped unexpectedly, Restarting.", mgr.Unit.Alias);
                     Thread.Sleep(500);
                     mgr.Start();
                 }
@@ -496,14 +543,15 @@ namespace Fabrica.One
 
             }
 
-            this.GetLogger().Info( "Stopping Appliances" );
+            this.GetLogger().Info("Stopping Appliances");
 
-            _stop( plan, result );
+            _stop(plan, RunResult);
 
 
         }
 
-        private void _clean( IPlan plan, Result result )
+
+        private void _clean(IPlan plan, Result result)
         {
 
 
@@ -515,9 +563,27 @@ namespace Fabrica.One
                 logger.EnterMethod();
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to check if clean required");
+                if (!Plan.DeployAppliances)
+                {
+                    logger.Debug("Skipping Clean per Plan.DeployAppliances=false");
+                    result.Successful = true;
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Clean", Explanation = "Skipping Clean per Plan.DeployAppliances=false", Source = "Mission" });
+                    return;
+                }
+
+
+                logger.Debug("Attempting to cleanup the repository");
+                ApplianceLoader.Clean(plan);
+
 
                 logger.Debug("Attempting to cleanup installations");
                 ApplianceInstaller.Clean(plan);
+
+
+                result.Successful = true;
+                result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Clean", Explanation = "Mission clean performed", Source = "Mission" });
 
 
             }
@@ -546,7 +612,8 @@ namespace Fabrica.One
 
         }
 
-        private void _deploy( IPlan plan, Result result )
+
+        private void _deploy(IPlan plan, Result result)
         {
 
 
@@ -559,6 +626,18 @@ namespace Fabrica.One
 
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to check if deployment required");
+                if (!Plan.DeployAppliances)
+                {
+                    logger.Debug("Skipping Deploy per Plan.DeployAppliances=false");
+                    result.Successful = true;
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Deployment", Explanation = "Skipping Deploy per Plan.DeployAppliances=false", Source = "Mission" });
+                    return;
+                }
+
+
+
                 logger.Debug("Attempting to deploy each appliance in parallel");
                 var tasks = new List<Task>();
                 foreach (var unit in plan.Deployments)
@@ -566,8 +645,8 @@ namespace Fabrica.One
 
                     var task = Task.Run(async () =>
                     {
-                        await ApplianceLoader.Load( plan,unit );
-                        await ApplianceInstaller.Install( plan, unit );
+                        await ApplianceLoader.Load(plan, unit);
+                        await ApplianceInstaller.Install(plan, unit);
                     });
 
 
@@ -579,37 +658,43 @@ namespace Fabrica.One
                 bool completed;
                 try
                 {
-                    completed = Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds( plan.WaitForDeploySeconds ) );
+
+                    completed = Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(plan.WaitForDeploySeconds));
 
                     logger.Inspect(nameof(completed), completed);
+
+                    result.Successful = true;
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Deploy", Explanation = "Mission deploy performed", Source = "Mission" });
+
+
                 }
-                catch( AggregateException cause )
+                catch (AggregateException cause)
                 {
 
                     logger.Error(cause, "Mission deployment failed");
 
                     result.Successful = false;
-                    foreach( var ex in cause.InnerExceptions )
+                    foreach (var ex in cause.InnerExceptions)
                         result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Error, Group = "Deployment", Explanation = ex.Message, Source = "Mission" });
 
                     return;
                 }
-                catch ( Exception cause )
+                catch (Exception cause)
                 {
 
                     logger.Error(cause, "Mission deployment failed");
 
                     result.Successful = false;
-                    result.Details.Add( new EventDetail {Category = EventDetail.EventCategory.Error, Group = "Deployment", Explanation = cause.Message, Source = "Mission"} );
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Error, Group = "Deployment", Explanation = cause.Message, Source = "Mission" });
 
                     return;
 
                 }
 
-                if( !completed )
+                if (!completed)
                 {
                     result.Successful = false;
-                    result.Details.Add( new EventDetail { Category = EventDetail.EventCategory.Error, Group = "Deployment", Explanation = "Deployment did not complete in the required amount of time", Source = "Mission" } );
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Error, Group = "Deployment", Explanation = "Deployment did not complete in the required amount of time", Source = "Mission" });
                 }
 
             }
@@ -622,7 +707,7 @@ namespace Fabrica.One
         }
 
 
-        private void _start( IPlan plan, Result result )
+        private void _start(IPlan plan, Result result)
         {
 
             var logger = this.GetLogger();
@@ -634,43 +719,58 @@ namespace Fabrica.One
 
 
                 var ready = plan.Deployments.Count(u => u.HasInstalled);
-                logger.InfoFormat("{0} of {1} unit(s) successfully installed and are ready to start", ready, plan.Deployments.Count );
+                logger.InfoFormat("{0} of {1} unit(s) successfully installed and are ready to start", ready, plan.Deployments.Count);
 
-                var notInstalled = plan.Deployments.Count(u => !u.HasInstalled );
+                var notInstalled = plan.Deployments.Count(u => !u.HasInstalled);
                 logger.InfoFormat("There are {0} unit(s) that failed to install and are not ready to start", notInstalled);
 
-                logger.InfoFormat("This mission is running under AllAppliancesMustDeploy conditions? {0}", plan.AllAppliancesMustDeploy );
+                logger.InfoFormat("This mission is running under AllAppliancesMustDeploy conditions? {0}", plan.AllAppliancesMustDeploy);
 
-                if( notInstalled > 0 && plan.AllAppliancesMustDeploy )
+                if (notInstalled > 0 && plan.AllAppliancesMustDeploy)
                     return;
 
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to check if start is required");
+                if (!Plan.StartAppliances)
+                {
+                    logger.Debug("Skipping Start per Plan.StartAppliances=false");
+                    result.Successful = true;
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Start", Explanation = "Skipping Start per Plan.StartAppliances=false", Source = "Mission" });
+                    return;
+                }
+
+
+
                 logger.Debug("Attempting to create and start process managers for each deployment unit");
-                foreach( var unit in plan.Deployments.Where(u=>u.HasInstalled) )
+                foreach (var unit in plan.Deployments.Where(u => u.HasInstalled))
                 {
 
                     logger.LogObject(nameof(unit), unit);
 
-                    var mgr = ApplianceFactory.Create( plan, unit );
-                    Appliances.Add(mgr);
+                    var app = ApplianceFactory.Create(plan, unit);
+                    Appliances.Add(app);
 
-                    mgr.Start();
+                    app.Start();
 
 
                     // *****************************************************************
                     if (unit.WaitForStart)
                     {
                         logger.DebugFormat("Attempting to wait for appliance ({0}) to start", unit.Alias);
-                        mgr.WaitForStart();
+                        app.WaitForStart();
                     }
-
 
                 }
 
 
+                result.Successful = true;
+                result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Start", Explanation = "Mission start performed", Source = "Mission" });
+
+
             }
-            catch( AggregateException cause )
+            catch (AggregateException cause)
             {
 
                 logger.Error(cause, "Mission Start failed");
@@ -680,7 +780,7 @@ namespace Fabrica.One
                     result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Error, Group = "Start", Explanation = ex.Message, Source = "Mission" });
 
             }
-            catch( Exception cause )
+            catch (Exception cause)
             {
 
                 logger.Error(cause, "Mission Start failed");
@@ -694,11 +794,11 @@ namespace Fabrica.One
                 logger.LeaveMethod();
             }
 
-            
+
         }
 
 
-        private void _stop( IPlan plan, Result result )
+        private void _stop(IPlan plan, Result result)
         {
 
             var logger = this.GetLogger();
@@ -711,16 +811,28 @@ namespace Fabrica.One
 
 
                 // *****************************************************************
+                logger.Debug("Attempting to check for empty Mission");
+                if (Appliances.Count == 0)
+                {
+                    logger.Debug("Stopping empty Mission");
+                    result.Successful = true;
+                    result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Stop", Explanation = "Empty Mission stop performed", Source = "Mission" });
+                    return;
+                }
+
+
+
+                // *****************************************************************
                 logger.Debug("Attempting to stop each appliance");
-                foreach (var mgr in Appliances.Where(a=>a.HasStarted))
-                    mgr.Stop();
+                foreach (var app in Appliances.Where(a => a.HasStarted))
+                    app.Stop();
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to wait for stop");
                 var expired = DateTime.Now + TimeSpan.FromSeconds(plan.WaitForStopSeconds);
-                while( expired > DateTime.Now )
+                while (expired > DateTime.Now)
                 {
 
                     var stopped = Appliances.All(a => a.HasStopped);
@@ -738,11 +850,15 @@ namespace Fabrica.One
                 foreach (var mgr in Appliances)
                     mgr.Dispose();
 
-
+               
 
                 // *****************************************************************
                 logger.Debug("Attempting to clear the Appliances");
                 Appliances.Clear();
+
+
+                result.Successful = true;
+                result.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Info, Group = "Stop", Explanation = "Mission stop performed", Source = "Mission" });
 
 
             }
@@ -770,8 +886,7 @@ namespace Fabrica.One
                 logger.LeaveMethod();
             }
 
-        }        
-
+        }
 
 
     }

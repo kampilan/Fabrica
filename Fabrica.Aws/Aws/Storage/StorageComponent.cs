@@ -40,7 +40,7 @@ namespace Fabrica.Aws.Storage
     public class StorageComponent : CorrelatedObject, IRemoteStorageProvider
     {
 
-        public StorageComponent( [NotNull] ICorrelation correlation, [NotNull] IAmazonS3 client) : base(correlation)
+        public StorageComponent([NotNull] ICorrelation correlation, [NotNull] IAmazonS3 client) : base(correlation)
         {
 
             Client = client ?? throw new ArgumentNullException(nameof(client));
@@ -57,9 +57,21 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
-            using var logger = EnterMethod();
+            var logger = this.GetLogger();
 
-            return AsyncPump.Run(async () => await ExistsAsync(root, key));
+            try
+            {
+
+                logger.EnterMethod();
+
+
+                return AsyncPump.Run(async () => await ExistsAsync(root, key));
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
 
         }
 
@@ -69,43 +81,42 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
-            using var logger = EnterMethod();
 
+            var logger = GetLogger();
             try
             {
+
+                logger.EnterMethod();
+
 
                 logger.Inspect(nameof(root), root);
                 logger.Inspect(nameof(key), key);
 
 
-                try
+
+                // *****************************************************************
+                logger.Debug("Attempting to get Object Metadata");
+
+                var request = new GetObjectMetadataRequest
                 {
+                    BucketName = root,
+                    Key = key
+                };
 
-                    // *****************************************************************
-                    logger.Debug("Attempting to get Object Metadata");
+                var response = await Client.GetObjectMetadataAsync(request);
 
-                    var request = new GetObjectMetadataRequest
-                    {
-                        BucketName = root,
-                        Key = key
-                    };
-
-                    var response = await Client.GetObjectMetadataAsync(request);
-
-                    var found = response.HttpStatusCode == HttpStatusCode.OK;
+                var found = response.HttpStatusCode == HttpStatusCode.OK;
 
 
 
-                    // *****************************************************************
-                    return found;
-
-                }
-                catch (AmazonS3Exception cause) when (cause.ErrorCode == "NotFound")
-                {
-                    return false;
-                }
+                // *****************************************************************
+                return found;
 
 
+            }
+            catch (AmazonS3Exception cause) when (cause.ErrorCode == "NotFound")
+            {
+                return false;
             }
             catch (Exception cause)
             {
@@ -113,6 +124,11 @@ namespace Fabrica.Aws.Storage
                 logger.ErrorWithContext(cause, context, "Exists failed");
                 throw;
             }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
 
         }
 
@@ -124,10 +140,21 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             if (content == null) throw new ArgumentNullException(nameof(content));
 
-            using var logger = EnterMethod();
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+                AsyncPump.Run(async () => await GetAsync(root, key, content, rewind));
 
 
-            AsyncPump.Run(async () => await GetAsync(root, key, content, rewind));
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
 
 
         }
@@ -139,42 +166,55 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
 
-            using var logger = EnterMethod();
+            var logger = GetLogger();
 
-
-            logger.Inspect("root", root);
-            logger.Inspect("key", key);
-
-
-            // *********************************************************************
-            logger.Debug("Attempting to build S3 GetObjectRequest");
-            var request = new GetObjectRequest
+            try
             {
-                BucketName = root,
-                Key = key
-            };
+
+                logger.EnterMethod();
+
+
+                logger.Inspect("root", root);
+                logger.Inspect("key", key);
+
+
+                // *********************************************************************
+                logger.Debug("Attempting to build S3 GetObjectRequest");
+                var request = new GetObjectRequest
+                {
+                    BucketName = root,
+                    Key = key
+                };
 
 
 
-            // *********************************************************************
-            logger.Debug("Attempting to call GetObject from S3");
-            var response = await Client.GetObjectAsync(request);
+                // *********************************************************************
+                logger.Debug("Attempting to call GetObject from S3");
+                var response = await Client.GetObjectAsync(request);
 
-            if (response.HttpStatusCode != HttpStatusCode.OK)
-            {
-                logger.LogObject("response", response);
-                throw new IOException($"Could not Get item using Root=({root}) Key=({key})");
+                if (response.HttpStatusCode != HttpStatusCode.OK)
+                {
+                    logger.LogObject("response", response);
+                    throw new IOException($"Could not Get item using Root=({root}) Key=({key})");
+                }
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to copy response stream to content");
+                using (var stream = response.ResponseStream)
+                {
+                    await stream.CopyToAsync(content);
+                    if (rewind && content.CanSeek)
+                        content.Seek(0, SeekOrigin.Begin);
+                }
+
+
+
             }
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to copy response stream to content");
-            await using( var stream = response.ResponseStream )
+            finally
             {
-                await stream.CopyToAsync(content);
-                if( rewind && content.CanSeek )
-                    content.Seek(0, SeekOrigin.Begin);
+                logger.LeaveMethod();
             }
 
 
@@ -188,10 +228,22 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             if (content == null) throw new ArgumentNullException(nameof(content));
 
-            using var logger = EnterMethod();
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+                AsyncPump.Run(async () => await PutAsync(root, key, content, contentType, rewind, autoClose));
 
 
-            AsyncPump.Run(async () => await PutAsync(root, key, content, contentType, rewind, autoClose));
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
 
 
         }
@@ -204,36 +256,49 @@ namespace Fabrica.Aws.Storage
             if (content == null) throw new ArgumentNullException(nameof(content));
 
 
-            using var logger = EnterMethod();
+            var logger = this.GetLogger();
 
-
-            logger.Inspect("root", root);
-            logger.Inspect("key", key);
-
-
-
-            // *********************************************************************
-            logger.Debug("Attempting to build S3 PutObjectRequest");
-            var request = new PutObjectRequest
+            try
             {
-                AutoResetStreamPosition = rewind,
-                AutoCloseStream = autoClose,
-                BucketName = root,
-                Key = key,
-                ContentType = contentType,
-                InputStream = content
-            };
+
+                logger.EnterMethod();
+
+
+                logger.Inspect("root", root);
+                logger.Inspect("key", key);
 
 
 
-            // *********************************************************************
-            logger.Debug("Attempting to call PutObject from S3");
-            var response = await Client.PutObjectAsync(request);
+                // *********************************************************************
+                logger.Debug("Attempting to build S3 PutObjectRequest");
+                var request = new PutObjectRequest
+                {
+                    AutoResetStreamPosition = rewind,
+                    AutoCloseStream = autoClose,
+                    BucketName = root,
+                    Key = key,
+                    ContentType = contentType,
+                    InputStream = content
+                };
 
-            if (response.HttpStatusCode != HttpStatusCode.OK)
+
+
+                // *********************************************************************
+                logger.Debug("Attempting to call PutObject from S3");
+                var response = await Client.PutObjectAsync(request);
+
+                if (response.HttpStatusCode != HttpStatusCode.OK)
+                {
+                    logger.LogObject("response", response);
+                    throw new IOException($"Could not Put item using Root=({root}) Key=({key})");
+                }
+
+
+
+            }
+            finally
             {
-                logger.LogObject("response", response);
-                throw new IOException($"Could not Put item using Root=({root}) Key=({key})");
+                logger.LeaveMethod();
             }
 
 
@@ -246,9 +311,21 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
-            using var logger = EnterMethod();
+            var logger = GetLogger();
 
-            AsyncPump.Run(async () => await DeleteAsync(root, key));
+            try
+            {
+
+                logger.EnterMethod();
+
+                AsyncPump.Run(async () => await DeleteAsync(root, key));
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
 
 
         }
@@ -260,29 +337,41 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
 
-            using var logger = EnterMethod();
+            var logger = GetLogger();
 
-
-            logger.Inspect("root", root);
-            logger.Inspect("key", key);
-
-
-            // *********************************************************************
-            logger.Debug("Attempting to build S3 GetObjectRequest");
-            var request = new DeleteObjectRequest
+            try
             {
-                BucketName = root,
-                Key = key
-            };
+
+                logger.EnterMethod();
+
+
+                logger.Inspect("root", root);
+                logger.Inspect("key", key);
+
+
+                // *********************************************************************
+                logger.Debug("Attempting to build S3 GetObjectRequest");
+                var request = new DeleteObjectRequest
+                {
+                    BucketName = root,
+                    Key = key
+                };
 
 
 
-            // *********************************************************************
-            logger.Debug("Attempting to call DeleteObject from S3");
-            var response = await Client.DeleteObjectAsync(request);
+                // *********************************************************************
+                logger.Debug("Attempting to call DeleteObject from S3");
+                var response = await Client.DeleteObjectAsync(request);
 
-            if (response.HttpStatusCode != HttpStatusCode.OK)
-                logger.LogObject("response", response);
+                if (response.HttpStatusCode != HttpStatusCode.OK)
+                    logger.LogObject("response", response);
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
 
 
         }
@@ -294,10 +383,22 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
-            using var logger = EnterMethod();
+            var logger = this.GetLogger();
 
-            return AsyncPump.Run(async () => await GetReferenceAsync(root, key, timeToLive));
+            try
+            {
 
+                logger.EnterMethod();
+
+
+                return AsyncPump.Run(async () => await GetReferenceAsync(root, key, timeToLive));
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
 
         }
 
@@ -308,35 +409,46 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
 
 
-            using var logger = EnterMethod();
+            var logger = GetLogger();
 
-
-            logger.Inspect(nameof(root), root);
-            logger.Inspect(nameof(key), key);
-            logger.Inspect(nameof(timeToLive), timeToLive.ToString());
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to Get signed url");
-            var request = new GetPreSignedUrlRequest
+            try
             {
-                Protocol = Protocol.HTTPS,
-                BucketName = root,
-                Verb = HttpVerb.GET,
-                Expires = DateTime.UtcNow + timeToLive,
-                Key = key
-            };
+
+                logger.EnterMethod();
 
 
-            var url = Client.GetPreSignedURL(request);
+                logger.Inspect(nameof(root), root);
+                logger.Inspect(nameof(key), key);
+                logger.Inspect(nameof(timeToLive), timeToLive.ToString());
 
-            logger.Inspect(nameof(url), url);
+
+                // *****************************************************************
+                logger.Debug("Attempting to Get signed url");
+                var request = new GetPreSignedUrlRequest
+                {
+                    Protocol = Protocol.HTTPS,
+                    BucketName = root,
+                    Verb = HttpVerb.GET,
+                    Expires = DateTime.UtcNow + timeToLive,
+                    Key = key
+                };
+
+
+                var url = Client.GetPreSignedURL(request);
+
+                logger.Inspect(nameof(url), url);
 
 
 
-            // *****************************************************************
-            return Task.FromResult(url);
+                // *****************************************************************
+                return Task.FromResult(url);
 
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
 
 
         }

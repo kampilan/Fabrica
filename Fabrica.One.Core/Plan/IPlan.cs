@@ -28,6 +28,8 @@ namespace Fabrica.One.Plan
 
         string InstallationRoot { get; }
 
+        void SetRepositoryVersion( string version );
+
 
     }
 

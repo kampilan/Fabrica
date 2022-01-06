@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using NUnit.Framework;
@@ -15,11 +16,9 @@ public class ApplianceTests: BaseOneTest
     {
 
         var source = await OneAppliancePlanSourceWithGoodChecksum();
-        var strm = await source.GetSource();
-
         var factory = GetFactory();
 
-        var plan = factory.Create(strm);
+        var plan = await factory.Create(source);
         var unit = plan.Deployments[0];
 
         var loader = new FileSysApplianceLoader();
@@ -39,8 +38,12 @@ public class ApplianceTests: BaseOneTest
 
         Assert.IsTrue(started);
 
+        await Task.Delay(TimeSpan.FromSeconds(5));
 
         app.Stop();
+
+        await Task.Delay(TimeSpan.FromSeconds(5));
+
 
     }
 

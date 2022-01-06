@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 using Fabrica.Exceptions;
+using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 using Fabrica.Watch.Sink;
+using JetBrains.Annotations;
 using Json.More;
 using Json.Schema;
 using Json.Schema.Generation;
@@ -19,7 +21,7 @@ namespace Fabrica.One.Plan
     public class JsonPlanFactory: IPlanFactory
     {
 
-        private class JsonObjectRefinder : ISchemaRefiner
+        private class JsonObjectRefiner : ISchemaRefiner
         {
             public bool ShouldRun(SchemaGeneratorContext context)
             {
@@ -39,7 +41,7 @@ namespace Fabrica.One.Plan
         {
 
             var config = new SchemaGeneratorConfiguration();
-            config.Refiners.Add(new JsonObjectRefinder());
+            config.Refiners.Add(new JsonObjectRefiner());
 
             var builder = new JsonSchemaBuilder();
             builder.FromType<PlanImpl>(config);
@@ -55,16 +57,17 @@ namespace Fabrica.One.Plan
         public JsonPlanFactory(string repositoryRoot, string installationRoot )
         {
 
-            RepositoryRoot   = repositoryRoot;
-            InstallationRoot = installationRoot;
+            RepositoryRoot    = repositoryRoot;
+            InstallationRoot  = installationRoot;
 
         }
-
 
         private string RepositoryRoot { get; }
         private string InstallationRoot { get; }
 
-        public IPlan Create( Stream source )
+
+
+        public async Task<IPlan> Create( IPlanSource source, bool produceEmptyPlan=false )
         {
 
             var logger = this.GetLogger();
@@ -75,14 +78,28 @@ namespace Fabrica.One.Plan
                 logger.EnterMethod();
 
 
+                // *****************************************************************
+                logger.Debug("Attempting to check for empty plan");
+                logger.Inspect(nameof(produceEmptyPlan), produceEmptyPlan);
+
+                var emptyPlan = source.IsEmpty();
+                logger.Inspect(nameof(emptyPlan), emptyPlan);
+
+                if( produceEmptyPlan && emptyPlan )
+                {
+                    logger.Debug("Returning empty Plan per produceEmptyPlan=true");
+                    return GetEmptyPlan();
+                }
+
+
 
                 // *****************************************************************
                 logger.Debug("Attempting to read json from source stream");
-                var missionPlanJson="";
-                using (source)
-                using (var reader = new StreamReader(source))
+                string missionPlanJson;
+                using (var strm = await source.GetSource())
+                using (var reader = new StreamReader(strm))
                 {
-                    missionPlanJson = reader.ReadToEnd();
+                    missionPlanJson = await reader.ReadToEndAsync();
                 }
 
                 logger.LogJson("Mission Plan", missionPlanJson);
@@ -107,6 +124,13 @@ namespace Fabrica.One.Plan
 
                     var je = logger.CreateEvent(Level.Error, "Malformed Mission Plan JSON", PayloadType.Text, missionPlanJson);
                     logger.LogEvent(je);
+
+                    if( produceEmptyPlan )
+                    {
+                        logger.Error( cause, "Returning empty Plan per produceEmptyPlan=true" );
+                        return GetEmptyPlan();
+                    }
+
 
                     var exp = new PredicateException( "Bad JSON encountered during parse.", cause );
                     exp
@@ -139,22 +163,31 @@ namespace Fabrica.One.Plan
                     var je = logger.CreateEvent(Level.Error, "Invalid Mission Plan JSON", PayloadType.Json, missionPlanJson);
                     logger.LogEvent(je);
 
-                    var details = results.NestedResults.Select(e => new EventDetail
-                        {
-                            Category    = EventDetail.EventCategory.Violation,
-                            Group       = "Mission Plan JSON",
-                            RuleName    = "JSON Schema",
-                            Source      = e.SchemaLocation.ToString(),
-                            Explanation = $"{e.InstanceLocation} - {e.Message}"
-                    })
-                        .ToList();
 
                     var exp = new PredicateException("Invalid Mission Plan JSON encountered");
+
+                    var details = results.NestedResults.Select(e => new EventDetail
+                        {
+                            Category = EventDetail.EventCategory.Violation,
+                            Group = "Mission Plan JSON",
+                            RuleName = "JSON Schema",
+                            Source = e.SchemaLocation.ToString(),
+                            Explanation = $"{e.InstanceLocation} - {e.Message}"
+                        })
+                        .ToList();
+
 
                     if (details.Count == 0)
                         exp.WithErrorCode("InvalidMissionJson").WithExplaination($"{results.InstanceLocation} - {results.Message}");
                     else
                         exp.WithErrorCode("InvalidMissionJson").WithDetails(details);
+
+                    if( produceEmptyPlan )
+                    {
+                        logger.Error( exp, "Returning empty Plan per produceEmptyPlan=true" );
+                        return GetEmptyPlan();
+                    }
+
 
                     throw exp;
 
@@ -189,8 +222,18 @@ namespace Fabrica.One.Plan
 
 
                 // *****************************************************************
+                logger.Debug("Attempting to check for RepositoryVersion");
+                var rv = RepositoryRoot;
+                if (!string.IsNullOrWhiteSpace(plan.RepositoryVersion))
+                {
+                    logger.DebugFormat("Using RepositoryVersion: ({0})", plan.RepositoryVersion);
+                    rv = Path.Combine(plan.RepositoryRoot, plan.RepositoryVersion);
+                }
+
+
+
+                // *****************************************************************
                 logger.Debug("Attempting to calculate and populate deployment unit locations");
-                var rv = Path.Combine(plan.RepositoryRoot, plan.RepositoryVersion);
                 foreach (var unit in plan.Deployments)
                 {
 
@@ -226,6 +269,144 @@ namespace Fabrica.One.Plan
             }
 
         }
+
+        public Task CreateRepositoryVersion( IPlan plan )
+        {
+
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to create new RepositoryVersion id");
+                var repoVersion = $"v-{DateTime.UtcNow.ToTimestampString()}";
+                plan.SetRepositoryVersion( repoVersion );
+
+                logger.Inspect(nameof(repoVersion), repoVersion);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to recalulate RepositoryLocation for each DeploymentUnit");
+                foreach( var unit in plan.Deployments )
+                    unit.RepositoryLocation = $"{plan.RepositoryRoot}{Path.DirectorySeparatorChar}{repoVersion}{Path.DirectorySeparatorChar}{unit.Name}-{unit.Build}.zip";
+
+
+
+                // *****************************************************************
+                return Task.CompletedTask;
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+
+        }
+
+
+        public async Task Save([NotNull] IPlan plan, [NotNull] IPlanWriter writer )
+        {
+
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
+
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+                logger.Inspect("Plan Type", plan.GetType().FullName );
+                logger.Inspect("Writer Type", plan.GetType().FullName);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to check for valid IPlan");
+                if( plan is PlanImpl impl )
+                {
+
+                    
+                    logger.Debug("Attempting to serialize plan to JSON");
+                    var json = JsonSerializer.Serialize(impl, new JsonSerializerOptions {WriteIndented = true});
+                    logger.LogJson("Mission Plan JSON", json);
+
+
+                    logger.Debug("Attempting to writer JSON to writer");
+                    await writer.Write(json);
+
+
+                }
+                else
+                    throw new Exception( $"Invalid Plan type. Expected ({typeof(PlanImpl).FullName}) but found ({plan.GetType().FullName}) instead." );
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+        }
+
+
+        protected IPlan GetEmptyPlan()
+        {
+
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build empty plan");
+                var empty = new PlanImpl
+                {
+
+                    Name = "Empty",
+
+                    RepositoryRoot    = RepositoryRoot,
+                    RepositoryVersion = "",
+
+                    InstallationRoot  = InstallationRoot,
+
+                    DeployAppliances        = false,
+                    StartAppliances         = false,
+                    AllAppliancesMustDeploy = false,
+
+                    WaitForDeploySeconds = 10,
+                    WaitForStartSeconds = 10,
+                    WaitForStopSeconds = 10
+
+                };
+
+                logger.LogObject(nameof(empty), empty);
+
+
+                // *****************************************************************
+                return empty;
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+        }
+
+
 
     }
 

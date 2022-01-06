@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text.Json;
@@ -9,7 +8,6 @@ using System.Threading.Tasks;
 using Fabrica.One.Plan;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Fabrica.One.Core.Tests;
@@ -38,9 +36,14 @@ public class BaseOneTest
 
     }
 
+    protected Task<IPlanSource> EmptyPlanSource()
+    {
+        var source = new MemoryPlanSource();
+        return Task.FromResult((IPlanSource)source);
+    }
 
 
-    protected async Task<IPlanSource> EmptyPlanSource()
+    protected async Task<IPlanSource> EmptyJsonPlanSource()
     {
 
         await using var stream = new MemoryStream();
@@ -239,17 +242,18 @@ public class BaseOneTest
         {
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
-            Build = "05325",
+            Build = "05326",
             Environment = "Development",
-            Checksum = "6ee21dfca03183089104d00763667230837625b3d9e3789c60392fbb63705bab",
+            Checksum = "8dc8ebeac47327b168b93c536bbf01ff222c14e8bf79b444203bb60cd0731351",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances,
-            ShowWindow = true
+            ShowWindow = false
         };
 
         var config = new JsonObject
         {
-            ["Test"] = "Cool"
+            ["ListeningPort"] = "8888",
+            ["HealthcheckRoute"] = "/gabby"
         };
 
         deployment.EnvironmentConfiguration = config;
@@ -525,7 +529,7 @@ public class BaseOneTest
 
     protected IPlanFactory GetFactory()
     {
-        var factory = new JsonPlanFactory(@"z:\repository", @"c:\appliances\installations");
+        var factory = new JsonPlanFactory(@"e:\fabrica-one\repository", @"e:\fabrica-one\installations");
         return factory;
     }
 

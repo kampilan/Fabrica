@@ -1,8 +1,11 @@
-﻿namespace Fabrica.Aws.Secrets;
-
-public interface IAwsSecretsManagerModule
+﻿namespace Fabrica.Aws.Secrets
 {
+ 
+    public interface IAwsSecretsManagerModule
+    {
 
-    string AwsSecretsId { get; set; }
+        string AwsSecretsId { get; set; }
+
+    }
 
 }

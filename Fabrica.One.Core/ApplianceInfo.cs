@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Nodes;
 using Fabrica.Utilities.Types;
 
 namespace Fabrica.One
@@ -93,12 +94,7 @@ namespace Fabrica.One
 
 
         [Browsable(false)] 
-        public string EnvironmentConfiguration { get; set; } = "";
-
-
-        [Browsable(false)] 
-        public string MissionConfiguration { get; set; } = "";
-
+        public JsonObject EnvironmentConfiguration { get; set; } = new JsonObject();
 
     }
 

@@ -50,6 +50,35 @@ namespace Fabrica.One.Plan
         private MemoryStream Source { get; set; } = new MemoryStream();
 
 
+        public bool IsEmpty()
+        {
+
+            var logger = this.GetLogger();
+
+            Lock.EnterReadLock();
+            try
+            {
+
+                logger.EnterMethod();
+
+
+                var empty = Source == null || !Source.CanRead || Source.Length == 0;
+
+                logger.Inspect(nameof(empty), empty);
+
+
+                return empty;
+
+
+            }
+            finally
+            {
+                Lock.ExitReadLock();
+                logger.LeaveMethod();
+            }
+
+        }
+
         public Task<Stream> GetSource()
         {
 

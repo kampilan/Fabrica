@@ -243,6 +243,21 @@ namespace Fabrica.Utilities.Types
         }
 
 
+        public static string ToTimestampString(this DateTime source)
+        {
+
+            var utc = source.ToUniversalTime();
+
+            var y = utc.Year.ToString().PadLeft(4,'0');
+            var m = utc.Month.ToString().PadLeft(2, '0');
+            var d = utc.Day.ToString().PadLeft(2, '0');
+            var t = utc.TimeOfDay.Ticks.ToString().PadLeft(20, '0');
+
+            var ts = string.Join("", y, m, d, t);
+            return ts;
+
+        }
+
     }
 
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using Autofac;
 using Fabrica.Exceptions;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using Fabrica.One.Plan;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 
@@ -11,15 +13,21 @@ namespace Fabrica.One.Configuration
 {
 
 
-    public class OneModule: Module
+    public class OneMissionModule: Module
     {
 
+
+        public string OneRoot { get; set; } = "";
+
+        public string MissionPlanDir { get; set; } = "";
+        public string MissionPlanName { get; set; } = "";
         public string RepositoryRoot { get; set; } = "";
         public string InstallationRoot { get; set; } = "";
 
-        public bool ExternalPlanSource { get; set; } = true;
-        public string FileSystemPlanDir { get; set; } = "./";
-        public string FileSystemPlanName { get; set; } = "mission-plan.json";
+        public bool UseExternalPlanSource { get; set; } = true;
+
+        public bool ProduceEmptyPlans { get; set; } = true;
+
 
         protected override void Load( ContainerBuilder builder )
         {
@@ -32,13 +40,25 @@ namespace Fabrica.One.Configuration
                 logger.EnterMethod();
 
 
+                logger.Inspect(nameof(OneRoot), OneRoot);
+                if( string.IsNullOrWhiteSpace(OneRoot) )
+                    throw new InvalidConfigurationException(nameof(OneMissionModule), nameof(OneRoot), "Missing required property");
+
+                logger.Inspect(nameof(MissionPlanDir), MissionPlanDir);
+                if (string.IsNullOrWhiteSpace(MissionPlanDir))
+                    MissionPlanDir = $"{OneRoot}";
+
+                logger.Inspect(nameof(MissionPlanName), MissionPlanName);
+                if (string.IsNullOrWhiteSpace(MissionPlanName))
+                    MissionPlanName = "mission-plan.json";
+
                 logger.Inspect(nameof(RepositoryRoot), RepositoryRoot);
-                if (string.IsNullOrWhiteSpace(RepositoryRoot))
-                    throw new InvalidConfigurationException(nameof(OneModule), nameof(RepositoryRoot), "Missing required property" );
+                if( string.IsNullOrWhiteSpace(RepositoryRoot) )
+                    RepositoryRoot = $"{OneRoot}{Path.DirectorySeparatorChar}repository";
 
                 logger.Inspect(nameof(InstallationRoot), InstallationRoot);
-                if (string.IsNullOrWhiteSpace(InstallationRoot))
-                    throw new InvalidConfigurationException(nameof(OneModule), nameof(InstallationRoot), "Missing required property" );
+                if( string.IsNullOrWhiteSpace(InstallationRoot) )
+                    InstallationRoot = $"{OneRoot}{Path.DirectorySeparatorChar}installations";
 
 
 
@@ -58,17 +78,9 @@ namespace Fabrica.One.Configuration
 
 
                 // *****************************************************************
-                logger.Inspect(nameof(ExternalPlanSource), ExternalPlanSource);
-                if( !ExternalPlanSource )
+                logger.Inspect(nameof(UseExternalPlanSource), UseExternalPlanSource);
+                if( UseExternalPlanSource )
                 {
-
-                    logger.Inspect(nameof(FileSystemPlanDir), FileSystemPlanDir);
-                    if (string.IsNullOrWhiteSpace(FileSystemPlanDir))
-                        throw new InvalidConfigurationException(nameof(OneModule), nameof(FileSystemPlanDir), "Missing required property");
-
-                    logger.Inspect(nameof(FileSystemPlanName), FileSystemPlanName);
-                    if (string.IsNullOrWhiteSpace(FileSystemPlanName))
-                        throw new InvalidConfigurationException(nameof(OneModule), nameof(FileSystemPlanName), "Missing required property");
 
 
                     builder.Register(c =>
@@ -76,8 +88,8 @@ namespace Fabrica.One.Configuration
 
                             var comp = new FilePlanSource
                             {
-                                FileDir  = FileSystemPlanDir,
-                                FileName = FileSystemPlanName
+                                FileDir  = MissionPlanDir,
+                                FileName = MissionPlanName
                             };
 
                             return comp;
@@ -85,6 +97,7 @@ namespace Fabrica.One.Configuration
                         })
                         .AsSelf()
                         .As<IPlanSource>()
+                        .As<IRequiresStart>()
                         .AutoActivate()
                         .SingleInstance();
 
@@ -99,7 +112,10 @@ namespace Fabrica.One.Configuration
 
                         var scope = c.Resolve<ILifetimeScope>();
 
-                        var comp = new MissionObserver(scope);
+                        var comp = new MissionObserver(scope)
+                        {
+                            MissionStatusDir = MissionPlanDir
+                        };
 
                         return comp;
 
@@ -188,9 +204,7 @@ namespace Fabrica.One.Configuration
                         var source  = c.Resolve<IPlanSource>();
                         var factory = c.Resolve<IPlanFactory>();
 
-                        var stream = AsyncPump.Run(async () => await source.GetSource());
-
-                        var plan = factory.Create(stream);
+                        var plan = AsyncPump.Run( async () => await factory.Create( source, ProduceEmptyPlans ) );
 
                         return plan;
 
@@ -203,7 +217,7 @@ namespace Fabrica.One.Configuration
             }
             catch ( Exception cause )
             {
-                logger.Error( cause, "Exception caught during One Deployment Module Load");
+                logger.Error( cause, "Exception caught during OneMissionModule Load");
                 throw;
             }
             finally

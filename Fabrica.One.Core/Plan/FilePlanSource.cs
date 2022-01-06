@@ -32,13 +32,16 @@ namespace Fabrica.One.Plan
 
                 Watcher = new FileSystemWatcher(FileDir, FileName)
                 {
-                    NotifyFilter        = NotifyFilters.LastWrite,
-                    EnableRaisingEvents = true
+                    NotifyFilter = NotifyFilters.LastWrite
                 };
 
                 Watcher.Changed += OnChanged;
 
+                Watcher.EnableRaisingEvents = true;
+
+
                 IsUpdated = true;
+
 
                 return Task.CompletedTask;
 
@@ -82,6 +85,37 @@ namespace Fabrica.One.Plan
         }
 
 
+        public bool IsEmpty()
+        {
+
+            var logger = this.GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+                logger.Inspect(nameof(FilePath), FilePath);
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build FileInfo");
+                var fi = new FileInfo(FilePath);
+
+                logger.Inspect(nameof(fi.Exists), fi.Exists);
+
+
+                // *****************************************************************
+                return !fi.Exists;
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+        }
+
         public async Task<Stream> GetSource()
         {
 
@@ -94,6 +128,11 @@ namespace Fabrica.One.Plan
 
 
                 logger.Inspect(nameof(FilePath), FilePath);
+                logger.Inspect(nameof(IsEmpty), IsEmpty());
+
+
+                if (IsEmpty())
+                    return new MemoryStream();
 
 
 
@@ -145,24 +184,7 @@ namespace Fabrica.One.Plan
         protected override Task<bool> CheckForUpdate()
         {
 
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.Inspect(nameof(IsUpdated), IsUpdated);
-
-                return Task.FromResult(IsUpdated);
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-            
+            return Task.FromResult(IsUpdated);
 
         }
         

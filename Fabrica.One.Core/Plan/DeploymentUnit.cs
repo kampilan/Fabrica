@@ -34,10 +34,6 @@ namespace Fabrica.One.Plan
         public string Assembly { get; set; } = "";
 
         [Required]
-        [MinLength(0)]
-        public string ExecutionArguments { get; set; } = "";
-
-        [Required]
         public bool Deploy { get; set; }
 
         [Required]
@@ -71,9 +67,11 @@ namespace Fabrica.One.Plan
         [JsonIgnore]
         public string MissionConfigLocation { get; set; } = "";
 
-
         [JsonIgnore]
         public string ExecutionCommand { get; set; } = "";
+
+        [JsonIgnore]
+        public string ExecutionArguments { get; set; } = "";
 
 
         [JsonIgnore]
@@ -82,14 +80,6 @@ namespace Fabrica.One.Plan
 
         [JsonIgnore]
         public bool HasInstalled { get; set; }
-
-
-        [JsonIgnore]
-        public bool HasStarted { get; set; }
-
-
-        [JsonIgnore]
-        public bool HasStopped { get; set; }
 
 
     }
