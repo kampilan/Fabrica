@@ -67,6 +67,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.One.Orchestrator.Aw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.One.Aws.Service", "Fabrica.One.Aws.Service\Fabrica.One.Aws.Service.csproj", "{0D9A83B8-473C-42DB-B71A-C778EF6D2118}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.One.Builder", "Fabrica.One.Builder\Fabrica.One.Builder.csproj", "{95343767-371E-42B3-9899-88FB5C8E627B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{56590FEE-0542-4CB8-BE54-3A0B984A006A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +185,10 @@ Global
 		{0D9A83B8-473C-42DB-B71A-C778EF6D2118}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D9A83B8-473C-42DB-B71A-C778EF6D2118}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D9A83B8-473C-42DB-B71A-C778EF6D2118}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95343767-371E-42B3-9899-88FB5C8E627B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95343767-371E-42B3-9899-88FB5C8E627B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95343767-371E-42B3-9899-88FB5C8E627B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95343767-371E-42B3-9899-88FB5C8E627B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -214,6 +222,7 @@ Global
 		{C0AEC5E1-997D-446D-B79B-B32E8C764E1A} = {B816809F-425E-4E6C-8DA4-C2B927CD1A38}
 		{FB3B653A-4496-4642-8C03-709C2BEAD843} = {2E2E37FB-828B-4516-9A53-557B03BD4BC1}
 		{0D9A83B8-473C-42DB-B71A-C778EF6D2118} = {3200EA27-ABAD-4334-B406-CCC6D204CE84}
+		{95343767-371E-42B3-9899-88FB5C8E627B} = {56590FEE-0542-4CB8-BE54-3A0B984A006A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE8638D5-DE76-4377-8051-B8525AC1799D}

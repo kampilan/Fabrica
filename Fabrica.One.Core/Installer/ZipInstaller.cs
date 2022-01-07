@@ -144,7 +144,7 @@ namespace Fabrica.One.Installer
                 {
 
                     logger.Debug("Attempting to extract repository content");
-                    using (var arc = new ZipArchive(unit.RepositoryContent, ZipArchiveMode.Read, true))
+                    using (var arc = new ZipArchive(unit.RepositoryContent, ZipArchiveMode.Read, true) )
                         arc.ExtractToDirectory(unit.InstallationLocation);
 
 
