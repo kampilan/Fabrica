@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fabrica.One.Orchestator.Aws\Fabrica.One.Orchestator.Aws.csproj" />
+    <ProjectReference Include="..\Fabrica.One.Orchestrator.Aws\Fabrica.One.Orchestrator.Aws.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
   </ItemGroup>
 
