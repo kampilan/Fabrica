@@ -82,15 +82,6 @@ namespace Fabrica.One.Plan
                 logger.Debug("Attempting to check for empty plan");
                 logger.Inspect(nameof(produceEmptyPlan), produceEmptyPlan);
 
-                var emptyPlan = source.IsEmpty();
-                logger.Inspect(nameof(emptyPlan), emptyPlan);
-
-                if( produceEmptyPlan && emptyPlan )
-                {
-                    logger.Debug("Returning empty Plan per produceEmptyPlan=true");
-                    return GetEmptyPlan();
-                }
-
 
 
                 // *****************************************************************

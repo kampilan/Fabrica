@@ -1,6 +1,4 @@
-using System;
-using System.Drawing;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Watch;
 using Fabrica.Watch.Mongo;
@@ -10,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Fabrica.One;
+#nullable disable
+
+namespace Fabrica.One.Aws.Service;
 
 public class Program
 {
@@ -23,7 +23,7 @@ public class Program
     {
 
 
-        Console.WriteLine("Fabrica One Service");
+        Console.WriteLine("Fabrica One AWS Orchestrator Service");
         Console.WriteLine("The Kampilan Group Inc. (c) 2021");
         Console.WriteLine("");
 
@@ -46,12 +46,13 @@ public class Program
         }
 
 
+
         try
         {
 
 
             // *****************************************************************
-            var options = new WatchMongoOptions();//TheConfiguration.Get<WatchMongoOptions>();
+            var options = TheConfiguration.Get<WatchMongoOptions>();
             var builder = WatchFactoryBuilder.Create();
             if (options.RealtimeLogging || string.IsNullOrWhiteSpace(options.WatchDomainName) || string.IsNullOrWhiteSpace(options.WatchEventStoreUri))
             {
@@ -74,6 +75,7 @@ public class Program
         }
 
 
+
         await CreateHostBuilder(args).Build().RunAsync();
 
 
@@ -83,10 +85,10 @@ public class Program
     public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
         .UseWindowsService()
         .UseSystemd()
-        .ConfigureServices(( _, services) =>
+        .ConfigureServices((_, services) =>
         {
-            services.AddSingleton<ILoggerFactory>(new Watch.Bridges.MicrosoftImpl.LoggerFactory());
-            services.AddHostedService<OneService>();
+            services.AddSingleton<ILoggerFactory>(new Fabrica.Watch.Bridges.MicrosoftImpl.LoggerFactory());
+            services.AddHostedService<AwsService>();
         });
 
 

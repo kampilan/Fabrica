@@ -28,6 +28,7 @@ namespace Fabrica.One.Configuration
 
         public bool ProduceEmptyPlans { get; set; } = true;
 
+        public bool UnderOrchestration { get; set; } = true;
 
         protected override void Load( ContainerBuilder builder )
         {

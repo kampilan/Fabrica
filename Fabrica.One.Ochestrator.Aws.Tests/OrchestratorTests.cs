@@ -147,10 +147,9 @@ public class OrchestratorTests
 
             var orch = scope.Resolve<MissionOrchestrator>();
 
-            var updated = await orch.RunOnce();
+            await orch.CheckForUpdatedPlan();
 
-            Assert.IsTrue(updated);
-
+            Assert.Pass();
 
         }
 

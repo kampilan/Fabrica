@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -33,6 +34,8 @@ namespace Fabrica.One
             ApplianceFactory = appFactory;
 
         }
+
+        public bool UnderOrchestration { get; set; } = true;
 
         private IPlan Plan { get; }
 
@@ -561,6 +564,7 @@ namespace Fabrica.One
             {
 
                 logger.EnterMethod();
+
 
 
                 // *****************************************************************

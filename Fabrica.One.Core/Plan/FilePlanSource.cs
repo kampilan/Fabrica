@@ -85,7 +85,7 @@ namespace Fabrica.One.Plan
         }
 
 
-        public bool IsEmpty()
+        private bool _isEmpty()
         {
 
             var logger = this.GetLogger();
@@ -128,11 +128,14 @@ namespace Fabrica.One.Plan
 
 
                 logger.Inspect(nameof(FilePath), FilePath);
-                logger.Inspect(nameof(IsEmpty), IsEmpty());
+                logger.Inspect(nameof(_isEmpty), _isEmpty());
 
 
-                if (IsEmpty())
+                if( _isEmpty() )
+                {
+                    IsUpdated = false;
                     return new MemoryStream();
+                }
 
 
 

@@ -49,7 +49,11 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
         public string ClientId { get; set; } = ShortGuid.NewGuid();
 
 
-        public async Task Start()
+        private string ClientConfigurationVersion { get; set; }
+        private MemoryStream Source { get; set; } = new MemoryStream();
+
+
+        public Task Start()
         {
 
             var logger = this.GetLogger();
@@ -69,11 +73,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                 // *****************************************************************
                 logger.Debug("Attempting to check for set Application. Indicating manual config");
                 if( !string.IsNullOrWhiteSpace(Application) )
-                {
-                    logger.Debug("Manually configured");
-                    logger.Debug("Attempting to perform first CheckForUpdate");
-                    await CheckForUpdate();
-                }
+                    return Task.CompletedTask;
 
 
 
@@ -122,9 +122,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                     Configuration = settings.Configuration;
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to perform first CheckForUpdate");
-                await CheckForUpdate();
+                return Task.CompletedTask;
 
 
             }
@@ -217,10 +215,6 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
         }
 
 
-        private string ClientConfigurationVersion { get; set; }
-        private MemoryStream Source { get; set; } = new MemoryStream();
-
-
         public bool IsEmpty()
         {
 
@@ -247,7 +241,6 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
             }
 
         }
-
 
         public Task<Stream> GetSource()
         {

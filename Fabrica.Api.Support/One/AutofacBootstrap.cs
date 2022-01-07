@@ -30,8 +30,8 @@ namespace Fabrica.Api.Support.One
             // *****************************************************************
             builder
                 .AddYamlFile("configuration.yml", true)
-                .AddYamlFile("environment.yml", true)
-                .AddYamlFile("mission.yml", true);
+                .AddJsonFile("environment.json", true)
+                .AddJsonFile("mission.json", true);
 
         }
 

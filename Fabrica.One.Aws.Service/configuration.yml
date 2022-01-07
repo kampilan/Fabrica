@@ -1,0 +1,11 @@
+﻿RegionName: us-east-2
+Profile: kampilan
+RunningOnEC2: false
+
+OneRoot: "e:/fabrica-one"
+
+AppConfigPlanSourceApplication: "fabrica-one-test"
+AppConfigPlanSourceConfiguration: "mission"
+AppConfigPlanSourceEnvironment: "development"
+
+RepositoryBucketName: "pondhawk-appliance-repository"

@@ -15,7 +15,7 @@ namespace Fabrica.Proxy.Appliance
             return ValueTask.FromResult(cluster);
         }
 
-        public ValueTask<RouteConfig> ConfigureRouteAsync(RouteConfig route, ClusterConfig? cluster, CancellationToken cancel)
+        public ValueTask<RouteConfig> ConfigureRouteAsync(RouteConfig route, ClusterConfig cluster, CancellationToken cancel)
         {
 
             route.WithTransformRequestHeader("Cookies", "", false);

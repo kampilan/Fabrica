@@ -4,6 +4,8 @@ RunningOnEC2: false
 
 OneRoot: "e:/fabrica-one"
 
+UnderOrchestration: true
+
 #WatchEventStoreUri: "mongodb://mongodb.fabricatio.io:27017"
 #WatchDomainName: Fabrica.One.Development
 

@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -108,11 +107,6 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 
 
         // *****************************************************************
-        logger.Debug("Attempting to Add default CORS policy");
-        services.AddCors();
-
-
-        // *****************************************************************
         logger.Inspect(nameof(Options.ConfigureForAuthentication), Options.ConfigureForAuthentication);
         if( Options.ConfigureForAuthentication )
         {
@@ -122,8 +116,8 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
             var authBuilder = services.AddAuthentication(op =>
             {
                 op.DefaultScheme          = CookieAuthenticationDefaults.AuthenticationScheme;
-                op.DefaultSignInScheme    = CookieAuthenticationDefaults.AuthenticationScheme;
                 op.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                op.DefaultSignOutScheme   = OpenIdConnectDefaults.AuthenticationScheme;
             });
 
 
@@ -133,7 +127,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
             if (Options.IncludeUserAuthentication)
             {
                 authBuilder
-                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,ConfigureCookieAuth)
                     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, ConfigureOidcAuth);
             }
 
@@ -212,13 +206,6 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 
         builder.UseRouting();
 
-        builder.UseCors(b =>
-        {
-            b.AllowAnyMethod();
-            b.AllowAnyHeader();
-            b.SetIsOriginAllowed(_ => true);
-            b.AllowCredentials();
-        });
 
         if ( Options.ConfigureForAuthentication )
         {
@@ -314,6 +301,12 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
     }
 
 
+    private void ConfigureCookieAuth(CookieAuthenticationOptions options)
+    {
+        options.Cookie.Name     = "__Fabrica.Proxy";
+        options.Cookie.SameSite = SameSiteMode.Strict;
+    }
+
     private void ConfigureOidcAuth(OpenIdConnectOptions options)
     {
 
@@ -322,8 +315,8 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         sb.AddAwsSecrets(o =>
         {
             o.RunningOnEc2 = Options.RunningOnEc2;
-            o.Region = Options.RegionName;
-            o.ProfileName = Options.ProfileName;
+            o.Region       = Options.RegionName;
+            o.ProfileName  = Options.ProfileName;
             o.SecretsKeyId = Options.AwsSecretsId;
 
         });
@@ -339,6 +332,9 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         options.ResponseType = OpenIdConnectResponseType.Code;
         options.UsePkce      = true;
 
+        options.MapInboundClaims = false;
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.SaveTokens = true;
 
 
         options.Scope.Clear();
@@ -350,10 +346,6 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         foreach( var scope in scopes )
             options.Scope.Add(scope);
 
-
-
-        options.GetClaimsFromUserInfoEndpoint = true;
-        options.SaveTokens                    = true;
 
         options.Events = new OpenIdConnectEvents
         {
@@ -374,7 +366,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
             OnRedirectToIdentityProviderForSignOut = context =>
             {
 
-                var returnTo = "";
+                string returnTo;
                 if( context.HttpContext.Request.Query.TryGetValue("ReturnTo", out var value) )
                     returnTo = value;
                 else

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -47,6 +48,25 @@ public class OneService : BackgroundService
                 builder.RegisterModule(module);
 
                 logger.LogObject( nameof(module), module );
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to check if Mission running under orchestration");
+                if( module.UnderOrchestration )
+                {
+
+                    logger.Debug("Delete Mission Plan JSON file");
+                    var missionPlanFile = new FileInfo($"{module.OneRoot}{Path.DirectorySeparatorChar}mission-plan.json");
+                    if( missionPlanFile.Exists )
+                        missionPlanFile.Delete();
+
+                    logger.Debug("Delete Mission Status JSON file");
+                    var missionStatusFile = new FileInfo($"{module.OneRoot}{Path.DirectorySeparatorChar}mission-status.json");
+                    if( missionStatusFile.Exists )
+                        missionStatusFile.Delete();
+
+                }
 
 
 
