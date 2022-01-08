@@ -16,7 +16,7 @@ namespace Fabrica.One.Models
 
         public MissionModel()
         {
-            Deployments = new List<ApplianceModel>();
+            Deployments = new List<DeploymentModel>();
         }
 
         [JsonIgnore]
@@ -102,20 +102,20 @@ namespace Fabrica.One.Models
         }
 
 
-        private AggregateObservable<ApplianceModel> _deployments;
+        private AggregateObservable<DeploymentModel> _deployments;
         [Required]
         [MinItems(1)]
-        public ICollection<ApplianceModel> Deployments
+        public ICollection<DeploymentModel> Deployments
         {
             get => _deployments;
-            set => _deployments = new AggregateObservable<ApplianceModel>(this, "Deployments", value);
+            set => _deployments = new AggregateObservable<DeploymentModel>(this, "Deployments", value);
         }
 
 
-        public ApplianceModel AddDeployment( BuildModel build )
+        public DeploymentModel AddDeployment( BuildModel build )
         {
 
-            var model = new ApplianceModel
+            var model = new DeploymentModel
             {
                 Name     = build.Name,
                 Alias    = $"{build.Name}-{build.BuildNum}",
@@ -130,10 +130,10 @@ namespace Fabrica.One.Models
 
         }
 
-        public ApplianceModel AddDeployment()
+        public DeploymentModel AddDeployment()
         {
 
-            var model = new ApplianceModel();
+            var model = new DeploymentModel();
 
             Deployments.Add(model);
 

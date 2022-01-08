@@ -14,7 +14,7 @@ namespace Fabrica.One.Models
 
     
     [SuppressMessage("ReSharper", "ConvertToAutoProperty")]
-    public class ApplianceModel: BaseMutableModel<ApplianceModel>, IAggregateModel, INotifyPropertyChanged
+    public class DeploymentModel: BaseMutableModel<DeploymentModel>, IAggregateModel, INotifyPropertyChanged
     {
 
         private JsonSerializerOptions Options { get; } = new JsonSerializerOptions {WriteIndented = true};
@@ -151,6 +151,18 @@ namespace Fabrica.One.Models
             SetEnvironmentConfiguration(json);
         }
 
+
+        public void Apply( BuildModel build )
+        {
+
+            if( Name == build.Name )
+            {
+                Build = build.BuildNum;
+                Checksum = build.Checksum;
+                Assembly = build.Assembly;
+            }
+
+        }
 
     }
 
