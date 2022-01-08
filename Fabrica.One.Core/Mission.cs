@@ -424,7 +424,7 @@ namespace Fabrica.One
 
             return Appliances.Select(ap => new ApplianceInfo
             {
-                Id = ap.Unit.Id,
+                Uid = ap.Unit.Uid,
                 Alias = ap.Unit.Alias,
                 Name = ap.Unit.Name,
                 Build = ap.Unit.Build,

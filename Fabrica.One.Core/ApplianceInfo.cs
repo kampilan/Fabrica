@@ -12,10 +12,10 @@ namespace Fabrica.One
 
 
         [Category("1 - Identity")]
-        [DisplayName("Id")]
+        [DisplayName("Uid")]
         [PropertySortOrder(1)]
         [Description("The unique identifier assigned to this appliance instance.")]
-        public string Id { get; set; } = "";
+        public string Uid { get; set; } = "";
 
         [Category("1 - Identity")]
         [DisplayName("Alias")]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Fabrica.Utilities.Text;
 using Json.Schema.Generation;
 
 namespace Fabrica.One.Plan
@@ -12,8 +13,8 @@ namespace Fabrica.One.Plan
     {
 
 
-        [JsonIgnore]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        [JsonIgnore] 
+        public string Uid { get; set; } = Base62Converter.NewGuid();
 
         [Required]
         public string Name { get; set; } = "";

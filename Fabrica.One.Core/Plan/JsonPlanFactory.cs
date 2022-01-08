@@ -229,7 +229,7 @@ namespace Fabrica.One.Plan
                 {
 
                     unit.RepositoryLocation   = $"{rv}{Path.DirectorySeparatorChar}{unit.Name}-{unit.Build}.zip";
-                    unit.InstallationLocation = $"{InstallationRoot}{Path.DirectorySeparatorChar}{unit.Alias}{Path.DirectorySeparatorChar}{unit.Id}";
+                    unit.InstallationLocation = $"{InstallationRoot}{Path.DirectorySeparatorChar}{unit.Alias}{Path.DirectorySeparatorChar}{unit.Uid}";
 
                     unit.EnvironmentConfigLocation = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}environment.json";
                     unit.MissionConfigLocation     = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}mission.json";
@@ -239,7 +239,7 @@ namespace Fabrica.One.Plan
 
                     unit.MissionConfiguration["MissionName"]     = plan.Name;
                     unit.MissionConfiguration["TokenSigningKey"] = tokenSigningKey;
-                    unit.MissionConfiguration["ApplianceId"]     = unit.Id;
+                    unit.MissionConfiguration["ApplianceId"]     = unit.Uid;
                     unit.MissionConfiguration["ApplianceName"]   = unit.Name;
                     unit.MissionConfiguration["ApplianceBuild"]  = unit.Build;
                     unit.MissionConfiguration["Environment"]     = unit.Environment;
