@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
+using Fabrica.One.Models;
 using Fabrica.One.Plan;
 using Fabrica.Watch;
 using Fabrica.Watch.Sink;
@@ -419,10 +420,10 @@ namespace Fabrica.One
 
         public bool StartComplete => Appliances.Count == 0 || Appliances.All(a => a.HasStarted);
 
-        public IEnumerable<ApplianceInfo> GetAppliances()
+        public IEnumerable<ApplianceModel> GetAppliances()
         {
 
-            return Appliances.Select(ap => new ApplianceInfo
+            return Appliances.Select(ap => new ApplianceModel
             {
                 Uid = ap.Unit.Uid,
                 Alias = ap.Unit.Alias,

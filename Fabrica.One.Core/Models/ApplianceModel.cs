@@ -2,12 +2,12 @@
 using System.Text.Json.Nodes;
 using Fabrica.Utilities.Types;
 
-namespace Fabrica.One
+namespace Fabrica.One.Models
 {
 
 
     [TypeConverter(typeof(PropertySorterConverter))]
-    public class ApplianceInfo
+    public class ApplianceModel
     {
 
 
