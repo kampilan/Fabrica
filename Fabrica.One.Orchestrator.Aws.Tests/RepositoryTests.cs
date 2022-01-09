@@ -25,25 +25,39 @@ public class RepositoryTests
 
         maker.Build();
 
-
-        Repository = new S3Repository
+        Manager = new S3RepositoryManager
         {
-            ProfileName = "kampilan",
-            BucketName = "pondhawk-appliance-repository",
-            RegionName = "us-east-2",
             RunningOnEc2 = false
         };
 
     }
 
-    private S3Repository Repository { get; set; } = null!;
+    private S3RepositoryManager Manager { get; set; } = null!;
+
 
 
     [Test]
-    public async Task Test1100_Missions_Should_Populate()
+    public async Task Test1100_Repositories_Should_Populate()
     {
 
-        var missions = (await Repository.GetMissions()).ToList();
+        var repos = (await Manager.GetRepositories()).ToList();
+
+        Assert.IsNotEmpty(repos);
+
+    }
+
+
+    [Test]
+    public async Task Test1110_Missions_Should_Populate()
+    {
+
+        var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
+
+        Assert.IsNotNull(repo);
+
+        await Manager.SetCurrentRepository(repo);
+
+        var missions = (await Manager.GetMissions()).ToList();
         
         Assert.IsNotEmpty(missions);
 
@@ -51,10 +65,17 @@ public class RepositoryTests
 
 
     [Test]
-    public async Task Test1110_Builds_Should_Populate()
+    public async Task Test1120_Builds_Should_Populate()
     {
 
-        var builds = (await Repository.GetBuilds()).ToList();
+        var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
+
+        Assert.IsNotNull(repo);
+
+        await Manager.SetCurrentRepository(repo);
+
+
+        var builds = (await Manager.GetBuilds()).ToList();
 
         Assert.IsNotEmpty(builds);
 
@@ -63,13 +84,21 @@ public class RepositoryTests
 
 
     [Test]
-    public async Task Test1100_New_Mission_Should_Save()
+    public async Task Test1130_New_Mission_Should_Save()
     {
 
-        await Repository.GetMissions();
-        var all = await Repository.GetBuilds();
+        var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
 
-        var nm = await Repository.CreateMission("cool");
+        Assert.IsNotNull(repo);
+
+        await Manager.SetCurrentRepository(repo);
+
+
+
+        await Manager.GetMissions();
+        var all = await Manager.GetBuilds();
+
+        var nm = await Manager.CreateMission("cool");
 
         Assert.IsNotNull(nm);
         Assert.AreEqual("cool", nm.Name );
@@ -91,15 +120,12 @@ public class RepositoryTests
 
         Assert.IsNotEmpty(nm.Deployments);
 
-        await Repository.Save(nm);
+        await Manager.Save(nm);
 
-        await Repository.Delete(nm);
+        await Manager.Delete(nm);
 
 
     }
-
-
-
 
 
 

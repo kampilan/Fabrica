@@ -7,13 +7,19 @@ namespace Fabrica.One.Repository
 {
 
 
-    public interface IRepository
+    public interface IRepositoryManager
     {
 
+        Task Refresh();
+
+
+        RepositoryModel CurrentRepository { get; }
+        Task SetCurrentRepository(RepositoryModel current);
+
+
+        Task<IEnumerable<RepositoryModel>> GetRepositories(Func<RepositoryModel, bool> predicate = null);
         Task<IEnumerable<MissionModel>> GetMissions( Func<MissionModel,bool> predicate=null );
         Task<IEnumerable<BuildModel>> GetBuilds( Func<BuildModel,bool> predicate = null );
-
-        Task Reload();
 
 
         Task<MissionModel> CreateMission( string name );

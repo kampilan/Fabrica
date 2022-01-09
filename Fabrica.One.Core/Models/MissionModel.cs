@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
-using Json.Schema.Generation;
 
 namespace Fabrica.One.Models
 {
@@ -38,8 +38,7 @@ namespace Fabrica.One.Models
         }
 
         private string _repositoryVersion = "";
-        [Required]
-        [MinLength(0)]
+        [Editable(false)]
         public string RepositoryVersion
         {
             get => _repositoryVersion;
@@ -103,8 +102,7 @@ namespace Fabrica.One.Models
 
 
         private AggregateObservable<DeploymentModel> _deployments;
-        [Required]
-        [MinItems(1)]
+        [Editable(false)]
         public ICollection<DeploymentModel> Deployments
         {
             get => _deployments;
@@ -141,7 +139,10 @@ namespace Fabrica.One.Models
 
         }
 
-
+        public override string ToString()
+        {
+            return $"{Name} with {Deployments.Count} Deployment(s)";
+        }
     }
 
 }

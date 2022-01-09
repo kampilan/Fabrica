@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
-using Json.Schema.Generation;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Fabrica.One.Models
@@ -76,7 +76,6 @@ namespace Fabrica.One.Models
         }
 
         private string _checksum = "";
-        [Required]
         public string Checksum
         {
             get => _checksum;
@@ -129,7 +128,7 @@ namespace Fabrica.One.Models
         }
 
         private JsonObject _environmentConfiguration = new JsonObject();
-        [Required]
+        [Editable(false)]
         public JsonObject EnvironmentConfiguration
         {
             get => _environmentConfiguration;
@@ -162,6 +161,12 @@ namespace Fabrica.One.Models
                 Assembly = build.Assembly;
             }
 
+        }
+
+
+        public override string ToString()
+        {
+            return $"{Name}-{Build} as {Alias}";
         }
 
     }

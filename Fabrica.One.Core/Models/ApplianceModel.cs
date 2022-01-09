@@ -96,6 +96,11 @@ namespace Fabrica.One.Models
         [Browsable(false)] 
         public JsonObject EnvironmentConfiguration { get; set; } = new JsonObject();
 
+        public override string ToString()
+        {
+            return $"{Name}-{Build} running as {Alias} [Loaded: {HasLoaded}, Installed: {HasInstalled}, Started: {HasStarted}, Stopped: {HasStopped} ]";
+        }
+
     }
 
 
