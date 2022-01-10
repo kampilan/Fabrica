@@ -1,5 +1,6 @@
 ﻿
 using Autofac;
+using Fabrica.One.Repository;
 
 namespace Fabrica.One.Configuration
 {
@@ -17,6 +18,29 @@ namespace Fabrica.One.Configuration
             };
 
             builder.RegisterModule(module);
+
+            return builder;
+
+        }
+
+
+        public static ContainerBuilder AddFileStatusRepostory(this ContainerBuilder builder, string oneRoot)
+        {
+
+            builder.Register(c =>
+                {
+
+                    var comp = new FileStatusRepository
+                    {
+                        OneRoot = oneRoot
+                    };
+
+                    return comp;
+
+                })
+                .As<IStatusRepository>()
+                .SingleInstance();
+
 
             return builder;
 
