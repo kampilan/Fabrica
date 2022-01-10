@@ -100,21 +100,9 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             using var logger = this.EnterMethod();
 
 
-
             // *****************************************************************
             logger.Debug("Attempting to load repositories");
             await LoadRepositories();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to load missions");
-            await LoadMissions();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to load builds");
-            await LoadBuilds();
-
 
         }
 
