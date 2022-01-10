@@ -21,6 +21,8 @@ namespace Fabrica.One.Models
 
 
         private long _id;
+        [JsonIgnore]
+        [Editable(false)]
         public override long Id
         {
             get => _id;
@@ -28,6 +30,8 @@ namespace Fabrica.One.Models
         }
 
         private string _uid = Base62Converter.NewGuid();
+        [JsonIgnore]
+        [Editable(false)]
         public override string Uid
         {
             get => _uid;
@@ -36,6 +40,7 @@ namespace Fabrica.One.Models
 
         private MissionModel _parent;
         [JsonIgnore]
+        [Editable(false)]
         public MissionModel Parent
         {
             get => _parent;
@@ -76,6 +81,7 @@ namespace Fabrica.One.Models
         }
 
         private string _checksum = "";
+        [Required]
         public string Checksum
         {
             get => _checksum;

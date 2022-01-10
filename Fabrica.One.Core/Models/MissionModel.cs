@@ -20,12 +20,15 @@ namespace Fabrica.One.Models
         }
 
         [JsonIgnore]
+        [Editable(false)]
         public override long Id { get; protected set; }
 
         [JsonIgnore]
+        [Editable(false)]
         public override string Uid { get; set; } = Base62Converter.NewGuid();
 
         [JsonIgnore]
+        [Editable(false)]
         public string RepositoryLocation { get; set; } = "";
 
 
