@@ -12,6 +12,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.One.Models;
 using Fabrica.One.Repository;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 
@@ -19,7 +20,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 {
 
 
-    public class S3RepositoryManager: IRepositoryManager
+    public class S3RepositoryManager: IRepositoryManager, IRequiresStart
     {
 
         public bool RunningOnEc2 { get; set; } = true;
@@ -93,6 +94,29 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
         }
 
 
+        public async Task Start()
+        {
+            
+            using var logger = this.EnterMethod();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to load repositories");
+            await LoadRepositories();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to load missions");
+            await LoadMissions();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to load builds");
+            await LoadBuilds();
+
+
+        }
 
 
         public RepositoryModel CurrentRepository => _currentRepository;
@@ -509,7 +533,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
 
         }
-
 
 
     }
