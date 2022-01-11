@@ -43,8 +43,8 @@ public class BuildApplianceCmdLet: Cmdlet
     [Parameter(Position = 6, HelpMessage = "Template used to create appliance name and location in repository.")]
     public string OutputTemplate { get; set; } = "appliances/{0}/{0}-{1}.zip";
 
-    [Parameter(Position = 7, HelpMessage = "Template used to create appliance hash name and location in repository.")]
-    public string HashTemplate { get; set; } = "appliances/{0}/{0}-{1}-manifest.json";
+    [Parameter(Position = 7, HelpMessage = "Template used to create appliance manifest name in repository.")]
+    public string ManifestTemplate { get; set; } = "appliances/{0}/{0}-{1}-manifest.json";
 
     [Parameter(Position = 8, HelpMessage = "Output directory in appliance package. Most appliance are packaged into the root.")]
     public string TargetDir { get; set; } = "";
@@ -165,17 +165,18 @@ public class BuildApplianceCmdLet: Cmdlet
 
             using var client = new AmazonS3Client(credentials, endpoint);
 
-            key         = string.Format( OutputTemplate, Name.ToLowerInvariant(), fullBuildNum );
-            var hashKey = string.Format( HashTemplate,   Name.ToLowerInvariant(), fullBuildNum );
+            key          = string.Format( OutputTemplate, Name.ToLowerInvariant(), fullBuildNum );
+            var manifest = string.Format( ManifestTemplate, Name.ToLowerInvariant(), fullBuildNum );
 
-            await _uploadToS3( client, key, hashKey, package);
+            await _uploadToS3( client, key, manifest, package, fullBuildNum );
 
 
             if( GenerateLatest )
             {
                 key = string.Format(OutputTemplate, Name.ToLowerInvariant(), "latest");
+                manifest = string.Format(ManifestTemplate, Name.ToLowerInvariant(), "latest");
 
-                await _uploadToS3(client, key, "", package);
+                await _uploadToS3(client, key, manifest, package, "latest");
             }
 
 
@@ -189,7 +190,7 @@ public class BuildApplianceCmdLet: Cmdlet
     }
 
 
-    private async Task _uploadToS3( IAmazonS3 client, string key, string hashKey, string package )
+    private async Task _uploadToS3( IAmazonS3 client, string key, string manifest, string package, string build )
     {
 
             
@@ -209,48 +210,42 @@ public class BuildApplianceCmdLet: Cmdlet
         }
 
 
-        if( string.IsNullOrWhiteSpace(hashKey) )
-            return;
-
-
-
         await using( var content = new FileStream(package, FileMode.Open, FileAccess.Read) )
         {
 
             var sha = SHA256.Create();
             sha.Initialize();
 
-
             var bytes = await sha.ComputeHashAsync(content);
             var hashHex = BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
 
-            var build = new BuildModel
+            var bm = new BuildModel
             {
                 Name      = Name,
-                BuildNum  = Build,
+                BuildNum  = build,
                 BuildDate = DateTime.UtcNow,
                 BuildSize = content.Length,
                 Checksum  = hashHex,
                 Assembly  = Assembly
             };
 
-            var json = JsonSerializer.Serialize( build, new JsonSerializerOptions {WriteIndented = true} );
+            var json = JsonSerializer.Serialize( bm, new JsonSerializerOptions {WriteIndented = true} );
 
 
-            await using (var hashStrm = new MemoryStream())
-            await using (var writer = new StreamWriter(hashStrm))
+            await using (var manifestStrm = new MemoryStream())
+            await using (var writer = new StreamWriter(manifestStrm))
             {
 
                 await writer.WriteAsync(json);
                 await writer.FlushAsync();
 
-                hashStrm.Seek(0, SeekOrigin.Begin);
+                manifestStrm.Seek(0, SeekOrigin.Begin);
 
                 var hashReq = new PutObjectRequest
                 {
                     BucketName                 = Bucket,
-                    Key                        = hashKey,
-                    InputStream                = hashStrm,
+                    Key                        = manifest,
+                    InputStream                = manifestStrm,
                     ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
                 };
 
