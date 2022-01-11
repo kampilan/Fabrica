@@ -144,7 +144,7 @@ namespace Fabrica.One.Models
 
         public override string ToString()
         {
-            return $"{Name} with {Deployments.Count} Deployment(s)";
+            return $"{Name} with {Deployments?.Count??0} Deployment(s)";
         }
     }
 

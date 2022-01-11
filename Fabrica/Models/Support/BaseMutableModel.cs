@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using Fabrica.Models.Patch.Builder;
 
 // ReSharper disable UnusedMember.Local
@@ -11,7 +12,7 @@ namespace Fabrica.Models.Support
 
     
     
-    public abstract class BaseMutableModel<TImp>: BaseModel<TImp>, IMutableModel where TImp: BaseMutableModel<TImp>
+    public abstract class BaseMutableModel<TImp>: BaseModel<TImp>, IMutableModel, IJsonOnDeserializing, IJsonOnDeserialized where TImp: BaseMutableModel<TImp>
     {
 
 
@@ -50,8 +51,19 @@ namespace Fabrica.Models.Support
             EnterSuspendTracking();
         }
 
+        public void OnDeserializing()
+        {
+            EnterSuspendTracking();
+        }
+
+
         [OnDeserialized]
         private void AfterDeserializing(StreamingContext context)
+        {
+            ExitSuspendTracking();
+        }
+
+        public void OnDeserialized()
         {
             ExitSuspendTracking();
         }

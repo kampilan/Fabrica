@@ -115,10 +115,17 @@ public class RepositoryTests
             ["Stuff"] = new Dictionary<string,object>{["Deep"] = true}
         };
 
-        nd.SetEnvironmentConfiguration(dict);
+        nd.SetConfiguration(dict);
 
 
         Assert.IsNotEmpty(nm.Deployments);
+
+
+        var dp = nm.Deployments.First();
+
+        var yaml = dp.GetConfigurationAsJson();
+
+
 
         await Manager.Save(nm);
 

@@ -2,11 +2,14 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Fabrica.One.Models
@@ -141,19 +144,18 @@ namespace Fabrica.One.Models
             set => _environmentConfiguration = value;
         }
 
+        public string GetConfigurationAsJson() => JsonSerializer.Serialize(EnvironmentConfiguration, Options);
 
-        public string GetEnvironmentConfiguration() => JsonSerializer.Serialize(EnvironmentConfiguration, Options);
-
-        public void SetEnvironmentConfiguration(string value)
+        public void SetConfiguration(string value)
         {
             var jo = JsonNode.Parse(value);
             EnvironmentConfiguration = jo?.AsObject() ?? new JsonObject();
         }
 
-        public void SetEnvironmentConfiguration( Dictionary<string,object> config )
+        public void SetConfiguration( Dictionary<string,object> config )
         {
             var json = JsonSerializer.Serialize(config);
-            SetEnvironmentConfiguration(json);
+            SetConfiguration(json);
         }
 
 
