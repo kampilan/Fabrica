@@ -117,8 +117,16 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             _currentRepository = current;
 
-            await LoadMissions();
-            await LoadBuilds();
+            if( _currentRepository is null )
+            {
+                Missions.Clear();
+                Builds.Clear();
+            }
+            else
+            {
+                await LoadMissions();
+                await LoadBuilds();
+            }
 
         }
 
