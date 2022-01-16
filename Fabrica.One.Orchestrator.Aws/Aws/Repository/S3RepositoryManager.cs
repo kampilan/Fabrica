@@ -355,9 +355,13 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             if (res.HttpStatusCode != HttpStatusCode.NoContent)
                 throw new Exception("The result from DeleteObject indicates failure");
 
+
+            // *****************************************************************
+            logger.Debug("Attempting to remove deleted mission for Missions");
+            Missions.Remove(mission);
+
+
         }
-
-
 
 
         private AWSCredentials BuildCredentials()
