@@ -98,7 +98,7 @@ public class RepositoryTests
         await Manager.GetMissions();
         var all = await Manager.GetBuilds();
 
-        var nm = await Manager.CreateMission("cool");
+        var nm = await Manager.CreateMission( "cool", "development" );
 
         Assert.IsNotNull(nm);
         Assert.AreEqual("cool", nm.Name );

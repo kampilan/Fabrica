@@ -13,6 +13,9 @@ namespace Fabrica.One.Plan
         public string Name { get; set; } = "";
 
         [Required]
+        public string Environment { get; set; } = "";
+
+        [Required]
         [MinLength(0)]
         public string RepositoryVersion { get; set; } = "";
 

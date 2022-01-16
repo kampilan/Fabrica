@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
@@ -15,6 +14,7 @@ using Fabrica.One.Repository;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
+using JetBrains.Annotations;
 
 namespace Fabrica.One.Orchestrator.Aws.Repository
 {
@@ -171,6 +171,39 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
+        public async Task<IEnumerable<ApplianceModel>> GetAppliances( Func<ApplianceModel, bool> predicate = null )
+        {
+
+            using var logger = this.EnterMethod();
+
+            if( _currentRepository != null && Builds.Count == 0 )
+                await LoadBuilds();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to group Builds into Appliances");
+            var groupings = Builds.GroupBy(b => b.Name);
+            var appliances = groupings.Select(g => new ApplianceModel {Name = g.Key, LatestBuildDate = g.Max(b => b.BuildDate), TotalBuilds = g.Count()}).ToList();
+
+            logger.Inspect(nameof(appliances.Count), appliances.Count);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to apply predicate");
+            IEnumerable<ApplianceModel> results = appliances;
+            if (!(predicate is null))
+                results = appliances.Where(predicate);
+
+
+
+            // *****************************************************************
+            return results;
+
+
+        }
+
         public async Task<IEnumerable<BuildModel>> GetBuilds(Func<BuildModel, bool> predicate = null)
         {
 
@@ -191,26 +224,80 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
         
 
 
-        public Task<MissionModel> CreateMission(string name)
+        public async Task<MissionModel> CreateMission([NotNull] string name, [NotNull] string environment, [CanBeNull] string customName="")
         {
+
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+            if (string.IsNullOrWhiteSpace(environment)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
 
             using var logger = this.EnterMethod();
 
-            var exists = Missions.Exists(m => m.Name == name);
-            if (exists)
-                throw new Exception($"A mission with the name ({name}) already exists.");
 
+            logger.Inspect(nameof(name), name);
+            logger.Inspect(nameof(environment), environment);
+            logger.Inspect(nameof(customName), customName);
+
+
+
+            if( string.IsNullOrWhiteSpace(customName) )
+            {
+
+
+                logger.Debug("Attempting to validate candidate mission name");
+                var nameOk = name.All(char.IsLetterOrDigit);
+                if (!nameOk)
+                    throw new ArgumentException("Must be [a-z][A-Z][0-9}", name);
+
+
+
+                logger.Debug("Attempting to validate candidate mission environment");
+                var envOk = environment.All(char.IsLetterOrDigit);
+                if (!envOk)
+                    throw new ArgumentException("Must be [a-z][A-Z][0-9}", environment);
+
+
+                var exists = Missions.Exists(m => m.Name == name && m.Environment == environment);
+                if (exists)
+                    throw new Exception($"A mission with the name ({name}) and environment ({environment}) already exists.");
+
+                customName = $"{name.ToLowerInvariant()}-{environment.ToLowerInvariant()}";
+
+            }
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to populate new mission with reasonable defaults");
             var mission = new MissionModel
             {
-                Name = name,
-                RepositoryLocation = $"missions/{name}-mission-plan.json"
+                Name                    = name,
+                Environment             = environment,
+                DeployAppliances        = true,
+                StartAppliances         = true,
+                StartInParallel         = true,
+                AllAppliancesMustDeploy = true,
+                WaitForDeploySeconds    = 10,
+                WaitForStartSeconds     = 10,
+                WaitForStopSeconds      = 10,
+                RepositoryLocation      = $"missions/{customName}-mission-plan.json"
             };
 
-            return Task.FromResult(mission);
+            logger.LogObject(nameof(mission), mission);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to save new mission to repository");
+            await Save(mission);
+
+
+            // *****************************************************************
+            return mission;
+
 
         }
 
-        public async Task Save(MissionModel mission)
+        public async Task Save( MissionModel mission )
         {
 
             using var logger = this.EnterMethod();
@@ -228,8 +315,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             logger.Debug("Attempting to build and send PutObject request");
             var req = new PutObjectRequest
             {
-                BucketName = CurrentBucketName,
-                Key = mission.RepositoryLocation,
+                BucketName  = CurrentBucketName,
+                Key         = mission.RepositoryLocation,
                 ContentBody = json
             };
 
@@ -269,7 +356,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 throw new Exception("The result from DeleteObject indicates failure");
 
         }
-
 
 
 

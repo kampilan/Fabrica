@@ -29,9 +29,6 @@ namespace Fabrica.One.Plan
         public string Checksum { get; set; } = "";
 
         [Required]
-        public string Environment { get; set; } = "";
-
-        [Required]
         public string Assembly { get; set; } = "";
 
         [Required]

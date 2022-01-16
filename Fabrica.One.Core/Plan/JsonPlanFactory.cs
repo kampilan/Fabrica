@@ -238,11 +238,11 @@ namespace Fabrica.One.Plan
                     unit.ExecutionArguments = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}{unit.Assembly}.dll";
 
                     unit.MissionConfiguration["MissionName"]     = plan.Name;
+                    unit.MissionConfiguration["Environment"]     = plan.Environment;
                     unit.MissionConfiguration["TokenSigningKey"] = tokenSigningKey;
                     unit.MissionConfiguration["ApplianceId"]     = unit.Uid;
                     unit.MissionConfiguration["ApplianceName"]   = unit.Name;
                     unit.MissionConfiguration["ApplianceBuild"]  = unit.Build;
-                    unit.MissionConfiguration["Environment"]     = unit.Environment;
 
                 }
 

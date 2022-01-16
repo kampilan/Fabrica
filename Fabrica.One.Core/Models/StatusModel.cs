@@ -56,12 +56,6 @@ namespace Fabrica.One.Models
 
 
         [Category("3 - Execution")]
-        [DisplayName("Environment")]
-        [PropertySortOrder(7)]
-        [Description("What environment is this appliance running under?")]
-        public string Environment { get; set; } = "";
-
-        [Category("3 - Execution")]
         [DisplayName("Startup Assembly")]
         [PropertySortOrder(8)]
         [Description("What is the name of the startup assembly?")]

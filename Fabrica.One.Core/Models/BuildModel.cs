@@ -20,7 +20,6 @@ namespace Fabrica.One.Models
 
         public string Name { get; set; } = "";
 
-
         public string BuildNum { get; set; } = "";
 
         public DateTime BuildDate { get; set; } = DateTime.MinValue;
@@ -30,6 +29,16 @@ namespace Fabrica.One.Models
         public string Checksum { get; set; } = "";
 
         public string Assembly { get; set; } = "";
+
+        [JsonIgnore]
+        public bool IsAbsoluteBuild
+        {
+            get
+            {
+                var x  = int.TryParse(BuildNum, out _ );
+                return x;
+            }
+        }
 
         public override string ToString()
         {

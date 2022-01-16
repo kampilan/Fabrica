@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -431,7 +430,6 @@ namespace Fabrica.One
                 Build = ap.Unit.Build,
                 RepositoryLocation = ap.Unit.RepositoryLocation,
                 InstallationLocation = ap.Unit.InstallationLocation,
-                Environment = ap.Unit.Environment,
                 Assembly = ap.Unit.Assembly,
                 EnvironmentConfiguration = ap.Unit.EnvironmentConfiguration,
                 HasLoaded = ap.Unit.HasLoaded,

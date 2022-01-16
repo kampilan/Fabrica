@@ -8,8 +8,6 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Fabrica.One.Models
@@ -89,15 +87,6 @@ namespace Fabrica.One.Models
         {
             get => _checksum;
             set => _checksum = value;
-        }
-
-
-        private string _environment = "";
-        [Required]
-        public string Environment
-        {
-            get => _environment;
-            set => _environment = value;
         }
 
 

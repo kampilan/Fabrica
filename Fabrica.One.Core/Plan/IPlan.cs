@@ -8,6 +8,7 @@ namespace Fabrica.One.Plan
     {
 
         string Name { get;  }
+        string Environment { get; }
 
         string RepositoryVersion { get; }
 

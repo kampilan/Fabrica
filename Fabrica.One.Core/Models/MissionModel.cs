@@ -40,6 +40,14 @@ namespace Fabrica.One.Models
             set => _name = value;
         }
 
+        private string _environment = "";
+        [Required]
+        public string Environment
+        {
+            get => _environment;
+            set => _environment = value;
+        }
+
         private string _repositoryVersion = "";
         [Editable(false)]
         public string RepositoryVersion

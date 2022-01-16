@@ -132,7 +132,6 @@ public class BaseOneTest
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
             Build = "05324",
-            Environment = "Development",
             Checksum = "",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances
@@ -187,7 +186,6 @@ public class BaseOneTest
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
             Build = "05324",
-            Environment = "Development",
             Checksum = "",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances
@@ -243,7 +241,6 @@ public class BaseOneTest
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
             Build = "05326",
-            Environment = "Development",
             Checksum = "8dc8ebeac47327b168b93c536bbf01ff222c14e8bf79b444203bb60cd0731351",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances,
@@ -303,7 +300,6 @@ public class BaseOneTest
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
             Build = "05324",
-            Environment = "Development",
             Checksum = "XgyPqsiJXexXXaNIKx+eDgP5t122w=",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances
@@ -362,7 +358,6 @@ public class BaseOneTest
             Name = "fabrica-shtarker",
             Alias = "fabrica-shtarker-1",
             Build = "05324",
-            Environment = "Development",
             Checksum = "",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances
@@ -417,7 +412,6 @@ public class BaseOneTest
             Name = "fabrica-monitor",
             Alias = "fabrica-monitor-1",
             Build = "bogus",
-            Environment = "Development",
             Checksum = "",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances
@@ -473,7 +467,6 @@ public class BaseOneTest
             Name = "Shtaker",
             Alias = "Shtarker",
             Build = "latest",
-            Environment = "Development",
             Checksum = "1234567890",
             Assembly = "Appliance",
             Deploy = sp.DeployAppliances
@@ -494,7 +487,6 @@ public class BaseOneTest
             Name = "ShtakerZZ",
             Alias = "ShtarkerZZZ",
             Build = "local",
-            Environment = "Development",
             Checksum = "1234567893",
             Assembly = "Tester",
             Deploy = sp.DeployAppliances
