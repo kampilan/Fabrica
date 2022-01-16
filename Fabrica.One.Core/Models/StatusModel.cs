@@ -7,7 +7,7 @@ namespace Fabrica.One.Models
 
 
     [TypeConverter(typeof(PropertySorterConverter))]
-    public class ApplianceModel
+    public class StatusModel
     {
 
 

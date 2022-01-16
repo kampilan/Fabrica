@@ -18,7 +18,7 @@ public class FileStatusRepositoryTests
             OneRoot = @"e:\fabrica-one"
         };
 
-        var list = (await repo.GetAppliances()).ToList();
+        var list = (await repo.GetStatus()).ToList();
 
         Assert.IsNotNull(list);
         Assert.IsNotEmpty(list);

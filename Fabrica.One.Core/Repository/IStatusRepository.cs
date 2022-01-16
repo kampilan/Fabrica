@@ -9,7 +9,7 @@ namespace Fabrica.One.Repository
     public interface IStatusRepository
     {
 
-        Task<IEnumerable<ApplianceModel>> GetAppliances();
+        Task<IEnumerable<StatusModel>> GetStatus();
 
     }
 

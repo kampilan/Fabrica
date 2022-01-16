@@ -14,14 +14,14 @@ namespace Fabrica.One.Repository
         private class Status
         {
             public Result Results { get; set; } = new Result();
-            public List<ApplianceModel> Appliances { get; set; } = new List<ApplianceModel>();
+            public List<StatusModel> Appliances { get; set; } = new List<StatusModel>();
 
         }
 
 
         public string OneRoot { get; set; } = "";
 
-        public async Task<IEnumerable<ApplianceModel>> GetAppliances()
+        public async Task<IEnumerable<StatusModel>> GetStatus()
         {
 
             var logger = this.GetLogger();
@@ -49,8 +49,9 @@ namespace Fabrica.One.Repository
                 if (!file.Exists)
                 {
                     logger.Debug("Status file does not exist");
-                    return new List<ApplianceModel>();
+                    return new List<StatusModel>();
                 }
+
 
 
                 // *****************************************************************
@@ -66,7 +67,7 @@ namespace Fabrica.One.Repository
                     // *****************************************************************
                     logger.Debug("Attempting to deserialize json");
                     var status = JsonSerializer.Deserialize<Status>(json, new JsonSerializerOptions(JsonSerializerDefaults.General));
-                    var apps = status?.Appliances??new List<ApplianceModel>();
+                    var apps = status?.Appliances??new List<StatusModel>();
 
 
                     // *****************************************************************

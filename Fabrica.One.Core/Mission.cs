@@ -420,10 +420,10 @@ namespace Fabrica.One
 
         public bool StartComplete => Appliances.Count == 0 || Appliances.All(a => a.HasStarted);
 
-        public IEnumerable<ApplianceModel> GetAppliances()
+        public IEnumerable<StatusModel> GetAppliances()
         {
 
-            return Appliances.Select(ap => new ApplianceModel
+            return Appliances.Select(ap => new StatusModel
             {
                 Uid = ap.Unit.Uid,
                 Alias = ap.Unit.Alias,
