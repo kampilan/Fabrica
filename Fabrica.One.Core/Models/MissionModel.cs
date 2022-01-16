@@ -48,6 +48,9 @@ namespace Fabrica.One.Models
             set => _environment = value;
         }
 
+        [JsonIgnore]
+        public string Fqmn => $"{Name}-{Environment}";
+
         private string _repositoryVersion = "";
         [Editable(false)]
         public string RepositoryVersion

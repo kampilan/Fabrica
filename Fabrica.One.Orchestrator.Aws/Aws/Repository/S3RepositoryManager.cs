@@ -491,7 +491,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 {
                     var model = new RepositoryModel
                     {
-                        Description = $"{p.Name.Pascalize()} [{p.Region.DisplayName}]: {repo}",
+                        Description = $" {repo}: [{p.Name.Pascalize()} {p.Region.DisplayName}]",
                         Properties =
                         {
                             ["Profile"] = p.Name,
