@@ -231,7 +231,7 @@ namespace Fabrica.One.Plan
                     unit.RepositoryLocation   = $"{rv}{Path.DirectorySeparatorChar}{unit.Name}-{unit.Build}.zip";
                     unit.InstallationLocation = $"{InstallationRoot}{Path.DirectorySeparatorChar}{unit.Alias}{Path.DirectorySeparatorChar}{unit.Uid}";
 
-                    unit.EnvironmentConfigLocation = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}environment.json";
+                    unit.UnitConfigLocation = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}environment.json";
                     unit.MissionConfigLocation     = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}mission.json";
 
                     unit.ExecutionCommand   = "dotnet";

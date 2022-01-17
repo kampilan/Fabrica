@@ -142,7 +142,7 @@ public class BaseOneTest
             ["Test"] = "Cool"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -196,7 +196,7 @@ public class BaseOneTest
             ["Test"] = "Cool"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -253,7 +253,7 @@ public class BaseOneTest
             ["HealthcheckRoute"] = "/gabby"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -310,7 +310,7 @@ public class BaseOneTest
             ["Test"] = "Cool"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -368,7 +368,7 @@ public class BaseOneTest
             ["Test"] = "Cool"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -422,7 +422,7 @@ public class BaseOneTest
             ["Test"] = "Cool"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -477,7 +477,7 @@ public class BaseOneTest
             ["Test"] = "Cool"
         };
 
-        deployment.EnvironmentConfiguration = config;
+        deployment.Configuration = config;
 
 
         sp.Deployments.Add(deployment);
@@ -497,7 +497,7 @@ public class BaseOneTest
             ["Test"] = "lame"
         };
 
-        deployment2.EnvironmentConfiguration = config2;
+        deployment2.Configuration = config2;
 
         sp.Deployments.Add(deployment2);
 

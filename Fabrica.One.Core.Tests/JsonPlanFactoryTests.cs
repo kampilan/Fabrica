@@ -62,9 +62,9 @@ public class JsonPlanFactoryTests: BaseOneTest
         Assert.IsTrue(plan.Deployments.Count == 1);
         var d1 = plan.Deployments[0];
 
-        Assert.IsNotNull(d1.EnvironmentConfiguration);
+        Assert.IsNotNull(d1.Configuration);
 
-        var cd = d1.EnvironmentConfiguration.Deserialize<Dictionary<string, object>>();
+        var cd = d1.Configuration.Deserialize<Dictionary<string, object>>();
         Assert.IsNotNull(cd);
         Assert.IsNotEmpty(cd);
 
@@ -89,14 +89,14 @@ public class JsonPlanFactoryTests: BaseOneTest
         Assert.IsTrue(plan.Deployments.Count == 2);
         var d1 = plan.Deployments[1];
 
-        Assert.IsNotNull(d1.EnvironmentConfiguration);
+        Assert.IsNotNull(d1.Configuration);
 
-        var cd = d1.EnvironmentConfiguration.Deserialize<Dictionary<string, object>>();
+        var cd = d1.Configuration.Deserialize<Dictionary<string, object>>();
         Assert.IsNotNull(cd);
         Assert.IsNotEmpty(cd);
 
 
-        var json2 = d1.EnvironmentConfiguration.ToString();
+        var json2 = d1.Configuration.ToString();
         Assert.IsNotEmpty(json2);
 
 

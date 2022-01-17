@@ -431,7 +431,7 @@ namespace Fabrica.One
                 RepositoryLocation = ap.Unit.RepositoryLocation,
                 InstallationLocation = ap.Unit.InstallationLocation,
                 Assembly = ap.Unit.Assembly,
-                EnvironmentConfiguration = ap.Unit.EnvironmentConfiguration,
+                EnvironmentConfiguration = ap.Unit.Configuration,
                 HasLoaded = ap.Unit.HasLoaded,
                 HasInstalled = ap.Unit.HasInstalled,
                 HasStarted = ap.HasStarted,

@@ -135,7 +135,7 @@ namespace Fabrica.One.Models
         }
 
         private string _configurationAsJson = "";
-        [Required]
+        [JsonIgnore]
         public string ConfigurationAsJson
         {
             get => _configurationAsJson;

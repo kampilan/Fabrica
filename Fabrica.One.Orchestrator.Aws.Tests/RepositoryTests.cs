@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Fabrica.One.Orchestrator.Aws.Repository;
 using Fabrica.Watch;
@@ -133,6 +134,58 @@ public class RepositoryTests
 
 
     }
+
+
+
+
+    [Test]
+    public async Task Test1140_Mission_Should_Load()
+    {
+
+        var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
+
+        Assert.IsNotNull(repo);
+
+        await Manager.SetCurrentRepository(repo);
+
+
+
+        var missions = await Manager.GetMissions();
+
+        var mm = missions.FirstOrDefault(m => m.Fqmn == "Fake-Local");
+
+        Assert.IsNotNull(mm);
+        Assert.IsNotEmpty(mm.Deployments);
+
+        var dm = mm.Deployments.FirstOrDefault();
+
+        Assert.IsNotNull(dm);
+
+        var cj = dm.ConfigurationAsJson;
+        Assert.IsNotNull(cj);
+        Assert.IsNotEmpty(cj);
+
+        var dict = new Dictionary<string, object>
+        {
+            ["Test"] = "Cool",
+            ["Name"] = "Gabby",
+            ["Age"] = 12
+        };
+
+        var json = JsonSerializer.Serialize(dict, new JsonSerializerOptions(JsonSerializerDefaults.General) {WriteIndented = true});
+
+        dm.ConfigurationAsJson = json;
+
+        mm.Post();
+
+        var mj = JsonSerializer.Serialize(mm, new JsonSerializerOptions(JsonSerializerDefaults.General) {WriteIndented = true});
+
+        Assert.IsNotNull(mj);
+        Assert.IsNotEmpty(mj);
+
+
+    }
+
 
 
 

@@ -41,7 +41,7 @@ namespace Fabrica.One.Plan
         public bool ShowWindow { get; set; }
 
         [Required]
-        public JsonObject EnvironmentConfiguration { get; set; } = new JsonObject();
+        public JsonObject Configuration { get; set; } = new JsonObject();
 
 
         [JsonIgnore]
@@ -60,7 +60,7 @@ namespace Fabrica.One.Plan
         public string InstallationLocation { get; set; } = "";
 
         [JsonIgnore]
-        public string EnvironmentConfigLocation { get; set; } = "";
+        public string UnitConfigLocation { get; set; } = "";
 
         [JsonIgnore]
         public string MissionConfigLocation { get; set; } = "";

@@ -89,7 +89,7 @@ namespace Fabrica.One.Installer
                 logger.EnterMethod();
 
                 logger.Inspect(nameof(unit.InstallationLocation), unit.InstallationLocation);
-                logger.Inspect(nameof(unit.EnvironmentConfigLocation), unit.EnvironmentConfigLocation);
+                logger.Inspect(nameof(unit.UnitConfigLocation), unit.UnitConfigLocation);
                 logger.Inspect(nameof(unit.MissionConfigLocation), unit.MissionConfigLocation);
                 logger.Inspect(nameof(unit.RepositoryContent.Length), unit.RepositoryContent.Length);
                 logger.Inspect(nameof(unit.Deploy), unit.Deploy);
@@ -175,13 +175,13 @@ namespace Fabrica.One.Installer
                 {
 
 
-                    logger.Debug("Attempting to serialize environment confguration to JSON");
-                    var json = unit.EnvironmentConfiguration.ToString();
+                    logger.Debug("Attempting to serialize confguration to JSON");
+                    var json = unit.Configuration.ToString();
                     logger.LogJson("Unit Configuration", json);
 
 
-                    logger.Debug("Attempting to write environment config file");
-                    using (var file = new FileStream(unit.EnvironmentConfigLocation, FileMode.Create, FileAccess.Write))
+                    logger.Debug("Attempting to write config file");
+                    using (var file = new FileStream(unit.UnitConfigLocation, FileMode.Create, FileAccess.Write))
                     using (var writer = new StreamWriter(file))
                     {
                         await writer.WriteAsync(json);
@@ -193,7 +193,7 @@ namespace Fabrica.One.Installer
                 catch (Exception cause)
                 {
 
-                    var message = $"Appliance {unit.Name}-{unit.Build} failed during Environment Config installation. Target: ({unit.EnvironmentConfigLocation}) Message: {cause.Message}";
+                    var message = $"Appliance {unit.Name}-{unit.Build} failed during Environment Config installation. Target: ({unit.UnitConfigLocation}) Message: {cause.Message}";
 
                     logger.Error(cause, message);
 
@@ -216,7 +216,7 @@ namespace Fabrica.One.Installer
                     };
 
                     var json = JsonSerializer.Serialize(unit.MissionConfiguration, options);
-                    logger.LogJson("Mission EnvironmentConfiguration", json);
+                    logger.LogJson("Mission Configuration", json);
 
 
                     logger.Debug("Attempting to write mission config file");
