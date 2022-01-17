@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
+using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -15,7 +16,7 @@ namespace Fabrica.One.Models
 
     
     [SuppressMessage("ReSharper", "ConvertToAutoProperty")]
-    public class DeploymentModel: BaseMutableModel<DeploymentModel>, IAggregateModel, INotifyPropertyChanged
+    public class DeploymentModel: BaseMutableModel<DeploymentModel>, IAggregateModel, INotifyPropertyChanged, IJsonOnSerializing
     {
 
         private JsonSerializerOptions Options { get; } = new JsonSerializerOptions {WriteIndented = true};
@@ -125,20 +126,39 @@ namespace Fabrica.One.Models
             set => _showWindow = value;
         }
 
-        private JsonObject _environmentConfiguration = new JsonObject();
+        private JsonObject _configuration = new JsonObject();
         [Editable(false)]
-        public JsonObject EnvironmentConfiguration
+        public JsonObject Configuration
         {
-            get => _environmentConfiguration;
-            set => _environmentConfiguration = value;
+            get => _configuration;
+            set => _configuration = value;
         }
 
-        public string GetConfigurationAsJson() => JsonSerializer.Serialize(EnvironmentConfiguration, Options);
+        private string _configurationAsJson = "";
+        [Required]
+        public string ConfigurationAsJson
+        {
+            get => _configurationAsJson;
+            set => _configurationAsJson = value;
+        }
+
+        public override void OnDeserialized()
+        {
+            base.OnDeserialized();
+            _configurationAsJson = GetConfigurationAsJson();
+        }
+
+        public void OnSerializing()
+        {
+            SetConfiguration(_configurationAsJson);
+        }
+
+        public string GetConfigurationAsJson() => JsonSerializer.Serialize(Configuration, Options);
 
         public void SetConfiguration(string value)
         {
             var jo = JsonNode.Parse(value);
-            EnvironmentConfiguration = jo?.AsObject() ?? new JsonObject();
+            Configuration = jo?.AsObject() ?? new JsonObject();
         }
 
         public void SetConfiguration( Dictionary<string,object> config )
@@ -153,7 +173,7 @@ namespace Fabrica.One.Models
 
             if( Name == build.Name )
             {
-                Build = build.BuildNum;
+                Build    = build.BuildNum;
                 Checksum = build.Checksum;
                 Assembly = build.Assembly;
             }
@@ -165,6 +185,7 @@ namespace Fabrica.One.Models
         {
             return $"{Name}-{Build} as {Alias}";
         }
+
 
     }
 

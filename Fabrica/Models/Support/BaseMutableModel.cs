@@ -44,26 +44,12 @@ namespace Fabrica.Models.Support
             _isReadonly = false;
         }
 
-
-        [OnDeserializing]
-        private void BeforeDeserializing(StreamingContext context)
+        public virtual void OnDeserializing()
         {
             EnterSuspendTracking();
         }
 
-        public void OnDeserializing()
-        {
-            EnterSuspendTracking();
-        }
-
-
-        [OnDeserialized]
-        private void AfterDeserializing(StreamingContext context)
-        {
-            ExitSuspendTracking();
-        }
-
-        public void OnDeserialized()
+        public virtual void OnDeserialized()
         {
             ExitSuspendTracking();
         }
@@ -302,6 +288,7 @@ namespace Fabrica.Models.Support
         }
 
         #endregion
+
 
 
     }

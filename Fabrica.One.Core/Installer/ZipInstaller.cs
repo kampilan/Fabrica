@@ -177,7 +177,7 @@ namespace Fabrica.One.Installer
 
                     logger.Debug("Attempting to serialize environment confguration to JSON");
                     var json = unit.EnvironmentConfiguration.ToString();
-                    logger.LogJson("Unit EnvironmentConfiguration", json);
+                    logger.LogJson("Unit Configuration", json);
 
 
                     logger.Debug("Attempting to write environment config file");
