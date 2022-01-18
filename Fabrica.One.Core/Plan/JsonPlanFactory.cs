@@ -228,6 +228,15 @@ namespace Fabrica.One.Plan
                 foreach (var unit in plan.Deployments)
                 {
 
+
+                    logger.Debug("Attempting to check for blank Alias");
+                    if (string.IsNullOrWhiteSpace(unit.Alias))
+                    {
+                        logger.Debug("Encountered blank Alias defaulting to Name");
+                        unit.Alias = unit.Name;
+                    }
+
+
                     unit.RepositoryLocation   = $"{rv}{Path.DirectorySeparatorChar}{unit.Name}-{unit.Build}.zip";
                     unit.InstallationLocation = $"{InstallationRoot}{Path.DirectorySeparatorChar}{unit.Alias}{Path.DirectorySeparatorChar}{unit.Uid}";
 
