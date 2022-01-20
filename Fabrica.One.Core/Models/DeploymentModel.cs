@@ -150,7 +150,8 @@ namespace Fabrica.One.Models
 
         public void OnSerializing()
         {
-            SetConfiguration(_configurationAsJson);
+            var jo = JsonNode.Parse(ConfigurationAsJson);
+            _configuration = jo?.AsObject() ?? new JsonObject();
         }
 
         public string GetConfigurationAsJson() => JsonSerializer.Serialize(Configuration, Options);

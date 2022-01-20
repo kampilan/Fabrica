@@ -172,6 +172,12 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
             if( Options.UseSession )
             {
 
+                services.AddStackExchangeRedisCache(o=>
+                {
+                    o.Configuration = Options.RedisConnectionStr;
+                    o.InstanceName = "session_";
+                });
+
                 services.AddSession(o =>
                 {
                     o.IdleTimeout         = TimeSpan.FromMinutes(30);
@@ -181,14 +187,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
                     o.Cookie.SameSite     = SameSiteMode.Strict;
                 });
 
-                services.AddStackExchangeRedisCache(o=>
-                {
-                    o.Configuration = Options.RedisConnectionStr;
-                    o.InstanceName = "session_";
-                });
-
             }
-
 
 
         }
