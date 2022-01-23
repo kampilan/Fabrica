@@ -6,6 +6,6 @@
 	[Parameter(Mandatory=$false)] [String]$bucket
 ) 
 
-Import-Module Fabrica.One/Builder
+Import-Module /usr/local/share/powershell/Modules/Fabrica.One/Builder
 
 New-Appliance -Name fabrica-monitor -Build $buildNumber -Source $contentDir -Region $region -Bucket $bucket

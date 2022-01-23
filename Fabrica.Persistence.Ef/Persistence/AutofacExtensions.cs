@@ -52,6 +52,7 @@ public static class AutofacExtensions
 
     }
 
+
     public static ContainerBuilder AddAuditJournalHandler(this ContainerBuilder builder)
     {
 
@@ -62,5 +63,6 @@ public static class AutofacExtensions
         
         return builder;
     }
+
 
 }
