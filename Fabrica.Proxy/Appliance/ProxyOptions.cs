@@ -1,9 +1,11 @@
 ﻿using Fabrica.Api.Support.One;
+using Newtonsoft.Json;
 
 namespace Fabrica.Proxy.Appliance
 {
 
 
+    [JsonObject(MemberSerialization.OptIn)]
     public class ProxyOptions: ApplianceOptions
     {
 
@@ -16,6 +18,13 @@ namespace Fabrica.Proxy.Appliance
         public string DataProtectionParameterName { get; set; } = "";
 
         public string AwsSecretsId { get; set; } = "";
+
+        
+        [JsonProperty("oidc-client-id")]
+        public string OidcClientId { get; set; } = "";
+
+        [JsonProperty("oidc-client-secret")]
+        public string OidcClientSecret { get; set; } = "";
 
 
         public bool UseSession { get; set; } = false;

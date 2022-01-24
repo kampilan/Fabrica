@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright (c) 2022 The Kampilan Group Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using System.Data.Common;
 using Autofac;
 using Fabrica.Utilities.Container;
@@ -57,20 +56,16 @@ namespace Fabrica.Persistence.Connection
 
         }
 
-        public static ContainerBuilder AddSingleTenantResolver<TSecrets>(this ContainerBuilder builder, DbProviderFactory factory, Action<TSecrets,DbCredentials> credBuilder, string replicaConnectionTemplate, string originConnectionTemplate) where TSecrets: class
+        public static ContainerBuilder AddSingleTenantResolver( this ContainerBuilder builder, DbProviderFactory factory, string replicaConnectionTemplate, string originConnectionTemplate, object model )
         {
 
             builder.Register(c =>
                 {
 
                     var correlation = c.Resolve<ICorrelation>();
-                    var secrets     = c.Resolve<TSecrets>();
 
-                    var creds = new DbCredentials();
-                    credBuilder(secrets, creds);
-
-                    var replica = Smart.Format( replicaConnectionTemplate, creds );
-                    var origin  = Smart.Format( originConnectionTemplate, creds );
+                    var replica = Smart.Format( replicaConnectionTemplate, model );
+                    var origin  = Smart.Format( originConnectionTemplate, model );
 
                     var comp = new ConnectionResolver(correlation, factory, replica, origin );
 

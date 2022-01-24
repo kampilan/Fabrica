@@ -15,6 +15,7 @@
 
         bool RequiresAuthentication { get; }
 
+
     }
 
 }

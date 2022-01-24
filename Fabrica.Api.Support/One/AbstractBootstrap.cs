@@ -39,6 +39,11 @@ namespace Fabrica.Api.Support.One
         }
 
 
+        protected virtual void ConfigurOptions()
+        {
+
+        }
+
         protected virtual void ConfigureWatch()
         {
 
@@ -156,9 +161,11 @@ namespace Fabrica.Api.Support.One
 
             Options = Configuration.Get<TOptions>();
 
+            ConfigurOptions();
+            
+
             try
             {
-
 
                 var hb = new HostBuilder()
                     .UseServiceProviderFactory(new AutofacServiceProviderFactory())

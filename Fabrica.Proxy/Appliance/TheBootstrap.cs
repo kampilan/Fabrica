@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
-using Fabrica.Aws.Configuration.Secrets;
+using Fabrica.Aws.Secrets;
 using Fabrica.Configuration.Yaml;
+using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Authentication;
@@ -24,6 +25,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Newtonsoft.Json;
 
 namespace Fabrica.Proxy.Appliance;
 
@@ -46,7 +48,6 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 
     }
 
-
     protected override void ConfigureApp(ConfigurationBuilder builder)
     {
 
@@ -58,6 +59,24 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
     }
 
 #endif
+
+
+    protected override void ConfigurOptions()
+    {
+
+        using var logger = this.EnterMethod();
+
+
+        // *****************************************************************
+        logger.Inspect(nameof(Options.AwsSecretsId), Options.AwsSecretsId);    
+        if ( !string.IsNullOrWhiteSpace(Options.AwsSecretsId) )
+        {
+            logger.Debug("Attempting to populate Options with AWS Secrets");
+            AsyncPump.Run(async () => await AwsSecretsHelper.PopulateWithSecrets(Options, Options.AwsSecretsId, Options.RunningOnEc2, Options.ProfileName, Options.RegionName));
+        }
+
+
+    }
 
 
     private bool RunProxy { get; set; }
@@ -310,23 +329,9 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
     {
 
 
-        var sb = new ConfigurationBuilder();
-        sb.AddAwsSecrets(o =>
-        {
-            o.RunningOnEc2 = Options.RunningOnEc2;
-            o.Region       = Options.RegionName;
-            o.ProfileName  = Options.ProfileName;
-            o.SecretsKeyId = Options.AwsSecretsId;
-
-        });
-
-        var sc = sb.Build();
-        var secrets = sc.Get<SecretsModel>();
-
-
         options.MetadataAddress = Options.MetadataAddress;
-        options.ClientId        = secrets.OidcClientId;
-        options.ClientSecret    = secrets.OidcClientSecret;
+        options.ClientId        = Options.OidcClientId;
+        options.ClientSecret    = Options.OidcClientSecret;
 
         options.ResponseType = OpenIdConnectResponseType.Code;
         options.UsePkce      = true;
@@ -438,11 +443,18 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 }
 
 
+[JsonObject(MemberSerialization.OptIn)]
 public class SecretsModel
 {
+
+    [JsonProperty("oidc-client-id")]
     public string OidcClientId { get; set; } = "";
+
+    [JsonProperty("oidc-client-secret")]
     public string OidcClientSecret { get; set; } = "";
+
 }
+
 
 public class ClaimValue
 {
