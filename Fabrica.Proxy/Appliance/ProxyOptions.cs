@@ -1,6 +1,8 @@
 ﻿using Fabrica.Api.Support.One;
 using Newtonsoft.Json;
 
+// ReSharper disable InconsistentNaming
+
 namespace Fabrica.Proxy.Appliance
 {
 
@@ -9,15 +11,16 @@ namespace Fabrica.Proxy.Appliance
     public class ProxyOptions: ApplianceOptions
     {
 
-        public bool RunningOnEc2 { get; set; } = true;
+        public bool RunningOnEC2 { get; set; } = true;
         public string RegionName { get; set; } = "";
-        public string ProfileName { get; set; } = "";
+        public string Profile { get; set; } = "";
+
+        public string AwsSecretsId { get; set; } = "";
 
 
         public string ApplicationDiscriminator { get; set; } = "";
         public string DataProtectionParameterName { get; set; } = "";
 
-        public string AwsSecretsId { get; set; } = "";
 
         
         [JsonProperty("oidc-client-id")]

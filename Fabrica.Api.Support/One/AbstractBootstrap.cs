@@ -36,12 +36,13 @@ namespace Fabrica.Api.Support.One
                 .AddJsonFile("environment.json", true)
                 .AddJsonFile("mission.json", true);
 
+
         }
 
 
-        protected virtual void EnrichOptions()
+        protected virtual Task EnrichOptions()
         {
-
+            return Task.CompletedTask;
         }
 
         protected virtual void ConfigureWatch()
@@ -137,7 +138,6 @@ namespace Fabrica.Api.Support.One
                     .SingleInstance()
                     .AutoActivate();
 
-
             }
             finally
             {
@@ -161,7 +161,7 @@ namespace Fabrica.Api.Support.One
 
             Options = Configuration.Get<TOptions>();
 
-            EnrichOptions();
+            await EnrichOptions();
             
 
             try
@@ -176,8 +176,8 @@ namespace Fabrica.Api.Support.One
                         lb.AddProvider(new LoggerProvider());
                         lb.SetMinimumLevel(LogLevel.Trace);
                     })
-                    .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
-                    .ConfigureWebHostDefaults(ConfigureWebHost);
+                    .ConfigureContainer<ContainerBuilder>( ConfigureContainer )
+                    .ConfigureWebHostDefaults( ConfigureWebHost );
 
 
                 if (Options.RunningAsMission)

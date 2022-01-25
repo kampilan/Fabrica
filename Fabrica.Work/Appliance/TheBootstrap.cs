@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Threading.Tasks;
 using Fabrica.Api.Support.Conventions;
 using Fabrica.Api.Support.Filters;
 using Fabrica.Api.Support.Identity.Proxy;
@@ -33,6 +34,7 @@ namespace Fabrica.Work.Appliance
                 .WhenNotMatched(Level.Debug, Color.Azure);
 
             maker.Build();
+
 
         }
 

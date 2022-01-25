@@ -61,7 +61,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 #endif
 
 
-    protected override void EnrichOptions()
+    protected override async Task EnrichOptions()
     {
 
         using var logger = this.EnterMethod();
@@ -72,7 +72,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         if ( !string.IsNullOrWhiteSpace(Options.AwsSecretsId) )
         {
             logger.Debug("Attempting to populate Options with AWS Secrets");
-            AsyncPump.Run(async () => await AwsSecretsHelper.PopulateWithSecrets(Options, Options.AwsSecretsId, Options.RunningOnEc2, Options.ProfileName, Options.RegionName));
+            await AwsSecretsHelper.PopulateWithSecrets(Options, Options.AwsSecretsId, Options.RunningOnEC2, Options.Profile, Options.RegionName);
         }
 
 
@@ -88,7 +88,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         using var logger = this.EnterMethod();
 
 
-        if( Options.RunningOnEc2 && !string.IsNullOrWhiteSpace(Options.DataProtectionParameterName) && !string.IsNullOrWhiteSpace(Options.ApplicationDiscriminator) )
+        if( Options.RunningOnEC2 && !string.IsNullOrWhiteSpace(Options.DataProtectionParameterName) && !string.IsNullOrWhiteSpace(Options.ApplicationDiscriminator) )
         {
             services.AddDataProtection(o => o.ApplicationDiscriminator = Options.ApplicationDiscriminator)
                 .PersistKeysToAWSSystemsManager( Options.DataProtectionParameterName );
