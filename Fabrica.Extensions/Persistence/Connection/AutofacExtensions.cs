@@ -81,6 +81,31 @@ namespace Fabrica.Persistence.Connection
         }
 
 
+        public static ContainerBuilder AddSingleTenantResolver<TModel>(this ContainerBuilder builder, DbProviderFactory factory, string replicaConnectionTemplate, string originConnectionTemplate ) where TModel: class
+        {
+
+            builder.Register(c =>
+                {
+
+                    var correlation = c.Resolve<ICorrelation>();
+                    var model       = c.Resolve<TModel>();
+
+                    var replica = Smart.Format(replicaConnectionTemplate, model);
+                    var origin = Smart.Format(originConnectionTemplate, model);
+
+                    var comp = new ConnectionResolver(correlation, factory, replica, origin);
+
+                    return comp;
+
+                })
+                .As<IConnectionResolver>()
+                .InstancePerLifetimeScope();
+
+
+            return builder;
+
+        }
+
 
 
         public static ContainerBuilder AddSingleTenantResolver( this ContainerBuilder builder, DbProviderFactory factory, ISingleTenantPersistenceModule module )

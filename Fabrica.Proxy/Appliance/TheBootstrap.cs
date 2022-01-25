@@ -61,7 +61,7 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
 #endif
 
 
-    protected override void ConfigurOptions()
+    protected override void EnrichOptions()
     {
 
         using var logger = this.EnterMethod();

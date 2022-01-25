@@ -39,7 +39,7 @@ namespace Fabrica.Api.Support.One
         }
 
 
-        protected virtual void ConfigurOptions()
+        protected virtual void EnrichOptions()
         {
 
         }
@@ -161,7 +161,7 @@ namespace Fabrica.Api.Support.One
 
             Options = Configuration.Get<TOptions>();
 
-            ConfigurOptions();
+            EnrichOptions();
             
 
             try
