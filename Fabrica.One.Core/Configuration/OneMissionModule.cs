@@ -205,7 +205,7 @@ namespace Fabrica.One.Configuration
                         var source  = c.Resolve<IPlanSource>();
                         var factory = c.Resolve<IPlanFactory>();
 
-                        var plan = AsyncPump.Run( async () => await factory.Create( source, ProduceEmptyPlans ) );
+                        var plan = factory.Create(source, ProduceEmptyPlans).ConfigureAwait(false).GetAwaiter().GetResult();
 
                         return plan;
 
