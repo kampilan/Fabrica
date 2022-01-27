@@ -84,7 +84,12 @@ namespace Fabrica.Aws
 
                 // *****************************************************************
                 logger.Debug("Attempting to use AWS with automatic credentials");
-                return builder.UseAws( module.RegionName );
+                if( !string.IsNullOrWhiteSpace(module.RegionName) )
+                    return builder.UseAws( module.RegionName );
+
+
+                // *****************************************************************
+                return builder.UseAws();
 
 
             }
@@ -97,7 +102,7 @@ namespace Fabrica.Aws
 
         }
 
-        public static ContainerBuilder UseAws( this ContainerBuilder builder, string regionName )
+        public static ContainerBuilder UseAws( this ContainerBuilder builder, string regionName="" )
         {
 
 
@@ -109,10 +114,11 @@ namespace Fabrica.Aws
                 logger.EnterScope(nameof(UseAws));
 
 
-
                 // ******************************************************************
-                _addServices( builder, regionName );
-
+                if( !string.IsNullOrWhiteSpace(regionName))
+                    _addServices( builder, regionName );
+                else
+                    _addServices( builder );
 
 
                 // ******************************************************************
@@ -228,6 +234,67 @@ namespace Fabrica.Aws
         }
 
 
+        private static void _addServices(ContainerBuilder builder)
+        {
+
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonS3Client())
+                .As<IAmazonS3>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSecurityTokenServiceClient())
+                .As<IAmazonSecurityTokenService>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSQSClient())
+                .As<IAmazonSQS>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            builder.Register(c => new AmazonSimpleSystemsManagementClient())
+                .As<IAmazonSimpleSystemsManagement>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonAppConfigClient())
+                .As<IAmazonAppConfig>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSecretsManagerClient())
+                .As<IAmazonSecretsManager>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonDynamoDBClient())
+                .As<IAmazonDynamoDB>()
+                .SingleInstance()
+                .AutoActivate();
+
+            // ******************************************************************
+            builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
+                .As<IDynamoDBContext>()
+                .InstancePerDependency();
+
+
+        }
+
+
         private static void _addServices(ContainerBuilder builder, string regionName)
         {
 
@@ -244,14 +311,14 @@ namespace Fabrica.Aws
 
 
             // ******************************************************************
-            builder.Register(c => new AmazonSecurityTokenServiceClient( endpoint))
+            builder.Register(c => new AmazonSecurityTokenServiceClient(endpoint))
                 .As<IAmazonSecurityTokenService>()
                 .SingleInstance()
                 .AutoActivate();
 
 
             // ******************************************************************
-            builder.Register(c => new AmazonSQSClient( endpoint))
+            builder.Register(c => new AmazonSQSClient(endpoint))
                 .As<IAmazonSQS>()
                 .SingleInstance()
                 .AutoActivate();
@@ -264,7 +331,7 @@ namespace Fabrica.Aws
 
 
             // ******************************************************************
-            builder.Register(c => new AmazonAppConfigClient( endpoint))
+            builder.Register(c => new AmazonAppConfigClient(endpoint))
                 .As<IAmazonAppConfig>()
                 .SingleInstance()
                 .AutoActivate();
@@ -290,6 +357,8 @@ namespace Fabrica.Aws
 
 
         }
+
+
 
         private static void _addServices( ContainerBuilder builder,  AWSCredentials credentials, string regionName )
         {
