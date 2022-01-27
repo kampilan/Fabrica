@@ -33,6 +33,9 @@ namespace Fabrica.Proxy.Appliance
         public bool UseSession { get; set; } = false;
         public string RedisConnectionStr { get; set; } = "";
 
+        public bool UseCors { get; set; } = false;
+
+
         public bool ConfigureForAuthentication => !string.IsNullOrWhiteSpace(MetadataAddress);
 
         public bool IncludeUserAuthentication { get; set; } = true;

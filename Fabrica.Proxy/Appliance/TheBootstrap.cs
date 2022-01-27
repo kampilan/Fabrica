@@ -124,6 +124,14 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         });
 
 
+        // *****************************************************************
+        if (Options.UseCors)
+        {
+            logger.Debug("Attempting to Add default CORS policy");
+            services.AddCors();
+
+        }
+
 
         // *****************************************************************
         logger.Inspect(nameof(Options.ConfigureForAuthentication), Options.ConfigureForAuthentication);
@@ -223,6 +231,20 @@ public class TheBootstrap: KestrelBootstrap<TheModule,ProxyOptions,InitService>
         builder.UseForwardedHeaders();
 
         builder.UseRouting();
+
+
+        if( Options.UseCors )
+        {
+
+            builder.UseCors(b =>
+            {
+                b.AllowAnyMethod();
+                b.AllowAnyHeader();
+                b.SetIsOriginAllowed(_ => true);
+                b.AllowCredentials();
+            });
+
+        }
 
 
         if ( Options.ConfigureForAuthentication )
