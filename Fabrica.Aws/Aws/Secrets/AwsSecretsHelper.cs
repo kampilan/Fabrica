@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
+using Amazon.S3;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using Fabrica.Watch;
@@ -29,28 +30,29 @@ namespace Fabrica.Aws.Secrets
 
                 // *****************************************************************
                 logger.Debug("Attempting to check if running on EC2");
-                AWSCredentials credentials;
+                AmazonSecretsManagerClient client;
                 if (runningOnEc2)
                 {
-                    logger.Debug("Attempting to build instance profile credentials");
-                    credentials = !string.IsNullOrWhiteSpace(profileName) ? new InstanceProfileAWSCredentials(profileName) : new InstanceProfileAWSCredentials();
+                    client = new AmazonSecretsManagerClient();
                 }
                 else
                 {
 
                     var sharedFile = new SharedCredentialsFile();
                     if (!(sharedFile.TryGetProfile(profileName, out var profile) &&
-                          AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out credentials)))
+                          AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out var credentials)))
                         throw new Exception($"Local profile {profile} could not be loaded");
+
+                    var endpoint = RegionEndpoint.GetBySystemName(regionName);
+                    client = new AmazonSecretsManagerClient(credentials, endpoint);
 
                 }
 
 
-                var endpoint = RegionEndpoint.GetBySystemName(regionName);
 
                 // *****************************************************************
                 logger.Debug("Attempting to create AWS Secrets Managet Client");
-                using (var client = new AmazonSecretsManagerClient(credentials, endpoint))
+                using (client)
                 {
                     var request = new GetSecretValueRequest
                     {
