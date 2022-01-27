@@ -33,7 +33,7 @@ namespace Fabrica.Aws.Secrets
                 if (runningOnEc2)
                 {
                     logger.Debug("Attempting to build instance profile credentials");
-                    credentials = new InstanceProfileAWSCredentials(profileName);
+                    credentials = !string.IsNullOrWhiteSpace(profileName) ? new InstanceProfileAWSCredentials(profileName) : new InstanceProfileAWSCredentials();
                 }
                 else
                 {

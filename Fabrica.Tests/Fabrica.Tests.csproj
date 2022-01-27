@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Fabrica.Persistence.Http\Fabrica.Persistence.Http.csproj" />
     <ProjectReference Include="..\Fabrica.Test.Models\Fabrica.Test.Models.csproj" />
     <ProjectReference Include="..\Fabrica.Work\Fabrica.Work.csproj" />
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 
   <ItemGroup>

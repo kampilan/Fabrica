@@ -41,7 +41,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
         private IAmazonAppConfig Client { get; }
 
 
-        public bool RunningOnEC2 { get; set; } = true;
+        public bool UseInstanceMetadata { get; set; } = true;
 
         public string Application { get; set; } = "";
         public string Environment { get; set; } = "";
@@ -80,14 +80,14 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                 // *****************************************************************
                 string clientId;
                 string yaml;
-                if( RunningOnEC2 )
+                if( UseInstanceMetadata )
                 {
                     logger.Debug("Attempting to check Ec2MetaData");
                     clientId = EC2InstanceMetadata.InstanceId;
                     yaml = EC2InstanceMetadata.UserData;
                 }
                 else
-                    throw new InvalidOperationException( "Application is blank and RunningOnEC2 is false. AppConfig must be configured manually or from Ec2MetaData." );
+                    throw new InvalidOperationException( "Application is blank and UseInstanceMetadata is false. AppConfig must be configured manually or from Ec2MetaData." );
 
 
                 if( !string.IsNullOrWhiteSpace(clientId) )
@@ -204,7 +204,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
             {
                 var ctx = new {Application, Environment, Configuration};
                 logger.ErrorWithContext( cause, ctx, "CheckForUpdate failed." );
-                throw;
+                return false;
             }
             finally
             {

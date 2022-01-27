@@ -34,6 +34,7 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
         public string InstallationRoot { get; set; } = "";
 
 
+        public bool UseInstanceMetadata { get; set; } = true;
         public string AppConfigPlanSourceApplication { get; set; } = "";
         public string AppConfigPlanSourceEnvironment { get; set; } = "";
         public string AppConfigPlanSourceConfiguration { get; set; } = "";
@@ -103,10 +104,10 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
 
                         var comp = new AppConfigPlanSource(client)
                         {
-                            Application   = AppConfigPlanSourceApplication,
-                            Environment   = AppConfigPlanSourceEnvironment,
-                            Configuration = AppConfigPlanSourceConfiguration,
-                            RunningOnEC2  = RunningOnEC2
+                            UseInstanceMetadata  = UseInstanceMetadata,
+                            Application          = AppConfigPlanSourceApplication,
+                            Environment          = AppConfigPlanSourceEnvironment,
+                            Configuration        = AppConfigPlanSourceConfiguration
                         };
 
                         return comp;

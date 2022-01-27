@@ -36,13 +36,10 @@ using Amazon.SimpleSystemsManagement;
 using Amazon.SQS;
 using Autofac;
 using Fabrica.Aws.Repository;
-using Fabrica.Aws.Secrets;
 using Fabrica.Aws.Storage;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
-using Fabrica.Utilities.Secrets;
 using Fabrica.Utilities.Storage;
-using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 // ReSharper disable UnusedParameter.Local

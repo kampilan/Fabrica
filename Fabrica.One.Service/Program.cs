@@ -51,7 +51,7 @@ public class Program
 
 
             // *****************************************************************
-            var options = new WatchMongoOptions();//TheConfiguration.Get<WatchMongoOptions>();
+            var options = TheConfiguration.Get<WatchMongoOptions>();
             var builder = WatchFactoryBuilder.Create();
             if (options.RealtimeLogging || string.IsNullOrWhiteSpace(options.WatchDomainName) || string.IsNullOrWhiteSpace(options.WatchEventStoreUri))
             {
