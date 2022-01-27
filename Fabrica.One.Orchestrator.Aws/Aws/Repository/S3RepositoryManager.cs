@@ -376,7 +376,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             if (RunningOnEc2)
             {
                 logger.Debug("Attempting to build instance profile credentials");
-                credentials = new InstanceProfileAWSCredentials(CurrentProfileName);
+                credentials = !string.IsNullOrWhiteSpace(CurrentProfileName) ? new InstanceProfileAWSCredentials(CurrentProfileName) : new InstanceProfileAWSCredentials();
             }
             else
             {
@@ -398,21 +398,31 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to create Credentials and Region Endpoint");
             var credentials = BuildCredentials();
-            var endpoint = RegionEndpoint.GetBySystemName(CurrentRegionName);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to create Amazaon S3 client");
-            var client = new AmazonS3Client(credentials, endpoint);
-
 
 
             // *****************************************************************
-            return client;
+            if ( !string.IsNullOrWhiteSpace(CurrentRegionName) )
+            {
+
+                logger.Debug("Attempting to create Credentials and Region Endpoint");
+                var endpoint = RegionEndpoint.GetBySystemName(CurrentRegionName);
+
+                logger.Debug("Attempting to create Amazaon S3 client");
+                var client = new AmazonS3Client(credentials, endpoint);
+
+                return client;
+
+            }
+            else
+            {
+
+                logger.Debug("Attempting to create Amazaon S3 client");
+                var client = new AmazonS3Client(credentials);
+
+                return client;
+
+            }
 
         }
 
@@ -496,13 +506,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             return buckets;
 
         }
-
-
-
-
-
-
-
 
 
 
