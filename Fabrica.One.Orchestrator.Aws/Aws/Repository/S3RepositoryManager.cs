@@ -397,13 +397,11 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             using var logger = this.EnterMethod();
 
 
-
-            var credentials = BuildCredentials();
-
-
             // *****************************************************************
             if ( !string.IsNullOrWhiteSpace(CurrentRegionName) )
             {
+
+                var credentials = BuildCredentials();
 
                 logger.Debug("Attempting to create Credentials and Region Endpoint");
                 var endpoint = RegionEndpoint.GetBySystemName(CurrentRegionName);
@@ -418,7 +416,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             {
 
                 logger.Debug("Attempting to create Amazaon S3 client");
-                var client = new AmazonS3Client(credentials);
+                var client = new AmazonS3Client();
 
                 return client;
 
@@ -476,14 +474,10 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             var buckets = new List<string>();
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to fetch credentials");
-            var credentials = new InstanceProfileAWSCredentials();
-
 
             // *****************************************************************
             logger.Debug("Attempting to build S3 client");
-            using var client = new AmazonS3Client(credentials);
+            using var client = new AmazonS3Client();
 
 
 
