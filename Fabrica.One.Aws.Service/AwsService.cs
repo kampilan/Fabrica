@@ -102,12 +102,22 @@ public class AwsService: BackgroundService
         while( !stoppingToken.IsCancellationRequested )
         {
 
-            await TheOrchestrator.CheckForUpdatedPlan();
+            try
+            {
 
-            await Task.Delay( 100, stoppingToken );
+                await TheOrchestrator.CheckForUpdatedPlan();
+
+                await Task.Delay(100, stoppingToken);
+
+            }
+            catch (Exception cause)
+            {
+                using var logger = this.GetLogger();
+                logger.Error(cause, "Unhandled exception caught in Execute loop");
+            }
+
 
         }
-
 
     }
 

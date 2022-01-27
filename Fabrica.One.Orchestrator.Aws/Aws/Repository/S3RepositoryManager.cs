@@ -457,6 +457,54 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
+        private async Task<List<string>> FetchBuckets()
+        {
+
+            using var logger = this.EnterMethod();
+
+
+            var buckets = new List<string>();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to fetch credentials");
+            var credentials = new InstanceProfileAWSCredentials();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build S3 client");
+            using var client = new AmazonS3Client(credentials);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to list buckets");
+            var res = await client.ListBucketsAsync(new ListBucketsRequest());
+            if (res.HttpStatusCode != HttpStatusCode.OK)
+                throw new Exception($"Could not fetch buckets for Profile Instance Status: {res.HttpStatusCode}");
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to load bucket names that end with '-appliance-repository'");
+            buckets.AddRange(res.Buckets.Where(b => b.BucketName.EndsWith("-appliance-repository")).Select(b => b.BucketName));
+
+            logger.Inspect(nameof(buckets.Count), buckets.Count);
+
+
+
+            // *****************************************************************
+            return buckets;
+
+        }
+
+
+
+
+
+
+
+
+
 
         private List<RepositoryModel> Repositories { get; } = new List<RepositoryModel>();
         private async Task LoadRepositories()
@@ -465,41 +513,23 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             using var logger = this.EnterMethod();
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to load credential profiles");
-
-            var file = new SharedCredentialsFile();
-            var profiles = file.ListProfiles();
-
-            logger.Inspect(nameof(profiles.Count), profiles.Count);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to process each profile");
-            foreach (var p in profiles.Where(p => p.Region != null))
+            if ( RunningOnEc2 )
             {
 
-                logger.Inspect(nameof(p.Name), p.Name);
-                logger.Inspect(nameof(p.Region), p.Region);
-
-
-
                 logger.Debug("Attempting to fetch buckets");
-                var repos = await FetchBuckets(file, p);
+                var repos = await FetchBuckets();
 
                 logger.Inspect(nameof(repos.Count), repos.Count);
-
 
                 RepositoryModel Build(string repo)
                 {
                     var model = new RepositoryModel
                     {
-                        Description = $" {repo}: [{p.Name.Pascalize()} {p.Region.DisplayName}]",
+                        Description = $" {repo}: [Instance]",
                         Properties =
                         {
-                            ["Profile"] = p.Name,
-                            ["Region"]  = p.Region.SystemName,
+                            ["Profile"] = "Instance",
+                            ["Region"]  = "",
                             ["Bucket"]  = repo
                         }
                     };
@@ -512,6 +542,61 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 logger.Debug("Attempting to build repository models");
                 foreach (var model in repos.Select(Build))
                     Repositories.Add(model);
+
+            }
+            else
+            {
+
+                // *****************************************************************
+                logger.Debug("Attempting to load credential profiles");
+
+                var file = new SharedCredentialsFile();
+                var profiles = file.ListProfiles();
+
+                logger.Inspect(nameof(profiles.Count), profiles.Count);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to process each profile");
+                foreach (var p in profiles.Where(p => p.Region != null))
+                {
+
+                    logger.Inspect(nameof(p.Name), p.Name);
+                    logger.Inspect(nameof(p.Region), p.Region);
+
+
+
+                    logger.Debug("Attempting to fetch buckets");
+                    var repos = await FetchBuckets(file, p);
+
+                    logger.Inspect(nameof(repos.Count), repos.Count);
+
+                    RepositoryModel Build(string repo)
+                    {
+                        var model = new RepositoryModel
+                        {
+                            Description = $" {repo}: [{p.Name.Pascalize()} {p.Region.DisplayName}]",
+                            Properties =
+                            {
+                                ["Profile"] = p.Name,
+                                ["Region"]  = p.Region.SystemName,
+                                ["Bucket"]  = repo
+                            }
+                        };
+
+                        return model;
+
+                    }
+
+
+                    logger.Debug("Attempting to build repository models");
+                    foreach (var model in repos.Select(Build))
+                        Repositories.Add(model);
+
+                }
+
+
 
             }
 

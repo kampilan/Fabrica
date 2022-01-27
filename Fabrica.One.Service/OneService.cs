@@ -158,9 +158,20 @@ public class OneService : BackgroundService
         while( !stoppingToken.IsCancellationRequested )
         {
 
-            await TheObserver.Check();
+            try
+            {
 
-            await Task.Delay( 100, stoppingToken );
+                await TheObserver.Check();
+
+                await Task.Delay(100, stoppingToken);
+
+            }
+            catch (Exception cause)
+            {
+                using var logger = this.GetLogger();
+                logger.Error(cause, "Unhandled exception caught in Execute loop");
+            }
+
 
         }
 
