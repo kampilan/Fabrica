@@ -11,7 +11,6 @@ using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Fabrica.Aws.Secrets;
 using Fabrica.Configuration.Yaml;
-using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Microsoft.AspNetCore.Authentication;

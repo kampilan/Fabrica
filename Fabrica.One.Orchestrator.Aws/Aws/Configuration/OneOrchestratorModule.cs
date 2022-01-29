@@ -62,15 +62,15 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
                     throw new InvalidConfigurationException(nameof(OneOrchestratorModule), nameof(RepositoryBucketName), "Missing required property");
 
                 logger.Inspect(nameof(AppConfigPlanSourceApplication), AppConfigPlanSourceApplication);
-                if (string.IsNullOrWhiteSpace(AppConfigPlanSourceApplication))
+                if ( !UseInstanceMetadata && string.IsNullOrWhiteSpace(AppConfigPlanSourceApplication))
                     throw new InvalidConfigurationException(nameof(OneOrchestratorModule), nameof(AppConfigPlanSourceApplication), "Missing required property");
 
                 logger.Inspect(nameof(AppConfigPlanSourceEnvironment), AppConfigPlanSourceEnvironment);
-                if (string.IsNullOrWhiteSpace(AppConfigPlanSourceEnvironment))
+                if (!UseInstanceMetadata && string.IsNullOrWhiteSpace(AppConfigPlanSourceEnvironment))
                     throw new InvalidConfigurationException(nameof(OneOrchestratorModule), nameof(AppConfigPlanSourceEnvironment), "Missing required property");
 
                 logger.Inspect(nameof(AppConfigPlanSourceConfiguration), AppConfigPlanSourceConfiguration);
-                if (string.IsNullOrWhiteSpace(AppConfigPlanSourceConfiguration))
+                if (!UseInstanceMetadata && string.IsNullOrWhiteSpace(AppConfigPlanSourceConfiguration))
                     throw new InvalidConfigurationException(nameof(OneOrchestratorModule), nameof(AppConfigPlanSourceConfiguration), "Missing required property");
 
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Amazon;
-using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
-using Amazon.S3;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using Fabrica.Watch;
