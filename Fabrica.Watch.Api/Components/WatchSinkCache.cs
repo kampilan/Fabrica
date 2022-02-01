@@ -13,12 +13,10 @@ namespace Fabrica.Watch.Api.Components
     public class WatchSinkCache: CorrelatedObject, IDisposable
     {
 
-        public WatchSinkCache(ICorrelation correlation, WatchOptions options): base(correlation)
+        public WatchSinkCache(ICorrelation correlation): base(correlation)
         {
 
             Sinks = new ConcurrentDictionary<string, IEventSink>();
-
-            Options     = options;
 
         }
 
@@ -31,7 +29,8 @@ namespace Fabrica.Watch.Api.Components
         }
 
 
-        private WatchOptions Options { get; }
+        public string WatchEventStoreUri { get; set; } = "";
+
 
         private ConcurrentDictionary<string,IEventSink> Sinks { get; }
 
@@ -56,7 +55,7 @@ namespace Fabrica.Watch.Api.Components
             logger.Debug("Attempting to create new factory");
 
             var mgSink = new MongoEventSink();
-            mgSink.WithServerUri(Options.WatchEventStoreUri).WithDomainName(domain);
+            mgSink.WithServerUri(WatchEventStoreUri).WithDomainName(domain);
             mgSink.Start();    
 
 

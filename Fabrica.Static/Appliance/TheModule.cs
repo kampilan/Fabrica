@@ -3,19 +3,26 @@ using System.IO;
 using Amazon.DynamoDBv2;
 using Amazon.S3;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Fabrica.Api.Support.Filters;
+using Fabrica.Api.Support.Middleware;
+using Fabrica.Api.Support.One;
 using Fabrica.Aws;
+using Fabrica.Models.Serialization;
 using Fabrica.Static.Monitors;
 using Fabrica.Static.Providers.Mutable;
 using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Newtonsoft.Json;
 
 namespace Fabrica.Static.Appliance
 {
 
     public enum DeploymentKind { Partial, Fixed, MongoDb, DynamoDb}
 
-    public class TheModule: Module, IAwsCredentialModule, IFixedPackageMonitorModule, IMongoDbMonitorModule, IDynamoDbMonitorModule
+    public class TheModule: BootstrapModule, IAwsCredentialModule, IFixedPackageMonitorModule, IMongoDbMonitorModule, IDynamoDbMonitorModule
     {
 
 
@@ -50,8 +57,29 @@ namespace Fabrica.Static.Appliance
 
         public string TableNamePrefix { get; set; } = "";
 
+        public override void ConfigureServices(IServiceCollection services)
+        {
 
-        protected override void Load( ContainerBuilder builder )
+            services.AddMvc(o =>
+                {
+                    o.Filters.Add(typeof(ExceptionFilter));
+                    o.Filters.Add(typeof(ResultFilter));
+                })
+                .AddNewtonsoftJson(opt =>
+                {
+                    opt.SerializerSettings.ContractResolver = new ModelContractResolver();
+                    opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                    opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+                });
+
+
+        }
+
+
+        public override void ConfigureContainer(ContainerBuilder builder)
         {
 
             builder.AddCorrelation();
@@ -59,8 +87,8 @@ namespace Fabrica.Static.Appliance
             builder.UseAws(this);
 
 
-            var type = (DeploymentKind)Enum.Parse(typeof(DeploymentKind), DeploymentType, true );
-            switch( type )
+            var type = (DeploymentKind)Enum.Parse(typeof(DeploymentKind), DeploymentType, true);
+            switch (type)
             {
 
                 case DeploymentKind.Partial:
@@ -86,12 +114,28 @@ namespace Fabrica.Static.Appliance
                     break;
 
                 default:
-                    throw new Exception( $"Invalid DeploymentType: {DeploymentType}" );
+                    throw new Exception($"Invalid DeploymentType: {DeploymentType}");
 
             }
 
 
         }
+
+
+        public override void ConfigureWebApp(IApplicationBuilder builder)
+        {
+
+            var scope = builder.ApplicationServices.GetAutofacRoot();
+
+            builder.UsePipelineMonitor();
+            builder.UseDebugMode();
+            builder.UseRequestLogging();
+
+            var options = scope.Resolve<FileServerOptions>();
+            builder.UseFileServer(options);
+
+        }
+
 
 
         protected void RegisterPartialFileServerOptions( ContainerBuilder builder )
@@ -229,6 +273,7 @@ namespace Fabrica.Static.Appliance
                 .AutoActivate();
 
         }
+
 
     }
 

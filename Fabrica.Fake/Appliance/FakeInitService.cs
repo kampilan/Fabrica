@@ -19,7 +19,8 @@ public class FakeInitService: InitService
 
         await base.StartAsync(cancellationToken);
 
-        using( var scope = RootScope.BeginLifetimeScope() )
+        // ReSharper disable once ConvertToUsingDeclaration
+        await using( var scope = RootScope.BeginLifetimeScope() )
         {
 
             var ctx = scope.Resolve<FakeReplicaDbContext>();

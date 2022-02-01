@@ -2,10 +2,14 @@
 using System.Net.Http;
 using Amazon.SQS;
 using Autofac;
+using Fabrica.Api.Support.Filters;
 using Fabrica.Api.Support.Identity.Token;
+using Fabrica.Api.Support.Middleware;
+using Fabrica.Api.Support.One;
 using Fabrica.Aws;
 using Fabrica.Http;
 using Fabrica.Identity;
+using Fabrica.Models.Serialization;
 using Fabrica.One.Persistence;
 using Fabrica.One.Persistence.Work;
 using Fabrica.Utilities.Container;
@@ -13,199 +17,267 @@ using Fabrica.Watch;
 using Fabrica.Work.Processor;
 using Fabrica.Work.Processor.Parsers;
 using Fabrica.Work.Queue;
-using Module = Autofac.Module;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
-namespace Fabrica.Work.Appliance
+namespace Fabrica.Work.Appliance;
+
+public class TheModule: BootstrapModule, IAwsCredentialModule, IWorkModule, IOnePersistenceModule
 {
 
-    
-    public class TheModule: Module, IAwsCredentialModule, IWorkModule, IOnePersistenceModule
+
+    public string Profile { get; set; } = "";
+    public string RegionName { get; set; } = "";
+
+    public string AccessKey { get; set; } = "";
+    public string SecretKey { get; set; } = "";
+
+    public bool RunningOnEC2 { get; set; } = true;
+
+
+    public string OneStoreUri { get; set; } = "";
+    public string OneDatabase { get; set; } = "fabrica_one";
+
+
+    public string WorkQueueName { get; set; } = "";
+    public string S3EventQueueName { get; set; } = "";
+
+    public int PollingDurationSecs { get; set; } = 20;
+    public int AcknowledgementTimeoutSecs { get; set; } = 30;
+
+
+    public string WebhookEndpoint { get; set; } = "http://localhost:8080";
+
+
+    public string TokenSigningKey { get; set; } = "";
+    public string IdentitySubject { get; set; } = "";
+    public string IdentityName { get; set; } = "";
+
+
+    public override void ConfigureServices(IServiceCollection services)
     {
 
+        services.AddMvc(builder =>
+            {
+#if DEBUG
 
-        public string Profile { get; set; } = "";
-        public string RegionName { get; set; } = "";
-
-        public string AccessKey { get; set; } = "";
-        public string SecretKey { get; set; } = "";
-
-        public bool RunningOnEC2 { get; set; } = true;
-
-
-        public string OneStoreUri { get; set; } = "";
-        public string OneDatabase { get; set; } = "fabrica_one";
-
-
-        public string WorkQueueName { get; set; } = "";
-        public string S3EventQueueName { get; set; } = "";
-
-        public int PollingDurationSecs { get; set; } = 20;
-        public int AcknowledgementTimeoutSecs { get; set; } = 30;
-
-
-        public string WebhookEndpoint { get; set; } = "http://localhost:8080";
+#else
+                builder.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
+#endif
+                builder.Filters.Add(typeof(ExceptionFilter));
+                builder.Filters.Add(typeof(ResultFilter));
+            })
+            .AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ContractResolver = new ModelContractResolver();
+                opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+                opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+            });
 
 
-        public string TokenSigningKey { get; set; } = "";
-        public string IdentitySubject { get; set; } = "";
-        public string IdentityName { get; set; } = "";
-
-
-        protected override void Load(ContainerBuilder builder)
+        services.Configure<ForwardedHeadersOptions>(options =>
         {
 
-            using var logger = this.EnterMethod();
+            options.RequireHeaderSymmetry = false;
+            options.ForwardedHeaders = ForwardedHeaders.All;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
 
-            logger.LogObject( "TheModule", this );
+        });
 
+#if DEBUG
 
-            builder.AddCorrelation();
-
-            builder.UseOnePersitence( OneStoreUri, OneDatabase );
-
-            builder.UseAws(this);
-
-            builder.Register(c =>
-                {
-
-                    var sqs = c.Resolve<IAmazonSQS>();
-
-                    var comp = new SqsQueueComponent(sqs);
-                    
-                    return comp;
-
-                })
-                .As<IQueueComponent>()
-                .SingleInstance();
+#else
+            services.AddProxyTokenAuthentication();
+            services.AddProxyTokenAuthorization();
+#endif
 
 
+    }
 
-            builder.AddHttpClient( "WebhookEndpoint", WebhookEndpoint );
+    public override void ConfigureContainer(ContainerBuilder builder)
+    {
 
-            builder.AddProxyTokenEncoder(TokenSigningKey);
+        using var logger = this.EnterMethod();
 
-            builder.Register( c =>
-                {
+        logger.LogObject("TheModule", this);
 
-                    var claims = new ClaimSetModel
-                    {
-                        Subject = IdentitySubject,
-                        Name    = IdentityName
-                    };
 
-                    var encoder = c.Resolve<IProxyTokenEncoder>();
-                    var token   = encoder.Encode(claims);
+        builder.AddCorrelation();
 
-                    var comp = new StaticAccessTokenSource(token);
+        builder.UseOnePersitence(OneStoreUri, OneDatabase);
 
-                    return comp;
+        builder.UseAws(this);
 
-                })
-                .As<IAccessTokenSource>()
-                .SingleInstance();
+        builder.Register(c =>
+        {
+
+            var sqs = c.Resolve<IAmazonSQS>();
+
+            var comp = new SqsQueueComponent(sqs);
+
+            return comp;
+
+        })
+            .As<IQueueComponent>()
+            .SingleInstance();
 
 
 
-            builder.Register(c =>
-                {
+        builder.AddHttpClient("WebhookEndpoint", WebhookEndpoint);
 
-                    var factory     = c.Resolve<IHttpClientFactory>();
-                    var repository  = c.Resolve<WorkRepository>();
-                    var tokenSource = c.Resolve<IAccessTokenSource>();
+        builder.AddProxyTokenEncoder(TokenSigningKey);
 
-                    var comp = new WorkProcessor( factory, repository, tokenSource );
+        builder.Register(c =>
+        {
 
-                    return comp;
-
-            })
-                .As<IWorkProcessor>()
-                .SingleInstance()
-                .AutoActivate();
-
-
-
-            if( !string.IsNullOrWhiteSpace(WorkQueueName) )
+            var claims = new ClaimSetModel
             {
+                Subject = IdentitySubject,
+                Name = IdentityName
+            };
 
-                builder.Register(c =>
-                    {
+            var encoder = c.Resolve<IProxyTokenEncoder>();
+            var token = encoder.Encode(claims);
 
-                        var queue = c.Resolve<IQueueComponent>();
-                        var parser = new WorkMessageBodyParser();
-                        var processor = c.Resolve<IWorkProcessor>();
+            var comp = new StaticAccessTokenSource(token);
 
+            return comp;
 
-                        var comp = new QueueWorkListener(queue, parser, processor)
-                        {
-                            QueueName = WorkQueueName,
-                            PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
-                            AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
-                        };
-
-                        return comp;
-
-                    })
-                    .As<IRequiresStart>()
-                    .SingleInstance()
-                    .AutoActivate();
-
-            }
-
-
-            if( !string.IsNullOrWhiteSpace(S3EventQueueName) )
-            {
-
-                builder.Register(c =>
-                    {
-
-                        var queue = c.Resolve<IQueueComponent>();
-                        var parser = new S3EventMessageBodyParser();
-                        var processor = c.Resolve<IWorkProcessor>();
-
-                        var comp = new QueueWorkListener(queue, parser, processor)
-                        {
-                            QueueName = S3EventQueueName,
-                            PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
-                            AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
-                        };
-
-                        return comp;
-
-                    })
-                    .As<IRequiresStart>()
-                    .SingleInstance()
-                    .AutoActivate();
-
-            }
+        })
+            .As<IAccessTokenSource>()
+            .SingleInstance();
 
 
 
-            // ********************************************************
+        builder.Register(c =>
+        {
+
+            var factory = c.Resolve<IHttpClientFactory>();
+            var repository = c.Resolve<WorkRepository>();
+            var tokenSource = c.Resolve<IAccessTokenSource>();
+
+            var comp = new WorkProcessor(factory, repository, tokenSource);
+
+            return comp;
+
+        })
+            .As<IWorkProcessor>()
+            .SingleInstance()
+            .AutoActivate();
+
+
+
+        if (!string.IsNullOrWhiteSpace(WorkQueueName))
+        {
+
             builder.Register(c =>
             {
 
                 var queue = c.Resolve<IQueueComponent>();
+                var parser = new WorkMessageBodyParser();
+                var processor = c.Resolve<IWorkProcessor>();
 
-                var comp = new WorkDispatcher(queue)
+
+                var comp = new QueueWorkListener(queue, parser, processor)
                 {
-                    DefaultQueue = WorkQueueName
+                    QueueName = WorkQueueName,
+                    PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
+                    AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
                 };
 
                 return comp;
 
             })
-                .As<IWorkDispatcher>()
+                .As<IRequiresStart>()
                 .SingleInstance()
                 .AutoActivate();
 
+        }
+
+
+        if (!string.IsNullOrWhiteSpace(S3EventQueueName))
+        {
+
+            builder.Register(c =>
+            {
+
+                var queue = c.Resolve<IQueueComponent>();
+                var parser = new S3EventMessageBodyParser();
+                var processor = c.Resolve<IWorkProcessor>();
+
+                var comp = new QueueWorkListener(queue, parser, processor)
+                {
+                    QueueName = S3EventQueueName,
+                    PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
+                    AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
+                };
+
+                return comp;
+
+            })
+                .As<IRequiresStart>()
+                .SingleInstance()
+                .AutoActivate();
 
         }
+
+
+
+        // ********************************************************
+        builder.Register(c =>
+        {
+
+            var queue = c.Resolve<IQueueComponent>();
+
+            var comp = new WorkDispatcher(queue)
+            {
+                DefaultQueue = WorkQueueName
+            };
+
+            return comp;
+
+        })
+            .As<IWorkDispatcher>()
+            .SingleInstance()
+            .AutoActivate();
 
 
     }
 
 
+    public override void ConfigureWebApp(IApplicationBuilder builder)
+    {
+
+        builder.UsePipelineMonitor();
+        builder.UseDebugMode();
+
+        builder.UseRequestLogging();
+
+        builder.UseForwardedHeaders();
+
+        builder.UseRouting();
+
+#if DEBUG
+
+#else
+            builder.UseAuthentication();
+            builder.UseAuthorization();
+#endif
+
+        builder.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+
+    }
+
+
+
 }
-
-
-
