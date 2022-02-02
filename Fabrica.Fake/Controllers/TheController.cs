@@ -22,7 +22,7 @@ namespace Fabrica.Fake.Controllers
 {
 
 
-    [Route("api")]
+    [Route("/api")]
     public class TheController: BaseMediatorController
     {
 
