@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Fabrica.Monitor.Appliance;
 
-public class TheBootstrap: KestrelModuleBootstrap<TheModule,InitService>
+public class TheBootstrap: KestrelBootstrap<TheModule,InitService>
 {
 
 

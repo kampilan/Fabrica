@@ -4,7 +4,7 @@ namespace Fabrica.Static.Appliance
 {
 
 
-    public class TheBootstrap: KestrelModuleBootstrap<TheModule,InitService>
+    public class TheBootstrap: KestrelBootstrap<TheModule,InitService>
     {
 
 

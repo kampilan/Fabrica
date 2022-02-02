@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Fabrica.Work.Appliance;
 
-public class TheBootstrap: KestrelModuleBootstrap<TheModule,InitService>
+public class TheBootstrap: KestrelBootstrap<TheModule,InitService>
 {
 
 

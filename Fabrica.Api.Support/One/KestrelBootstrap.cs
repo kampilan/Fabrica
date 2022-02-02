@@ -1,72 +1,31 @@
-﻿using Autofac;
-using Fabrica.Models.Serialization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 
-namespace Fabrica.Api.Support.One
+namespace Fabrica.Api.Support.One;
+
+public abstract class KestrelBootstrap<TModule,TInit>: AbstractBootstrap<TModule> where TModule: BootstrapModule where TInit : InitService
 {
 
-
-    public abstract class KestrelBootstrap<TModule,TOptions,TInit> : AbstractBootstrap<TModule,TOptions> where TModule : Module where TOptions: class, IApplianceOptions where TInit: InitService
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
 
-        protected abstract void ConfigureServices(IServiceCollection services);
-
-        protected abstract void ConfigureWebApp(IApplicationBuilder builder);
-
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-
-            builder
-                .UseKestrel(op =>
-                {
-
-                    if( Options.AllowAnyIp )
-                        op.ListenAnyIP(Options.ListeningPort);
-                    else
-                        op.ListenLocalhost(Options.ListeningPort);
-
-                })
-                .ConfigureServices(c =>
-                {
-                    c.AddHostedService<TInit>();
-                    ConfigureServices(c);
-                })
-                .Configure( ConfigureWebApp );
-
-        }
-
-        protected virtual void ConfigureJsonForRto( MvcNewtonsoftJsonOptions opt )
-        {
-
-            opt.SerializerSettings.ContractResolver           = new ModelContractResolver();
-            opt.SerializerSettings.DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate;
-            opt.SerializerSettings.NullValueHandling          = NullValueHandling.Ignore;
-            opt.SerializerSettings.DateTimeZoneHandling       = DateTimeZoneHandling.Utc;
-            opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-            opt.SerializerSettings.ReferenceLoopHandling      = ReferenceLoopHandling.Serialize;
-
-        }
-
-        protected virtual void ConfigureCors( CorsOptions opt )
-        {
-
-            opt.AddPolicy("AllowAll", b =>
+        builder
+            .UseKestrel(op =>
             {
-                b.AllowAnyOrigin();
-                b.AllowAnyHeader();
-                b.AllowAnyMethod();
-                b.AllowCredentials();
-            });
 
-        }
+                if( Module.AllowAnyIp )
+                    op.ListenAnyIP( Module.ListeningPort );
+                else
+                    op.ListenLocalhost( Module.ListeningPort );
 
+            })
+            .ConfigureServices(c =>
+            {
+                c.AddHostedService<TInit>();
+                Module.ConfigureServices(c);
+            })
+            .Configure(b=> Module.ConfigureWebApp(b));
 
     }
-
 
 }
