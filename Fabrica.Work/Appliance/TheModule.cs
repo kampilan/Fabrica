@@ -79,7 +79,8 @@ public class TheModule: BootstrapModule, IAwsCredentialModule, IWorkModule, IOne
                 opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
                 opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-            });
+            })
+            .AddApplicationPart(GetType().Assembly);
 
 
         services.Configure<ForwardedHeadersOptions>(options =>

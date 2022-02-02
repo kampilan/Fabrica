@@ -44,7 +44,8 @@ public class TheModule: BootstrapModule
                 opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
                 opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-            });
+            })
+            .AddApplicationPart(GetType().Assembly);
 
 
         services.Configure<ForwardedHeadersOptions>(options =>
