@@ -18,6 +18,7 @@ using Fabrica.Persistence.Patch;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,8 @@ public class TheModule: BootstrapModule, IAwsCredentialModule
 
     public override void ConfigureServices(IServiceCollection services)
     {
+
+        using var logger = this.EnterMethod();
 
 
         services.AddHostedService<FakeInitService>();
@@ -103,6 +106,9 @@ public class TheModule: BootstrapModule, IAwsCredentialModule
 
     public override void ConfigureContainer(ContainerBuilder builder)
     {
+
+        using var logger = this.EnterMethod();
+
 
         builder.AddCorrelation();
 
@@ -201,6 +207,9 @@ public class TheModule: BootstrapModule, IAwsCredentialModule
 
     public override void ConfigureWebApp(IApplicationBuilder builder)
     {
+
+        using var logger = this.EnterMethod();
+
 
         builder.UsePipelineMonitor();
         builder.UseDebugMode();
