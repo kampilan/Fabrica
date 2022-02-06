@@ -35,7 +35,6 @@ using Fabrica.Persistence.Audit;
 using Fabrica.Rules;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
@@ -74,8 +73,7 @@ namespace Fabrica.Persistence.Ef.Contexts
 
                 logger.EnterMethod();
 
-
-                var result = AsyncPump.Run(() => SaveChangesAsync(acceptAllChangesOnSuccess));
+                var result = Task.Run(async () => await SaveChangesAsync(acceptAllChangesOnSuccess)).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 return result;
 

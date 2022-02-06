@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Static.Providers.Mutable;
-using Fabrica.Utilities.Threading;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 
@@ -33,14 +32,14 @@ namespace Fabrica.Static.Monitors
         private IAmazonS3 Client { get; }
         private MutableDirectoryFileProvider Provider { get; }
 
-        private ConcurrentQueue<string> OldRoots { get; } = new ConcurrentQueue<string>();
+        private ConcurrentQueue<string> OldRoots { get; } = new ();
 
         public string LocalInstallationPath { get; set; }
         public string DeploymentName { get; set; }
         public int DeploymentMonitorIntervalSecs { get; set; } = 10;
 
 
-        public virtual Task Start()
+        public virtual async Task Start()
         {
 
             var logger = this.GetLogger();
@@ -51,18 +50,16 @@ namespace Fabrica.Static.Monitors
                 logger.EnterMethod();
 
 
-                var info = AsyncPump.Run(async ()=> await GetDeploymentInfo() );
+                var info = await GetDeploymentInfo();
 
                 logger.LogObject(nameof(info), info);
 
 
-                Deploy( info );
+                await DeployAsync( info );
 
 
                 MonitorTask = Task.Run( Monitor );
 
-
-                return Task.CompletedTask;
 
             }
             finally
@@ -227,69 +224,6 @@ namespace Fabrica.Static.Monitors
             {
                 logger.LeaveMethod();
             }
-
-
-        }
-
-
-        protected void Deploy( IDeploymentInfo info )
-        {
-
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                var installPath = $"{LocalInstallationPath}{Path.DirectorySeparatorChar}package{Path.DirectorySeparatorChar}{ShortGuid.NewGuid()}";
-
-                logger.Inspect(nameof(installPath), installPath);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to create request");
-                var request = CreateRequest(info);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to send request");
-                var response = AsyncPump.Run(async () => await Client.GetObjectAsync(request));
-
-                logger.LogObject(nameof(response.HttpStatusCode), response.HttpStatusCode);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to process response");
-                ProcessResponse(response.ResponseStream, installPath);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to queue old root for removal");
-                var oldRoot = Provider.Root;
-                if (!string.IsNullOrWhiteSpace(oldRoot))
-                    OldRoots.Enqueue(oldRoot);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to update root on FileProvider");
-                Provider.SetRoot(installPath);
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
 
 
         }

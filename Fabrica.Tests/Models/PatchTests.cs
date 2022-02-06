@@ -16,7 +16,6 @@ using Fabrica.Test.Models;
 using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
-using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
@@ -32,7 +31,7 @@ public class PatchTests
 {
 
     [OneTimeSetUp]
-    public void Setup()
+    public async Task Setup()
     {
 
         var maker = new WatchFactoryBuilder();
@@ -46,7 +45,7 @@ public class PatchTests
 
         builder.RegisterModule<TheModule>();
 
-        TheContainer = AsyncPump.Run( async ()=> await builder.BuildAndStart());
+        TheContainer = await builder.BuildAndStart();
 
 
     }

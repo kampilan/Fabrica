@@ -30,7 +30,6 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Storage;
-using Fabrica.Utilities.Threading;
 using JetBrains.Annotations;
 
 namespace Fabrica.Aws.Storage
@@ -64,8 +63,7 @@ namespace Fabrica.Aws.Storage
 
                 logger.EnterMethod();
 
-
-                return AsyncPump.Run(async () => await ExistsAsync(root, key));
+                return Task.Run(async () => await ExistsAsync(root, key)).ConfigureAwait(false).GetAwaiter().GetResult();
 
             }
             finally
@@ -140,14 +138,14 @@ namespace Fabrica.Aws.Storage
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             if (content == null) throw new ArgumentNullException(nameof(content));
 
-            var logger = this.GetLogger();
+            var logger = GetLogger();
 
             try
             {
 
                 logger.EnterMethod();
 
-                AsyncPump.Run(async () => await GetAsync(root, key, content, rewind));
+                Task.Run(async () => await GetAsync(root, key, content, rewind)).ConfigureAwait(false).GetAwaiter().GetResult();
 
 
             }
@@ -235,8 +233,7 @@ namespace Fabrica.Aws.Storage
 
                 logger.EnterMethod();
 
-                AsyncPump.Run(async () => await PutAsync(root, key, content, contentType, rewind, autoClose));
-
+                Task.Run(async () => await PutAsync(root, key, content, contentType, rewind, autoClose)).ConfigureAwait(false).GetAwaiter().GetResult();
 
             }
             finally
@@ -318,8 +315,7 @@ namespace Fabrica.Aws.Storage
 
                 logger.EnterMethod();
 
-                AsyncPump.Run(async () => await DeleteAsync(root, key));
-
+                Task.Run(async () => await DeleteAsync(root, key)).ConfigureAwait(false).GetAwaiter().GetResult();
 
             }
             finally
@@ -390,9 +386,7 @@ namespace Fabrica.Aws.Storage
 
                 logger.EnterMethod();
 
-
-                return AsyncPump.Run(async () => await GetReferenceAsync(root, key, timeToLive));
-
+                return Task.Run(async () => await GetReferenceAsync(root, key, timeToLive)).ConfigureAwait(false).GetAwaiter().GetResult();
 
             }
             finally

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Autofac;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Threading;
 using Fabrica.Watch;
 using Newtonsoft.Json;
 
