@@ -46,7 +46,7 @@ public class InitService: IHostedService
         catch (Exception cause)
         {
             var ctx = new { FailedStartable = currentStartable };
-            logger.ErrorWithContext( cause, ctx, "InitService failed durring start");
+            logger.ErrorWithContext( cause, ctx, "InitService failed during start");
             throw;
         }
 
