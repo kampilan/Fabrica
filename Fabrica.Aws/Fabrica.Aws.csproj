@@ -7,14 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.23" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.2.19" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.7.21" />
-    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.2.4" />
-    <PackageReference Include="AWSSDK.SecretsManager.Caching" Version="1.0.3" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.114" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.12.9" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.7.2.20" />
+    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.48" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.3.23" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.8.20" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.2.30" />
+    <PackageReference Include="AWSSDK.SecretsManager.Caching" Version="1.0.4" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.140" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.14.8" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.2.45" />
   </ItemGroup>
 
   <ItemGroup>
