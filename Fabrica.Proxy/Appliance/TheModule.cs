@@ -131,12 +131,16 @@ namespace Fabrica.Proxy.Appliance
 
             logger.Inspect("ProxyConfigExists", proxyCfg.Exists());
 
-            if (proxyCfg.Exists())
+            if( proxyCfg.Exists() )
             {
 
                 services.AddReverseProxy()
                     .LoadFromConfig(proxyCfg)
-                    .AddConfigFilter<AuthHeaderProxyConfigFilter>();
+                    .AddTransforms(bc =>
+                    {
+                        bc.AddRequestHeaderRemove("Cookies");
+                        bc.AddRequestHeaderRemove("Authorization");
+                    });
 
                 RunProxy = true;
 
