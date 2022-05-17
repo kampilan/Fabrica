@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Newtonsoft.Json;
 using Yarp.ReverseProxy.Configuration;
+using Yarp.ReverseProxy.Transforms;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable StringLiteralTypo
@@ -132,9 +133,12 @@ namespace Fabrica.Proxy.Appliance
 
             if (proxyCfg.Exists())
             {
+
                 services.AddReverseProxy()
                     .LoadFromConfig(proxyCfg);
+
                 RunProxy = true;
+
             }
 
 

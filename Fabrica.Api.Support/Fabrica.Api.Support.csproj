@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="jose-jwt" Version="4.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5" />
   </ItemGroup>
 
 </Project>

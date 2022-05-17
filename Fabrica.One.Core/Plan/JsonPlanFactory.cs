@@ -23,12 +23,12 @@ namespace Fabrica.One.Plan
 
         private class JsonObjectRefiner : ISchemaRefiner
         {
-            public bool ShouldRun(SchemaGeneratorContext context)
+            public bool ShouldRun(SchemaGenerationContextBase context)
             {
                 return context.Type == typeof(JsonObject);
             }
 
-            public void Run(SchemaGeneratorContext context)
+            public void Run(SchemaGenerationContextBase context)
             {
                 var intent = context.Intents.FirstOrDefault();
                 if( intent is TypeIntent ti )

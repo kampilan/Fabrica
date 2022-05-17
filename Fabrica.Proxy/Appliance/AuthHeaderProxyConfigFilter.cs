@@ -18,8 +18,8 @@ namespace Fabrica.Proxy.Appliance
         public ValueTask<RouteConfig> ConfigureRouteAsync(RouteConfig route, ClusterConfig cluster, CancellationToken cancel)
         {
 
-            route.WithTransformRequestHeader("Cookies", "", false);
-            route.WithTransformRequestHeader("Authorization", "", false);
+            route.WithTransformRequestHeaderRemove("Cookies");
+            route.WithTransformRequestHeaderRemove("Authorization");
 
             return ValueTask.FromResult(route);
 
