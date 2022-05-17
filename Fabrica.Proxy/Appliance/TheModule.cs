@@ -135,7 +135,8 @@ namespace Fabrica.Proxy.Appliance
             {
 
                 services.AddReverseProxy()
-                    .LoadFromConfig(proxyCfg);
+                    .LoadFromConfig(proxyCfg)
+                    .AddConfigFilter<AuthHeaderProxyConfigFilter>();
 
                 RunProxy = true;
 
@@ -261,10 +262,6 @@ namespace Fabrica.Proxy.Appliance
 
             builder.AddCorrelation();
 
-
-            builder.RegisterType<AuthHeaderProxyConfigFilter>()
-                .As<IProxyConfigFilter>()
-                .InstancePerDependency();
 
             builder.Register(_ =>
                 {
