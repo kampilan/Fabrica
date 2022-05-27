@@ -153,6 +153,39 @@ namespace Fabrica.One.Models
 
         }
 
+
+        private string _appConfigApplicationId = "";
+        public string AppConfigApplicationId
+        {
+            get => _appConfigApplicationId;
+            set => _appConfigApplicationId = value;
+        }
+
+
+        private string _appConfigConfigProfileId = "";
+        public string AppConfigConfigProfileId
+        {
+            get => _appConfigConfigProfileId;
+            set => _appConfigConfigProfileId = value;
+        }
+
+
+        private string _appConfigDeploymentStrategyId = "";
+        public string AppConfigDeploymentStrategyId
+        {
+            get => _appConfigDeploymentStrategyId;
+            set => _appConfigDeploymentStrategyId = value;
+        }
+
+
+        private string _appConfigEnvironmentId = "";
+        public string AppConfigEnvironmentId
+        {
+            get => _appConfigEnvironmentId;
+            set => _appConfigEnvironmentId = value;
+        }
+
+
         public override string ToString()
         {
             return $"{Name} with {Deployments?.Count??0} Deployment(s)";
