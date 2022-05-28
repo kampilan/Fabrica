@@ -27,6 +27,8 @@ namespace Fabrica.One.Repository
 
         Task Save( MissionModel mission );
 
+        Task Deploy( MissionModel model, string version="1" );
+
         Task Delete( MissionModel model );
 
 

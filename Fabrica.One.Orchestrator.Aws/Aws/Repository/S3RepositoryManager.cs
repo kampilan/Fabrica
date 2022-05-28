@@ -5,6 +5,8 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon;
+using Amazon.AppConfig;
+using Amazon.AppConfig.Model;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
@@ -302,7 +304,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             using var logger = this.EnterMethod();
 
-            using var client = BuildClient();
+            using var client = BuildS3Client();
 
 
             // *****************************************************************
@@ -331,12 +333,49 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
+
+        public async Task Deploy( MissionModel mission, string version="1" )
+        {
+
+            using var logger = this.EnterMethod();
+
+            using var client = BuildAppConfigClient();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build StartDeployment request");
+            var req = new StartDeploymentRequest
+            {
+                ApplicationId = mission.AppConfigApplicationId,
+                ConfigurationProfileId = mission.AppConfigConfigProfileId,
+                EnvironmentId = mission.AppConfigEnvironmentId,
+                DeploymentStrategyId = mission.AppConfigDeploymentStrategyId,
+                Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.AppConfigEnvironmentId})",
+                ConfigurationVersion = version
+            };
+
+            logger.LogObject(nameof(req), req);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send StartDeployment request");
+            var res = await client.StartDeploymentAsync(req);
+            logger.LogObject(nameof(res), res);
+
+            if (res.HttpStatusCode != HttpStatusCode.OK)
+                throw new Exception("The result from StartDeployment indicates failure");
+
+
+        }
+
+
         public async Task Delete(MissionModel mission)
         {
 
             using var logger = this.EnterMethod();
 
-            using var client = BuildClient();
+            using var client = BuildS3Client();
 
 
             // *****************************************************************
@@ -391,7 +430,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
-        private AmazonS3Client BuildClient()
+        private AmazonS3Client BuildS3Client()
         {
 
             using var logger = this.EnterMethod();
@@ -406,7 +445,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 logger.Debug("Attempting to create Credentials and Region Endpoint");
                 var endpoint = RegionEndpoint.GetBySystemName(CurrentRegionName);
 
-                logger.Debug("Attempting to create Amazaon S3 client");
+                logger.Debug("Attempting to create Amazon S3 client");
                 var client = new AmazonS3Client(credentials, endpoint);
 
                 return client;
@@ -415,7 +454,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             else
             {
 
-                logger.Debug("Attempting to create Amazaon S3 client");
+                logger.Debug("Attempting to create Amazon S3 client");
                 var client = new AmazonS3Client();
 
                 return client;
@@ -423,6 +462,40 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             }
 
         }
+
+        private AmazonAppConfigClient BuildAppConfigClient()
+        {
+
+            using var logger = this.EnterMethod();
+
+
+            // *****************************************************************
+            if (!string.IsNullOrWhiteSpace(CurrentRegionName))
+            {
+
+                var credentials = BuildCredentials();
+
+                logger.Debug("Attempting to create Credentials and Region Endpoint");
+                var endpoint = RegionEndpoint.GetBySystemName(CurrentRegionName);
+
+                logger.Debug("Attempting to create Amazon AppConfig client");
+                var client = new AmazonAppConfigClient(credentials, endpoint);
+
+                return client;
+
+            }
+            else
+            {
+
+                logger.Debug("Attempting to create Amazon AppConfig client");
+                var client = new AmazonAppConfigClient();
+
+                return client;
+
+            }
+
+        }
+
 
         private async Task<List<string>> FetchBuckets(ICredentialProfileSource file, CredentialProfile cp)
         {
@@ -609,7 +682,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             using var logger = this.EnterMethod();
 
-            using var client = BuildClient();
+            using var client = BuildS3Client();
 
             Missions.Clear();
 
@@ -658,7 +731,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             using var logger = this.EnterMethod();
 
-            using var client = BuildClient();
+            using var client = BuildS3Client();
 
 
             Builds.Clear();
