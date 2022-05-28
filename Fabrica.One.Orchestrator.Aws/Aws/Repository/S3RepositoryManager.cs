@@ -11,6 +11,7 @@ using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Fabrica.Exceptions;
 using Fabrica.One.Models;
 using Fabrica.One.Repository;
 using Fabrica.Utilities.Container;
@@ -105,6 +106,13 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             // *****************************************************************
             logger.Debug("Attempting to load repositories");
             await LoadRepositories();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to load AppConfig items");
+            await LoadAppConfig();
+
 
         }
 
@@ -346,13 +354,45 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             logger.Debug("Attempting to build StartDeployment request");
             var req = new StartDeploymentRequest
             {
-                ApplicationId = mission.AppConfigApplicationId,
-                ConfigurationProfileId = mission.AppConfigConfigProfileId,
-                EnvironmentId = mission.AppConfigEnvironmentId,
-                DeploymentStrategyId = mission.AppConfigDeploymentStrategyId,
                 Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.AppConfigEnvironmentId})",
                 ConfigurationVersion = version
             };
+
+
+
+            // *****************************************************************
+            logger.DebugFormat("Attempting to find Application using name = ({0})", mission.AppConfigApplicationId);
+            if( AppConfigApplications.TryGetValue(mission.AppConfigApplicationId, out var id1) )
+                req.ApplicationId = id1;
+            else
+                throw new NotFoundException($"Could not find Application with name = ({mission.AppConfigApplicationId})");
+
+
+
+            // *****************************************************************
+            logger.DebugFormat("Attempting to find Config Profile using name = ({0})", mission.AppConfigConfigProfileId);
+            if (AppConfigConfigProfiles.TryGetValue(mission.AppConfigConfigProfileId, out var id2))
+                req.ConfigurationProfileId = id2;
+            else
+                throw new NotFoundException($"Could not find Config Profile with name = ({mission.AppConfigConfigProfileId})");
+
+
+
+            // *****************************************************************
+            logger.DebugFormat("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironmentId);
+            if (AppConfigEnvironments.TryGetValue(mission.AppConfigEnvironmentId, out var id3))
+                req.EnvironmentId = id3;
+            else
+                throw new NotFoundException($"Could not find Environment with name = ({mission.AppConfigConfigProfileId})");
+
+
+            // *****************************************************************
+            logger.DebugFormat("Attempting to find Strategy using name = ({0})", mission.AppConfigDeploymentStrategyId);
+            if (AppConfigStrategies.TryGetValue(mission.AppConfigDeploymentStrategyId, out var id4))
+                req.DeploymentStrategyId = id4;
+            else
+                throw new NotFoundException($"Could not find Environment with name = ({mission.AppConfigConfigProfileId})");
+
 
             logger.LogObject(nameof(req), req);
 
@@ -771,6 +811,38 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             // *****************************************************************
             logger.DebugFormat("Loaded {0} Build(s)", Builds.Count);
+
+
+        }
+
+        private Dictionary<string,string> AppConfigApplications { get; } = new Dictionary<string,string>();
+        private Dictionary<string, string> AppConfigConfigProfiles { get; } = new Dictionary<string, string>();
+        private Dictionary<string, string> AppConfigEnvironments { get; } = new Dictionary<string, string>();
+        private Dictionary<string, string> AppConfigStrategies { get; } = new Dictionary<string, string>();
+
+        private async Task LoadAppConfig()
+        {
+
+            using var logger = this.EnterMethod();
+
+            using var client = BuildAppConfigClient();
+
+            var appRes = await client.ListApplicationsAsync(new ListApplicationsRequest());
+            foreach( var m in appRes.Items )
+                AppConfigApplications[m.Name] = m.Id;
+
+            var cpRes = await client.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest());
+            foreach( var m in cpRes.Items )
+                AppConfigConfigProfiles[m.Name] = m.Id;
+
+            var envRes = await client.ListEnvironmentsAsync(new ListEnvironmentsRequest());
+            foreach( var m in envRes.Items )
+                AppConfigEnvironments[m.Name] = m.Id;
+
+
+            var strRes = await client.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest());
+            foreach (var m in strRes.Items)
+                AppConfigStrategies[m.Name] = m.Id;
 
 
         }
