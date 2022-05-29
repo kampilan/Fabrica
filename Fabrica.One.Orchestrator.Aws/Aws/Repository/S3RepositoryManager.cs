@@ -368,7 +368,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             // *****************************************************************
             logger.DebugFormat("Attempting to find Config Profile using name = ({0})", mission.AppConfigConfigProfile);
 
-            var cfgRes = await client.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest());
+            var cfgRes = await client.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest {ApplicationId = app.Id});
             var cfg = cfgRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigConfigProfile);
             if (cfg is null)
                 throw new NotFoundException($"Could not find Config Profile with name = ({mission.AppConfigConfigProfile})");
@@ -380,7 +380,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             // *****************************************************************
             logger.DebugFormat("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironment);
 
-            var envRes = await client.ListEnvironmentsAsync(new ListEnvironmentsRequest());
+            var envRes = await client.ListEnvironmentsAsync(new ListEnvironmentsRequest {ApplicationId = app.Id});
             var env = envRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigEnvironment);
 
             if (env is null)
@@ -393,7 +393,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             // *****************************************************************
             logger.DebugFormat("Attempting to find Strategy using name = ({0})", mission.AppConfigStrategy);
 
-            var strRes = await client.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest());
+            var strRes = await client.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest( ));
             var str = strRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigStrategy);
 
             if (str is null)
