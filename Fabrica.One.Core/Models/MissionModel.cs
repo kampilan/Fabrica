@@ -154,35 +154,35 @@ namespace Fabrica.One.Models
         }
 
 
-        private string _appConfigApplicationId = "";
-        public string AppConfigApplicationId
+        private string _appConfigApplication = "";
+        public string AppConfigApplication
         {
-            get => _appConfigApplicationId;
-            set => _appConfigApplicationId = value;
+            get => _appConfigApplication;
+            set => _appConfigApplication = value;
         }
 
 
-        private string _appConfigConfigProfileId = "";
-        public string AppConfigConfigProfileId
+        private string _appConfigConfigProfile = "";
+        public string AppConfigConfigProfile
         {
-            get => _appConfigConfigProfileId;
-            set => _appConfigConfigProfileId = value;
+            get => _appConfigConfigProfile;
+            set => _appConfigConfigProfile = value;
         }
 
 
-        private string _appConfigDeploymentStrategyId = "";
-        public string AppConfigDeploymentStrategyId
+        private string _appConfigStrategy = "";
+        public string AppConfigStrategy
         {
-            get => _appConfigDeploymentStrategyId;
-            set => _appConfigDeploymentStrategyId = value;
+            get => _appConfigStrategy;
+            set => _appConfigStrategy = value;
         }
 
 
-        private string _appConfigEnvironmentId = "";
-        public string AppConfigEnvironmentId
+        private string _appConfigEnvironment = "";
+        public string AppConfigEnvironment
         {
-            get => _appConfigEnvironmentId;
-            set => _appConfigEnvironmentId = value;
+            get => _appConfigEnvironment;
+            set => _appConfigEnvironment = value;
         }
 
 
