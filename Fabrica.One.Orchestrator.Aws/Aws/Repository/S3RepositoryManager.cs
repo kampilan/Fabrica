@@ -340,79 +340,100 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             using var logger = this.EnterMethod();
 
-            using var client = BuildAppConfigClient();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build StartDeployment request");
-            var req = new StartDeploymentRequest
+            try
             {
-                Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.AppConfigEnvironment})",
-                ConfigurationVersion = version
-            };
+
+
+                using var client = BuildAppConfigClient();
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build StartDeployment request");
+                var req = new StartDeploymentRequest
+                {
+                    Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.AppConfigEnvironment})",
+                    ConfigurationVersion = version
+                };
 
 
 
-            // *****************************************************************
-            logger.DebugFormat("Attempting to find Application using name = ({0})", mission.AppConfigApplication);
+                // *****************************************************************
+                logger.DebugFormat("Attempting to find Application using name = ({0})", mission.AppConfigApplication);
 
-            var appRes = await client.ListApplicationsAsync(new ListApplicationsRequest());
-            var app = appRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigApplication);
-            if ( app is null )
-                throw new NotFoundException($"Could not find Application with name = ({mission.AppConfigApplication})");
+                var appRes = await client.ListApplicationsAsync(new ListApplicationsRequest());
+                var app = appRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigApplication);
+                if (app is null)
+                    throw new NotFoundException($"Could not find Application with name = ({mission.AppConfigApplication})");
 
-            req.ApplicationId = app.Id;
-
-
-
-            // *****************************************************************
-            logger.DebugFormat("Attempting to find Config Profile using name = ({0})", mission.AppConfigConfigProfile);
-
-            var cfgRes = await client.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest {ApplicationId = app.Id});
-            var cfg = cfgRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigConfigProfile);
-            if (cfg is null)
-                throw new NotFoundException($"Could not find Config Profile with name = ({mission.AppConfigConfigProfile})");
-
-            req.ConfigurationProfileId = cfg.Id;
+                req.ApplicationId = app.Id;
 
 
 
-            // *****************************************************************
-            logger.DebugFormat("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironment);
+                // *****************************************************************
+                logger.DebugFormat("Attempting to find Config Profile using name = ({0})", mission.AppConfigConfigProfile);
 
-            var envRes = await client.ListEnvironmentsAsync(new ListEnvironmentsRequest {ApplicationId = app.Id});
-            var env = envRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigEnvironment);
+                var cfgRes = await client.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest { ApplicationId = app.Id });
+                var cfg = cfgRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigConfigProfile);
+                if (cfg is null)
+                    throw new NotFoundException($"Could not find Config Profile with name = ({mission.AppConfigConfigProfile})");
 
-            if (env is null)
-                throw new NotFoundException($"Could not find Environment with name = ({mission.AppConfigConfigProfile})");
-
-            req.EnvironmentId = env.Id;
-
-
-
-            // *****************************************************************
-            logger.DebugFormat("Attempting to find Strategy using name = ({0})", mission.AppConfigStrategy);
-
-            var strRes = await client.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest( ));
-            var str = strRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigStrategy);
-
-            if (str is null)
-                throw new NotFoundException($"Could not find Strategy with name = ({mission.AppConfigEnvironment})");
-
-            req.DeploymentStrategyId = str.Id;
-
-
-            logger.LogObject(nameof(req), req);
+                req.ConfigurationProfileId = cfg.Id;
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to send StartDeployment request");
-            var res = await client.StartDeploymentAsync(req);
-            logger.LogObject(nameof(res), res);
+                // *****************************************************************
+                logger.DebugFormat("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironment);
 
-            if (res.HttpStatusCode != HttpStatusCode.OK)
-                throw new Exception("The result from StartDeployment indicates failure");
+                var envRes = await client.ListEnvironmentsAsync(new ListEnvironmentsRequest { ApplicationId = app.Id });
+                var env = envRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigEnvironment);
+
+                if (env is null)
+                    throw new NotFoundException($"Could not find Environment with name = ({mission.AppConfigConfigProfile})");
+
+                req.EnvironmentId = env.Id;
+
+
+
+                // *****************************************************************
+                logger.DebugFormat("Attempting to find Strategy using name = ({0})", mission.AppConfigStrategy);
+
+                var strRes = await client.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest());
+                var str = strRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigStrategy);
+
+                if (str is null)
+                    throw new NotFoundException($"Could not find Strategy with name = ({mission.AppConfigEnvironment})");
+
+                req.DeploymentStrategyId = str.Id;
+
+
+                logger.LogObject(nameof(req), req);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to send StartDeployment request");
+                var res = await client.StartDeploymentAsync(req);
+                logger.LogObject(nameof(res), res);
+
+                if (res.HttpStatusCode != HttpStatusCode.OK)
+                    throw new Exception("The result from StartDeployment indicates failure");
+
+
+            }
+            catch (Exception cause)
+            {
+                var ctx = new
+                {
+                    mission.Name, 
+                    mission.Environment, 
+                    mission.AppConfigApplication, 
+                    mission.AppConfigConfigProfile,
+                    mission.AppConfigEnvironment, 
+                    mission.AppConfigStrategy
+                };
+                logger.ErrorWithContext( cause, ctx, "Deploy Mission failed" );
+                throw;
+            }
 
 
         }
