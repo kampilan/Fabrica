@@ -351,8 +351,9 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 logger.Debug("Attempting to build StartDeployment request");
                 var req = new StartDeploymentRequest
                 {
-                    Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.AppConfigEnvironment})",
-                    ConfigurationVersion = version
+                    Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.Environment})",
+                    ConfigurationVersion = version,
+                    Tags = new Dictionary<string, string>()
                 };
 
 
@@ -405,7 +406,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
                 req.DeploymentStrategyId = str.Id;
 
-
                 logger.LogObject(nameof(req), req);
 
 
@@ -415,7 +415,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 var res = await client.StartDeploymentAsync(req);
                 logger.LogObject(nameof(res), res);
 
-                if (res.HttpStatusCode != HttpStatusCode.OK)
+                if ((res.HttpStatusCode != HttpStatusCode.Created) || (res.HttpStatusCode != HttpStatusCode.OK))
                     throw new Exception("The result from StartDeployment indicates failure");
 
 
