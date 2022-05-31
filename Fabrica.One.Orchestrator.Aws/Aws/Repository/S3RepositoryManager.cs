@@ -335,7 +335,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
         }
 
 
-        public async Task Deploy( MissionModel mission, string version="1" )
+        public async Task Deploy( MissionModel mission, string version="" )
         {
 
             using var logger = this.EnterMethod();
@@ -344,7 +344,25 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             {
 
 
-                using var client = BuildAppConfigClient();
+                using var s3Client = BuildS3Client();
+
+                var verReq = new GetObjectMetadataRequest
+                {
+                    BucketName = CurrentBucketName, 
+                    Key = mission.RepositoryLocation
+                };
+
+                // *****************************************************************
+                logger.Debug("Attempting to get Mission Plan version id");
+                logger.LogObject(nameof(verReq), verReq);
+
+                var verRes = await s3Client.GetObjectMetadataAsync( verReq );
+                var ver = verRes.VersionId;
+                logger.Inspect(nameof(ver), ver);
+
+
+
+                using var appConfigClient = BuildAppConfigClient();
 
 
                 // *****************************************************************
@@ -352,7 +370,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 var req = new StartDeploymentRequest
                 {
                     Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.Environment})",
-                    ConfigurationVersion = version
+                    ConfigurationVersion = ver
                 };
 
 
@@ -360,7 +378,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 // *****************************************************************
                 logger.DebugFormat("Attempting to find Application using name = ({0})", mission.AppConfigApplication);
 
-                var appRes = await client.ListApplicationsAsync(new ListApplicationsRequest());
+                var appRes = await appConfigClient.ListApplicationsAsync(new ListApplicationsRequest());
                 var app = appRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigApplication);
                 if (app is null)
                     throw new NotFoundException($"Could not find Application with name = ({mission.AppConfigApplication})");
@@ -374,7 +392,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 // *****************************************************************
                 logger.DebugFormat("Attempting to find Config Profile using name = ({0})", mission.AppConfigConfigProfile);
 
-                var cfgRes = await client.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest { ApplicationId = app.Id });
+                var cfgRes = await appConfigClient.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest { ApplicationId = app.Id });
                 var cfg = cfgRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigConfigProfile);
                 if (cfg is null)
                     throw new NotFoundException($"Could not find Config Profile with name = ({mission.AppConfigConfigProfile})");
@@ -388,7 +406,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 // *****************************************************************
                 logger.DebugFormat("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironment);
 
-                var envRes = await client.ListEnvironmentsAsync(new ListEnvironmentsRequest { ApplicationId = app.Id });
+                var envRes = await appConfigClient.ListEnvironmentsAsync(new ListEnvironmentsRequest { ApplicationId = app.Id });
                 var env = envRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigEnvironment);
 
                 if (env is null)
@@ -403,7 +421,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 // *****************************************************************
                 logger.DebugFormat("Attempting to find Strategy using name = ({0})", mission.AppConfigStrategy);
 
-                var strRes = await client.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest());
+                var strRes = await appConfigClient.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest());
                 var str = strRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigStrategy);
 
                 if (str is null)
@@ -419,7 +437,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 logger.Debug("Attempting to send StartDeployment request");
                 logger.LogObject(nameof(req), req);
 
-                var res = await client.StartDeploymentAsync(req);
+                var res = await appConfigClient.StartDeploymentAsync(req);
                 logger.LogObject(nameof(res), res);
 
                 if ((res.HttpStatusCode != HttpStatusCode.Created) || (res.HttpStatusCode != HttpStatusCode.OK))
@@ -778,10 +796,12 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 if (!MissionFilter(o.Key))
                     continue;
 
+
                 var res = await client.GetObjectAsync(new GetObjectRequest { BucketName = o.BucketName, Key = o.Key });
 
                 if (res.HttpStatusCode != HttpStatusCode.OK)
                     continue;
+
 
                 await using var strm = res.ResponseStream;
 
