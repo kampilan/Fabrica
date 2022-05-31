@@ -167,7 +167,6 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                     request.ClientConfigurationVersion = ClientConfigurationVersion;
 
 
-
                 // *****************************************************************
                 logger.Debug("Attempting to execute request");
                 var response = await Client.GetConfigurationAsync(request);

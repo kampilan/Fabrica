@@ -352,8 +352,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 var req = new StartDeploymentRequest
                 {
                     Description = $"Mission: ({mission.Name}) deployment for Environment: ({mission.Environment})",
-                    ConfigurationVersion = version,
-                    Tags = new Dictionary<string, string>()
+                    ConfigurationVersion = version
                 };
 
 
@@ -366,6 +365,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 if (app is null)
                     throw new NotFoundException($"Could not find Application with name = ({mission.AppConfigApplication})");
 
+                logger.LogObject(nameof(app), app);
+
                 req.ApplicationId = app.Id;
 
 
@@ -377,6 +378,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 var cfg = cfgRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigConfigProfile);
                 if (cfg is null)
                     throw new NotFoundException($"Could not find Config Profile with name = ({mission.AppConfigConfigProfile})");
+
+                logger.LogObject(nameof(cfg), cfg);
 
                 req.ConfigurationProfileId = cfg.Id;
 
@@ -391,6 +394,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 if (env is null)
                     throw new NotFoundException($"Could not find Environment with name = ({mission.AppConfigConfigProfile})");
 
+                logger.LogObject(nameof(env), env);
+
                 req.EnvironmentId = env.Id;
 
 
@@ -404,14 +409,16 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 if (str is null)
                     throw new NotFoundException($"Could not find Strategy with name = ({mission.AppConfigEnvironment})");
 
-                req.DeploymentStrategyId = str.Id;
+                logger.LogObject(nameof(str), str);
 
-                logger.LogObject(nameof(req), req);
+                req.DeploymentStrategyId = str.Id;
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to send StartDeployment request");
+                logger.LogObject(nameof(req), req);
+
                 var res = await client.StartDeploymentAsync(req);
                 logger.LogObject(nameof(res), res);
 
