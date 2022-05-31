@@ -390,6 +390,9 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             }
 
+            mission.Post();
+
+
             logger.LogObject(nameof(mission), mission);
 
 
@@ -411,12 +414,17 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             using var logger = this.EnterMethod();
 
-            using var client = BuildS3Client();
 
 
             // *****************************************************************
             logger.Debug("Attempting to serialize mission to JSON");
             var json = JsonSerializer.Serialize(mission, new JsonSerializerOptions { WriteIndented = true });
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build S3 Client");
+            using var client = BuildS3Client();
 
 
 
@@ -428,7 +436,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 Key         = mission.RepositoryLocation,
                 ContentBody = json
             };
-
 
             var res = await client.PutObjectAsync(req);
             logger.LogObject(nameof(res), res);
