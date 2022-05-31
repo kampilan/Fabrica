@@ -160,7 +160,6 @@ namespace Fabrica.One.Models
         {
             var jo = JsonNode.Parse(value);
             Configuration = jo?.AsObject() ?? new JsonObject();
-            ConfigurationAsJson = value;
         }
 
         public void SetConfiguration( Dictionary<string,object> config )

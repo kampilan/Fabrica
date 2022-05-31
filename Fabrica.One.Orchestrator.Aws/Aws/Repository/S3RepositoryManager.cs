@@ -385,8 +385,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 model.Deploy       = app.Deploy;
                 model.WaitForStart = app.WaitForStart;
 
-                var json = app.GetConfigurationAsJson();
-                model.SetConfiguration( json );
+                model.ConfigurationAsJson = app.ConfigurationAsJson;
 
             }
 
