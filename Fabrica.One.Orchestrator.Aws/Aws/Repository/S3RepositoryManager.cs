@@ -440,7 +440,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 var res = await appConfigClient.StartDeploymentAsync(req);
                 logger.LogObject(nameof(res), res);
 
-                if ((res.HttpStatusCode != HttpStatusCode.Created) || (res.HttpStatusCode != HttpStatusCode.OK))
+                if( res.HttpStatusCode != HttpStatusCode.Created && res.HttpStatusCode != HttpStatusCode.OK )
                     throw new Exception("The result from StartDeployment indicates failure");
 
 
