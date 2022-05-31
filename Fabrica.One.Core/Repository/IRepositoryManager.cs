@@ -25,6 +25,9 @@ namespace Fabrica.One.Repository
 
         Task<MissionModel> CreateMission( string name, string environment, string customName="" );
 
+        Task<MissionModel> CopyMission(string name, string environment, MissionModel source, string customName = "");
+
+
         Task Save( MissionModel mission );
 
         Task Deploy( MissionModel model, string version="1" );

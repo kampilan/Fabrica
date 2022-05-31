@@ -305,6 +305,107 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
+
+        public async Task<MissionModel> CopyMission([NotNull] string name, [NotNull] string environment, MissionModel source, string customName="" )
+        {
+
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+            if (string.IsNullOrWhiteSpace(environment)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
+
+            using var logger = this.EnterMethod();
+
+
+            logger.Inspect(nameof(name), name);
+            logger.Inspect(nameof(environment), environment);
+            logger.Inspect(nameof(customName), customName);
+
+
+
+            if (string.IsNullOrWhiteSpace(customName))
+            {
+
+
+                logger.Debug("Attempting to validate candidate mission name");
+                var nameOk = name.All(char.IsLetterOrDigit);
+                if (!nameOk)
+                    throw new ArgumentException("Must be [a-z][A-Z][0-9}", name);
+
+
+
+                logger.Debug("Attempting to validate candidate mission environment");
+                var envOk = environment.All(char.IsLetterOrDigit);
+                if (!envOk)
+                    throw new ArgumentException("Must be [a-z][A-Z][0-9}", environment);
+
+
+                var exists = Missions.Exists(m => m.Name == name && m.Environment == environment);
+                if (exists)
+                    throw new Exception($"A mission with the name ({name}) and environment ({environment}) already exists.");
+
+                customName = $"{name.ToLowerInvariant()}-{environment.ToLowerInvariant()}";
+
+            }
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to populate new mission with reasonable defaults");
+            var mission = new MissionModel
+            {
+                Name                    = name,
+                Environment             = environment,
+                DeployAppliances        = source.DeployAppliances,
+                StartAppliances         = source.StartAppliances,
+                StartInParallel         = source.StartInParallel,
+                AllAppliancesMustDeploy = source.AllAppliancesMustDeploy,
+                WaitForDeploySeconds    = source.WaitForDeploySeconds,
+                WaitForStartSeconds     = source.WaitForStartSeconds,
+                WaitForStopSeconds      = source.WaitForStopSeconds,
+                RepositoryLocation      = $"missions/{customName}-mission-plan.json",
+                AppConfigApplication    = name,
+                AppConfigEnvironment    = environment,
+                AppConfigConfigProfile  = $"Mission-{environment}",
+                AppConfigStrategy       = "Standard"
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to copy each appliance from source to new mission");
+            foreach (var app in source.Deployments)
+            {
+
+                var model = mission.AddDeployment();
+
+                model.Name         = app.Name;
+                model.Build        = app.Build;
+                model.Checksum     = app.Checksum;
+                model.Alias        = app.Alias;
+                model.Assembly     = app.Assembly;
+                model.ShowWindow   = app.ShowWindow;
+                model.Deploy       = app.Deploy;
+                model.WaitForStart = app.WaitForStart;
+
+                model.SetConfiguration( app.ConfigurationAsJson );
+
+            }
+
+            logger.LogObject(nameof(mission), mission);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to save new mission to repository");
+            await Save(mission);
+
+
+            // *****************************************************************
+            return mission;
+
+
+        }
+
+
         public async Task Save( MissionModel mission )
         {
 
