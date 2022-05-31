@@ -18,7 +18,6 @@ using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using JetBrains.Annotations;
-using Environment = Amazon.AppConfig.Model.Environment;
 
 namespace Fabrica.One.Orchestrator.Aws.Repository
 {
@@ -372,7 +371,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             // *****************************************************************
             logger.Debug("Attempting to copy each appliance from source to new mission");
-            foreach (var app in source.Deployments)
+            foreach( var app in source.Deployments )
             {
 
                 var model = mission.AddDeployment();
@@ -386,7 +385,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 model.Deploy       = app.Deploy;
                 model.WaitForStart = app.WaitForStart;
 
-                model.SetConfiguration( app.ConfigurationAsJson );
+                var json = app.GetConfigurationAsJson();
+                model.SetConfiguration( json );
 
             }
 
