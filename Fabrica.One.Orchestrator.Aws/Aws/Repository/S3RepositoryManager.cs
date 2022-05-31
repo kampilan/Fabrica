@@ -18,6 +18,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using JetBrains.Annotations;
+using Environment = Amazon.AppConfig.Model.Environment;
 
 namespace Fabrica.One.Orchestrator.Aws.Repository
 {
@@ -282,7 +283,11 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 WaitForDeploySeconds    = 10,
                 WaitForStartSeconds     = 10,
                 WaitForStopSeconds      = 10,
-                RepositoryLocation      = $"missions/{customName}-mission-plan.json"
+                RepositoryLocation      = $"missions/{customName}-mission-plan.json",
+                AppConfigApplication    = name,
+                AppConfigEnvironment    = environment,
+                AppConfigConfigProfile  = $"Mission-{environment}",
+                AppConfigStrategy       = "Standard"
             };
 
             logger.LogObject(nameof(mission), mission);
