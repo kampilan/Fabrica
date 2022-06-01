@@ -304,7 +304,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
-
         public async Task<MissionModel> CopyMission([NotNull] string name, [NotNull] string environment, MissionModel source, string customName="" )
         {
 
@@ -407,7 +406,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
-
         public async Task Save( MissionModel mission )
         {
 
@@ -446,8 +444,39 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
         }
 
+        public async Task Delete(MissionModel mission)
+        {
 
-        public async Task Deploy( MissionModel mission, string version="" )
+            using var logger = this.EnterMethod();
+
+            using var client = BuildS3Client();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build and send DeleteObject request");
+            var req = new DeleteObjectRequest
+            {
+                BucketName = CurrentBucketName,
+                Key = mission.RepositoryLocation
+            };
+
+
+            var res = await client.DeleteObjectAsync(req);
+            logger.LogObject(nameof(res), res);
+
+
+            if (res.HttpStatusCode != HttpStatusCode.NoContent)
+                throw new Exception("The result from DeleteObject indicates failure");
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to remove deleted mission for Missions");
+            Missions.Remove(mission);
+
+
+        }
+
+        public async Task Deploy(MissionModel mission, string version = "")
         {
 
             using var logger = this.EnterMethod();
@@ -460,7 +489,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
                 var verReq = new GetObjectMetadataRequest
                 {
-                    BucketName = CurrentBucketName, 
+                    BucketName = CurrentBucketName,
                     Key = mission.RepositoryLocation
                 };
 
@@ -468,7 +497,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 logger.Debug("Attempting to get Mission Plan version id");
                 logger.LogObject(nameof(verReq), verReq);
 
-                var verRes = await s3Client.GetObjectMetadataAsync( verReq );
+                var verRes = await s3Client.GetObjectMetadataAsync(verReq);
                 var ver = verRes.VersionId;
                 logger.Inspect(nameof(ver), ver);
 
@@ -552,7 +581,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 var res = await appConfigClient.StartDeploymentAsync(req);
                 logger.LogObject(nameof(res), res);
 
-                if( res.HttpStatusCode != HttpStatusCode.Created && res.HttpStatusCode != HttpStatusCode.OK )
+                if (res.HttpStatusCode != HttpStatusCode.Created && res.HttpStatusCode != HttpStatusCode.OK)
                     throw new Exception("The result from StartDeployment indicates failure");
 
 
@@ -561,14 +590,14 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
             {
                 var ctx = new
                 {
-                    mission.Name, 
-                    mission.Environment, 
-                    mission.AppConfigApplication, 
+                    mission.Name,
+                    mission.Environment,
+                    mission.AppConfigApplication,
                     mission.AppConfigConfigProfile,
-                    mission.AppConfigEnvironment, 
+                    mission.AppConfigEnvironment,
                     mission.AppConfigStrategy
                 };
-                logger.ErrorWithContext( cause, ctx, "Deploy Mission failed" );
+                logger.ErrorWithContext(cause, ctx, "Deploy Mission failed");
                 throw;
             }
 
@@ -576,37 +605,6 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
         }
 
 
-        public async Task Delete(MissionModel mission)
-        {
-
-            using var logger = this.EnterMethod();
-
-            using var client = BuildS3Client();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build and send DeleteObject request");
-            var req = new DeleteObjectRequest
-            {
-                BucketName = CurrentBucketName,
-                Key = mission.RepositoryLocation
-            };
-
-
-            var res = await client.DeleteObjectAsync(req);
-            logger.LogObject(nameof(res), res);
-
-
-            if (res.HttpStatusCode != HttpStatusCode.NoContent)
-                throw new Exception("The result from DeleteObject indicates failure");
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to remove deleted mission for Missions");
-            Missions.Remove(mission);
-
-
-        }
 
 
         private AWSCredentials BuildCredentials()
