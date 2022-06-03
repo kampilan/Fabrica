@@ -140,7 +140,7 @@ namespace Fabrica.One.Plan
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to validate JSON againset Schema");
+                logger.Debug("Attempting to validate JSON against Schema");
                 var results = PlanSchema.Validate(root, new ValidationOptions{OutputFormat = OutputFormat.Detailed});
 
                 logger.Inspect(nameof(results.IsValid), results.IsValid);

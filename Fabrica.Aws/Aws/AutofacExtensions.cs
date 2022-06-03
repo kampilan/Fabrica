@@ -25,6 +25,7 @@ SOFTWARE.
 using System;
 using Amazon;
 using Amazon.AppConfig;
+using Amazon.AppConfigData;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
@@ -272,6 +273,12 @@ namespace Fabrica.Aws
                 .SingleInstance()
                 .AutoActivate();
 
+            // ******************************************************************
+            builder.Register(c => new AmazonAppConfigDataClient())
+                .As<IAmazonAppConfigData>()
+                .SingleInstance()
+                .AutoActivate();
+
 
             // ******************************************************************
             builder.Register(c => new AmazonSecretsManagerClient())
@@ -338,6 +345,13 @@ namespace Fabrica.Aws
 
 
             // ******************************************************************
+            builder.Register(c => new AmazonAppConfigDataClient())
+                .As<IAmazonAppConfigData>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
             builder.Register(c => new AmazonSecretsManagerClient(endpoint))
                 .As<IAmazonSecretsManager>()
                 .SingleInstance()
@@ -398,6 +412,13 @@ namespace Fabrica.Aws
             // ******************************************************************
             builder.Register(c => new AmazonAppConfigClient( credentials, endpoint) )
                 .As<IAmazonAppConfig>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonAppConfigDataClient(credentials, endpoint))
+                .As<IAmazonAppConfigData>()
                 .SingleInstance()
                 .AutoActivate();
 

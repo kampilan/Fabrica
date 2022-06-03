@@ -7,6 +7,7 @@ using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using Fabrica.One.Orchestrator.Aws.Configuration;
 using Fabrica.One.Plan;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
@@ -20,8 +21,8 @@ namespace Fabrica.One.Orchestrator.Aws.Tests;
 public class OrchestratorTests
 {
 
-    [OneTimeSetUp]
-    public void Setup()
+    [SetUp]
+    public async Task Setup()
     {
 
 
@@ -36,28 +37,28 @@ public class OrchestratorTests
 
         var module = new OneOrchestratorModule();
 
-        module.Profile = "kampilan";
-        module.RegionName = "us-east-2";
+        module.Profile = "fortium";
+        module.RegionName = "us-east-1";
         module.RunningOnEC2 = false;
 
         module.OneRoot = @"e:\fabrica-one";
         
-        module.AppConfigPlanSourceApplication = "fabrica-one-test";
-        module.AppConfigPlanSourceConfiguration = "mission";
-        module.AppConfigPlanSourceEnvironment = "development";
+        module.AppConfigPlanSourceApplication = "PartnerConnect";
+        module.AppConfigPlanSourceConfiguration = "Mission-Development";
+        module.AppConfigPlanSourceEnvironment = "Development";
 
-        module.RepositoryBucketName = "pondhawk-appliance-repository";
+        module.RepositoryBucketName = "connect-appliance-repository";
 
 
         var builder = new ContainerBuilder();
         builder.RegisterModule(module);
 
-        TheContainer = builder.Build();
+        TheContainer = await builder.BuildAndStart();
 
     }
 
 
-    [OneTimeTearDown]
+    [TearDown]
     public void Teardown()
     {
         TheContainer?.Dispose();

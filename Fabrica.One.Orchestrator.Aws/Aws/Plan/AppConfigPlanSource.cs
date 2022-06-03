@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Amazon.AppConfig;
-using Amazon.AppConfig.Model;
+using Amazon.AppConfigData;
+using Amazon.AppConfigData.Model;
 using Amazon.Util;
 using Fabrica.One.Plan;
 using Fabrica.Utilities.Container;
@@ -33,12 +35,12 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
 
 
 
-        public AppConfigPlanSource( IAmazonAppConfig client )
+        public AppConfigPlanSource( IAmazonAppConfigData client )
         {
             Client = client;
         }
 
-        private IAmazonAppConfig Client { get; }
+        private IAmazonAppConfigData Client { get; }
 
 
         public bool UseInstanceMetadata { get; set; } = true;
@@ -49,7 +51,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
         public string ClientId { get; set; } = ShortGuid.NewGuid();
 
 
-        private string ClientConfigurationVersion { get; set; }
+        private string ConfigurationToken { get; set; }
         private MemoryStream Source { get; set; } = new MemoryStream();
 
 
@@ -72,7 +74,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
 
                 // *****************************************************************
                 logger.Debug("Attempting to check for set Application. Indicating manual config");
-                if( !string.IsNullOrWhiteSpace(Application) )
+                if (!string.IsNullOrWhiteSpace(Application))
                     return Task.CompletedTask;
 
 
@@ -150,28 +152,47 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
 
                 logger.EnterMethod();
 
+                logger.Inspect(nameof(ConfigurationToken), ConfigurationToken);
+
+
+                if( string.IsNullOrWhiteSpace(ConfigurationToken) )
+                {
+
+                    // *****************************************************************
+                    logger.Debug("Attempting to call StartConfigurationSession");
+                    var req = new StartConfigurationSessionRequest
+                    {
+                        ApplicationIdentifier                = Application,
+                        ConfigurationProfileIdentifier       = Configuration,
+                        EnvironmentIdentifier                = Environment,
+                        RequiredMinimumPollIntervalInSeconds = 15
+                    };
+
+                    logger.LogObject(nameof(req), req);
+
+                    var res = await Client.StartConfigurationSessionAsync(req);
+                    logger.LogObject(nameof(res), res);
+                    if (res.HttpStatusCode != HttpStatusCode.Created)
+                        throw new Exception("StartConfigurationSession Response HTTP Status Code does not indicate success");
+
+                    ConfigurationToken = res.InitialConfigurationToken;
+
+                }
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to build GetConfiguration request");
-                var request = new GetConfigurationRequest
+                var request = new GetLatestConfigurationRequest()
                 {
-                    Application   = Application,
-                    Environment   = Environment,
-                    Configuration = Configuration,
-                    ClientId      = ClientId
+                    ConfigurationToken = ConfigurationToken
                 };
-
-                logger.Inspect(nameof(ClientConfigurationVersion), ClientConfigurationVersion);
-                if (!string.IsNullOrWhiteSpace(ClientConfigurationVersion))
-                    request.ClientConfigurationVersion = ClientConfigurationVersion;
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to execute request");
-                var response = await Client.GetConfigurationAsync(request);
+                var response = await Client.GetLatestConfigurationAsync(request);
 
-                if (response.Content == null || response.Content.Length == 0)
+                if (response.Configuration == null || response.Configuration.Length == 0)
                     return false;
 
 
@@ -180,7 +201,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                 logger.Debug("Attempting to process new Mission version");
 
                 Source = new MemoryStream();
-                await response.Content.CopyToAsync(Source);
+                await response.Configuration.CopyToAsync(Source);
 
                 Source.Seek(0, SeekOrigin.Begin);
 
@@ -188,13 +209,13 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
 
                 // *****************************************************************
                 logger.Debug("Attempting to update Mission version");
-                ClientConfigurationVersion = response.ConfigurationVersion;
-                logger.Inspect(nameof(ClientConfigurationVersion), ClientConfigurationVersion);
+                ConfigurationToken = response.NextPollConfigurationToken;
+                logger.Inspect(nameof(ConfigurationToken), ConfigurationToken);
 
 
 
                 // *****************************************************************
-                logger.InfoFormat( "New version ({0}) acquired for Application: ({1}) Environment: ({2}) Configuration: ({3}).", ClientConfigurationVersion, Application, Environment, Configuration );
+                logger.InfoFormat( "New version ({0}) acquired for Application: ({1}) Environment: ({2}) Configuration: ({3}).", ConfigurationToken, Application, Environment, Configuration );
                 return true;
 
 
@@ -274,7 +295,7 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
 
         public Task Reload()
         {
-            ClientConfigurationVersion = null;
+            ConfigurationToken = null;
             return Task.CompletedTask;
         }
 

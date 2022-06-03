@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Amazon.AppConfig;
+using Amazon.AppConfigData;
 using Amazon.S3;
 using Autofac;
 using Fabrica.Aws;
@@ -100,7 +100,7 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
                 builder.Register(c =>
                     {
 
-                        var client = c.Resolve<IAmazonAppConfig>();
+                        var client = c.Resolve<IAmazonAppConfigData>();
 
                         var comp = new AppConfigPlanSource(client)
                         {
