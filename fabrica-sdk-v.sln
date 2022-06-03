@@ -18,6 +18,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Appliances", "Appliances", "{7A81AD66-EABD-448A-8CD9-DFF453B77107}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3200EA27-ABAD-4334-B406-CCC6D204CE84}"
+	ProjectSection(SolutionItems) = preProject
+		Systemd\FabricaOneAwsOrch.service = Systemd\FabricaOneAwsOrch.service
+		Systemd\fabricaOneCore.service = Systemd\fabricaOneCore.service
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.One.Service", "Fabrica.One.Service\Fabrica.One.Service.csproj", "{ED7155DD-D0C9-4DA4-ACA0-0FC1F7509807}"
 EndProject
