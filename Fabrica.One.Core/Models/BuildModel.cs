@@ -30,6 +30,9 @@ namespace Fabrica.One.Models
 
         public string Assembly { get; set; } = "";
 
+        public int UseCount { get; set;} = 0;
+
+
         [JsonIgnore]
         public bool IsAbsoluteBuild
         {

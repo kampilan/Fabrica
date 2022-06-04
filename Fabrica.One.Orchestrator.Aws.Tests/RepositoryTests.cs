@@ -187,6 +187,27 @@ public class RepositoryTests
     }
 
 
+    [Test]
+    public async Task Test1140_Mission_Build_Usage_Should_Load()
+    {
+
+        var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
+
+        Assert.IsNotNull(repo);
+
+        await Manager.SetCurrentRepository(repo);
+
+
+        var builds = await Manager.GetMissionBuildUsage();
+
+        Assert.IsNotNull(builds);
+        Assert.IsNotEmpty(builds);
+
+
+    }
+
+
+
 
 
 

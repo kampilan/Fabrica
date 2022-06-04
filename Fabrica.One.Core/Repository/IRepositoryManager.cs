@@ -22,6 +22,7 @@ namespace Fabrica.One.Repository
         Task<IEnumerable<ApplianceModel>> GetAppliances(Func<ApplianceModel,bool> predicate = null);
         Task<IEnumerable<BuildModel>> GetBuilds( Func<BuildModel,bool> predicate = null );
 
+        Task<IEnumerable<BuildModel>> GetMissionBuildUsage();
 
         Task<MissionModel> CreateMission( string name, string environment, string customName="" );
 

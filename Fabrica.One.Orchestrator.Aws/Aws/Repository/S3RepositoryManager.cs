@@ -27,7 +27,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
     {
 
         public bool RunningOnEc2 { get; set; } = true;
-        
+
+
         public string MissionPrefix { get; set; } = "missions/";
         public Func<string, bool> MissionFilter { get; set; } = k=>k.EndsWith("-mission-plan.json");
 
@@ -210,9 +211,10 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
         public async Task<IEnumerable<BuildModel>> GetBuilds(Func<BuildModel, bool> predicate = null)
         {
 
+
             using var logger = this.EnterMethod();
 
-            if ( _currentRepository != null &&  Builds.Count == 0 )
+            if (_currentRepository != null && Builds.Count == 0)
                 await LoadBuilds();
 
 
@@ -223,8 +225,44 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             return results;
 
+
         }
-        
+
+
+
+        public async Task<IEnumerable<BuildModel>> GetMissionBuildUsage()
+        {
+
+            using var logger = this.EnterMethod();
+
+
+            if (_currentRepository != null && Missions.Count == 0)
+                await LoadMissions();
+
+
+            if (_currentRepository != null && Builds.Count == 0)
+                await LoadBuilds();
+
+
+            foreach( var d in Missions.SelectMany(m => m.Deployments) )
+            {
+
+                var build = Builds.FirstOrDefault(b => b.Name == d.Name && b.BuildNum == d.Build);
+                if (build is null)
+                    continue;
+
+                build.UseCount++;
+
+            }
+
+            var inuse = Builds.Where(b => b.UseCount > 0).ToList();
+
+
+            return inuse;
+
+        }
+
+
 
 
         public async Task<MissionModel> CreateMission([NotNull] string name, [NotNull] string environment, [CanBeNull] string customName="")
