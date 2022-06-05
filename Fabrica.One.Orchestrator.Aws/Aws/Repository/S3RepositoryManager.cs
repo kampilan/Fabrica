@@ -230,7 +230,7 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
 
 
-        public async Task<IEnumerable<BuildModel>> GetMissionBuildUsage()
+        public async Task<IEnumerable<DeploymentExplorerModel>> GetMissionBuildUsage()
         {
 
             using var logger = this.EnterMethod();
@@ -244,6 +244,8 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 await LoadBuilds();
 
 
+            var explorers = new List<DeploymentExplorerModel>();
+
             foreach( var d in Missions.SelectMany(m => m.Deployments) )
             {
 
@@ -251,18 +253,21 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
                 if (build is null)
                     continue;
 
-                build.UseCount++;
+                var exp = new DeploymentExplorerModel
+                {
+                    Mission   = d.Parent.Fqmn,
+                    BuildName = build.Name,
+                    BuildNum  = build.BuildNum,
+                    BuildDate = build.BuildDate
+                };
+
+                explorers.Add(exp);
 
             }
 
-            var inuse = Builds.Where(b => b.UseCount > 0).ToList();
-
-
-            return inuse;
+            return explorers;
 
         }
-
-
 
 
         public async Task<MissionModel> CreateMission([NotNull] string name, [NotNull] string environment, [CanBeNull] string customName="")
