@@ -14,6 +14,7 @@ namespace Fabrica.One.Models
 
         public DateTime BuildDate { get; set; } = DateTime.MinValue;
 
+        public bool IsAbsoluteBuild { get; set; }
 
     }
 

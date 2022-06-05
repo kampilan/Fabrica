@@ -255,10 +255,11 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
                 var exp = new DeploymentExplorerModel
                 {
-                    Mission   = d.Parent.Fqmn,
-                    BuildName = build.Name,
-                    BuildNum  = build.BuildNum,
-                    BuildDate = build.BuildDate
+                    Mission         = d.Parent.Fqmn,
+                    BuildName       = build.Name,
+                    BuildNum        = build.BuildNum,
+                    BuildDate       = build.BuildDate,
+                    IsAbsoluteBuild = build.IsAbsoluteBuild
                 };
 
                 explorers.Add(exp);
