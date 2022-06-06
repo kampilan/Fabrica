@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Configuration.Yaml;
@@ -102,8 +103,6 @@ public static class OneWebApplicationExtensions
 
         maker.Build();
 
-
-
         // *****************************************************************
         builder.Host.ConfigureServices((context, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
 
@@ -160,11 +159,7 @@ public static class OneWebApplicationExtensions
     }
 
 
-
-
-
-
-    public static WebApplicationBuilder BootstrapAppliance<TModule>(this WebApplicationBuilder builder) where TModule : Module
+    public static async Task<WebApplication> BootstrapAppliance<TModule>(this WebApplicationBuilder builder) where TModule : BootstrapModule
     {
 
 
@@ -194,11 +189,14 @@ public static class OneWebApplicationExtensions
         maker.Build();
 
 
+        var bootstrap = configuration.Get<TModule>();
+
+        await bootstrap.OnConfigured();
+
 
         // *****************************************************************
-        builder.Host.ConfigureServices((context, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
 
-        builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
+        builder.Host.UseServiceProviderFactory( new AutofacServiceProviderFactory(cb =>
         {
 
             cb.RegisterInstance(configuration)
@@ -232,10 +230,8 @@ public static class OneWebApplicationExtensions
                 .As<IRequiresStart>()
                 .SingleInstance()
                 .AutoActivate();
-
-
-            var module = configuration.Get<TModule>();
-            cb.RegisterModule(module);
+           
+                bootstrap.ConfigureContainer(cb);            
 
 
         }))
@@ -247,11 +243,17 @@ public static class OneWebApplicationExtensions
             })
             .ConfigureServices(s =>
             {
+
+                s.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>();
+                bootstrap.ConfigureServices(s);
                 s.AddHostedService<InitService>();
+
             });
 
+        var app = builder.Build();
+        bootstrap.ConfigureWebApp(app);
 
-        return builder;
+        return app;
 
     }
 
