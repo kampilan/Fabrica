@@ -12,6 +12,7 @@ using Fabrica.Watch.Mongo;
 using Fabrica.Watch.Realtime;
 using Fabrica.Watch.Switching;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -271,7 +272,24 @@ public static class OneWebApplicationExtensions
 
         }));
 
+
+
+        // *****************************************************************
+        builder.WebHost.UseKestrel(op =>
+        {
+
+            if( bootstrap.AllowAnyIp )
+                op.ListenAnyIP(bootstrap.ListeningPort);
+            else
+                op.ListenLocalhost(bootstrap.ListeningPort);
+
+        });
+
+
+
+        // *****************************************************************
         var app = builder.Build();
+
         bootstrap.ConfigureWebApp(app);
 
         return app;
@@ -314,6 +332,8 @@ public static class OneWebApplicationExtensions
         maker.UseRealtime();
         var switches = maker.UseLocalSwitchSource();
         switchBuilder(switches);
+
+
 
         maker.Build();
 
@@ -395,6 +415,22 @@ public static class OneWebApplicationExtensions
 
         }));
 
+
+
+        // *****************************************************************
+        builder.WebHost.UseKestrel(op =>
+        {
+
+            if (bootstrap.AllowAnyIp)
+                op.ListenAnyIP(bootstrap.ListeningPort);
+            else
+                op.ListenLocalhost(bootstrap.ListeningPort);
+
+        });
+
+
+
+        // *****************************************************************
         var app = builder.Build();
         bootstrap.ConfigureWebApp(app);
 
