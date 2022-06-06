@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Api.Support.One;
@@ -71,8 +70,6 @@ public static class OneWebApplicationExtensions
         return builder;
 
     }
-
-
 
     public static WebApplicationBuilder BootstrapAppliance(this WebApplicationBuilder builder)
     {
@@ -166,7 +163,6 @@ public static class OneWebApplicationExtensions
         return app;
 
     }    
-
 
     public static async Task<WebApplication> BootstrapAppliance<TModule,TService>(this WebApplicationBuilder builder) where TModule : BootstrapModule where TService: class, IHostedService
     {
@@ -282,8 +278,16 @@ public static class OneWebApplicationExtensions
 
     }
 
+    public static async  Task<WebApplication> BootstrapDebugAppliance<TModule>(this WebApplicationBuilder builder, string localConfigFile = "", Action<SwitchSource> switchBuilder = null) where TModule : BootstrapModule
+    {
 
-    public static WebApplicationBuilder BootstrapDebugAppliance<TModule>(this WebApplicationBuilder builder, string localConfigFile="", Action<SwitchSource> switchBuilder= null ) where TModule : Module
+        var app = await BootstrapDebugAppliance<TModule,InitService>( builder, localConfigFile, switchBuilder );
+
+        return app;
+
+    }
+
+    public static async Task<WebApplication> BootstrapDebugAppliance<TModule,TService>(this WebApplicationBuilder builder, string localConfigFile = "", Action<SwitchSource> switchBuilder = null) where TModule : BootstrapModule where TService: class, IHostedService
     {
 
 
@@ -313,10 +317,40 @@ public static class OneWebApplicationExtensions
 
         maker.Build();
 
+        builder.Host.ConfigureLogging(lb =>
+        {
+            lb.ClearProviders();
+            lb.AddProvider(new LoggerProvider());
+            lb.SetMinimumLevel(LogLevel.Trace);
+
+        });
+
+
 
         // *****************************************************************
-        builder.Host.ConfigureServices((context, collection) => collection.AddSingleton<IHostLifetime, ConsoleLifetime>());
+        var bootstrap = configuration.Get<TModule>();
+        bootstrap.Configuration = configuration;
 
+
+        await bootstrap.OnConfigured();
+
+
+
+        // *****************************************************************
+        builder.Host.ConfigureServices(s =>
+        {
+
+            s.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>();
+
+            bootstrap.ConfigureServices(s);
+
+            s.AddHostedService<TService>();
+
+        });
+
+
+
+        // *****************************************************************
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
 
@@ -324,24 +358,48 @@ public static class OneWebApplicationExtensions
                 .As<IConfiguration>()
                 .SingleInstance();
 
-            var module = configuration.Get<TModule>();
-            cb.RegisterModule(module);
-
-
-        }))
-            .ConfigureLogging(lb =>
+            cb.Register(_ =>
             {
-                lb.ClearProviders();
-                lb.AddProvider(new LoggerProvider());
-                lb.SetMinimumLevel(LogLevel.Trace);
+
+                var comp = new FileSignalController(FileSignalController.OwnerType.Appliance);
+                return comp;
+
             })
-            .ConfigureServices(s =>
+                .As<ISignalController>()
+                .As<IRequiresStart>()
+                .SingleInstance()
+                .AutoActivate();
+
+            cb.Register(c =>
             {
-                s.AddHostedService<InitService>();
-            });
+
+                var hal = c.Resolve<IHostApplicationLifetime>();
+                var sc = c.Resolve<ISignalController>();
+
+                var comp = new ApplianceLifetime(hal, sc);
+
+                return comp;
+
+            })
+                .AsSelf()
+                .As<IRequiresStart>()
+                .SingleInstance()
+                .AutoActivate();
 
 
-        return builder;
+            cb.AddCorrelation();
+
+
+            bootstrap.ConfigureContainer(cb);
+
+
+        }));
+
+        var app = builder.Build();
+        bootstrap.ConfigureWebApp(app);
+
+        return app;
+
 
     }
 
