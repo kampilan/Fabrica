@@ -18,7 +18,7 @@ public abstract class BaseApplyPatchEndpoint<TEntity>: BaseEndpoint where TEntit
     }
 
     [HttpPatch("{uid}")]
-    public async Task<IActionResult> Handle( [FromRoute] string uid, [NotNull] IEnumerable<ModelPatch> source )
+    public async Task<IActionResult> Handle( [FromRoute] string uid, [FromBody] List<ModelPatch> source )
     {
 
         if (source == null) throw new ArgumentNullException(nameof(source));

@@ -28,7 +28,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
 
         // *****************************************************************
-        logger.Debug("Attempting to digout RQL query parameters");
+        logger.Debug("Attempting to dig out RQL query parameters");
 
         var rqls = new List<string>();
         foreach (var key in Request.Query.Keys)

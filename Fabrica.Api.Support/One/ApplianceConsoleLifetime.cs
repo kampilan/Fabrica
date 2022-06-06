@@ -8,172 +8,167 @@ using Fabrica.Watch;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using ILogger = Fabrica.Watch.ILogger;
 
-namespace Fabrica.Api.Support.One
+namespace Fabrica.Api.Support.One;
+
+public static class ApplianceOneExtentions
 {
 
+    public static IHostBuilder UseApplianceConsoleLifetime(this IHostBuilder hostBuilder)
+    {
+        return hostBuilder.ConfigureServices((context, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
+    }
 
-    public static class ApplianceOneExtentions
+}
+
+
+
+public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
+{
+
+    private readonly ManualResetEvent _shutdownBlock = new (false);
+    private CancellationTokenRegistration _applicationStartedRegistration;
+    private CancellationTokenRegistration _applicationStoppingRegistration;
+
+    public ApplianceConsoleLifetime( IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions )
     {
 
-        public static IHostBuilder UseApplianceConsoleLifetime(this IHostBuilder hostBuilder )
+        Options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+        Environment = environment ?? throw new ArgumentNullException(nameof(environment));
+        ApplicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
+        HostOptions = hostOptions?.Value ?? throw new ArgumentNullException(nameof(hostOptions));
+
+    }
+
+
+    private ConsoleLifetimeOptions Options { get; }
+
+    private IHostEnvironment Environment { get; }
+
+    private IHostApplicationLifetime ApplicationLifetime { get; }
+
+    private HostOptions HostOptions { get; }
+
+    private ILogger GetLogger() => WatchFactoryLocator.Factory.GetLogger<ApplianceConsoleLifetime>();
+
+    public Task WaitForStartAsync(CancellationToken cancellationToken)
+    {
+        if (!Options.SuppressStatusMessages)
         {
-            return hostBuilder.ConfigureServices( (context, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>() );
+            _applicationStartedRegistration = ApplicationLifetime.ApplicationStarted.Register(state =>
+                {
+                    ((ApplianceConsoleLifetime)state).OnApplicationStarted();
+                },
+                this);
+            _applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(state =>
+                {
+                    ((ApplianceConsoleLifetime)state).OnApplicationStopping();
+                },
+                this);
+        }
+
+
+        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+        Console.CancelKeyPress += OnCancelKeyPress;
+
+        // Console applications start immediately.
+        return Task.CompletedTask;
+    }
+
+    private void OnApplicationStarted()
+    {
+
+        var logger = GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+            logger.Info("Application started. Press Ctrl+C to shut down.");
+            logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
+            logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
+
+        }
+        finally
+        {
+            logger.LeaveMethod();
+        }
+            
+    }
+
+    private void OnApplicationStopping()
+    {
+        var logger = GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+            logger.Info("Application is shutting down...");
+
+        }
+        finally
+        {
+            logger.LeaveMethod();
         }
 
     }
 
 
-    /// <summary>
-    /// Listens for Ctrl+C or SIGTERM and initiates shutdown.
-    /// </summary>
-    public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
+    private void OnProcessExit(object sender, EventArgs e)
     {
 
-        private readonly ManualResetEvent _shutdownBlock = new ManualResetEvent(false);
-        private CancellationTokenRegistration _applicationStartedRegistration;
-        private CancellationTokenRegistration _applicationStoppingRegistration;
+        var logger = GetLogger();
 
-        public ApplianceConsoleLifetime( IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions )
+        try
         {
 
-            Options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            ApplicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
-            HostOptions = hostOptions?.Value ?? throw new ArgumentNullException(nameof(hostOptions));
-
-        }
+            logger.EnterMethod();
 
 
-        private ConsoleLifetimeOptions Options { get; }
-
-        private IHostEnvironment Environment { get; }
-
-        private IHostApplicationLifetime ApplicationLifetime { get; }
-
-        private HostOptions HostOptions { get; }
-
-        private ILogger GetLogger() => WatchFactoryLocator.Factory.GetLogger<ApplianceConsoleLifetime>();
-
-        public Task WaitForStartAsync(CancellationToken cancellationToken)
-        {
-            if (!Options.SuppressStatusMessages)
+            ApplicationLifetime.StopApplication();
+            if (!_shutdownBlock.WaitOne(HostOptions.ShutdownTimeout))
             {
-                _applicationStartedRegistration = ApplicationLifetime.ApplicationStarted.Register(state =>
-                {
-                    ((ApplianceConsoleLifetime)state).OnApplicationStarted();
-                },
-                this);
-                _applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(state =>
-                {
-                    ((ApplianceConsoleLifetime)state).OnApplicationStopping();
-                },
-                this);
+                logger.Info("Waiting for the host to be disposed. Ensure all 'IHost' instances are wrapped in 'using' blocks.");
             }
+            _shutdownBlock.WaitOne();
+            System.Environment.ExitCode = 0;
 
-
-            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-            Console.CancelKeyPress += OnCancelKeyPress;
-
-            // Console applications start immediately.
-            return Task.CompletedTask;
         }
-
-        private void OnApplicationStarted()
+        finally
         {
-
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.Info("Application started. Press Ctrl+C to shut down.");
-                logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
-                logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-            
-        }
-
-        private void OnApplicationStopping()
-        {
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.Info("Application is shutting down...");
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
+            logger.LeaveMethod();
         }
 
 
-        private void OnProcessExit(object sender, EventArgs e)
-        {
+    }
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                ApplicationLifetime.StopApplication();
-                if (!_shutdownBlock.WaitOne(HostOptions.ShutdownTimeout))
-                {
-                    logger.Info("Waiting for the host to be disposed. Ensure all 'IHost' instances are wrapped in 'using' blocks.");
-                }
-                _shutdownBlock.WaitOne();
-                System.Environment.ExitCode = 0;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
-        }
-
-        private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            e.Cancel = true;
-        }
+    private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+    {
+        e.Cancel = true;
+    }
 
 
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            // There's nothing to do here
-            return Task.CompletedTask;
-        }
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        // There's nothing to do here
+        return Task.CompletedTask;
+    }
 
-        public void Dispose()
-        {
+    public void Dispose()
+    {
 
-            _shutdownBlock.Set();
+        _shutdownBlock.Set();
 
-            AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
-            Console.CancelKeyPress -= OnCancelKeyPress;
+        AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+        Console.CancelKeyPress -= OnCancelKeyPress;
 
-            _applicationStartedRegistration.Dispose();
-            _applicationStoppingRegistration.Dispose();
-
-        }
+        _applicationStartedRegistration.Dispose();
+        _applicationStoppingRegistration.Dispose();
 
     }
 
