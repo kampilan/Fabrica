@@ -197,67 +197,83 @@ public static class OneWebApplicationExtensions
 
         maker.Build();
 
+        builder.Host.ConfigureLogging(lb =>
+        {
+            lb.ClearProviders();
+            lb.AddProvider(new LoggerProvider());
+            lb.SetMinimumLevel(LogLevel.Trace);
 
-        var bootstrap = configuration.Get<TModule>();
+        });
 
-        await bootstrap.OnConfigured();
 
 
         // *****************************************************************
+        var bootstrap = configuration.Get<TModule>();
+        bootstrap.Configuration = configuration;
 
+        
+        await bootstrap.OnConfigured();
+
+
+
+        // *****************************************************************
+        builder.Host.ConfigureServices(s =>
+        {
+
+            s.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>();
+
+            bootstrap.ConfigureServices(s);
+
+            s.AddHostedService<TService>();
+
+        });
+
+
+
+        // *****************************************************************
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
-            {
+        {
 
-                cb.RegisterInstance(configuration)
-                    .As<IConfiguration>()
-                    .SingleInstance();
+            cb.RegisterInstance(configuration)
+                .As<IConfiguration>()
+                .SingleInstance();
 
-                cb.Register(_ =>
-                    {
+            cb.Register(_ =>
+                {
 
-                        var comp = new FileSignalController(FileSignalController.OwnerType.Appliance);
-                        return comp;
+                    var comp = new FileSignalController(FileSignalController.OwnerType.Appliance);
+                    return comp;
 
-                    })
-                    .As<ISignalController>()
-                    .As<IRequiresStart>()
-                    .SingleInstance()
-                    .AutoActivate();
+                })
+                .As<ISignalController>()
+                .As<IRequiresStart>()
+                .SingleInstance()
+                .AutoActivate();
 
-                cb.Register(c =>
-                    {
+            cb.Register(c =>
+                {
 
-                        var hal = c.Resolve<IHostApplicationLifetime>();
-                        var sc = c.Resolve<ISignalController>();
+                    var hal = c.Resolve<IHostApplicationLifetime>();
+                    var sc = c.Resolve<ISignalController>();
 
-                        var comp = new ApplianceLifetime(hal, sc);
+                    var comp = new ApplianceLifetime(hal, sc);
 
-                        return comp;
+                    return comp;
 
-                    })
-                    .AsSelf()
-                    .As<IRequiresStart>()
-                    .SingleInstance()
-                    .AutoActivate();
-
-                bootstrap.ConfigureContainer(cb);
+                })
+                .AsSelf()
+                .As<IRequiresStart>()
+                .SingleInstance()
+                .AutoActivate();
 
 
-            }))
-            .ConfigureLogging(lb =>
-            {
-                lb.ClearProviders();
-                lb.AddProvider(new LoggerProvider());
-                lb.SetMinimumLevel(LogLevel.Trace);
-            })
-            .ConfigureServices(s =>
-            {
+            cb.AddCorrelation();
 
-                s.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>();
-                bootstrap.ConfigureServices(s);
-                s.AddHostedService<TService>();
 
-            });
+            bootstrap.ConfigureContainer(cb);
+
+
+        }));
 
         var app = builder.Build();
         bootstrap.ConfigureWebApp(app);
