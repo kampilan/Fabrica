@@ -35,9 +35,9 @@ public abstract class BootstrapModule
     {
     }
 
-    public virtual void ConfigureWebApp(IApplicationBuilder builder)
+    public virtual void ConfigureWebApp( IApplicationBuilder app )
     {
-    }
 
+    }
 
 }
