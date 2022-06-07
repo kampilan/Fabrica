@@ -203,10 +203,16 @@ public static class OneWebApplicationExtensions
         });
 
 
+        using var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Bootstrap");
+
+
 
         // *****************************************************************
+        logger.Debug("Attempting to build BootstrapModule");
         var bootstrap = configuration.Get<TModule>();
         bootstrap.Configuration = configuration;
+
+        logger.LogObject(nameof(bootstrap), bootstrap);
 
         
         await bootstrap.OnConfigured();
@@ -214,6 +220,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure services");
         builder.Host.ConfigureServices(s =>
         {
 
@@ -228,6 +235,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure Autofac container");
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
 
@@ -275,6 +283,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure Kestrel");
         builder.WebHost.UseKestrel(op =>
         {
 
@@ -288,10 +297,28 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure web app");
         var app = builder.Build();
 
         bootstrap.ConfigureWebApp(app);
 
+        var status = new
+        {
+            Environment = app.Environment.EnvironmentName,
+            WebPootPath = app.Environment.WebRootPath,
+            ContentPath = app.Environment.ContentRootPath,
+            Urls        = string.Join(',', app.Urls),
+            bootstrap.ListeningPort,
+            bootstrap.AllowAnyIp,
+            bootstrap.MissionName,
+            bootstrap.RunningAsMission
+        };
+
+        logger.LogObject(nameof(status), status);
+
+
+
+        // *****************************************************************
         return app;
 
     }
@@ -333,8 +360,6 @@ public static class OneWebApplicationExtensions
         var switches = maker.UseLocalSwitchSource();
         switchBuilder(switches);
 
-
-
         maker.Build();
 
         builder.Host.ConfigureLogging(lb =>
@@ -346,8 +371,12 @@ public static class OneWebApplicationExtensions
         });
 
 
+        using var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Bootstrap");
+
+
 
         // *****************************************************************
+        logger.Debug("Attempting to build BootstrapModule");
         var bootstrap = configuration.Get<TModule>();
         bootstrap.Configuration = configuration;
 
@@ -357,6 +386,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure services");
         builder.Host.ConfigureServices(s =>
         {
 
@@ -371,6 +401,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure Autofac conatainer");
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
 
@@ -418,6 +449,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure Kestrel");
         builder.WebHost.UseKestrel(op =>
         {
 
@@ -431,9 +463,27 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
+        logger.Debug("Attempting to configure web app");
         var app = builder.Build();
         bootstrap.ConfigureWebApp(app);
 
+        var status = new
+        {
+            Environment = app.Environment.EnvironmentName,
+            WebPootPath = app.Environment.WebRootPath,
+            ContentPath = app.Environment.ContentRootPath,
+            Urls = string.Join(',', app.Urls),
+            bootstrap.ListeningPort,
+            bootstrap.AllowAnyIp,
+            bootstrap.MissionName,
+            bootstrap.RunningAsMission
+        };
+
+        logger.LogObject(nameof(status), status);
+
+
+
+        // *****************************************************************
         return app;
 
 
