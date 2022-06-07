@@ -145,9 +145,7 @@ public static class OneAppliance
         var wao = new WebApplicationOptions
         {
             ContentRootPath = bootstrap.ApplianceRoot,
-            WebRootPath     = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot",
-            ApplicationName = bootstrap.ApplianceName,
-            EnvironmentName = "Production"
+            WebRootPath     = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot"
         };
 
         var builder = WebApplication.CreateBuilder(wao);
