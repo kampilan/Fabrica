@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -223,6 +224,7 @@ public static class OneWebApplicationExtensions
 
         outerLogger.LogObject(nameof(bootstrap), bootstrap);
 
+
         try
         {
             await bootstrap.OnConfigured();
@@ -328,6 +330,14 @@ public static class OneWebApplicationExtensions
                 op.ListenLocalhost(bootstrap.ListeningPort);
 
         });
+
+
+
+        // *****************************************************************
+        outerLogger.Debug("Attempting to set ContentRoot" );
+        var contentRoot = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot";
+        outerLogger.Inspect(nameof(contentRoot), contentRoot);
+        builder.Host.UseContentRoot(contentRoot);
 
 
 
