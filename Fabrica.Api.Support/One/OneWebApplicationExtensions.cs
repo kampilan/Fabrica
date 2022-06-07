@@ -338,15 +338,22 @@ public static class OneWebApplicationExtensions
         try
         {
 
-            var contentRoot = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot";
-            outerLogger.Inspect(nameof(contentRoot), contentRoot);
+            // *****************************************************************
+            outerLogger.Debug("Attempting to set ContentRootPath on Environment");
+            builder.Environment.ContentRootPath = bootstrap.ApplianceRoot;
 
-            builder.Host.UseContentRoot(contentRoot);
+
+            // *****************************************************************
+            outerLogger.Debug("Attempting to set WebRootPath on Environment");
+            var webRoot = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot";
+            outerLogger.Inspect(nameof(webRoot), webRoot);
+
+            builder.Environment.WebRootPath = webRoot;
 
         }
         catch (Exception cause)
         {
-            outerLogger.ErrorWithContext(cause, bootstrap, "Bootstrap set ContentRoot failed.");
+            outerLogger.ErrorWithContext(cause, bootstrap, "Bootstrap set root paths failed.");
             throw;
         }
 
