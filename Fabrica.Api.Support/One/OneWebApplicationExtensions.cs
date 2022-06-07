@@ -17,6 +17,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ILogger = Fabrica.Watch.ILogger;
+
+// ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Api.Support.One;
 
@@ -28,7 +32,7 @@ public static class OneWebApplicationExtensions
     {
 
         // *****************************************************************
-        builder.Host.ConfigureServices((context, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
+        builder.Host.ConfigureServices((_, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
 
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
@@ -77,15 +81,15 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
-        var cb = new ConfigurationBuilder();
+        var cfgb = new ConfigurationBuilder();
 
-        cb
+        cfgb
             .AddYamlFile("configuration.yml", true)
             .AddJsonFile("environment.json", true)
             .AddJsonFile("mission.json", true);
 
 
-        var configuration = cb.Build();
+        var configuration = cfgb.Build();
 
         builder.Configuration.AddConfiguration(configuration);
 
@@ -102,7 +106,7 @@ public static class OneWebApplicationExtensions
         maker.Build();
 
         // *****************************************************************
-        builder.Host.ConfigureServices((context, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
+        builder.Host.ConfigureServices((_, collection) => collection.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>());
 
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
@@ -168,17 +172,22 @@ public static class OneWebApplicationExtensions
     public static async Task<WebApplication> BootstrapAppliance<TModule,TService>(this WebApplicationBuilder builder) where TModule : BootstrapModule where TService: class, IHostedService
     {
 
+        static ILogger GetLogger()
+        {
+            return WatchFactoryLocator.Factory.GetLogger("Fabrica.Bootstrap");
+        }
+
 
         // *****************************************************************
-        var cb = new ConfigurationBuilder();
+        var cfgb = new ConfigurationBuilder();
 
-        cb
+        cfgb
             .AddYamlFile("configuration.yml", true)
             .AddJsonFile("environment.json", true)
             .AddJsonFile("mission.json", true);
 
 
-        var configuration = cb.Build();
+        var configuration = cfgb.Build();
 
         builder.Configuration.AddConfiguration(configuration);
 
@@ -203,30 +212,46 @@ public static class OneWebApplicationExtensions
         });
 
 
-        using var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Bootstrap");
+        using var outerLogger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Bootstrap");
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to build BootstrapModule");
+        outerLogger.Debug("Attempting to build BootstrapModule");
         var bootstrap = configuration.Get<TModule>();
         bootstrap.Configuration = configuration;
 
-        logger.LogObject(nameof(bootstrap), bootstrap);
+        outerLogger.LogObject(nameof(bootstrap), bootstrap);
 
-        
-        await bootstrap.OnConfigured();
-
+        try
+        {
+            await bootstrap.OnConfigured();
+        }
+        catch (Exception cause)
+        {
+            outerLogger.ErrorWithContext(cause, bootstrap, "Bootstrap OnConfigure failed.");
+            throw;
+        }
 
 
         // *****************************************************************
-        logger.Debug("Attempting to configure services");
+        outerLogger.Debug("Attempting to configure services");
         builder.Host.ConfigureServices(s =>
         {
 
             s.AddSingleton<IHostLifetime, ApplianceConsoleLifetime>();
 
-            bootstrap.ConfigureServices(s);
+            using var logger = GetLogger();
+
+            try
+            {
+                bootstrap.ConfigureServices(s);
+            }
+            catch (Exception cause)
+            {
+                logger.ErrorWithContext(cause, bootstrap, "Bootstrap ConfigureServices failed.");
+                throw;
+            }
 
             s.AddHostedService<TService>();
 
@@ -235,7 +260,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
-        logger.Debug("Attempting to configure Autofac container");
+        outerLogger.Debug("Attempting to configure Autofac container");
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
 
@@ -275,7 +300,17 @@ public static class OneWebApplicationExtensions
             cb.AddCorrelation();
 
 
-            bootstrap.ConfigureContainer(cb);
+            using var logger = GetLogger();
+
+            try
+            {
+                bootstrap.ConfigureContainer(cb);
+            }
+            catch (Exception cause)
+            {
+                logger.ErrorWithContext(cause, bootstrap, "Bootstrap ConfigureContainer failed.");
+                throw;
+            }
 
 
         }));
@@ -283,7 +318,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
-        logger.Debug("Attempting to configure Kestrel");
+        outerLogger.Debug("Attempting to configure Kestrel");
         builder.WebHost.UseKestrel(op =>
         {
 
@@ -297,24 +332,29 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
-        logger.Debug("Attempting to configure web app");
+        outerLogger.Debug("Attempting to configure web app");
         var app = builder.Build();
 
-        bootstrap.ConfigureWebApp(app);
+        try
+        {
+            bootstrap.ConfigureWebApp(app);
+        }
+        catch (Exception cause)
+        {
+            outerLogger.ErrorWithContext(cause, bootstrap, "Bootstrap ConfigureWebApp failed.");
+            throw;
+        }
 
-        var status = new
+
+        var appState = new
         {
             Environment = app.Environment.EnvironmentName,
             WebPootPath = app.Environment.WebRootPath,
             ContentPath = app.Environment.ContentRootPath,
-            Urls        = string.Join(',', app.Urls),
-            bootstrap.ListeningPort,
-            bootstrap.AllowAnyIp,
-            bootstrap.MissionName,
-            bootstrap.RunningAsMission
+            Urls        = string.Join(',', app.Urls)
         };
 
-        logger.LogObject(nameof(status), status);
+        outerLogger.LogObject(nameof(appState), appState);
 
 
 
@@ -337,14 +377,14 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
-        var cb = new ConfigurationBuilder();
+        var cfgb = new ConfigurationBuilder();
 
-        cb.AddYamlFile("configuration.yml", true);
+        cfgb.AddYamlFile("configuration.yml", true);
 
         if (!string.IsNullOrWhiteSpace(localConfigFile))
-            cb.AddYamlFile(localConfigFile, true);
+            cfgb.AddYamlFile(localConfigFile, true);
 
-        var configuration = cb.Build();
+        var configuration = cfgb.Build();
 
         builder.Configuration.AddConfiguration(configuration);
 
@@ -353,8 +393,7 @@ public static class OneWebApplicationExtensions
         // *****************************************************************
         var maker = new WatchFactoryBuilder();
 
-        if (switchBuilder is null)
-            switchBuilder = s => s.WhenNotMatched(Level.Debug, Color.Azure);
+        switchBuilder ??= s => s.WhenNotMatched(Level.Debug, Color.Azure);
 
         maker.UseRealtime();
         var switches = maker.UseLocalSwitchSource();
@@ -401,7 +440,7 @@ public static class OneWebApplicationExtensions
 
 
         // *****************************************************************
-        logger.Debug("Attempting to configure Autofac conatainer");
+        logger.Debug("Attempting to configure Autofac container");
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
         {
 
