@@ -267,26 +267,6 @@ public static class OneAppliance
 
 
         // *****************************************************************
-        outerLogger.Debug("Attempting to set ContentRoot" );
-        try
-        {
-
-            outerLogger.Debug("Attempting to set WebRootPath on WebHost");
-            var webRoot = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot";
-            outerLogger.Inspect(nameof(webRoot), webRoot);
-
-            builder.WebHost.UseWebRoot(webRoot);
-
-        }
-        catch (Exception cause)
-        {
-            outerLogger.ErrorWithContext(cause, bootstrap, "Bootstrap set web root failed.");
-            throw;
-        }
-
-
-
-        // *****************************************************************
         outerLogger.Debug("Attempting to configure web app");
         var app = builder.Build();
 
