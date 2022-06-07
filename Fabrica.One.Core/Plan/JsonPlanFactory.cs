@@ -240,18 +240,19 @@ namespace Fabrica.One.Plan
                     unit.RepositoryLocation   = $"{rv}{Path.DirectorySeparatorChar}{unit.Name}-{unit.Build}.zip";
                     unit.InstallationLocation = $"{InstallationRoot}{Path.DirectorySeparatorChar}{unit.Alias}{Path.DirectorySeparatorChar}{unit.Uid}";
 
-                    unit.UnitConfigLocation = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}environment.json";
-                    unit.MissionConfigLocation     = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}mission.json";
+                    unit.UnitConfigLocation    = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}environment.json";
+                    unit.MissionConfigLocation = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}mission.json";
 
                     unit.ExecutionCommand   = "dotnet";
                     unit.ExecutionArguments = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}{unit.Assembly}.dll";
 
                     unit.MissionConfiguration["MissionName"]     = plan.Name;
                     unit.MissionConfiguration["Environment"]     = plan.Environment;
-                    unit.MissionConfiguration["TokenSigningKey"] = tokenSigningKey;
-                    unit.MissionConfiguration["ApplianceId"]     = unit.Uid;
                     unit.MissionConfiguration["ApplianceName"]   = unit.Name;
                     unit.MissionConfiguration["ApplianceBuild"]  = unit.Build;
+                    unit.MissionConfiguration["ApplianceId"]     = unit.Uid;
+                    unit.MissionConfiguration["ApplianceRoot"]   = unit.InstallationLocation;
+                    unit.MissionConfiguration["TokenSigningKey"] = tokenSigningKey;
 
                 }
 

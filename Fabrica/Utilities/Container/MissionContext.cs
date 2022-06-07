@@ -32,13 +32,13 @@ namespace Fabrica.Utilities.Container
 
 
         public string MissionName { get; set; } = "";
+        public string Environment { get; set; } = "";
+
 
         public string ApplianceName { get; set; } = "";
         public string ApplianceBuild { get; set; } = "";
-
-        public string Environment { get; set; } = "";
-
-        public int ListeningPort { get; set; }
+        public string ApplianceId { get; set; } = "";
+        public string ApplianceRoot { get; set; } = "";
 
 
     }

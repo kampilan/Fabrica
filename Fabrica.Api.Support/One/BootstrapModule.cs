@@ -10,15 +10,21 @@ public abstract class BootstrapModule
 {
 
 
-    public string Environment { get; set; } = "Development";
-
     public bool AllowAnyIp { get; set; } = false;
     public int ListeningPort { get; set; } = 8080;
 
+    public string Environment { get; set; } = "Development";
     public string MissionName { get; set; } = "";
     public bool RunningAsMission => !string.IsNullOrWhiteSpace(MissionName);
 
+    public string ApplianceId { get; set; } = "";
+    public string ApplianceName { get; set; } = "";
+    public string ApplianceBuild { get; set; } = "";
+    public string ApplianceRoot { get; set; } = "";
+
     public bool RequiresAuthentication { get; set; } = true;
+    public string TokenSigningKey { get; set; } = "";
+
 
     public IConfiguration Configuration { get; set; }
 
