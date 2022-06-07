@@ -335,9 +335,20 @@ public static class OneWebApplicationExtensions
 
         // *****************************************************************
         outerLogger.Debug("Attempting to set ContentRoot" );
-        var contentRoot = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot";
-        outerLogger.Inspect(nameof(contentRoot), contentRoot);
-        builder.Host.UseContentRoot(contentRoot);
+        try
+        {
+
+            var contentRoot = $"{bootstrap.ApplianceRoot}{Path.DirectorySeparatorChar}wwwroot";
+            outerLogger.Inspect(nameof(contentRoot), contentRoot);
+
+            builder.Host.UseContentRoot(contentRoot);
+
+        }
+        catch (Exception cause)
+        {
+            outerLogger.ErrorWithContext(cause, bootstrap, "Bootstrap set ContentRoot failed.");
+            throw;
+        }
 
 
 
