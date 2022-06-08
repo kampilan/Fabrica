@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedMember.Global
+// ReSharper disable ConvertToUsingDeclaration
 
 namespace Fabrica.Api.Support.One;
 
@@ -79,57 +80,60 @@ public static class OneAppliance
     public static async Task<WebApplication> Bootstrap<TModule,TService>( string localConfigFile=null ) where TModule : BootstrapModule where TService: InitService
     {
 
-        using var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.OneAppliance.Bootstrap");
-
+        WebApplication app;
         try
         {
 
+            using ( var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.OneAppliance.Bootstrap") )
+            {
+                // *****************************************************************
+                logger.Debug("Loading Configuration");
+                var cfgb = new ConfigurationBuilder();
 
-            // *****************************************************************
-            logger.Debug("Loading Configuration");
-            var cfgb = new ConfigurationBuilder();
+                cfgb
+                    .AddYamlFile("configuration.yml", true)
+                    .AddJsonFile("environment.json", true)
+                    .AddJsonFile("mission.json", true);
 
-            cfgb
-                .AddYamlFile("configuration.yml", true)
-                .AddJsonFile("environment.json", true)
-                .AddJsonFile("mission.json", true);
+                if (!string.IsNullOrWhiteSpace(localConfigFile))
+                    cfgb.AddYamlFile(localConfigFile, true);
 
-            if (!string.IsNullOrWhiteSpace(localConfigFile))
-                cfgb.AddYamlFile(localConfigFile, true);
-
-            var configuration = cfgb.Build();
-
-
-
-            // *****************************************************************
-            logger.Debug("Building BootstrapModule");
-            var bootstrap = configuration.Get<TModule>();
-            bootstrap.Configuration = configuration;
+                var configuration = cfgb.Build();
 
 
 
-            // *****************************************************************
-            logger.Debug("Configuring Watch");
-            bootstrap.ConfigureWatch();
+                // *****************************************************************
+                logger.Debug("Building BootstrapModule");
+                var bootstrap = configuration.Get<TModule>();
+                bootstrap.Configuration = configuration;
 
 
 
-            // *****************************************************************
-            logger.Debug("Bootstrapping Appliance");
-            var app = await bootstrap.Boot<TService>();
+                // *****************************************************************
+                logger.Debug("Configuring Watch");
+                bootstrap.ConfigureWatch();
 
 
 
-            // *****************************************************************
-            return app;
+                // *****************************************************************
+                logger.Debug("Bootstrapping Appliance");
+                app = await bootstrap.Boot<TService>();
+
+            }
 
 
         }
         catch (Exception cause)
         {
-            logger.Error(cause, "Bootstrap failed");
+            var el = WatchFactoryLocator.Factory.GetLogger("Fabrica.OneAppliance.Bootstrap");
+            el.Error(cause, "Bootstrap failed");
             throw;
         }
+
+
+        // *****************************************************************
+        return app;
+
 
     }
 
