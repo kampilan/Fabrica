@@ -293,7 +293,17 @@ public abstract class BootstrapModule: CorrelatedObject
 
     }
 
-    public virtual void ConfigureWebApp( IApplicationBuilder app )
+
+    public virtual void ConfigureWebApp(IApplicationBuilder app)
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Info("Base ConfigureWebApp does nothing");
+
+    }
+
+    public virtual void ConfigureWebApp( WebApplication app )
     {
 
         using var logger = EnterMethod();
