@@ -96,7 +96,7 @@ namespace Fabrica.Proxy.Appliance
                     .WhenNotMatched(Level.Warning, Color.Azure);
             });
 #else
-        base.ConfigureWatch()
+            base.ConfigureWatch();
 #endif
 
         }

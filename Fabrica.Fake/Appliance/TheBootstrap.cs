@@ -60,7 +60,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
                 .WhenNotMatched(Level.Warning, Color.Azure);
         });
 #else
-        base.ConfigureWatch()
+        base.ConfigureWatch();
 #endif
 
     }

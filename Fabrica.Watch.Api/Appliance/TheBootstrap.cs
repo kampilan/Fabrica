@@ -34,7 +34,7 @@ public class TheBootstrap: BaseBootstrap
                 .WhenNotMatched(Level.Warning, Color.Azure);
         });
 #else
-        base.ConfigureWatch()
+        base.ConfigureWatch();
 #endif
 
     }

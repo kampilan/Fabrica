@@ -3,7 +3,9 @@ using System.Drawing;
 using System.Net.Http;
 using Amazon.SQS;
 using Autofac;
+using Fabrica.Api.Support.Conventions;
 using Fabrica.Api.Support.Filters;
+using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
@@ -67,7 +69,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule, IOn
                 .WhenNotMatched(Level.Warning, Color.Azure);
         });
 #else
-        base.ConfigureWatch()
+        base.ConfigureWatch();
 #endif
 
     }
@@ -83,7 +85,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule, IOn
 #if DEBUG
 
 #else
-                app.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
+                builder.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
 #endif
                 builder.Filters.Add(typeof(ExceptionFilter));
                 builder.Filters.Add(typeof(ResultFilter));
