@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReSharper disable UnusedMember.Global
+
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,11 +20,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable UnusedMember.Global
-
 namespace Fabrica.Api.Support.One;
 
-public abstract class BootstrapModule: CorrelatedObject 
+public abstract class BaseBootstrap: CorrelatedObject 
 {
 
 
@@ -52,7 +52,7 @@ public abstract class BootstrapModule: CorrelatedObject
     public IConfiguration Configuration { get; set; }
 
 
-    protected BootstrapModule(): base(new Correlation())
+    protected BaseBootstrap(): base(new Correlation())
     {
     }
 
@@ -103,7 +103,7 @@ public abstract class BootstrapModule: CorrelatedObject
         logger.Debug("Attempting to call OnConfigure");
         await OnConfigured();
 
-        logger.LogObject("BootstrapModule", this);
+        logger.LogObject("BaseBootstrap", this);
 
 
 
@@ -290,16 +290,6 @@ public abstract class BootstrapModule: CorrelatedObject
         using var logger = EnterMethod();
 
         logger.Info("Base ConfigureContainer adds no services");
-
-    }
-
-
-    public virtual void ConfigureWebApp(IApplicationBuilder app)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base ConfigureWebApp does nothing");
 
     }
 

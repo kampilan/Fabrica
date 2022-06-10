@@ -1,4 +1,8 @@
-﻿using System;
+﻿// ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Global
+// ReSharper disable ConvertToUsingDeclaration
+
+using System;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -11,13 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-// ReSharper disable IdentifierTypo
-// ReSharper disable UnusedMember.Global
-// ReSharper disable ConvertToUsingDeclaration
-
 namespace Fabrica.Api.Support.One;
 
-public static class OneAppliance
+public static class Appliance
 {
 
     public static WebApplicationBuilder AttachLifetime(this WebApplicationBuilder builder)
@@ -68,7 +68,7 @@ public static class OneAppliance
 
     }
 
-    public static async Task<WebApplication> Bootstrap<TModule>() where TModule : BootstrapModule
+    public static async Task<WebApplication> Bootstrap<TModule>() where TModule : BaseBootstrap
     {
 
         var app = await Bootstrap<TModule, InitService>();
@@ -77,14 +77,14 @@ public static class OneAppliance
 
     }    
 
-    public static async Task<WebApplication> Bootstrap<TModule,TService>( string localConfigFile=null ) where TModule : BootstrapModule where TService: InitService
+    public static async Task<WebApplication> Bootstrap<TModule,TService>( string localConfigFile=null ) where TModule : BaseBootstrap where TService: InitService
     {
 
         WebApplication app;
         try
         {
 
-            using ( var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.OneAppliance.Bootstrap") )
+            using ( var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Appliance.Bootstrap") )
             {
                 // *****************************************************************
                 logger.Debug("Loading Configuration");
@@ -103,7 +103,7 @@ public static class OneAppliance
 
 
                 // *****************************************************************
-                logger.Debug("Building BootstrapModule");
+                logger.Debug("Building BaseBootstrap");
                 var bootstrap = configuration.Get<TModule>();
                 bootstrap.Configuration = configuration;
 
@@ -125,7 +125,7 @@ public static class OneAppliance
         }
         catch (Exception cause)
         {
-            var el = WatchFactoryLocator.Factory.GetLogger("Fabrica.OneAppliance.Bootstrap");
+            var el = WatchFactoryLocator.Factory.GetLogger("Fabrica.Appliance.Bootstrap");
             el.Error(cause, "Bootstrap failed");
             throw;
         }

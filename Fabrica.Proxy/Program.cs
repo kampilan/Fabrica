@@ -1,29 +1,12 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+using Fabrica.Api.Support.One;
 using Fabrica.Proxy.Appliance;
 
-namespace Fabrica.Proxy
-{
+Console.Clear();
+Console.WriteLine("Fabrica Proxy Appliance");
+Console.WriteLine("Pond Hawk Technologies Inc. (c) 2022");
+Console.WriteLine("");
 
-    class Program
-    {
+var app = await Appliance.Bootstrap<TheBootstrap>();
 
-        static async Task Main(string[] args)
-        {
-
-            var bootstrap = new TheBootstrap();
-
-            Console.WriteLine("Fabrica Proxy Appliance");
-            Console.WriteLine("The Kampilan Group Inc. (c) 2022");
-            Console.WriteLine("");
-
-            await bootstrap.Run();
-
-        }
-
-
-    }
-
-
-}
+app.Run();

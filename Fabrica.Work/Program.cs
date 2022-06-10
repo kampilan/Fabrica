@@ -1,38 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+using Fabrica.Api.Support.One;
 using Fabrica.Work.Appliance;
 
-namespace Fabrica.Work
-{
 
+Console.Clear();
+Console.WriteLine("Fabrica Work Appliance");
+Console.WriteLine("Pond Hawk Technologies Inc. (c) 2022");
+Console.WriteLine("");
 
-    
-    class Program
-    {
+var app = await Appliance.Bootstrap<TheBootstrap>();
 
+app.Run();
 
-        static async Task Main(string[] args)
-        {
-
-            var bootstrap = new TheBootstrap();
-
-            // *****************************************************************
-            var headless = Console.OpenStandardOutput() == Stream.Null;
-            if (!headless)
-            {
-
-                Console.Clear();
-                Console.WriteLine("Fabrica Work Appliance");
-                Console.WriteLine("The Kampilan Group Inc. (c) 2021");
-                Console.WriteLine("");
-
-            }
-
-            await bootstrap.Run();
-
-        }
-
-    }
-
-}

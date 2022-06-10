@@ -1,39 +1,13 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading.Tasks;
+using Fabrica.Api.Support.One;
 using Fabrica.Watch.Api.Appliance;
 
-namespace Fabrica.Watch.Api
-{
+Console.Clear();
+Console.WriteLine("Fabrica Watch API Appliance");
+Console.WriteLine("Pond Hawk Technologies Inc. (c) 2022");
+Console.WriteLine("");
 
-    
-    [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-    class Program
-    {
+var app = await Appliance.Bootstrap<TheBootstrap>();
 
-        static async Task Main(string[] args)
-        {
+app.Run();
 
-            var bootstrap = new TheBootstrap();
-
-            // *****************************************************************
-            var headless = Console.OpenStandardOutput() == Stream.Null;
-            if (!headless)
-            {
-
-                Console.Clear();
-                Console.WriteLine("Fabrica Watch API Appliance");
-                Console.WriteLine("The Kampilan Group Inc. (c) 2021");
-                Console.WriteLine("");
-
-            }
-
-            await bootstrap.Run();
-
-        }
-
-    }
-
-
-}
