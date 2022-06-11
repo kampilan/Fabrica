@@ -7,6 +7,7 @@ using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -20,6 +21,8 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
 
     [HttpGet]
+    [SwaggerOperation(Summary = "Query", Description = "Query using RQL")]
+    [SwaggerResponse(200, "Success")]
     public virtual async Task<IActionResult> Handle()
     {
 
