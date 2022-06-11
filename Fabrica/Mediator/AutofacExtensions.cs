@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using Autofac;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
@@ -30,9 +31,13 @@ namespace Fabrica.Mediator
 
             if( assemblies.Length > 0)
             {
-                builder.RegisterAssemblyTypes(assemblies)
+
+                var types = assemblies.SelectMany(a => a.GetTypes()).Where(t => typeof(IMediatorHandler).IsAssignableFrom(t));
+               
+                builder.RegisterTypes(types.ToArray())
                     .AsImplementedInterfaces()
                     .InstancePerDependency();
+
             }
 
 
