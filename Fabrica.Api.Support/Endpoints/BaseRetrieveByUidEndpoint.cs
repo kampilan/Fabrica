@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +17,7 @@ public abstract class BaseRetrieveByUidEndpoint<TEntity>: BaseEndpoint where TEn
 
     [HttpGet("{uid}")]
     [SwaggerOperation(Summary = "Retrieve", Description = "Retrieve by Uid")]
-    [SwaggerResponse(200, "Success")]
-    public virtual async Task<IActionResult> Handle( [FromRoute] string uid )
+    public virtual async Task<IActionResult> Handle([FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid )
     {
 
         using var logger = EnterMethod();

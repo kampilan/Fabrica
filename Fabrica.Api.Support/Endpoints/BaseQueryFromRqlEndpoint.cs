@@ -22,8 +22,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
     [HttpGet]
     [SwaggerOperation(Summary = "Query", Description = "Query using RQL")]
-    [SwaggerResponse(200, "Success")]
-    public virtual async Task<IActionResult> Handle()
+    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql )
     {
 
         using var logger = EnterMethod();
@@ -44,7 +43,6 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
                 rqls.AddRange(Request.Query[key].ToArray());
 
         }
-
 
 
         // *****************************************************************
