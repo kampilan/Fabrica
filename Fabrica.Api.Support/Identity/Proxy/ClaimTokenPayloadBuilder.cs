@@ -20,6 +20,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
                 ["tenant"]                  = nameof(ClaimSetModel.Tenant),
                 [ClaimTypes.NameIdentifier] = nameof(ClaimSetModel.Subject),
                 [ClaimTypes.Role]           = nameof(ClaimSetModel.Roles),
+                [ClaimTypes.Name]           = nameof(ClaimSetModel.Name),
                 ["name"]                    = nameof(ClaimSetModel.Name),
                 ["picture"]                 = nameof(ClaimSetModel.Picture),
                 [ClaimTypes.Email]          = nameof(ClaimSetModel.Email)

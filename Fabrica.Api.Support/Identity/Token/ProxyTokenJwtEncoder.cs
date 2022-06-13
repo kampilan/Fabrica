@@ -56,6 +56,8 @@ public class ProxyTokenJwtEncoder: IProxyTokenEncoder
 
         claims.AuthenticationType = authType;
 
+        logger.LogObject(nameof(claims), claims);
+
         return claims;
 
     }

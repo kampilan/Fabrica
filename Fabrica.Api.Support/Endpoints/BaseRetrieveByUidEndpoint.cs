@@ -9,7 +9,6 @@ namespace Fabrica.Api.Support.Endpoints;
 public abstract class BaseRetrieveByUidEndpoint<TEntity>: BaseEndpoint where TEntity: class, IModel
 {
 
-
     protected BaseRetrieveByUidEndpoint( IEndpointComponent component) : base( component )
     {
     }
