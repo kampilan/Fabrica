@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace Fabrica.Identity;
@@ -9,10 +10,17 @@ public class ClaimSetModel: IClaimSet
 {
 
     [JsonProperty("aty")]
-    public string AuthenticationType { get; set; }
+    [DefaultValue("")]
+    public string AuthenticationType { get; set; } = "";
+
+    [JsonProperty("flw")]
+    [DefaultValue("")]
+    public string AuthenticationFlow { get; set; } = "";
+
 
     [JsonProperty("exp")]
-    public long? Expiration { get; set; }
+    [DefaultValue(0L)]
+    public long? Expiration { get; set; } = 0;
     public void SetExpiration(TimeSpan ttl)
     {
         var exp = DateTime.UtcNow + ttl;
@@ -21,19 +29,24 @@ public class ClaimSetModel: IClaimSet
     }
 
     [JsonProperty("ten")]
-    public string Tenant { get; set; }
+    [DefaultValue("")]
+    public string Tenant { get; set; } = "";
 
     [JsonProperty("sub")]
-    public string Subject { get; set; }
+    [DefaultValue("")]
+    public string Subject { get; set; } = "";
 
     [JsonProperty("nam")]
-    public string Name { get; set; }
+    [DefaultValue("")]
+    public string Name { get; set; } = "";
 
     [JsonProperty("eml")]
-    public string Email { get; set; }
+    [DefaultValue("")]
+    public string Email { get; set; } = "";
 
     [JsonProperty("pic")]
-    public string Picture { get; set; }
+    [DefaultValue("")]
+    public string Picture { get; set; } = "";
 
     public List<string> Roles { get; set; } = new ();
 

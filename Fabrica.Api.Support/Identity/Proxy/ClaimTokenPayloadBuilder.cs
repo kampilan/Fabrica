@@ -17,6 +17,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
 
             var mappings = new Dictionary<string, string>
             {
+                ["flow"]                    = nameof(ClaimSetModel.AuthenticationFlow),
                 ["tenant"]                  = nameof(ClaimSetModel.Tenant),
                 [ClaimTypes.NameIdentifier] = nameof(ClaimSetModel.Subject),
                 [ClaimTypes.Role]           = nameof(ClaimSetModel.Roles),
@@ -60,6 +61,9 @@ namespace Fabrica.Api.Support.Identity.Proxy
 
                     switch( mapped )
                     {
+                        case nameof(ClaimSetModel.AuthenticationFlow):
+                            payload.AuthenticationFlow = claim.Value;
+                            break;
                         case nameof(ClaimSetModel.Tenant):
                             payload.Tenant = claim.Value;
                             break;

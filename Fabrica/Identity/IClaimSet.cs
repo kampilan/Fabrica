@@ -10,6 +10,8 @@ namespace Fabrica.Identity
 
         string AuthenticationType { get; }
 
+        string AuthenticationFlow { get; }
+
         long? Expiration { get; }
 
         void SetExpiration(TimeSpan ttl);
