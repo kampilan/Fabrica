@@ -46,11 +46,9 @@ public class ClaimSetModel: IClaimSet
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Picture { get; set; }
 
-    [JsonIgnore]
+    [JsonPropertyName("rol")]
     public List<string> Roles { get; set; } = new ();
 
-    [JsonPropertyName("rol")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     IEnumerable<string> IClaimSet.Roles => Roles;
 
 
