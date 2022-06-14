@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Fabrica.Identity;
 
-[JsonObject(MemberSerialization.OptIn)]
 public class ClaimSetModel: IClaimSet
 {
 
-    [JsonProperty("aty")]
-    [DefaultValue("")]
-    public string AuthenticationType { get; set; } = "";
+    [JsonPropertyName("aty")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string AuthenticationType { get; set; }
 
-    [JsonProperty("flw")]
-    [DefaultValue("")]
-    public string AuthenticationFlow { get; set; } = "";
+    [JsonPropertyName("flw")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string AuthenticationFlow { get; set; }
 
 
-    [JsonProperty("exp")]
-    [DefaultValue(0L)]
-    public long? Expiration { get; set; } = 0;
+    [JsonPropertyName("exp")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public long? Expiration { get; set; }
     public void SetExpiration(TimeSpan ttl)
     {
         var exp = DateTime.UtcNow + ttl;
@@ -28,29 +26,31 @@ public class ClaimSetModel: IClaimSet
         Expiration = Convert.ToInt64((exp - epoch).TotalSeconds);
     }
 
-    [JsonProperty("ten")]
-    [DefaultValue("")]
-    public string Tenant { get; set; } = "";
+    [JsonPropertyName("ten")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string Tenant { get; set; }
 
-    [JsonProperty("sub")]
-    [DefaultValue("")]
-    public string Subject { get; set; } = "";
+    [JsonPropertyName("sub")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string Subject { get; set; }
 
-    [JsonProperty("nam")]
-    [DefaultValue("")]
-    public string Name { get; set; } = "";
+    [JsonPropertyName("nam")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string Name { get; set; }
 
-    [JsonProperty("eml")]
-    [DefaultValue("")]
-    public string Email { get; set; } = "";
+    [JsonPropertyName("eml")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string Email { get; set; }
 
-    [JsonProperty("pic")]
-    [DefaultValue("")]
-    public string Picture { get; set; } = "";
+    [JsonPropertyName("pic")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string Picture { get; set; }
 
+    [JsonIgnore]
     public List<string> Roles { get; set; } = new ();
 
-    [JsonProperty("rol")]
+    [JsonPropertyName("rol")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     IEnumerable<string> IClaimSet.Roles => Roles;
 
 
