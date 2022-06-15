@@ -116,7 +116,11 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule, IOn
 
 #else
             services.AddProxyTokenAuthentication();
-            services.AddProxyTokenAuthorization();
+
+            services.AddAuthorization(op =>
+            {
+                op.AddPolicy(TokenConstants.Policy, b => b.RequireAuthenticatedUser());
+            });
 #endif
 
 
