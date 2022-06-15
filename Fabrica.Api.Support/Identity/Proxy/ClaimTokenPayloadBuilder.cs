@@ -24,7 +24,8 @@ namespace Fabrica.Api.Support.Identity.Proxy
                 [ClaimTypes.Name]           = nameof(ClaimSetModel.Name),
                 ["name"]                    = nameof(ClaimSetModel.Name),
                 ["picture"]                 = nameof(ClaimSetModel.Picture),
-                [ClaimTypes.Email]          = nameof(ClaimSetModel.Email)
+                [ClaimTypes.Email]          = nameof(ClaimSetModel.Email),
+                ["email"]                   = nameof(ClaimSetModel.Email)
             };
 
             ClaimMap = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(mappings));
