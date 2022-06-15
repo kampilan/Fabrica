@@ -8,6 +8,7 @@ using Fabrica.Identity;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -34,12 +35,13 @@ namespace Fabrica.Api.Support.Identity.Proxy
 
         }
 
-        public static IServiceCollection AddProxyTokenAuthorization(this IServiceCollection services)
+        public static IServiceCollection AddProxyTokenAuthorization(this IServiceCollection services, Action<AuthorizationOptions> options=null )
         {
 
             services.AddAuthorization(op =>
             {
                 op.AddPolicy( TokenConstants.Policy, b => b.RequireAuthenticatedUser() );
+                options?.Invoke(op);
             });
 
             return services;
