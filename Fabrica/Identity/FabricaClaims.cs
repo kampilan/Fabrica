@@ -17,6 +17,9 @@ namespace Fabrica.Identity
 
         public static string PictureClaim = "picture";
 
+        public static string FlowClaim = "flow";
+
+
 
     }
 

@@ -33,7 +33,7 @@ namespace Fabrica.Identity
         public static void Populate( this ClaimsIdentity ci, IClaimSet claimSet )
         {
 
-            
+            CheckClaim(FabricaClaims.FlowClaim, claimSet.AuthenticationFlow);
             CheckClaim( FabricaClaims.TenantClaim, claimSet.Tenant );
             CheckClaim( ClaimTypes.NameIdentifier, claimSet.Subject );
             CheckClaim( ClaimTypes.Name, claimSet.Name );

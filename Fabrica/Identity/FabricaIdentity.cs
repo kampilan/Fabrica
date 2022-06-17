@@ -11,6 +11,7 @@ namespace Fabrica.Identity
         public FabricaIdentity( IClaimSet claimSet ): base(claimSet.AuthenticationType)
         {
 
+            CheckClaim(FabricaClaims.FlowClaim, claimSet.AuthenticationFlow);
             CheckClaim(FabricaClaims.TenantClaim, claimSet.Tenant);
             CheckClaim(ClaimTypes.NameIdentifier, claimSet.Subject);
             CheckClaim(ClaimTypes.Name, claimSet.Name);
