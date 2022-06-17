@@ -99,7 +99,6 @@ namespace Fabrica.Api.Support.Identity.Proxy
             // *****************************************************************
             logger.Debug("Attempting to build ClaimsIdentity");
             var ci = new FabricaIdentity( claims );
-            ci.Populate( claims );
 
 
 
