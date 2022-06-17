@@ -69,6 +69,14 @@ namespace Fabrica.Identity
 
         }
 
+
+        public static string GetFlow(this ClaimsIdentity ci, string missing = "")
+        {
+            var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.FlowClaim);
+            return claim?.Value ?? missing;
+        }
+
+
         public static string GetTenant( this ClaimsIdentity ci, string missing="" )
         {
             var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.TenantClaim);
