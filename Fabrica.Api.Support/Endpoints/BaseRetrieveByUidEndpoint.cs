@@ -15,7 +15,7 @@ public abstract class BaseRetrieveByUidEndpoint<TEntity>: BaseEndpoint where TEn
 
 
     [HttpGet("{uid}")]
-    [SwaggerOperation(Summary = "Retrieve", Description = "Retrieve by Uid")]
+    [SwaggerOperation(Summary = "By UID", Description = "Retrieve by Uid")]
     public virtual async Task<IActionResult> Handle([FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid )
     {
 

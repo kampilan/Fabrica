@@ -7,6 +7,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -17,6 +18,7 @@ public abstract class BaseApplyPatchEndpoint<TEntity>: BaseEndpoint where TEntit
     {
     }
 
+    [SwaggerOperation(Summary = "Persist changes", Description = "Persist changes by patch")]
     [HttpPatch("{uid}")]
     public async Task<IActionResult> Handle( [FromRoute] string uid, [FromBody] List<ModelPatch> source )
     {

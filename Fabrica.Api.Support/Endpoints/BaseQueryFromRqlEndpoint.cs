@@ -21,7 +21,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
 
     [HttpGet]
-    [SwaggerOperation(Summary = "Query", Description = "Query using RQL")]
+    [SwaggerOperation(Summary = "Using RQL", Description = "Query using RQL")]
     public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql )
     {
 
