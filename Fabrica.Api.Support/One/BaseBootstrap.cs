@@ -197,6 +197,12 @@ public abstract class BaseBootstrap: CorrelatedObject
 
             cb.AddCorrelation();
 
+            var mission = Configuration.Get<MissionContext>();
+
+            cb.RegisterInstance(mission)
+                .As<IMissionContext>()
+                .SingleInstance();
+
 
             using var inner = GetLogger();
 
