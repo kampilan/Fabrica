@@ -223,7 +223,7 @@ public abstract class BaseCreateFromDeltaEndpoint<TParent,TEntity,TDelta> : Base
 
 
     [SwaggerOperation(Summary = "Create", Description = "Create from Delta RTO")]
-    [HttpPost("{uid}")]
+    [HttpPost]
     public async Task<IActionResult> Handle([FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid, [FromBody] TDelta delta)
     {
 
