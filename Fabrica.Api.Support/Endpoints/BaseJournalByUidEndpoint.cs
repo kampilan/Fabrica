@@ -3,6 +3,7 @@ using Fabrica.Api.Support.ActionResult;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -14,8 +15,10 @@ public abstract class BaseJournalByUidEndpoint<TTarget>: BaseEndpoint where TTar
     {
     }
 
+    [SwaggerOperation(Summary = "Journal", Description = "Audit Journal for Uid")]
+
     [HttpGet("{uid}/journal")]
-    public async Task<IActionResult> Handle([FromRoute] string uid)
+    public async Task<IActionResult> Handle( [FromRoute] string uid )
     {
 
         using var logger = EnterMethod();
