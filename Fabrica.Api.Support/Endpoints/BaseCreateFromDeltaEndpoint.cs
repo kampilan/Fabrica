@@ -5,6 +5,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -90,6 +91,7 @@ public abstract class BaseCreateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
     }
 
 
+    [SwaggerOperation(Summary = "Create", Description = "Create from Delta RTO")]
     [HttpPost]
     public async Task<IActionResult> Handle( [FromBody] TDelta delta )
     {

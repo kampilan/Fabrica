@@ -2,6 +2,7 @@
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -14,8 +15,9 @@ public abstract class BaseDeleteByUidEndpoint<TEntity>: BaseEndpoint where TEnti
     }
 
 
+    [SwaggerOperation(Summary = "By UID", Description = "Delete by Uid")]
     [HttpDelete("{uid}")]
-    public async Task<IActionResult> Handle( [FromRoute] string uid )
+    public async Task<IActionResult> Handle( [FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid )
     {
 
         using var logger = EnterMethod();

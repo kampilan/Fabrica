@@ -5,6 +5,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -90,8 +91,9 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
     }
 
 
+    [SwaggerOperation(Summary = "Update", Description = "Ally update from Delta RTO")]
     [HttpPut("{uid}")]
-    public async Task<IActionResult> Handle( [FromRoute] string uid, [FromBody] TDelta delta )
+    public async Task<IActionResult> Handle( [FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid, [FromBody] TDelta delta )
     {
 
         using var logger = EnterMethod();
