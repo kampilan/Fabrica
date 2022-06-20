@@ -61,7 +61,7 @@ namespace Fabrica.Rql.Parser
             }
             catch (Exception cause)
             {
-                logger.ErrorWithContext(cause, "Failed to parse RQL", new { Rql = rql });
+                logger.ErrorWithContext(cause, new { Rql = rql }, "Failed to parse RQL" );
                 throw;
             }
             finally
@@ -107,7 +107,7 @@ namespace Fabrica.Rql.Parser
             }
             catch (Exception cause)
             {
-                logger.ErrorWithContext(cause, "Failed to parse RQL", new { Rql = rql });
+                logger.ErrorWithContext(cause, new { Rql = rql }, "Failed to parse RQL");
                 throw;
             }
             finally
@@ -154,7 +154,7 @@ namespace Fabrica.Rql.Parser
             }
             catch (Exception cause)
             {
-                logger.ErrorWithContext( cause, "Failed to parse RQL", new {Rql=rql} );
+                logger.ErrorWithContext( cause, new { Rql = rql }, "Failed to parse RQL" );
                 throw;
             }
             finally
@@ -200,7 +200,7 @@ namespace Fabrica.Rql.Parser
             }
             catch (Exception cause)
             {
-                logger.ErrorWithContext(cause, "Failed to parse RQL", new { Rql = rql });
+                logger.ErrorWithContext(cause, new { Rql = rql }, "Failed to parse RQL");
                 throw;
             }
             finally
