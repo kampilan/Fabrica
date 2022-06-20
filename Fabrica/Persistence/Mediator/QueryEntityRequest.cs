@@ -15,21 +15,25 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 {
 
 
-    public static QueryEntityRequest<TEntity> Where( [NotNull] ICriteria criteria )
+    public static QueryEntityRequest<TEntity> Where( [NotNull] ICriteria criteria, int limit=250 )
     {
 
         var request = new QueryEntityRequest<TEntity>();
         request.AddCriteria(criteria);
 
+        request.RowLimit = limit;
+
         return request;
 
     }
 
-    public static QueryEntityRequest<TEntity> Where( [NotNull] IRqlFilter<TEntity> filter )
+    public static QueryEntityRequest<TEntity> Where( [NotNull] IRqlFilter<TEntity> filter, int limit=250 )
     {
 
         var request = new QueryEntityRequest<TEntity>();
         request.Filters.Add(filter);
+
+        request.RowLimit = limit;
 
         return request;
 
@@ -37,6 +41,8 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 
 
     public List<IRqlFilter<TEntity>> Filters { get; set; } = new();
+
+    public int RowLimit { get; set; } = 250;
 
     bool IQueryEntityRequest.HasCriteria => Filters.Any(f => f.HasCriteria);
 

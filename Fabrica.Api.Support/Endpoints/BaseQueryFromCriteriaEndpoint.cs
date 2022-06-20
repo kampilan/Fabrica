@@ -9,6 +9,7 @@ using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -94,8 +95,9 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
     }
 
 
+    [SwaggerOperation(Summary = "Using Criteria", Description = "Query using Criteria model")]
     [HttpGet]
-    public async Task<IActionResult> Handle( [FromBody] TCriteria criteria )
+    public async Task<IActionResult> Handle( [FromBody] TCriteria criteria, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int limit = 250)
     {
 
         using var logger = EnterMethod();
@@ -132,11 +134,13 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
         }
 
 
+
         // *****************************************************************
         logger.Debug("Attempting to build request");
         var request = new QueryEntityRequest<TExplorer>
         {
-            Filters = filters
+            Filters  = filters,
+            RowLimit = limit
         };
 
 

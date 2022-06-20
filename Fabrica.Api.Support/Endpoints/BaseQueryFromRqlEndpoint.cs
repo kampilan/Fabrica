@@ -22,7 +22,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
     [HttpGet]
     [SwaggerOperation(Summary = "Using RQL", Description = "Query using RQL")]
-    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql )
+    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int  limit=250 )
     {
 
         using var logger = EnterMethod();
@@ -62,7 +62,8 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
         logger.Debug("Attempting to build request");
         var request = new QueryEntityRequest<TExplorer>
         {
-            Filters = filters
+            Filters  = filters,
+            RowLimit = limit
         };
 
 
