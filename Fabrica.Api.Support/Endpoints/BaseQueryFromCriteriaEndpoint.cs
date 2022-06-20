@@ -94,7 +94,6 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
 
     }
 
-    protected int RowLimit { get; set; }
 
 
     [SwaggerOperation(Summary = "Using Criteria", Description = "Query using Criteria model")]
@@ -110,13 +109,9 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
             return error;
 
 
+
         // *****************************************************************
-        logger.Debug("Attempting to set limit");
-        logger.Inspect(nameof(limit), limit);
-
-        if( limit == 0 && RowLimit > 0)
-            limit = RowLimit;
-
+        logger.LogObject(nameof(criteria), criteria);
         logger.Inspect(nameof(limit), limit);
 
 

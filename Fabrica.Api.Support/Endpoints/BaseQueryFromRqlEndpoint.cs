@@ -19,8 +19,6 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
     {
     }
 
-    protected int RowLimit { get; set; }
-
 
     [HttpGet]
     [SwaggerOperation(Summary = "Using RQL", Description = "Query using RQL")]
@@ -32,14 +30,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
 
         // *****************************************************************
-        logger.Debug("Attempting to set limit");
         logger.Inspect(nameof(limit), limit);
-
-        if (limit == 0 && RowLimit > 0)
-            limit = RowLimit;
-
-        logger.Inspect(nameof(limit), limit);
-
 
 
         // *****************************************************************

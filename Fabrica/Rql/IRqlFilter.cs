@@ -44,7 +44,7 @@ namespace Fabrica.Rql
         bool HasCriteria { get; }
         IEnumerable<IRqlPredicate> Criteria { get; }
 
-        int RowLimit { get; }
+        int RowLimit { get; set; }
 
 
         bool AtLeastOne([NotNull] Func<IRqlPredicate,bool> predicate );
