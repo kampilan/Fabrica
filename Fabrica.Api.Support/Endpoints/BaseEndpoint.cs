@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
+using Fabrica.Api.Support.ActionResult;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
@@ -171,18 +173,23 @@ public abstract class BaseEndpoint: ControllerBase
         logger.LogObject(nameof(response), response);
 
 
-
         // *****************************************************************
         logger.Debug("Attempting to check for success");
-        logger.Inspect(nameof(response.Ok), response.Ok);
-        if (response.Ok && typeof(TValue).IsValueType)
+        if ( !response.Ok )
+            return BuildErrorResult(response);
+
+
+
+        // *****************************************************************
+        logger.Inspect("response.Type", response.Value.GetType());
+
+        if( response.Ok && typeof(TValue).IsValueType )
             return Ok();
 
-        if (response.Ok)
-            return Ok(response.Value);
+        if( response.Ok && response.Value is MemoryStream ms )
+            return new JsonStreamResult(ms);
 
-
-        return BuildErrorResult(response);
+        return Ok(response.Value);
 
 
     }
