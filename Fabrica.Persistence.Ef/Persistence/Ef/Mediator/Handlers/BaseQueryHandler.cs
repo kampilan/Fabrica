@@ -63,12 +63,20 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to process each given filter");
-            var limit = Request.RowLimit;
             var set = new HashSet<TResponse>();
-            foreach (var queryable in filterList.Select(filter => filter.ToExpression()).Select(predicate => Many(Context).Where(predicate)))
+            foreach( var filter in filterList )
             {
-                var result = await queryable.AsNoTracking().Take(limit).ToListAsync(cancellationToken: token);
+
+                var queryable = Many(Context).Where(filter.ToExpression());
+
+                List<TResponse> result;
+                if( filter.RowLimit > 0 )
+                    result = await queryable.AsNoTracking().Take(filter.RowLimit).ToListAsync(cancellationToken: token);
+                else
+                    result = await queryable.AsNoTracking().ToListAsync(cancellationToken: token);
+
                 set.UnionWith(result);
+
             }
 
 

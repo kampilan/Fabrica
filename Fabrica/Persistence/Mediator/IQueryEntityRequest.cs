@@ -7,7 +7,6 @@ namespace Fabrica.Persistence.Mediator;
 public interface IQueryEntityRequest
 {
     bool HasCriteria { get; }
-    int RowLimit { get; }
 
 }
 

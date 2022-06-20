@@ -137,7 +137,7 @@ namespace Fabrica.Rql.Builder
             {
 
 
-                if (!(prop.GetCustomAttribute(typeof(CriterionAttribute)) is CriterionAttribute attr))
+                if( prop.GetCustomAttribute(typeof(CriterionAttribute)) is not CriterionAttribute attr )
                     continue;
 
 
@@ -265,6 +265,7 @@ namespace Fabrica.Rql.Builder
         public bool HasCriteria => Predicates.Count > 0;
         public IEnumerable<IRqlPredicate> Criteria => Predicates;
 
+        public int RowLimit { get; set; }
 
         public bool AtLeastOne( Func<IRqlPredicate, bool> predicate )
         {

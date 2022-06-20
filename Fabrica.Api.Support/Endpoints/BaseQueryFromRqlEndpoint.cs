@@ -19,13 +19,26 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
     {
     }
 
+    protected int RowLimit { get; set; }
+
 
     [HttpGet]
     [SwaggerOperation(Summary = "Using RQL", Description = "Query using RQL")]
-    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int  limit=250 )
+    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int  limit=0 )
     {
 
         using var logger = EnterMethod();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to set limit");
+        logger.Inspect(nameof(limit), limit);
+
+        if (limit == 0 && RowLimit > 0)
+            limit = RowLimit;
+
+        logger.Inspect(nameof(limit), limit);
 
 
 
@@ -52,7 +65,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
             filters.AddRange(rqls.Select(s =>
             {
                 var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree);
+                return new RqlFilterBuilder<TExplorer>(tree){ RowLimit = limit };
             }));
 
 
@@ -62,8 +75,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
         logger.Debug("Attempting to build request");
         var request = new QueryEntityRequest<TExplorer>
         {
-            Filters  = filters,
-            RowLimit = limit
+            Filters  = filters
         };
 
 

@@ -94,10 +94,12 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
 
     }
 
+    protected int RowLimit { get; set; }
+
 
     [SwaggerOperation(Summary = "Using Criteria", Description = "Query using Criteria model")]
     [HttpGet]
-    public async Task<IActionResult> Handle( [FromBody] TCriteria criteria, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int limit = 250)
+    public async Task<IActionResult> Handle( [FromBody] TCriteria criteria, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int limit = 0)
     {
 
         using var logger = EnterMethod();
@@ -108,16 +110,26 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
             return error;
 
 
+        // *****************************************************************
+        logger.Debug("Attempting to set limit");
+        logger.Inspect(nameof(limit), limit);
+
+        if( limit == 0 && RowLimit > 0)
+            limit = RowLimit;
+
+        logger.Inspect(nameof(limit), limit);
+
+
 
         // *****************************************************************
         logger.Debug("Attempting to produce filters from Criteria");
         var filters = new List<IRqlFilter<TExplorer>>();
-        if (criteria.Rql?.Length > 0)
+        if( criteria.Rql?.Length > 0 )
         {
             filters.AddRange(criteria.Rql.Select(s =>
             {
                 var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree);
+                return new RqlFilterBuilder<TExplorer>(tree){RowLimit = limit};
             }));
         }
         else
@@ -126,7 +138,7 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
             // *****************************************************************
             logger.Debug("Attempting to introspect criteria RQL");
             var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-
+            filter.RowLimit = limit;
 
             // *****************************************************************
             filters.Add(filter);
@@ -140,7 +152,6 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
         var request = new QueryEntityRequest<TExplorer>
         {
             Filters  = filters,
-            RowLimit = limit
         };
 
 
