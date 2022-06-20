@@ -164,16 +164,30 @@ namespace Fabrica.Rql.Serialization
 
             var pair = builder.ToSqlWhere(indexed);
 
+            if( string.IsNullOrWhiteSpace(pair.sql) && builder.RowLimit > 0 )
+            {
+                var query = $"select {string.Join(",",projection)} from {tableName} limit {builder.RowLimit}";
+                return (query, new object[]{});
+            }
+
             if( string.IsNullOrWhiteSpace(pair.sql) )
             {
-                var query = $"select {string.Join(",",projection)} from {tableName}";
-                return (query, new object[]{});
+                var query = $"select {string.Join(",", projection)} from {tableName}";
+                return (query, new object[] { });
+            }
+            
+            if( builder.RowLimit > 0)
+            {
+                var query = $"select {string.Join(",", projection)} from {tableName} where {pair.sql} limit {builder.RowLimit}";
+                return (query, pair.parameters);
             }
             else
             {
                 var query = $"select {string.Join(",", projection)} from {tableName} where {pair.sql}";
                 return (query, pair.parameters);
             }
+
+
 
 
         }
