@@ -5,6 +5,7 @@
     <Authors>The Kampilan Group Inc.</Authors>
     <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
     <RootNamespace>Fabrica</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
