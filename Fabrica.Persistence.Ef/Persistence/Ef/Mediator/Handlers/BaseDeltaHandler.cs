@@ -187,6 +187,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                         Category    = EventDetail.EventCategory.Violation,
                         Group       = $"{typeof(TResponse).Name}.{pi.Name}",
                         Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional.",
+                        Source      = target.ToString(),
                         RuleName    = "NA"
                     } });
 
@@ -272,6 +273,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                     Category    = EventDetail.EventCategory.Violation,
                     Group       = $"{typeof(TResponse).Name}.{pi.Name}",
                     Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional.",
+                    Source      = target.ToString(),
                     RuleName    = "NA"
                 } });
 
