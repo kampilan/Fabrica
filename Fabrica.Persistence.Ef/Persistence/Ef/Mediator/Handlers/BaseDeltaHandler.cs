@@ -183,7 +183,13 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
                     re = null;
                 else
-                    throw new InvalidOperationException($"{pi.Name} on {typeof(TResponse).Name} is not optional.");
+                    throw new ValidationException(new List<EventDetail>{new ()
+                    {
+                        Category    = EventDetail.EventCategory.Violation,
+                        Group       = typeof(TResponse).Name,
+                        Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional."
+                    } });
+
 
 
                 // *****************************************************************
@@ -262,7 +268,12 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
                 replacement = null;
             else
-                throw new InvalidOperationException($"{pi.Name} on {typeof(TResponse).Name} is not optional.");
+                throw new ValidationException( new List<EventDetail>{new ()
+                {
+                    Category    = EventDetail.EventCategory.Violation,
+                    Group       = typeof(TResponse).Name,
+                    Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional."
+                } });
 
 
             // *****************************************************************
