@@ -148,7 +148,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
         protected IDictionary<string,object> Properties { get; private set; }
 
 
-
+        private NullabilityInfoContext _nulctx = new NullabilityInfoContext();
         protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
         {
 
@@ -179,15 +179,15 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                     if (re == null)
                         throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
                 }
-                else if (Nullable.GetUnderlyingType(pi.PropertyType) != null)
-
+                else if (_nulctx.Create(pi).WriteState is NullabilityState.Nullable)
                     re = null;
                 else
                     throw new ValidationException(new List<EventDetail>{new ()
                     {
                         Category    = EventDetail.EventCategory.Violation,
-                        Group       = typeof(TResponse).Name,
-                        Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional."
+                        Group       = $"{typeof(TResponse).Name}.{pi.Name}",
+                        Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional.",
+                        RuleName    = "NA"
                     } });
 
 
@@ -264,16 +264,17 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                 logger.LogObject(nameof(replacement), replacement);
 
             }
-            else if (Nullable.GetUnderlyingType(pi.PropertyType) != null)
-
+            else if( _nulctx.Create(pi).WriteState is NullabilityState.Nullable )
                 replacement = null;
             else
                 throw new ValidationException( new List<EventDetail>{new ()
                 {
                     Category    = EventDetail.EventCategory.Violation,
-                    Group       = typeof(TResponse).Name,
-                    Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional."
+                    Group       = $"{typeof(TResponse).Name}.{pi.Name}",
+                    Explanation = $"{pi.Name} on {typeof(TResponse).Name} is not optional.",
+                    RuleName    = "NA"
                 } });
+
 
 
             // *****************************************************************
