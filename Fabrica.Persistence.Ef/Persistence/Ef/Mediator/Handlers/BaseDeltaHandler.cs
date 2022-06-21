@@ -170,12 +170,17 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                 logger.Inspect(nameof(uid), uid);
 
 
-
                 // *****************************************************************
                 logger.Debug("Attempting to fetch reference using uid");
-                var re = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
-                if (re == null)
-                    throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
+                TReference re;
+                if (!string.IsNullOrWhiteSpace(uid))
+                {
+                    re = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
+                    if (re == null)
+                        throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
+                }
+                else
+                    re = null;
 
 
 
@@ -211,10 +216,6 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
             if( Properties.TryGetValue(name, out var value) )
                 uid = value.ToString();
 
-            if (string.IsNullOrWhiteSpace(uid))
-                return;
-
-
 
             logger.Inspect("typeof(TReference)", typeof(TReference).FullName);
             logger.Inspect(nameof(name), name);
@@ -243,11 +244,20 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to fetch reference using uid");
-            var replacement = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
-            if (replacement == null)
-                throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({name}) using ({uid})");
 
-            logger.LogObject(nameof(replacement), replacement);
+            TReference replacement;
+            if( !string.IsNullOrWhiteSpace(uid) )
+            {
+                
+                replacement = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
+                if (replacement == null)
+                    throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({name}) using ({uid})");
+
+                logger.LogObject(nameof(replacement), replacement);
+
+            }
+            else
+                replacement = null;
 
 
 
