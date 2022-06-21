@@ -179,9 +179,11 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                     if (re == null)
                         throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
                 }
-                else
-                    re = null;
+                else if (Nullable.GetUnderlyingType(pi.PropertyType) != null)
 
+                    re = null;
+                else
+                    throw new InvalidOperationException($"{pi.Name} on {typeof(TResponse).Name} is not optional.");
 
 
                 // *****************************************************************
@@ -256,9 +258,11 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                 logger.LogObject(nameof(replacement), replacement);
 
             }
-            else
-                replacement = null;
+            else if (Nullable.GetUnderlyingType(pi.PropertyType) != null)
 
+                replacement = null;
+            else
+                throw new InvalidOperationException($"{pi.Name} on {typeof(TResponse).Name} is not optional.");
 
 
             // *****************************************************************
@@ -345,8 +349,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to check for detached state");
-
-            if( Context.Entry(Entity).State == EntityState.Detached )
+            if( Operation == OperationType.Create )
                 await Context.AddAsync( Entity, cancellationToken );
 
 
