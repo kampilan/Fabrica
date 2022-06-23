@@ -71,6 +71,14 @@ namespace Fabrica.Persistence.Audit
         /// </value>
         public bool Detailed { get; set; }
 
+        /// <summary>
+        /// Gets or sets what Entity Name to use when audit journaling. If blank then the entity name is used.
+        /// </summary>
+        /// <value>
+        /// 	<see langword="true"/> Entity Name <see langword="false"/>.
+        /// </value>
+
+        public string EntityName { get; set; } = "";
 
     }
 
