@@ -11,9 +11,11 @@ using MediatR;
 
 namespace Fabrica.Mediator
 {
+    public abstract class MediatorHandler
+    {
+    }
 
-
-    public abstract class AbstractRequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, Response<TResponse>>, IMediatorHandler where TRequest : class, IRequest<Response<TResponse>>
+    public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHandler, IRequestHandler<TRequest, Response<TResponse>> where TRequest : class, IRequest<Response<TResponse>>
     {
 
 
@@ -171,7 +173,7 @@ namespace Fabrica.Mediator
     }
 
 
-    public abstract class AbstractRequestHandler<TRequest> : IRequestHandler<TRequest, Response>, IMediatorHandler where TRequest : class, IRequest<Response>
+    public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IRequestHandler<TRequest, Response>  where TRequest : class, IRequest<Response>
     {
 
 

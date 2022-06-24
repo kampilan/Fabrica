@@ -32,7 +32,7 @@ namespace Fabrica.Mediator
             if( assemblies.Length > 0)
             {
 
-                var types = assemblies.SelectMany(a => a.GetTypes()).Where(t => typeof(IMediatorHandler).IsAssignableFrom(t));
+                var types = assemblies.SelectMany(a => a.GetTypes()).Where(t => typeof(MediatorHandler).IsAssignableFrom(t));
                
                 builder.RegisterTypes(types.ToArray())
                     .AsImplementedInterfaces()
