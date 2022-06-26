@@ -7,16 +7,6 @@ using Newtonsoft.Json;
 
 namespace Fabrica.Identity
 {
-
-
-    public interface IAccessTokenSource
-    {
-
-        bool HasExpired { get; }
-        Task<string> GetToken();
-
-    }
-
     public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequiresStart
     {
 
