@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReSharper disable UnusedMember.Global
+
+using System;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -72,8 +74,6 @@ public static class AutofacExtensions
         return builder;
 
     }
-
-
 
 
 }

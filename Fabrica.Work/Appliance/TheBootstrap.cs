@@ -169,7 +169,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule, IOn
             var encoder = c.Resolve<IProxyTokenEncoder>();
             var token = encoder.Encode(claims);
 
-            var comp = new StaticAccessTokenSource(token);
+            var comp = new StaticAccessTokenSource("Api",token);
 
             return comp;
 

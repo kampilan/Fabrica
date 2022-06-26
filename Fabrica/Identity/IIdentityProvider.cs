@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿// ReSharper disable UnusedMember.Global
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 
@@ -18,11 +21,28 @@ namespace Fabrica.Identity
     {
 
         public string IdentityUid { get; set; } = "";
+
+        public string CurrentUsername { get; set; } = "";
         public string CurrentEmail { get; set; } = "";
 
+        public bool? NewEnabled { get; set; }
+        public string NewUsername { get; set; }
         public string NewEmail { get; set; }
         public string NewFirstName { get; set; }
         public string NewLastName { get; set; }
+
+        public Dictionary<string, IEnumerable<string>> Attributes { get; } = new ();
+
+        public List<string> Groups { get; } = new ();
+
+        public bool MustVerifyEmail { get; set; }
+        public bool MustUpdateProfile { get; set; }
+        public bool MustUpdatePassword { get; set; }
+        public bool MustConfigureMfa { get; set; }
+
+        public bool GeneratePassword { get; set; }
+        public bool PasswordIsTemporary { get; set; } = true;
+
 
     }
 

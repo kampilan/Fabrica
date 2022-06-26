@@ -6,10 +6,13 @@ public class ClientCredentialGrant : ICredentialGrant
 {
 
 
+    public string Name { get; set; } = "";
+    public string MetaEndpoint { get; set; } = "";
+    public string TokenEndpoint { get; set; } = "";
+
     public string ClientId { get; set; } = "";
     public string ClientSecret { get; set; } = "";
 
-    public string Audience { get; set; } = "";
 
     public IDictionary<string, string> Body => _build();
 
@@ -28,10 +31,6 @@ public class ClientCredentialGrant : ICredentialGrant
 
         if( !string.IsNullOrWhiteSpace(ClientSecret) )
             dict["client_secret"] = ClientSecret;
-
-        if (!string.IsNullOrWhiteSpace(Audience))
-            dict["audience"] = Audience;
-
 
         return dict;
 

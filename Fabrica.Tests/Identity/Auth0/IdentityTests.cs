@@ -5,10 +5,11 @@ using Fabrica.Configuration.Yaml;
 using Fabrica.Identity;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
+using Fabrica.Watch.Realtime;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
-namespace Fabrica.Tests.Identity
+namespace Fabrica.Tests.Identity.Auth0
 {
 
     [TestFixture]
@@ -21,7 +22,7 @@ namespace Fabrica.Tests.Identity
         {
 
             var maker = new WatchFactoryBuilder();
-//            maker.UseRealtime();
+            maker.UseRealtime();
             maker.UseLocalSwitchSource()
                 .WhenNotMatched(Level.Debug, Color.Aqua);
 
@@ -37,7 +38,7 @@ namespace Fabrica.Tests.Identity
             var builder = new ContainerBuilder();
 
             var module = TheConfiguration.Get<IdentityModule>();
-            builder.RegisterModule( module );
+            builder.RegisterModule(module);
 
             TheContainer = await builder.BuildAndStart();
 
@@ -72,7 +73,7 @@ namespace Fabrica.Tests.Identity
             var token = await comp.GetToken();
 
             Assert.IsNotEmpty(token);
-            Assert.IsFalse( comp.HasExpired );
+            Assert.IsFalse(comp.HasExpired);
 
         }
 
@@ -80,7 +81,7 @@ namespace Fabrica.Tests.Identity
         [Test]
         public async Task Test0100_0200_AddUser()
         {
-            
+
             await using var scope = TheContainer.BeginLifetimeScope();
 
             var comp = scope.Resolve<IIdentityProvider>();
@@ -88,32 +89,32 @@ namespace Fabrica.Tests.Identity
 
             var request = new SyncUserRequest
             {
-                NewEmail     = "moring.gabby@gmail.com",
+                NewEmail = "moring.gabby@gmail.com",
                 NewFirstName = "Gabby",
-                NewLastName  = "Moring"
+                NewLastName = "Moring"
             };
 
 
-            var result = await comp.SyncUser( request );
+            var result = await comp.SyncUser(request);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue( result.Created);
+            Assert.IsTrue(result.Created);
             Assert.IsNotEmpty(result.IdentityUid);
             Assert.IsNotEmpty(result.Password);
 
 
             var request2 = new SyncUserRequest
             {
-                IdentityUid  = result.IdentityUid,
+                IdentityUid = result.IdentityUid,
                 CurrentEmail = "moring.gabby@gmail.com",
-                NewEmail     = "her@gabbymoring.com",
+                NewEmail = "her@gabbymoring.com",
                 NewFirstName = "Gabriela",
-                NewLastName  = "Moring"
+                NewLastName = "Moring"
             };
 
 
 
-            var result2 = await comp.SyncUser( request2 );
+            var result2 = await comp.SyncUser(request2);
 
             Assert.IsNotNull(result2);
             Assert.IsFalse(result2.Created);

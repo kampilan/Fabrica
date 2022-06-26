@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Fabrica</RootNamespace>
+    <Company>Pond Hawk Technologies Inc</Company>
+    <Authors>Pond Hawk Technologies Inc</Authors>
+    <Description>Keycloak implementation of Identity Provider</Description>
+    <Copyright>Pond Hawk Technologies Inc (c) 2022</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\smithy.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Keycloak.Net" Version="1.0.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
+
+</Project>
