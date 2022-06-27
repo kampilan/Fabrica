@@ -15,13 +15,12 @@ namespace Fabrica.Http;
 public class AccessTokenSourceRequestHandler: DelegatingHandler
 {
 
-    public AccessTokenSourceRequestHandler( IEnumerable<IAccessTokenSource> sources )
+    public AccessTokenSourceRequestHandler( IAccessTokenSource source )
     {
-        Sources = sources.ToList();
+        Source = source;
     }
 
-    public string Name { get; set; } = "Api";
-    private List<IAccessTokenSource> Sources { get; }
+    private IAccessTokenSource Source { get; }
 
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -29,22 +28,10 @@ public class AccessTokenSourceRequestHandler: DelegatingHandler
 
         using var logger = this.EnterMethod();
 
-        logger.Inspect(nameof(Name), Name);
-        logger.Inspect(nameof(Sources.Count), Sources.Count);
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to find Token Source");
-        var source = Sources.FirstOrDefault(s => s.Name == Name) ?? Sources.FirstOrDefault();
-        if( source is null )
-            throw new InvalidOperationException("No Access Token Sources are registered");
-
-
 
         // *****************************************************************
         logger.Debug("Attempting to get current access token");
-        var token = await source.GetToken();
+        var token = await Source.GetToken();
 
         if (string.IsNullOrWhiteSpace(token))
             throw new InvalidOperationException("Null or blank token returned by AccessToken Source");

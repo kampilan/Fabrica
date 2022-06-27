@@ -164,27 +164,13 @@ public class TheModule : Module
 
         builder.AddCorrelation();
 
-        builder.AddClientCredentialGrant("Api", MetaEndpoint, "service", "IX9RYgB0iAJeTIdHS3RMbkdakJOYqrkv");
-
-        builder.AddAccessTokenSource("Api");
-
-        builder.Register(c =>
-            {
-
-                var sources = c.Resolve<IEnumerable<IAccessTokenSource>>();
-
-                var comp = new AccessTokenSourceRequestHandler(sources);
-                comp.Name = "Api";
-
-                return comp;
-
-            })
-            .AsSelf()
-            .InstancePerDependency();
-
-
-        builder.AddHttpClient<AccessTokenSourceRequestHandler>("Api", "https://fabrica.ngrok.io/v1/");
-
+        builder.AddTokenApiClient("Api", o =>
+        {
+            o.MetaEndpoint = MetaEndpoint;
+            o.ClientId     = "service";
+            o.ClientSecret = "IX9RYgB0iAJeTIdHS3RMbkdakJOYqrkv";
+            o.ApiEndpoint  = "https://fabrica.ngrok.io/v1/";
+        });
 
 
     }
