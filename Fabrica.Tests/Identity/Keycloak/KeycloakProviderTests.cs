@@ -50,7 +50,7 @@ public class KeycloakProviderTests
     public async Task Test3100_0100_SyncExistingUserById()
     {
 
-        var provider = new KeycloakIdentityProvider( new Correlation(),"https://identity.after-it-services.io", "after-crm", "E3fBZg4qCYreKHq8QRLNOeZFEGulFVg8");
+        var provider = new KeycloakIdentityProvider( new Correlation(),"https://identity.after-it-services.io", "after-crm","", "E3fBZg4qCYreKHq8QRLNOeZFEGulFVg8");
 
         var request = new SyncUserRequest
         {
@@ -72,7 +72,7 @@ public class KeycloakProviderTests
     public async Task Test3100_0200_SyncNew()
     {
 
-        var provider = new KeycloakIdentityProvider(new Correlation(), "https://identity.after-it-services.io", "after-crm", "E3fBZg4qCYreKHq8QRLNOeZFEGulFVg8");
+        var provider = new KeycloakIdentityProvider(new Correlation(), "https://identity.after-it-services.io", "after-crm","", "E3fBZg4qCYreKHq8QRLNOeZFEGulFVg8");
 
         var request = new SyncUserRequest
         {

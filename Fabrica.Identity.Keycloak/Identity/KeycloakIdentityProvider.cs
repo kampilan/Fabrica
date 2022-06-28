@@ -18,17 +18,20 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
 {
 
 
-    public KeycloakIdentityProvider( ICorrelation correlation, string endpoint, string realm, string clientSecret ) : base(correlation)
+    public KeycloakIdentityProvider( ICorrelation correlation, string endpoint, string realm, string clientId, string clientSecret ) : base(correlation)
     {
 
         Endpoint     = endpoint;
         Realm        = realm;
+        ClientId     = clientId;
         ClientSecret = clientSecret;
     }
 
     private string Endpoint { get; }
     private string Realm { get; }
+    private string ClientId { get; }
     private string ClientSecret { get; }
+
 
     private RandomNumberGenerator Rng { get; } = RandomNumberGenerator.Create();
 
@@ -41,6 +44,7 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
 
         logger.Inspect(nameof(Endpoint), Endpoint);
         logger.Inspect(nameof(Realm), Realm);
+        logger.Inspect(nameof(ClientId), ClientId);
         logger.Inspect(nameof(ClientSecret), ClientSecret);
 
         var response = new SyncUserResponse();
@@ -142,11 +146,10 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
                 Email         = request.NewEmail,
                 FirstName     = request.NewFirstName,
                 LastName      = request.NewLastName,
-                EmailVerified = !request.MustVerifyEmail
+                EmailVerified = !request.MustVerifyEmail,
+                Enabled       = !request.NewEnabled.HasValue || request.NewEnabled.Value
             };
 
-
-            user.Enabled = !request.NewEnabled.HasValue || request.NewEnabled.Value;
 
             if (actions.Count > 0)
                 user.RequiredActions = new ReadOnlyCollection<string>(actions);
