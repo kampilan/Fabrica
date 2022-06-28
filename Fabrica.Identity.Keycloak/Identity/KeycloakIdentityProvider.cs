@@ -165,21 +165,6 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
             logger.LogObject(nameof(user), user);
 
 
-            var password = "";
-            if( request.GeneratePassword )
-            {
-
-                logger.Debug("Attempting to generate password");
-
-                var buf = new byte[16];
-                Rng.GetNonZeroBytes(buf);
-                password = Base62Converter.Encode(buf);
-
-                user.Credentials = new List<Credentials> { new() { Type = "password", Value = password, Temporary = request.PasswordIsTemporary } };
-
-            }
-
-
 
             // *****************************************************************
             logger.Debug("Attempting to Create User");
@@ -197,12 +182,33 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
 
             logger.LogObject(nameof(newUser), newUser);
 
-            if( newUser is not null)
+            if (newUser is not null)
+            {
+
                 response.IdentityUid = newUser.Id;
 
 
-            response.Created     = created;
-            response.Password    = password;
+                if( request.GeneratePassword )
+                {
+
+                    logger.Debug("Attempting to generate password");
+
+                    var buf = new byte[16];
+                    Rng.GetNonZeroBytes(buf);
+                    var password = Base62Converter.Encode(buf);
+
+                    var res = await client.SetUserPasswordAsync( Realm, newUser.Id, password );
+
+                    logger.LogObject(nameof(res), res);
+
+                    response.Password = password;
+
+                }
+
+            }
+
+
+            response.Created = created;
 
 
         }

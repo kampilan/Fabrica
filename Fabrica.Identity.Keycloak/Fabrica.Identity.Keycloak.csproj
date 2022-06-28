@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Keycloak.Net" Version="1.0.18" />
+    <PackageReference Include="Keycloak.Net.Core" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>
