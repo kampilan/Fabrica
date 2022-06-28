@@ -1,23 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Fabrica.Identity;
 
 public class ClientCredentialGrant : ICredentialGrant
 {
 
-
     public string Name { get; set; } = "";
+
     public string MetaEndpoint { get; set; } = "";
     public string TokenEndpoint { get; set; } = "";
 
     public string ClientId { get; set; } = "";
     public string ClientSecret { get; set; } = "";
 
+    public Dictionary<string, string> Additional { get; } = new();
 
-    public IDictionary<string, string> Body => _build();
+    public IReadOnlyDictionary<string, string> Body => _build();
 
 
-    private IDictionary<string, string> _build()
+    private IReadOnlyDictionary<string, string> _build()
     {
 
         var dict = new Dictionary<string, string>
@@ -32,7 +34,10 @@ public class ClientCredentialGrant : ICredentialGrant
         if( !string.IsNullOrWhiteSpace(ClientSecret) )
             dict["client_secret"] = ClientSecret;
 
-        return dict;
+        foreach( var p in Additional)
+            dict[p.Key] = p.Value;
+
+        return new ReadOnlyDictionary<string, string>(dict);
 
     }
 

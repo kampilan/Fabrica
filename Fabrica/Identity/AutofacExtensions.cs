@@ -28,8 +28,8 @@ public static class AutofacExtensions
 
         if( additional is {Count: > 0} )
         {
-            foreach(var p in additional)
-                grant.Body.Add(p.Key, p.Value);
+            foreach (var p in additional)
+                grant.Additional[p.Key] = p.Value;
         }
 
 
@@ -63,7 +63,7 @@ public static class AutofacExtensions
         if (additional is { Count: > 0 })
         {
             foreach (var p in additional)
-                grant.Body.Add(p.Key, p.Value);
+                grant.Additional[p.Key] = p.Value;
         }
 
 

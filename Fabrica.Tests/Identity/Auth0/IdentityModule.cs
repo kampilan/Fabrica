@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using Autofac;
 using Fabrica.Identity;
 using Fabrica.Utilities.Container;
 
@@ -8,6 +9,9 @@ namespace Fabrica.Tests.Identity.Auth0
 
     public class IdentityModule : Module
     {
+
+        private static string Auth0Management => "";
+
 
         public string Auth0Domain { get; set; } = "";
 
@@ -24,22 +28,17 @@ namespace Fabrica.Tests.Identity.Auth0
 
             builder.AddCorrelation();
 
-            var grant = new ClientCredentialGrant
+            var additional = new Dictionary<string, string>
             {
-                MetaEndpoint = MetaEndpoint,
-                ClientId = ClientId,
-                ClientSecret = ClientSecret
+                ["audience"] = Audience
             };
 
-            if (!string.IsNullOrWhiteSpace(TokenEndpoint))
-                grant.TokenEndpoint = TokenEndpoint;
 
-            if (!string.IsNullOrWhiteSpace(Audience))
-                grant.Body["audience"] = Audience;
+            builder.AddClientCredentialGrant(nameof(Auth0Management), "", ClientId, ClientSecret, TokenEndpoint, additional );
 
-            builder.AddAccessTokenSource("Auth0Management");
+            builder.AddAccessTokenSource(nameof(Auth0Management));
 
-            builder.UseAuth0IdentityProvider("Auth0Management", Auth0Domain);
+            builder.UseAuth0IdentityProvider(nameof(Auth0Management), Auth0Domain);
 
         }
 

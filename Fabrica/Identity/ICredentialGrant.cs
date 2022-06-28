@@ -10,6 +10,6 @@ public interface ICredentialGrant
     string MetaEndpoint { get; }
     string TokenEndpoint { get; }
 
-    IDictionary<string, string> Body { get; }
+    IReadOnlyDictionary<string, string> Body { get; }
 
 }

@@ -146,14 +146,6 @@ namespace Fabrica.Mediator
         }
 
 
-
-
-
-
-
-
-
-
         public async Task Publish<TNotification>( TNotification notification, CancellationToken cancellationToken = default ) where TNotification : INotification
         {
 

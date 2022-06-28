@@ -102,17 +102,24 @@ public static class AutofacExtensions
 
         if( options.GrantType == TokenApiGrantType.ClientCredential )
         {
-            grantInstance = new ClientCredentialGrant
+
+            var cc = new ClientCredentialGrant
             {
                 MetaEndpoint = options.MetaEndpoint,
                 ClientId = options.ClientId,
                 ClientSecret = options.ClientSecret
             };
 
+            foreach (var p in options.Additional)
+                cc.Additional[p.Key] = p.Value;
+
+            grantInstance = cc;
+
         }
         else if( options.GrantType == TokenApiGrantType.ResourceOwner )
         {
-            grantInstance = new ResourceOwnerGrant
+
+            var ro = new ResourceOwnerGrant
             {
                 MetaEndpoint = options.MetaEndpoint,
                 UserName = options.UserName,
@@ -120,17 +127,18 @@ public static class AutofacExtensions
                 ClientId = options.ClientId,
                 ClientSecret = options.ClientSecret
             };
+
+            foreach (var p in options.Additional)
+                ro.Additional[p.Key] = p.Value;
+
+            grantInstance = ro;
+
         }
         else
             throw new InvalidOperationException("Invalid Grant Type specified in TokenApiOptions");
 
 
 
-        if( options.Additional is { Count: > 0 } )
-        {
-            foreach (var p in options.Additional)
-                grantInstance.Body.Add(p.Key, p.Value);
-        }
 
 
         builder.RegisterInstance(grantInstance)

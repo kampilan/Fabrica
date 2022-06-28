@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Fabrica.Identity;
 
@@ -17,11 +18,12 @@ public class ResourceOwnerGrant : ICredentialGrant
     public string UserName { get; set; } = "";
     public string Password { get; set; } = "";
 
+    public Dictionary<string, string> Additional { get; } = new();
 
-    public IDictionary<string, string> Body => _build();
 
+    public IReadOnlyDictionary<string, string> Body => _build();
 
-    private IDictionary<string, string> _build()
+    private IReadOnlyDictionary<string, string> _build()
     {
 
         var dict = new Dictionary<string, string>
@@ -41,8 +43,11 @@ public class ResourceOwnerGrant : ICredentialGrant
         if( !string.IsNullOrWhiteSpace(Password) )
             dict["password"] = Password;
 
+        foreach (var p in Additional)
+            dict[p.Key] = p.Value;
 
-        return dict;
+
+        return new ReadOnlyDictionary<string, string>(dict);
 
     }
 
