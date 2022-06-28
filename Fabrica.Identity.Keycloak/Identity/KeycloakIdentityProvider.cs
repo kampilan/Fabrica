@@ -62,17 +62,18 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
         User? user = null;
         try
         {
-            if (!string.IsNullOrWhiteSpace(request.IdentityUid))
+
+            if( !string.IsNullOrWhiteSpace(request.IdentityUid) )
                 user = await client.GetUserAsync(Realm, request.IdentityUid);
 
-            if (user is null && !string.IsNullOrWhiteSpace(request.CurrentUsername))
+            if( user is null && !string.IsNullOrWhiteSpace(request.CurrentUsername) )
             {
                 logger.Debug("Attempting to fetch by Username");
-                var list = await client.GetUsersAsync(Realm, email: request.CurrentUsername);
+                var list = await client.GetUsersAsync(Realm, username: request.CurrentUsername);
                 user = list.FirstOrDefault();
             }
 
-            if (user is null && !string.IsNullOrWhiteSpace(request.CurrentEmail))
+            if( user is null && !string.IsNullOrWhiteSpace(request.CurrentEmail) )
             {
                 logger.Debug("Attempting to fetch by Email");
                 var list = await client.GetUsersAsync(Realm, email: request.CurrentEmail);
