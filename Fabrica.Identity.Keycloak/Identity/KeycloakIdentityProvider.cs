@@ -256,6 +256,8 @@ public class KeycloakIdentityProvider: CorrelatedObject, IIdentityProvider
             response.Created = false;
             response.Password = "";
 
+            logger.LogObject(nameof(response), response);
+
 
         }
 

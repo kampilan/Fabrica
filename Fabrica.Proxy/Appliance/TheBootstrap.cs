@@ -194,8 +194,8 @@ namespace Fabrica.Proxy.Appliance
                 var authBuilder = services.AddAuthentication(op =>
                 {
                     op.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    op.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                    op.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    op.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    op.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 });
 
 
