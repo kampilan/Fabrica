@@ -194,8 +194,8 @@ namespace Fabrica.Proxy.Appliance
                 var authBuilder = services.AddAuthentication(op =>
                 {
                     op.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    op.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    op.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    op.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    op.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 });
 
 
@@ -433,13 +433,14 @@ namespace Fabrica.Proxy.Appliance
 
         private void ConfigureCookieAuth(CookieAuthenticationOptions options)
         {
-            options.Cookie.Name = "__Fabrica.Proxy";
-            options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.Name     = "__Fabrica.Proxy";
+            options.Cookie.SameSite = SameSiteMode.Lax;
         }
 
         private void ConfigureOidcAuth(OpenIdConnectOptions options)
         {
 
+            options.SignInScheme = "Cookies";
 
             options.MetadataAddress = MetadataAddress;
             options.ClientId = OidcClientId;
