@@ -319,8 +319,8 @@ namespace Fabrica.Proxy.Appliance
             builder.UseRequestLogging();
 
 
-            if( IncludeUserAuthentication )
-                builder.UseSecurityHeaders();
+//            if( IncludeUserAuthentication )
+//                builder.UseSecurityHeaders();
 
 
             builder.UseForwardedHeaders();
