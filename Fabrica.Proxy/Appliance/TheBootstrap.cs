@@ -361,6 +361,8 @@ namespace Fabrica.Proxy.Appliance
                             <meta http-equiv='refresh' content='0;url={loc}' />
                         </head></html>";
 
+                        ctx.Response.ContentType = "text/html";
+
                         await ctx.Response.WriteAsync(html);
 
                     }
