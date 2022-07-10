@@ -318,6 +318,11 @@ namespace Fabrica.Proxy.Appliance
 
             builder.UseRequestLogging();
 
+
+            if( IncludeUserAuthentication )
+                builder.UseSecurityHeaders();
+
+
             builder.UseForwardedHeaders();
 
             builder.UseRouting();
