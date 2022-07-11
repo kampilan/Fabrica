@@ -53,9 +53,6 @@ namespace Fabrica.Proxy.Appliance
         public string OidcClientSecret { get; set; } = "";
 
 
-        public bool UseSession { get; set; } = false;
-        public string RedisConnectionStr { get; set; } = "";
-
         public bool UseCors { get; set; } = false;
 
 
@@ -193,9 +190,9 @@ namespace Fabrica.Proxy.Appliance
                 logger.Debug("Attempting to configure Authentication");
                 var authBuilder = services.AddAuthentication(op =>
                 {
-                    op.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    op.DefaultScheme          = CookieAuthenticationDefaults.AuthenticationScheme;
                     op.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                    op.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    op.DefaultSignOutScheme   = OpenIdConnectDefaults.AuthenticationScheme;
                 });
 
 
@@ -246,26 +243,6 @@ namespace Fabrica.Proxy.Appliance
                     op.AddPolicy("Authentication:User", defPolicy);
 
                 });
-
-                if (UseSession)
-                {
-
-                    services.AddStackExchangeRedisCache(o =>
-                    {
-                        o.Configuration = RedisConnectionStr;
-                        o.InstanceName = "session_";
-                    });
-
-                    services.AddSession(o =>
-                    {
-                        o.IdleTimeout = TimeSpan.FromMinutes(30);
-                        o.Cookie.Name = "Fabrica.Proxy";
-                        o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                        o.Cookie.HttpOnly = true;
-                        o.Cookie.SameSite = SameSiteMode.Strict;
-                    });
-
-                }
 
 
             }
@@ -328,7 +305,7 @@ namespace Fabrica.Proxy.Appliance
             builder.UseRouting();
 
 
-            if (UseCors)
+            if( UseCors )
             {
 
                 builder.UseCors(b =>
@@ -379,15 +356,11 @@ namespace Fabrica.Proxy.Appliance
             builder.UseMiddleware<ProxyTokenBuilderMiddleware>();
 
 
-            if (UseSession)
-                builder.UseSession();
-
-
             builder.UseEndpoints(ep =>
             {
 
 
-                if (ConfigureForAuthentication && IncludeUserAuthentication)
+                if( ConfigureForAuthentication && IncludeUserAuthentication )
                 {
 
                     ep.Map(LoginRoute, async c =>
