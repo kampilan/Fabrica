@@ -287,6 +287,10 @@ namespace Fabrica.Proxy.Appliance
                 .AutoActivate();
 
 
+            builder.RegisterType<AuthRedirectInterceptFilter>()
+                .AsSelf()
+                .InstancePerDependency();
+
         }
 
 
