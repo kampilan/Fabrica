@@ -322,36 +322,12 @@ namespace Fabrica.Proxy.Appliance
             if( ConfigureForAuthentication )
             {
 
-
-                builder.Use(async (ctx, next) =>
-                {
-
-                    await next();
-
-                    if( ctx.Request.Path == "/signin-oidc" && ctx.Response.StatusCode == 302 )
-                    {
-                        var loc = ctx.Response.Headers["location"];
-                        ctx.Response.StatusCode = 200;
-
-                        var html = $@"
-                        <html><head>
-                            <meta http-equiv='refresh' content='0;url={loc}' />
-                        </head></html>";
-
-                        ctx.Response.ContentType = "text/html";
-
-                        await ctx.Response.WriteAsync(html);
-
-                    }
-
-                });
-                
-                
+                builder.UseMiddleware<AuthRedirectInterceptFilter>();
                 builder.UseAuthentication();
                 builder.UseAuthorization();
 
-
             }
+
 
             builder.UseMiddleware<ProxyTokenBuilderMiddleware>();
 
