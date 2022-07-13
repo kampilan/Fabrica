@@ -38,7 +38,7 @@ namespace Fabrica.Persistence.Ef.Contexts
     {
 
 
-        protected BaseDbContext( ICorrelation correlation, [NotNull] DbContextOptions options, ILoggerFactory factory=null ): base( options )
+        protected BaseDbContext( ICorrelation correlation, [NotNull] DbContextOptions options, ILoggerFactory factory ): base( options )
         {
 
             Correlation = correlation;

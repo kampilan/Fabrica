@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedMember.Global
+
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -73,7 +75,11 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
             logger.Debug("Attempting to get first filter");
             var filter = Request.Filters.FirstOrDefault();
 
-            Filter = (RqlFilterBuilder<TResponse>) filter ?? throw new PredicateException("At least 1 filter must be defined to use Thin query");
+            // ReSharper disable once JoinNullCheckWithUsage
+            if( filter is null)
+                throw new PredicateException("At least 1 filter must be defined to use Thin query");
+
+            Filter = (RqlFilterBuilder<TResponse>) filter;
 
 
 
@@ -122,6 +128,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to serializer reader to json");
+            // ReSharper disable once IdentifierTypo
             var strm = new MemoryStream();
             await using (var writer = new StreamWriter(strm, leaveOpen: true))
             await using (var reader = await cmd.ExecuteReaderAsync(cancellationToken))

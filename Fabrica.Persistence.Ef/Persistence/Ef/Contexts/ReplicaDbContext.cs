@@ -34,14 +34,14 @@ namespace Fabrica.Persistence.Ef.Contexts
     {
 
 
-        public ReplicaDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory factory=null) : base( correlation, options, factory )
+        public ReplicaDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory factory) : base( correlation, options, factory )
         {
            
 
         }
 
 
-        public DbSet<AuditJournalModel> AuditJournals { get; set; }
+        public DbSet<AuditJournalModel> AuditJournals { get; set; } = null!;
 
 
     }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReSharper disable UnusedMember.Global
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,7 +15,6 @@ using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Utilities.Container;
-using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,7 +47,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
         protected abstract Func<TDbContext,IQueryable<TResponse>> One { get; }
 
 
-        protected TResponse Entity { get; private set; }
+        protected TResponse Entity { get; private set; } = null!;
 
 
 
@@ -115,7 +116,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
             logger.Inspect(nameof(DuplicateChecks.Count), DuplicateChecks.Count);
 
 
-            PredicateException pe = null;
+            PredicateException? pe = null;
 
             foreach (var check in DuplicateChecks )
             {
@@ -145,11 +146,12 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
 
 
-        protected IDictionary<string,object> Properties { get; private set; }
+        protected IDictionary<string, object> Properties { get; private set; } = null!;
 
 
-        private NullabilityInfoContext _nulctx = new NullabilityInfoContext();
-        protected async Task ApplyReference<TReference>([NotNull] TResponse target, [NotNull] Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
+        private NullabilityInfoContext _nullctx = new ();
+        protected async Task ApplyReference<TReference>( TResponse target, Expression<Func<TResponse, TReference>> getter, CancellationToken token = default) where TReference : class, IModel
         {
 
             if (target == null) throw new ArgumentNullException(nameof(target));
@@ -172,14 +174,14 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
                 // *****************************************************************
                 logger.Debug("Attempting to fetch reference using uid");
-                TReference re;
+                TReference? re;
                 if (!string.IsNullOrWhiteSpace(uid))
                 {
                     re = await Context.Set<TReference>().SingleOrDefaultAsync(e => e.Uid == uid, cancellationToken: token);
                     if (re == null)
                         throw new NotFoundException($"Could not find {typeof(TReference).Name} for Property ({pi.Name}) using ({uid})");
                 }
-                else if (_nulctx.Create(pi).WriteState is NullabilityState.Nullable)
+                else if (_nullctx.Create(pi).WriteState is NullabilityState.Nullable)
                     re = null;
                 else
                     throw new ValidationException(new List<EventDetail>{new ()
@@ -195,7 +197,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
                 // *****************************************************************
                 logger.Debug("Attempting to set property on target");
-                pi.GetSetMethod()?.Invoke(target, new object[] { re });
+                pi.GetSetMethod()?.Invoke(target, new object[] { re! });
 
 
 
@@ -209,7 +211,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
         }
 
-        protected async Task ApplyReferenceByName<TReference>([NotNull] TResponse target, [NotNull] string name, CancellationToken token = default) where TReference : class, IModel
+        protected async Task ApplyReferenceByName<TReference>( TResponse target, string name, CancellationToken token = default) where TReference : class, IModel
         {
 
             if (target == null) throw new ArgumentNullException(nameof(target));
@@ -254,7 +256,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
             // *****************************************************************
             logger.Debug("Attempting to fetch reference using uid");
 
-            TReference replacement;
+            TReference? replacement;
             if( !string.IsNullOrWhiteSpace(uid) )
             {
                 
@@ -265,7 +267,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
                 logger.LogObject(nameof(replacement), replacement);
 
             }
-            else if( _nulctx.Create(pi).WriteState is NullabilityState.Nullable )
+            else if( _nullctx.Create(pi).WriteState is NullabilityState.Nullable )
                 replacement = null;
             else
                 throw new ValidationException( new List<EventDetail>{new ()
@@ -281,7 +283,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
             // *****************************************************************
             logger.Debug("Attempting to call setter with new reference");
-            method.Invoke(target, new object[] { replacement });
+            method.Invoke(target, new object[] { replacement! });
 
 
 

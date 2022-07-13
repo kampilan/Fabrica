@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.7.9.16" />
-    <PackageReference Include="System.Management.Automation" Version="7.2.4" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.9.23" />
+    <PackageReference Include="System.Management.Automation" Version="7.2.5" />
   </ItemGroup>
 
 </Project>

@@ -36,7 +36,6 @@ using Fabrica.Rules;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
@@ -49,7 +48,7 @@ namespace Fabrica.Persistence.Ef.Contexts
     {
 
 
-        public OriginDbContext(ICorrelation correlation, IRuleSet rules, [NotNull] DbContextOptions options, ILoggerFactory factory = null) : base(correlation, options, factory)
+        public OriginDbContext(ICorrelation correlation, IRuleSet rules, DbContextOptions options, ILoggerFactory factory) : base(correlation, options, factory)
         {
 
             Rules = rules;
@@ -57,7 +56,7 @@ namespace Fabrica.Persistence.Ef.Contexts
         }
 
 
-        public bool EvaluatateEntities { get; set; } = true;
+        public bool EvaluateEntities { get; set; } = true;
 
         protected IRuleSet Rules { get; }
 
@@ -134,7 +133,7 @@ namespace Fabrica.Persistence.Ef.Contexts
 
 
                     // *****************************************************************
-                    if( EvaluatateEntities && (entry.State is EntityState.Added or EntityState.Modified) )
+                    if( EvaluateEntities && (entry.State is EntityState.Added or EntityState.Modified) )
                         context.AddFacts(entry.Entity);
 
 
@@ -207,18 +206,17 @@ namespace Fabrica.Persistence.Ef.Contexts
         #region Journaling
 
 
-        public IModel Root { get; set; }
+        public IModel? Root { get; set; }
 
 
 
-        public DbSet<AuditJournalModel> AuditJournals { get; set; }
+        public DbSet<AuditJournalModel> AuditJournals { get; set; } = null!;
 
 
         public bool PerformAuditing { get; set; } = true;
 
 
-        [NotNull]
-        protected virtual AuditJournalModel CreateAuditJournal(DateTime journalTime, AuditJournalType type, [NotNull] IModel entity, [CanBeNull] PropertyEntry prop = null)
+        protected virtual AuditJournalModel CreateAuditJournal(DateTime journalTime, AuditJournalType type, IModel entity, PropertyEntry? prop = null)
         {
 
             var ident = Correlation.ToIdentity() ?? new ClaimsIdentity();
@@ -243,13 +241,13 @@ namespace Fabrica.Persistence.Ef.Contexts
 
                 var prev = prop.OriginalValue?.ToString() ?? "";
                 if (prev.Length > 255)
-                    prev = prev.Substring(0, 255);
+                    prev = prev[..255];
 
                 aj.PreviousValue = prev;
 
                 var curr = prop.CurrentValue?.ToString() ?? "";
                 if (curr.Length > 255)
-                    curr = curr.Substring(0, 255);
+                    curr = curr[..255];
 
                 aj.CurrentValue = curr;
 
@@ -420,7 +418,7 @@ namespace Fabrica.Persistence.Ef.Contexts
 
 
 
-        protected virtual void PerformDetailJournaling([NotNull] EntityEntry entry, IList<AuditJournalModel> journals, DateTime journalTime)
+        protected virtual void PerformDetailJournaling( EntityEntry entry, IList<AuditJournalModel> journals, DateTime journalTime )
         {
 
 
@@ -432,7 +430,7 @@ namespace Fabrica.Persistence.Ef.Contexts
                 logger.EnterMethod();
 
 
-                if (!(entry.Entity is IModel entity))
+                if( entry.Entity is not IModel entity )
                     return;
 
 

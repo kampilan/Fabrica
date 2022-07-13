@@ -34,7 +34,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
         protected abstract Func<TDbContext,IQueryable<TModel>> One { get; }
 
-        protected TModel Entity { get; private set; }
+        protected TModel Entity { get; private set; } = null!;
 
 
         protected override async Task Before()
