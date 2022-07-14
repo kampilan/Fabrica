@@ -244,19 +244,6 @@ namespace Fabrica.Proxy.Appliance
 
                 });
 
-
-                services.AddSession(o =>
-                {
-                    o.IdleTimeout = TimeSpan.FromMinutes(30);
-                    o.Cookie.Name = "Fabrica.Proxy";
-                    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    o.Cookie.HttpOnly = true;
-                    o.Cookie.SameSite = SameSiteMode.Strict;
-                });
-
-
-
-
             }
 
 
@@ -347,7 +334,6 @@ namespace Fabrica.Proxy.Appliance
 
             builder.UseMiddleware<ProxyTokenBuilderMiddleware>();
 
-            builder.UseSession();
 
             builder.UseEndpoints(ep =>
             {
@@ -395,9 +381,6 @@ namespace Fabrica.Proxy.Appliance
 
                        if (c.User.Identity?.IsAuthenticated ?? false)
                        {
-
-                           c.Session.Clear();
-                           await c.Session.CommitAsync();
 
                            foreach (var ck in c.Request.Cookies.Keys)
                                c.Response.Cookies.Delete(ck);
