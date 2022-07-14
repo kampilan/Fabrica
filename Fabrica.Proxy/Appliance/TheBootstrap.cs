@@ -245,6 +245,18 @@ namespace Fabrica.Proxy.Appliance
                 });
 
 
+                services.AddSession(o =>
+                {
+                    o.IdleTimeout = TimeSpan.FromMinutes(30);
+                    o.Cookie.Name = "Fabrica.Proxy";
+                    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    o.Cookie.HttpOnly = true;
+                    o.Cookie.SameSite = SameSiteMode.Strict;
+                });
+
+
+
+
             }
 
 
@@ -335,6 +347,7 @@ namespace Fabrica.Proxy.Appliance
 
             builder.UseMiddleware<ProxyTokenBuilderMiddleware>();
 
+            builder.UseSession();
 
             builder.UseEndpoints(ep =>
             {
