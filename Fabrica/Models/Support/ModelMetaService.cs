@@ -112,7 +112,8 @@ public class ModelMetaService: IModelMetaService, IRequiresStart
             void ForReferences()
             {
 
-                var meta = new ModelMeta(aliasKey, "", target, projection, exclusions, creatables, updatables);
+                var resourceKey = (attr == null || string.IsNullOrWhiteSpace(attr.Resource) ? target.Name.Pluralize() : attr.Resource).ToLowerInvariant();
+                var meta = new ModelMeta(aliasKey, resourceKey, target, projection, exclusions, creatables, updatables);
 
                 amap[aliasKey] = meta;
                 tmap[target]   = meta;
