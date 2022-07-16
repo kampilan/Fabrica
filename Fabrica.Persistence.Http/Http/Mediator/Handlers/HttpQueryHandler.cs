@@ -27,6 +27,8 @@ public class HttpQueryHandler<TExplorer>: BaseHttpHandler<QueryEntityRequest<TEx
         logger.Debug("Attempting to get Meta for given explorer type");
         var meta = Meta.GetMetaFromType(typeof(TExplorer));
 
+        logger.LogObject(nameof(meta), meta);
+
 
 
         // *****************************************************************

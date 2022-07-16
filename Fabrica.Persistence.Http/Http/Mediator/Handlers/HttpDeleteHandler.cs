@@ -28,6 +28,8 @@ public class HttpDeleteHandler<TEntity> : BaseHttpHandler<DeleteEntityRequest<TE
         logger.Debug("Attempting to get Meta for given explorer type");
         var meta = Meta.GetMetaFromType(typeof(TEntity));
 
+        logger.LogObject(nameof(meta), meta);
+
 
 
         // *****************************************************************

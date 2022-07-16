@@ -23,6 +23,11 @@ public static class AutofacExtensions
             .AsImplementedInterfaces()
             .InstancePerDependency();
 
+        builder.RegisterGeneric(typeof(HttpCreateMemberHandler<,>))
+            .AsImplementedInterfaces()
+            .InstancePerDependency();
+
+
         builder.RegisterGeneric(typeof(HttpUpdateHandler<>))
             .AsImplementedInterfaces()
             .InstancePerDependency();

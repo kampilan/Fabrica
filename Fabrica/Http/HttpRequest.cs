@@ -25,7 +25,6 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
 using Fabrica.Watch;
 using JetBrains.Annotations;
@@ -49,7 +48,7 @@ namespace Fabrica.Http
         public IDictionary<string, string> CustomHeaders { get; } = new Dictionary<string, string>();
 
 
-        public HttpContent BodyContent { get; set; } = null;
+        public HttpContent BodyContent { get; set; }
 
 
         public bool DebugMode { get; set; }
