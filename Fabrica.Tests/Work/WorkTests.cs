@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Fabrica.Work.Processor.Parsers;
+using NCrontab.Advanced;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -173,6 +175,48 @@ public class WorkTests
 
 
     }
+
+    [Test]
+    public void Test_0500_0600_CronParse()
+    {
+
+        var inst1 = CrontabSchedule.Parse("0 0 14,L * ?");
+
+        var next1 = inst1.GetNextOccurrence(new DateTime(2022, 8, 1, 0, 0, 0));
+        next1 = inst1.GetNextOccurrence(next1);
+
+
+        var inst2 = CrontabSchedule.Parse("0 0 1,15 * ?");
+
+        var next2 = inst2.GetNextOccurrence(new DateTime(2022, 8, 1, 0, 0, 0));
+
+        var pt = inst1.GetNextOccurrence(next2);
+        
+        
+        next2 = inst2.GetNextOccurrence(next2);
+
+
+
+
+        var inst3 = CrontabSchedule.Parse("0 0 * * 5L");
+
+        var next3 = inst3.GetNextOccurrence(new DateTime(2022, 8, 1, 0, 0, 0));
+        next3 = inst3.GetNextOccurrence(next3);
+
+
+        var inst4 = CrontabSchedule.Parse("0 0 */7 * ?");
+
+        var next4 = inst4.GetNextOccurrence(new DateTime(2022, 8, 3, 0, 0, 0));
+        next4 = inst4.GetNextOccurrence(next4);
+        next4 = inst4.GetNextOccurrence(next4);
+        next4 = inst4.GetNextOccurrence(next4);
+        next4 = inst4.GetNextOccurrence(next4);
+        next4 = inst4.GetNextOccurrence(next4);
+
+
+
+    }
+
 
 
 
