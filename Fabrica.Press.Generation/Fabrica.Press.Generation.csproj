@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GemBox.Document" Version="35.0.1055" />
+    <PackageReference Include="GemBox.Document" Version="35.0.1105" />
     <PackageReference Include="PDFsharpNetStandard2" Version="1.51.4845" />
   </ItemGroup>
 

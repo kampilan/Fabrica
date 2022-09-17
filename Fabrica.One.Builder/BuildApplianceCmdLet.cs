@@ -7,6 +7,7 @@ using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
+using GemBox.Document;
 
 namespace Fabrica.One.Builder;
 
@@ -54,6 +55,16 @@ public class BuildApplianceCmdLet: Cmdlet
 
     [Parameter(Position = 10, HelpMessage = "Entry Assembly Name")]
     public string Assembly { get; set; } = "Appliance";
+
+    [Parameter(Position = 11, HelpMessage = "Gembox License")]
+    public string License { get; set; } = "";
+
+    [Parameter(Position = 12, HelpMessage = "Path to documentation template (docx)")]
+    public string DocumentSource { get; set; } = "";
+
+    [Parameter(Position = 13, HelpMessage = "Template used to build appliance configuration documentation output (pdf) name.")]
+    public string PdfTemplate { get; set; } = "appliances/{0}/{0}-{1}-documentation.pdf";
+
 
 
     protected override void ProcessRecord()
@@ -168,7 +179,7 @@ public class BuildApplianceCmdLet: Cmdlet
             key          = string.Format( OutputTemplate, Name.ToLowerInvariant(), fullBuildNum );
             var manifest = string.Format( ManifestTemplate, Name.ToLowerInvariant(), fullBuildNum );
 
-            await _uploadToS3( client, key, manifest, package, fullBuildNum );
+            await _uploadToS3( client, key, manifest, package, fullBuildNum, "" );
 
 
             if( GenerateLatest )
@@ -176,7 +187,7 @@ public class BuildApplianceCmdLet: Cmdlet
                 key = string.Format(OutputTemplate, Name.ToLowerInvariant(), "latest");
                 manifest = string.Format(ManifestTemplate, Name.ToLowerInvariant(), "latest");
 
-                await _uploadToS3(client, key, manifest, package, "latest");
+                await _uploadToS3(client, key, manifest, package, "latest", "");
             }
 
 
@@ -190,7 +201,7 @@ public class BuildApplianceCmdLet: Cmdlet
     }
 
 
-    private async Task _uploadToS3( IAmazonS3 client, string key, string manifest, string package, string build )
+    private async Task _uploadToS3( IAmazonS3 client, string key, string manifest, string package, string build, string documentation )
     {
 
             
@@ -252,6 +263,42 @@ public class BuildApplianceCmdLet: Cmdlet
                 await client.PutObjectAsync(hashReq);
 
             }
+
+
+
+
+            await using (var docoStrm = new MemoryStream())
+            await using (var writer = new StreamWriter(docoStrm))
+            {
+
+                ComponentInfo.SetLicense(License);
+
+                var doc = DocumentModel.Load(DocumentSource);
+
+                doc.MailMerge.Execute(bm);
+
+                doc.Save(docoStrm,SaveOptions.PdfDefault);
+
+                docoStrm.Seek(0, SeekOrigin.Begin);
+
+                var hashReq = new PutObjectRequest
+                {
+                    BucketName = Bucket,
+                    Key = documentation,
+                    InputStream = docoStrm,
+                    ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                };
+
+                await client.PutObjectAsync(hashReq);
+
+            }
+
+
+
+
+
+
+
 
         }
 

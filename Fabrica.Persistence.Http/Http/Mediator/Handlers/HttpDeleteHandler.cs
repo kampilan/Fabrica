@@ -1,51 +1,73 @@
-﻿using Fabrica.Http;
+﻿using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Fabrica.Http;
 using Fabrica.Models.Support;
+using Fabrica.Persistence.Http.Mediator.Handlers;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Persistence.Http.Mediator.Handlers;
-
-public class HttpDeleteHandler<TEntity> : BaseHttpHandler<DeleteEntityRequest<TEntity>> where TEntity : class, IModel
+namespace Fabrica.Persistence.Http.Mediator.Handlers
 {
 
-    
-    public HttpDeleteHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
-    {
-    }
 
-    protected override async Task Perform(CancellationToken cancellationToken = default)
+    public class HttpDeleteHandler<TEntity> : BaseHttpHandler<DeleteEntityRequest<TEntity>> where TEntity : class, IModel
     {
 
 
-        using var logger = EnterMethod();
+        public HttpDeleteHandler(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
+        {
+        }
+
+        protected override async Task Perform(CancellationToken cancellationToken = default)
+        {
 
 
-        logger.Inspect("Entity Type", typeof(TEntity).FullName);
+            var logger = GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
 
 
-
-        // *****************************************************************
-        logger.Debug("Attempting to get Meta for given explorer type");
-        var meta = Meta.GetMetaFromType(typeof(TEntity));
-
-        logger.LogObject(nameof(meta), meta);
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to build request");
-        var request = HttpRequestBuilder.Delete()
-            .ForResource(meta.Resource)
-            .WithIdentifier(Request.Uid);
+                logger.Inspect("Entity Type", typeof(TEntity).FullName);
 
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to send request");
-        await Send(request, cancellationToken);
+                // *****************************************************************
+                logger.Debug("Attempting to get Meta for given explorer type");
+                var meta = Meta.GetMetaFromType(typeof(TEntity));
+
+                logger.LogObject(nameof(meta), meta);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build request");
+                var request = HttpRequestBuilder.Delete()
+                    .ForResource(meta.Resource)
+                    .WithIdentifier(Request.Uid);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to send request");
+                await Send(request, cancellationToken);
+
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+
+
+        }
 
 
     }
-
 
 }

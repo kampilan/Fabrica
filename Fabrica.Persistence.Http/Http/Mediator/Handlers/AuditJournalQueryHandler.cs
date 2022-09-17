@@ -1,60 +1,78 @@
-﻿using Fabrica.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Fabrica.Http;
 using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Persistence.Http.Mediator.Handlers;
-
-public class HttpAuditJournalQueryHandler<TEntity>: BaseHttpHandler<AuditJournalQueryRequest<TEntity>,List<AuditJournalModel>> where TEntity: class, IMutableModel
+namespace Fabrica.Persistence.Http.Mediator.Handlers
 {
 
-
-    public HttpAuditJournalQueryHandler( ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
-    {
-    }
-
-
-    protected override async Task<List<AuditJournalModel>> Perform(CancellationToken cancellationToken = default)
+    public class HttpAuditJournalQueryHandler<TEntity> : BaseHttpHandler<AuditJournalQueryRequest<TEntity>, List<AuditJournalModel>> where TEntity : class, IMutableModel
     {
 
-        using var logger = EnterMethod();
+
+        public HttpAuditJournalQueryHandler(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
+        {
+        }
 
 
-        logger.Inspect("Entity Type", typeof(TEntity).FullName);
+        protected override async Task<List<AuditJournalModel>> Perform(CancellationToken cancellationToken = default)
+        {
 
+            var logger = this.GetLogger();
 
+            try
+            {
 
-        // *****************************************************************
-        logger.Debug("Attempting to get Meta for given explorer type");
-        var meta = Meta.GetMetaFromType(typeof(TEntity));
+                logger.EnterMethod();
 
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to build request");
-        var request = HttpRequestBuilder.Get()
-            .ForResource(meta.Resource)
-            .WithIdentifier(Request.Uid)
-            .WithSubResource("journal");
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to send request");
-        var response = await Send(request,cancellationToken);
+                logger.Inspect("Entity Type", typeof(TEntity).FullName);
 
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to build entity from body");
-        var list = response.FromBodyToList<AuditJournalModel>();
+                // *****************************************************************
+                logger.Debug("Attempting to get Meta for given explorer type");
+                var meta = Meta.GetMetaFromType(typeof(TEntity));
 
 
 
-        // *****************************************************************
-        return list;
+                // *****************************************************************
+                logger.Debug("Attempting to build request");
+                var request = HttpRequestBuilder.Get()
+                    .ForResource(meta.Resource)
+                    .WithIdentifier(Request.Uid)
+                    .WithSubResource("journal");
 
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to send request");
+                var response = await Send(request, cancellationToken);
+
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build entity from body");
+                var list = response.FromBodyToList<AuditJournalModel>();
+
+
+
+                // *****************************************************************
+                return list;
+
+
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+
+        }
 
     }
 

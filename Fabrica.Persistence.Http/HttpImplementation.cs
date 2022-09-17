@@ -1,6 +1,10 @@
-﻿namespace Fabrica.Persistence;
-
-public static class HttpImplementation
+﻿namespace Fabrica.Persistence
 {
 
+    public static class HttpImplementation
+    {
+
+    }
+
 }
+

@@ -295,7 +295,7 @@ public class TheModule : Module
         builder.UseMediator()
             .AddHttpClientMediatorHandlers();
 
-        builder.AddHttpClient("Api", "https://kampilan.ngrok.io/fake/api/");
+        builder.AddHttpClient("Api", "https://fabrica.ngrok.io/fake/api/");
 
 
     }
