@@ -62,6 +62,9 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
             logger.Debug("Attempting to create new entity");
             var entity = new TResponse();
 
+            if( !string.IsNullOrWhiteSpace(Request.Uid) )
+                entity.Uid = Request.Uid;
+
             logger.LogObject(nameof(entity), entity);
 
 
