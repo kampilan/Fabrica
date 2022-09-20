@@ -46,6 +46,18 @@ namespace Fabrica.Mediator
         }
 
 
+        public static ContainerBuilder AddHttpRpcHandler(this ContainerBuilder builder)
+        {
+
+            builder.RegisterGeneric(typeof(HttpRpcHandler<,>))
+                .AsImplementedInterfaces()
+                .InstancePerDependency();
+
+            return builder;
+
+        }
+
+
     }
 
 }

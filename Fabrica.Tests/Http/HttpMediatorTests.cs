@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -95,7 +96,7 @@ public class HttpMediatorTests
         using (var scope = TheContainer.BeginLifetimeScope())
         {
 
-            var critera = new PersonCritera
+            var critera = new PersonCriteria
             {
                 FirstName = "J",
                 LastName  = "M"
@@ -274,6 +275,38 @@ public class HttpMediatorTests
     }
 
 
+    [Test]
+    public async Task Test0700_0100_RpcCall()
+    {
+        
+        await using var scope = TheContainer.BeginLifetimeScope();
+
+        var req = new RepositoryUrlRequest
+        {
+            FileExtension = "wav",
+            GenerateGet = true,
+            GeneratePut = true
+        };
+
+        var request = new HttpRpcRequest<RepositoryUrlResponse>(req)
+        {
+            HttpClientName = "Telephony"
+        };
+
+        var mediator = scope.Resolve<IMessageMediator>();
+
+        var response = await mediator.Send(request);
+
+        Assert.NotNull(response);
+        Assert.IsTrue(response.Ok);
+
+        Assert.NotNull(response.Value);
+        Assert.IsNotEmpty(response.Value.GetUrl);
+        Assert.IsNotEmpty(response.Value.PutUrl);
+
+
+    }
+
 }
 
 
@@ -293,9 +326,12 @@ public class TheModule : Module
             .AddModelMetaSource(Assembly.GetExecutingAssembly());
 
         builder.UseMediator()
+            .AddHttpRpcHandler()
             .AddHttpClientMediatorHandlers();
 
         builder.AddHttpClient("Api", "https://fabrica.ngrok.io/fake/api/");
+        builder.AddHttpClient("Telephony", "https://fabrica.ngrok.io/telephony/api/");
+
 
 
     }
@@ -303,7 +339,7 @@ public class TheModule : Module
 }
 
 
-public class PersonCritera: BaseCriteria
+public class PersonCriteria: BaseCriteria
 {
 
     [Criterion(Operation = RqlOperator.StartsWith)]
@@ -315,4 +351,37 @@ public class PersonCritera: BaseCriteria
     public string LastName { get; set; }
 
 }
+
+[HttpRpcRequest("repository")]
+public class RepositoryUrlRequest
+{
+
+    public string Key { get; set; } = "";
+    public string FileExtension { get; set; } = "";
+    public string ContentType { get; set; } = "";
+
+    public int TimeToLive { get; set; }
+
+    public bool GenerateGet { get; set; }
+    public bool GeneratePut { get; set; }
+
+}
+
+public class RepositoryUrlResponse
+{
+
+
+    public string Key { get; set; } = "";
+    public string ContentType { get; set; } = "";
+
+    public DateTime Expiration { get; set; }
+
+
+    public string GetUrl { get; set; } = "";
+    public string PutUrl { get; set; } = "";
+
+
+}
+
+
 
