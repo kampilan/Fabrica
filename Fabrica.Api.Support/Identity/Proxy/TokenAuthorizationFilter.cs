@@ -24,6 +24,9 @@ namespace Fabrica.Api.Support.Identity.Proxy
 
             if ( identity.IsAuthenticated )
             {
+
+                
+                
                 logger.Debug("Authorized");
                 return;
             }

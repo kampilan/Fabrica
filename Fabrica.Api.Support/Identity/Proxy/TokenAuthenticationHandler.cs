@@ -69,7 +69,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
 
-            using var logger = this.EnterMethod();
+            using var logger = Correlation.EnterMethod();
 
 
             var token = Context.Request.Headers[TokenConstants.HeaderName].FirstOrDefault();
@@ -118,7 +118,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
             // *****************************************************************
             logger.Debug("Attempting to set Caller on Correlation");
             if( Correlation is Correlation impl )
-                impl.Caller = result.Principal;
+                impl.Caller = cp;
 
 
 
