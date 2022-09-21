@@ -4,15 +4,16 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Autofac;
-using Fabrica.One.Persistence;
-using Fabrica.One.Persistence.Work;
+using Fabrica.One.Persistence.Contexts;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
-using Fabrica.Work.Processor.Parsers;
+using Fabrica.One.Work.Processor.Parsers;
+using Microsoft.EntityFrameworkCore;
 using NCrontab.Advanced;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Polly;
 
 namespace Fabrica.Tests.Work;
 
@@ -148,8 +149,8 @@ public class WorkTests
         using (var scope = Container.BeginLifetimeScope())
         {
 
-            var repository = scope.Resolve<WorkRepository>();
-            var topic = await repository.GetTopic("test-files");
+            var context = scope.Resolve<WorkDbContext>();
+            var topic = await context.WorkTopics.SingleOrDefaultAsync(e=>e.Topic == "test-files");
 
             Assert.IsNotNull(topic);
 
@@ -166,8 +167,8 @@ public class WorkTests
         using (var scope = Container.BeginLifetimeScope())
         {
 
-            var repository = scope.Resolve<WorkRepository>();
-            var topic = await repository.GetTopic("inbound-test-bad");
+            var context = scope.Resolve<WorkDbContext>();
+            var topic = context.WorkTopics.SingleOrDefaultAsync(e => e.Topic == "inbound-test-bad");
 
             Assert.IsNull(topic);
 
@@ -229,8 +230,6 @@ public class WorkTestModule : Module
     {
 
         builder.AddCorrelation();
-
-        builder.UseOnePersitence("mongodb://mongodb.fabricatio.io:27017");
 
     }
 
