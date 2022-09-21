@@ -158,6 +158,16 @@ namespace Fabrica.Models.Patch.Builder
         private ILogger Logger { get; }
 
 
+        public ModelPatch<TModel> CreatePatch<TModel>(string uid, PatchVerb verb = PatchVerb.Update) where TModel: class
+        {
+
+            var mp = new ModelPatch<TModel>(uid, verb);
+            Add( mp );
+
+            return mp;
+
+        }
+
         public void Add( IMutableModel model )
         {
             HandleObject( "", "", "",  model );

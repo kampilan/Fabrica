@@ -42,7 +42,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
         public static AuthenticationBuilder AddProxyToken( this AuthenticationBuilder builder )
         {
 
-            builder.AddScheme<TokenAuthenticationSchemeOptions, TokenAuthenticationHandler>( TokenConstants.Scheme, op => { } );
+            builder.AddScheme<TokenAuthenticationSchemeOptions, TokenAuthenticationHandler>( TokenConstants.Scheme, _ => { } );
 
             return builder;
 
@@ -118,7 +118,7 @@ namespace Fabrica.Api.Support.Identity.Proxy
             // *****************************************************************
             logger.Debug("Attempting to set Caller on Correlation");
             if( Correlation is Correlation impl )
-                impl.Caller = cp;
+                impl.Caller = result.Principal;
 
 
 

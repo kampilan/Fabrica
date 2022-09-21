@@ -54,10 +54,10 @@ namespace Fabrica.Aws.Repository
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = repositoryName,
-                Key = key,
-                Protocol = Protocol.HTTPS,
-                Verb = HttpVerb.GET,
-                Expires = DateTime.UtcNow + ttl
+                Key        = key,
+                Protocol   = Protocol.HTTPS,
+                Verb       = HttpVerb.GET,
+                Expires    = DateTime.UtcNow + ttl
             };
 
             if (!string.IsNullOrWhiteSpace(contentType))
@@ -89,10 +89,10 @@ namespace Fabrica.Aws.Repository
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = repositoryName,
-                Key = key,
-                Protocol = Protocol.HTTPS,
-                Verb = HttpVerb.PUT,
-                Expires = DateTime.UtcNow + ttl
+                Key        = key,
+                Protocol   = Protocol.HTTPS,
+                Verb       = HttpVerb.PUT,
+                Expires    = DateTime.UtcNow + ttl
             };
 
             if (!string.IsNullOrWhiteSpace(contentType))

@@ -118,6 +118,18 @@ public class PatchTests
             Assert.IsNotEmpty(requests);
             Assert.AreEqual(3, requests.Count);
 
+
+            var set3 = new PatchSet();
+
+            set3.CreatePatch<Company>("1234567890")
+                .Set(m => m.Name, "Pond Hawk Tech")
+                .Set(m => m.City, "Endwell")
+                .Set(m => m.EmployeeCount, 25);
+
+            var json3 = set3.ToJson();
+
+
+
         }
 
 
