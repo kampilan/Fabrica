@@ -465,15 +465,16 @@ namespace Fabrica.Aws
 
         }
 
-        public static ContainerBuilder AddUrlProvider(this ContainerBuilder builder, string permanent, string transient, string resource)
+        public static ContainerBuilder AddUrlProvider(this ContainerBuilder builder, string repository )
         {
 
             builder.Register(c =>
                 {
 
+                    var corr = c.Resolve<ICorrelation>();
                     var s3 = c.Resolve<IAmazonS3>();
 
-                    var comp = new S3RepositoryUrlProvider(s3, permanent, transient, resource);
+                    var comp = new S3RepositoryUrlProvider( corr, s3, repository );
 
                     return comp;
 
@@ -491,9 +492,10 @@ namespace Fabrica.Aws
             builder.Register(c =>
                 {
 
+                    var corr = c.Resolve<ICorrelation>();
                     var s3 = c.Resolve<IAmazonS3>();
 
-                    var comp = new S3RepositoryUrlProvider(s3, config.PermanentContainer, config.TransientContainer, config.ResourceContainer);
+                    var comp = new S3RepositoryUrlProvider( corr, s3, config.RepositoryContainer );
 
                     return comp;
 

@@ -5,17 +5,11 @@
     public interface IRepositoryConfiguration
     {
 
-        string PermanentContainer { get; }
+        string RepositoryContainer { get; }
+
         string PermanentRoot { get; }
-
-
-        string TransientContainer { get; }
         string TransientRoot { get; }
-
-
-        string ResourceContainer { get; }
         string ResourceRoot { get; }
-
 
     }
 

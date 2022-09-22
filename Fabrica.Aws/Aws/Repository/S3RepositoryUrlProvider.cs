@@ -1,51 +1,99 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
 
 namespace Fabrica.Aws.Repository
 {
 
 
-    public class S3RepositoryUrlProvider : IRepositoryUrlProvider
+    public class S3RepositoryUrlProvider : CorrelatedObject, IRepositoryUrlProvider
     {
 
 
-        public S3RepositoryUrlProvider( IAmazonS3 client, string permanent, string transient, string resource )
+        public S3RepositoryUrlProvider( ICorrelation correlation, IAmazonS3 client, string repository ): base(correlation)
         {
 
             Client = client;
 
-            PermanentBucket = permanent;
-            TransientBucket = transient;
-            ResourceBucket = resource;
+            RepositoryBucket = repository;
         }
 
 
         private IAmazonS3 Client { get; }
 
-        private string PermanentBucket { get; }
-        private string TransientBucket { get; }
-        private string ResourceBucket { get; }
+        private string RepositoryBucket { get; }
 
-        private string MapRepositoryType(RepositoryType type)
+
+        public async Task<RepositoryObjectMeta> GetMetaData( string key )
         {
 
-            switch (type)
+            var logger = GetLogger();
+
+            try
             {
-                case RepositoryType.Transient:
-                    return TransientBucket;
-                case RepositoryType.Permanent:
-                    return PermanentBucket;
-                case RepositoryType.Resource:
-                    return ResourceBucket;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+
+                logger.EnterMethod();
+
+
+                logger.Inspect(nameof(key), key);
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build request");
+                var request = new GetObjectMetadataRequest
+                {
+                    BucketName = RepositoryBucket,
+                    Key = key
+                };
+
+
+                GetObjectMetadataResponse response;
+                try
+                {
+
+                    // *****************************************************************
+                    logger.Debug("Attempting to send request");
+                    response = await Client.GetObjectMetadataAsync(request);
+
+                }
+                catch( Exception cause )
+                {
+                    logger.Debug( cause, "GetObjectMetadata failed. Not found?");
+                    return new RepositoryObjectMeta(false, "", 0, DateTime.MinValue);
+                }
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to process response");
+                var result = new RepositoryObjectMeta(true, response.Headers.ContentType, response.Headers.ContentLength, response.LastModified);
+
+                logger.LogObject(nameof(result), result);
+
+
+
+                // *****************************************************************
+                return result;
+
+
             }
+            catch (Exception cause)
+            {
+                var ctx = new { Key = key};
+                logger.ErrorWithContext( cause, ctx,"GetMetaData failed");
+                throw;
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
         }
 
 
-        public string CreateGetUrl(string repositoryName, string key, string contentType = "", TimeSpan ttl = default)
+        public Task<string> CreateGetUrl( string key, TimeSpan ttl = default )
         {
 
             if (ttl == default)
@@ -53,34 +101,20 @@ namespace Fabrica.Aws.Repository
 
             var request = new GetPreSignedUrlRequest
             {
-                BucketName = repositoryName,
+                BucketName = RepositoryBucket,
                 Key        = key,
                 Protocol   = Protocol.HTTPS,
                 Verb       = HttpVerb.GET,
                 Expires    = DateTime.UtcNow + ttl
             };
 
-            if (!string.IsNullOrWhiteSpace(contentType))
-                request.ContentType = contentType;
-
-
             var url = Client.GetPreSignedURL(request);
 
-            return url;
+            return Task.FromResult( url );
 
         }
 
-        public string CreateGetUrl(RepositoryType type, string key, string contentType = "", TimeSpan ttl = default)
-        {
-
-            var repo = MapRepositoryType(type);
-            var url = CreateGetUrl(repo, key, contentType, ttl);
-
-            return url;
-
-        }
-
-        public string CreatePutUrl(string repositoryName, string key, string contentType = "", TimeSpan ttl = default)
+        public Task<string> CreatePutUrl( string key, string contentType = "", TimeSpan ttl = default )
         {
 
             if (ttl == default)
@@ -88,7 +122,7 @@ namespace Fabrica.Aws.Repository
 
             var request = new GetPreSignedUrlRequest
             {
-                BucketName = repositoryName,
+                BucketName = RepositoryBucket,
                 Key        = key,
                 Protocol   = Protocol.HTTPS,
                 Verb       = HttpVerb.PUT,
@@ -101,17 +135,7 @@ namespace Fabrica.Aws.Repository
 
             var url = Client.GetPreSignedURL(request);
 
-            return url;
-
-        }
-
-        public string CreatePutUrl(RepositoryType type, string key, string contentType = "", TimeSpan ttl = default)
-        {
-
-            var repo = MapRepositoryType(type);
-            var url = CreatePutUrl(repo, key, contentType, ttl);
-
-            return url;
+            return Task.FromResult(url);
 
         }
 

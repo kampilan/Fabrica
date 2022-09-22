@@ -1,22 +1,39 @@
 ﻿using System;
+using System.Threading.Tasks;
 
-namespace Fabrica.Utilities.Repository
+namespace Fabrica.Utilities.Repository;
+
+
+public interface IRepositoryUrlProvider
 {
 
+    Task<RepositoryObjectMeta> GetMetaData( string key );
 
-    public enum RepositoryType {Transient, Permanent, Resource }
+    Task<string> CreateGetUrl(  string key, TimeSpan ttl=default );
+    
+    Task<string> CreatePutUrl(  string key, string contentType = "", TimeSpan ttl = default);
 
 
-    public interface IRepositoryUrlProvider
+}
+
+
+public class RepositoryObjectMeta
+{
+
+    public RepositoryObjectMeta(bool exists, string contentType, long contentLength, DateTime lastModified)
     {
 
-        string CreateGetUrl( string repositoryName, string key, string contentType="", TimeSpan ttl=default );
-        string CreateGetUrl( RepositoryType type, string key, string contentType = "", TimeSpan ttl = default);
-
-        string CreatePutUrl( string repositoryName, string key, string contentType = "", TimeSpan ttl = default);
-        string CreatePutUrl( RepositoryType type, string key, string contentType = "", TimeSpan ttl = default);
-
-
+        Exists       = exists;
+        ContentType   = contentType;
+        ContentLength = contentLength;
+        LastModified  = lastModified;
     }
+
+    public bool Exists { get; }
+
+    public string ContentType { get; }
+    public long ContentLength { get; }
+
+    public DateTime LastModified { get; }
 
 }
