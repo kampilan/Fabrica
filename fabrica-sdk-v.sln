@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Tests", "Fabrica.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Identity.Auth0", "Fabrica.Identity.Auth0\Fabrica.Identity.Auth0.csproj", "{E1934D6F-2617-4A1C-92BF-DDB3386AAF7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.One", "Fabrica.One\Fabrica.One.csproj", "{8449F594-FC67-41FE-816C-55D790694F5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Work", "Fabrica.Work\Fabrica.Work.csproj", "{8449F594-FC67-41FE-816C-55D790694F5E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Press.Generation", "Fabrica.Press.Generation\Fabrica.Press.Generation.csproj", "{91287193-A929-4CA0-B7E9-DD30322176F0}"
 EndProject
