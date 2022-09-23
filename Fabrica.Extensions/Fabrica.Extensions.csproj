@@ -32,7 +32,6 @@
     <Folder Include="Configuration\" />
     <Folder Include="Persistence\Thin\" />
     <Folder Include="Utilities\Sql\" />
-    <Folder Include="Utilities\Repository\" />
   </ItemGroup>
 
   <ItemGroup>

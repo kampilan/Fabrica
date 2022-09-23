@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Fabrica.Api.Support.Controllers;
+﻿using Fabrica.Api.Support.Controllers;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
 using Fabrica.Utilities.Text;
@@ -11,7 +10,7 @@ namespace Fabrica.Repository.Controllers;
 
 
 [ApiExplorerSettings(GroupName = "Repository")]
-[SwaggerResponse(200, "Success", typeof(RepositoryUrlResponse))]
+[SwaggerResponse(200, "Success", typeof(RepositoryResponse))]
 [Route("/")]
 public class RepositoryController: BaseController
 {
@@ -20,7 +19,6 @@ public class RepositoryController: BaseController
     {
 
         Provider = provider;
-
 
     }
 
@@ -75,13 +73,22 @@ public class RepositoryController: BaseController
 
     [SwaggerOperation(Summary = "Process Request", Description = "Process a request to get Urls to put and get documents to/from the repository")]
     [HttpPost]
-    public async Task<IActionResult> Process( [FromBody] RepositoryUrlRequest request )
+    public async Task<IActionResult> Process( [FromBody] RepositoryRequest request )
     {
 
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(request), request);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for leading. in Extension");
+        if( !string.IsNullOrWhiteSpace(request.Extension) && request.Extension.StartsWith(".") )
+            request.Extension = request.Extension[1..];
+
+
 
         var returnKey = false;
 
@@ -95,7 +102,7 @@ public class RepositoryController: BaseController
             var month = ts.Month.ToString().PadLeft(2,'0');
             var day   = ts.Day.ToString().PadLeft(2, '0');
             var guid  = Base62Converter.NewGuid();
-            var ext   = !string.IsNullOrWhiteSpace(request.FileExtension) ? request.FileExtension : "dat";
+            var ext   = !string.IsNullOrWhiteSpace(request.Extension) ? request.Extension : "dat";
 
             var key = $"{year}/{month}/{day}/{guid}/document.{ext}";
 
@@ -110,8 +117,9 @@ public class RepositoryController: BaseController
         logger.Debug("Attempting to build transient item key");
         if (string.IsNullOrWhiteSpace(request.Key) && request.Transient)
         {
+
             var guid = Base62Converter.NewGuid();
-            var ext = !string.IsNullOrWhiteSpace(request.FileExtension) ? request.FileExtension : "dat";
+            var ext = !string.IsNullOrWhiteSpace(request.Extension) ? request.Extension : "dat";
 
             var key = $"transient/{guid}/document.{ext}";
 
@@ -124,18 +132,16 @@ public class RepositoryController: BaseController
 
         // *****************************************************************
         logger.Debug("Attempting to dig out Content-Type ");
-        if( string.IsNullOrWhiteSpace(request.ContentType) && !string.IsNullOrWhiteSpace(request.FileExtension) )
+        if( string.IsNullOrWhiteSpace(request.ContentType) && !string.IsNullOrWhiteSpace(request.Extension) )
         {
 
             var provider = new FileExtensionContentTypeProvider();
 
-            var ext = !string.IsNullOrWhiteSpace(request.FileExtension) ? request.FileExtension : "dat";
+            var ext = !string.IsNullOrWhiteSpace(request.Extension) ? request.Extension : "dat";
             var fileName = $"document.{ext}";
 
             if( !provider.TryGetContentType(fileName, out var contentType) )
-            {
-                contentType = "application/octet-stream";
-            }
+                contentType = "";
 
             request.ContentType = contentType;
 
@@ -154,7 +160,7 @@ public class RepositoryController: BaseController
 
 
 
-        var response = new RepositoryUrlResponse();
+        var response = new RepositoryResponse();
 
         if( returnKey )
             response.Key = request.Key;
@@ -201,52 +207,6 @@ public class RepositoryController: BaseController
 
 
     }
-
-
-}
-
-
-public class RepositoryUrlRequest
-{
-
-    public bool Transient { get; set; }
-
-    public string Key { get; set; } = "";
-
-    public int TimeToLive { get; set; }
-
-    public bool GenerateGet { get; set; }
-
-    public bool GeneratePut { get; set; }
-    public string FileExtension { get; set; } = "";
-    public string ContentType { get; set; } = "";
-
-
-}
-
-public class RepositoryUrlResponse
-{
-
-    [DefaultValue("")]
-    public string Key { get; set; } = "";
-
-    [DefaultValue(0)]
-    public bool Exists { get; set; }
-
-    [DefaultValue("")]
-    public string ContentType { get; set; } = "";
-    [DefaultValue(0)]
-    public long ContentLength { get; set; }
-
-    public DateTime LastModified { get; set; }
-
-
-    public DateTime Expiration { get; set; }
-    
-    [DefaultValue("")]
-    public string GetUrl { get; set; } = "";
-    [DefaultValue("")] 
-    public string PutUrl { get; set; } = "";
 
 
 }
