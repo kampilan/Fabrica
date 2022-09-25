@@ -23,8 +23,8 @@ SOFTWARE.
 */
 
 using System.ComponentModel;
+using Fabrica.Utilities.Text;
 using Fabrica.Utilities.Types;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -35,7 +35,7 @@ namespace Fabrica.Work.Processor
     {
 
 
-        [NotNull]
+
         private static JsonSerializerSettings BuildJsonSerializerSettings()
         {
 
@@ -53,7 +53,7 @@ namespace Fabrica.Work.Processor
 
         }
 
-        [NotNull]
+
         private static JsonSerializer BuildJsonSerializer()
         {
 
@@ -72,7 +72,7 @@ namespace Fabrica.Work.Processor
         }
 
 
-        public static WorkRequest FromJson(string json)
+        public static WorkRequest? FromJson(string json)
         {
             var settings = BuildJsonSerializerSettings();
             var request = JsonConvert.DeserializeObject<WorkRequest>(json, settings );
@@ -80,14 +80,14 @@ namespace Fabrica.Work.Processor
         }
 
 
-        public string Uid { get; set; } = ShortGuid.NewGuid().ToString();
+        public string Uid { get; set; } = Base62Converter.NewGuid();
 
         [DefaultValue("")]
         public string Topic { get; set; } = "";
 
 
-        [DefaultValue(null)]
-        public JObject Payload { get; set; }
+        [DefaultValue(null)] 
+        public JObject Payload { get; set; } = null!;
 
 
         public void ToPayload( object payload )
@@ -96,7 +96,7 @@ namespace Fabrica.Work.Processor
             Payload = JObject.FromObject( payload, serializer );
         }
 
-        public TPayload FromPayload<TPayload>() where TPayload : class
+        public TPayload? FromPayload<TPayload>() where TPayload : class
         {
             var serializer = BuildJsonSerializer();
             var payload = Payload.ToObject<TPayload>( serializer );

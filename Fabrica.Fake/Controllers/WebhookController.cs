@@ -97,7 +97,7 @@ public class WebhookController: BaseController
         logger.Inspect(nameof(topic), topic);
         logger.LogObject(nameof(s3), s3);
 
-        return Task.FromResult(new StatusCodeResult(422));
+        return Task.FromResult(new StatusCodeResult(400));
 
     }
 

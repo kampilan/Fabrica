@@ -48,7 +48,7 @@ using SmartFormat;
 
 namespace Fabrica.Work.Appliance;
 
-public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
+public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
 {
 
 
@@ -70,7 +70,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
     public string WebhookEndpoint { get; set; } = "http://localhost:8080";
 
     public string IdentitySubject { get; set; } = "";
-    
+
     public string IdentityName { get; set; } = "";
 
 
@@ -194,7 +194,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
 
             c.OrderActionsBy((api) => $"{api.GroupName ?? ""}_{api.HttpMethod}");
 
-            c.DocInclusionPredicate((_,_) => true);
+            c.DocInclusionPredicate((_, _) => true);
 
         });
 
@@ -229,10 +229,10 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
         builder.Register(c =>
         {
 
-            var corr     = c.Resolve<ICorrelation>();
-            var meta     = c.Resolve<IModelMetaService>();
+            var corr = c.Resolve<ICorrelation>();
+            var meta = c.Resolve<IModelMetaService>();
             var mediator = c.Resolve<IMessageMediator>();
-            var factory  = c.Resolve<IMediatorRequestFactory>();
+            var factory = c.Resolve<IMediatorRequestFactory>();
 
             var comp = new PatchResolver(corr, meta, mediator, factory);
             return comp;
@@ -264,8 +264,8 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
         builder.Register(c =>
         {
 
-            var corr     = c.Resolve<ICorrelation>();
-            var factory  = c.Resolve<ILoggerFactory>();
+            var corr = c.Resolve<ICorrelation>();
+            var factory = c.Resolve<ILoggerFactory>();
             var resolver = c.Resolve<IConnectionResolver>();
 
             var ob = new DbContextOptionsBuilder();
@@ -284,11 +284,11 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
         builder.Register(c =>
         {
 
-            var corr     = c.Resolve<ICorrelation>();
+            var corr = c.Resolve<ICorrelation>();
             var resolver = c.Resolve<IConnectionResolver>();
-            var uow      = c.Resolve<IUnitOfWork>();
-            var rules    = c.Resolve<IRuleSet>();
-            var factory  = c.Resolve<ILoggerFactory>();
+            var uow = c.Resolve<IUnitOfWork>();
+            var rules = c.Resolve<IRuleSet>();
+            var factory = c.Resolve<ILoggerFactory>();
 
 
             var ob = new DbContextOptionsBuilder();
@@ -341,7 +341,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
             var encoder = c.Resolve<IProxyTokenEncoder>();
             var token = encoder.Encode(claims);
 
-            var comp = new StaticAccessTokenSource("Api",token);
+            var comp = new StaticAccessTokenSource("Api", token);
 
             return comp;
 
@@ -354,8 +354,8 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
         builder.Register(c =>
         {
 
-            var factory     = c.Resolve<IHttpClientFactory>();
-            var context     = c.Resolve<WorkDbContext>();
+            var factory = c.Resolve<IHttpClientFactory>();
+            var context = c.Resolve<WorkDbContext>();
             var tokenSource = c.Resolve<IAccessTokenSource>();
 
             var comp = new WorkProcessor(factory, context, tokenSource);
@@ -369,7 +369,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
 
 
 
-        if( !string.IsNullOrWhiteSpace(WorkQueueName) )
+        if (!string.IsNullOrWhiteSpace(WorkQueueName))
         {
 
             builder.Register(c =>
@@ -397,26 +397,37 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
         }
 
 
-        if( !string.IsNullOrWhiteSpace(S3EventQueueName) )
+        if (!string.IsNullOrWhiteSpace(S3EventQueueName))
         {
 
             builder.Register(c =>
-            {
-
-                var queue = c.Resolve<IQueueComponent>();
-                var parser = new S3EventMessageBodyParser();
-                var processor = c.Resolve<IWorkProcessor>();
-
-                var comp = new QueueWorkListener(queue, parser, processor)
                 {
-                    QueueName = S3EventQueueName,
-                    PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
-                    AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
-                };
 
-                return comp;
+                    var corr = c.Resolve<ICorrelation>();
+                    var queue = c.Resolve<IQueueComponent>();
 
-            })
+                    var t = new WorkTopicTransformer(corr)
+                    {
+                        PrefixCount = 2,
+                        SuffixCount = 1,
+                        Prepend     = "Ingest",
+                        Separator   = "",
+                        DefaultName = "root"
+                    };
+
+                    var parser = new S3EventMessageBodyParser(t);
+                    var processor = c.Resolve<IWorkProcessor>();
+
+                    var comp = new QueueWorkListener(queue, parser, processor)
+                    {
+                        QueueName = S3EventQueueName,
+                        PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
+                        AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
+                    };
+
+                    return comp;
+
+                })
                 .As<IRequiresStart>()
                 .SingleInstance()
                 .AutoActivate();
@@ -451,7 +462,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
     }
 
 
-    public override void ConfigureWebApp( WebApplication app)
+    public override void ConfigureWebApp(WebApplication app)
     {
 
         app.UsePipelineMonitor();

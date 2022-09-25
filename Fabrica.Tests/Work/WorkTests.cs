@@ -69,6 +69,43 @@ public class WorkTests
 
     }
 
+    [Test]
+    public void Test_0500_0110_ParseTopic()
+    {
+
+        var tp1 = new WorkTopicTransformer(new Correlation())
+        {
+            PrefixCount = 2,
+            SuffixCount = 1,
+            Prepend = "Ingest",
+            Separator = "",
+            DefaultName = "image-test-124"
+        };
+
+        var topic1 = tp1.Transform("ingest/arrived/image-test-123/HappyFace.jpg");
+        var topic1a = tp1.Transform("ingest/arrived/HappyFace.jpg");
+
+
+        var tp2 = new WorkTopicTransformer(new Correlation())
+        {
+            PrefixCount = 2,
+            SuffixCount = 0,
+            Prepend = "Dispatch",
+            Separator = "",
+            DefaultName = "root"
+        };
+
+        var topic2 = tp2.Transform("/dispatch/something-very-cool");
+
+        var topic3 = tp1.Transform("ingest/arrived/HappyFace.jpg");
+
+
+//        Assert.AreEqual(topic1, topic2);
+//        Assert.AreEqual("IngestRoot", topic3);
+
+
+    }
+
 
     [Test]
     public async Task Test_0500_0200_ParseS3Event()
@@ -81,7 +118,16 @@ public class WorkTests
 
             var body = await reader.ReadToEndAsync();
 
-            var parser = new S3EventMessageBodyParser();
+            var tp1 = new WorkTopicTransformer(new Correlation())
+            {
+                PrefixCount = 2,
+                SuffixCount = 1,
+                Prepend = "Ingest",
+                Separator = "",
+                DefaultName = "root"
+            };
+
+            var parser = new S3EventMessageBodyParser(tp1);
 
             var request = await parser.Parse(body);
 
@@ -105,7 +151,16 @@ public class WorkTests
 
             var body = await reader.ReadToEndAsync();
 
-            var parser = new S3EventMessageBodyParser();
+            var tp1 = new WorkTopicTransformer(new Correlation())
+            {
+                PrefixCount = 2,
+                SuffixCount = 1,
+                Prepend = "Ingest",
+                Separator = "",
+                DefaultName = "root"
+            };
+
+            var parser = new S3EventMessageBodyParser(tp1);
 
             var request = await parser.Parse(body);
 
@@ -128,7 +183,16 @@ public class WorkTests
 
             var body = await reader.ReadToEndAsync();
 
-            var parser = new S3EventMessageBodyParser();
+            var tp1 = new WorkTopicTransformer(new Correlation())
+            {
+                PrefixCount = 2,
+                SuffixCount = 1,
+                Prepend = "Ingest",
+                Separator = "",
+                DefaultName = "root"
+            };
+
+            var parser = new S3EventMessageBodyParser(tp1);
 
             var request = await parser.Parse(body);
 

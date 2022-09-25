@@ -8,7 +8,7 @@ public class WorkMessageBodyParser: IMessageBodyParser
 {
 
 
-    public Task<(bool ok, WorkRequest request)> Parse(string body)
+    public Task<(bool ok, WorkRequest? request)> Parse(string body)
     {
 
         using var logger = this.EnterMethod();

@@ -177,7 +177,7 @@ public class PostmarkModule: Module, IRepositoryConfiguration, IPostmarkConfigur
     public string TransientRoot => "";
     public string ResourceRoot => "";
 
-    public string PostmarkAppApiKey => "bfc29c1d-a0d3-4f56-8709-e5a0d3ed0cea";
+    public string PostmarkAppApiKey => "";
 
 
     protected override void Load(ContainerBuilder builder)
