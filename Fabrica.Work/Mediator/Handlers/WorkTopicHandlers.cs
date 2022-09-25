@@ -7,8 +7,8 @@ using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
-using Fabrica.Work.Models;
 using Fabrica.Work.Persistence.Contexts;
+using Fabrica.Work.Persistence.Entities;
 
 namespace Fabrica.Work.Mediator.Handlers;
 

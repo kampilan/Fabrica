@@ -25,7 +25,6 @@ SOFTWARE.
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace Fabrica.Work.Queue
 {
@@ -35,20 +34,18 @@ namespace Fabrica.Work.Queue
     {
 
 
-        Task<string> CheckQueueAsync([NotNull] string queue );
+        Task<string> CheckQueueAsync( string queue );
 
 
-        Task EnqueueAsync([NotNull] string queue, [NotNull] string payload, TimeSpan deliveryDelay);
-
-        Task EnqueueAsync([NotNull] string queue, [NotNull] string payload);
+        Task EnqueueAsync( string queue, string payload, TimeSpan deliveryDelay=default, TimeSpan timeToLive=default );
 
 
-        Task<IQueueItem> DequeueAsync( [NotNull] string name, TimeSpan waitTimeout, TimeSpan acknowledgmentTimeout, CancellationToken ct=default(CancellationToken) );
+        Task<IQueueItem> DequeueAsync( string name, TimeSpan waitTimeout, TimeSpan acknowledgmentTimeout, CancellationToken ct=default );
 
 
-        Task AcknowledgeAsync([NotNull] IQueueItem item);
+        Task AcknowledgeAsync( IQueueItem item );
 
-        Task AcknowledgeAsync([NotNull] string queue, [NotNull] string receiptHandle);
+        Task AcknowledgeAsync( string queue,  string receiptHandle );
 
 
     }

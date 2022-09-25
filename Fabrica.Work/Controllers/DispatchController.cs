@@ -1,204 +1,137 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Fabrica.Api.Support.ActionResult;
 using Fabrica.Api.Support.Controllers;
-using Fabrica.Exceptions;
+using Fabrica.Api.Support.Models;
+using Fabrica.Mediator;
 using Fabrica.Utilities.Container;
-using Fabrica.Work.Persistence.Contexts;
-using Fabrica.Work.Processor;
-using Microsoft.AspNetCore.Authorization;
+using Fabrica.Work.Mediator.Requests;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Work.Controllers;
 
-[Authorize]
+
+[ApiExplorerSettings(GroupName = "Dispatch")]
+[SwaggerResponse(200, "Success")]
+[SwaggerResponse(400, "Bad Request", typeof(ErrorResponseModel))]
 [Route("/dispatch")]
-public class DispatchController: BaseController
+public class DispatchController : BaseController
 {
 
 
-    public DispatchController( ICorrelation correlation, WorkDbContext context, IWorkDispatcher dispatcher, IHttpClientFactory factory ) : base(correlation)
+    public DispatchController(ICorrelation correlation, IMessageMediator mediator ) : base(correlation)
     {
 
-        Context    = context;
-        Dispatcher = dispatcher;
-        Factory    = factory;
+        Mediator   = mediator;
 
     }
 
-    private WorkDbContext Context { get; }
-    private IWorkDispatcher Dispatcher { get; }
-    private IHttpClientFactory Factory { get; }
+    private IMessageMediator Mediator { get; }
 
 
-    [HttpPost("{topic}")]
-    public async Task<IActionResult> Post( [FromRoute] string topic, [FromQuery] int delaySecs=0 )
+    [SwaggerOperation(Summary = "Dispatch", Description = "Send a message to be queued for asynchronous processing or make synchronous call to a webhook")]
+    [HttpPost("{**catch-all}")]
+    public async Task<IActionResult> Process( [FromQuery] int delaySecs = 0, [FromQuery] int timeToLiveSecs = 0 )
     {
 
         using var logger = EnterMethod();
 
-        logger.Inspect(nameof(topic), topic);
-        logger.Inspect(nameof(delaySecs), delaySecs);
+        var args = new {  delaySecs, timeToLiveSecs };
+        logger.LogObject(nameof(args), args);
+
+        logger.Inspect(nameof(Request.Path), Request.Path);
+        logger.Inspect(nameof(Request.ContentType), Request.ContentType);
+        logger.Inspect(nameof(Request.ContentLength), Request.ContentLength);
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to verify a Topic exists");
-        var model = await Context.WorkTopics.SingleOrDefaultAsync(e => e.Topic == topic);
-        if( model is null )
+        logger.Debug("Attempting to ensure ContentLength does not exceed maximum length (250KB)");
+        if( Request.ContentLength > (250 * 1024) )
         {
-            var error = new ExceptionResult();
-            error.ForNotFound( $"Could not find Topic ({topic})" );
-            return error;
-        }                
+            logger.Debug("BadRequest: Payload too Large");
+            return new StatusCodeResult(413);
+        }
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check content type if there is any content");
+        if( Request.ContentLength > 0 && Request.ContentType != "application/json" )
+        {
+            logger.Debug("UnsupportedMediaType: Not JSON");
+            return new UnsupportedMediaTypeResult();
+        }
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to parse request body");
-        var jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
+        var jo = new JObject();
+        if( Request.ContentLength > 0 )
+        {
 
-        IActionResult result;
-        if (model.Synchronous)
-            result= await Process( model.FullUrl, model.Path, jo );
-        else
-            result = await Dispatch( topic, jo, TimeSpan.FromSeconds(delaySecs) );
+            using var sr = new StreamReader(Request.Body);
+            using var jr = new JsonTextReader(sr);
+
+            jo = await JObject.LoadAsync(new JsonTextReader(new StreamReader(Request.Body)));
+
+        }
+
 
 
         // *****************************************************************
-        return result;
-
-    }
-
-
-    private async Task<IActionResult> Dispatch( string topic, JObject payload, TimeSpan delay )
-    {
-
-        using var logger = EnterMethod();
-
-        try
+        logger.Debug("Attempting to dig out topic from request path");
+        var topic = "";
+        if( Request.Path.HasValue )
         {
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = new WorkRequest
-            {
-                Topic = topic,
-                Payload = payload
-            };
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to dispatch request");
-            await Dispatcher.Dispatch( request, delay );
-
-
-
-            // *****************************************************************
-            return new OkResult();
-
-        }
-        catch (Exception cause)
-        {
-
-            logger.Error( cause, "Dispatch failed." );
-            var result = new ExceptionResult
-            {
-                Kind = ErrorKind.Functional,
-                Explanation = "Failed to Queue Asynchronous Work Request"
-            };
-
-            return result;
+            var segs = Request.Path.Value.Split("/");
+            logger.Inspect(nameof(segs.Length), segs.Length);
+            if( segs.Length > 2 )
+                topic = string.Join( "-", segs[2..] );
         }
 
-    }
+        logger.Inspect(nameof(topic), topic);
 
 
-    private async Task<IActionResult> Process( string endpoint, string path, JObject payload )
-    {
 
-        using var logger = EnterMethod();
 
-        try
+        // *****************************************************************
+        logger.Debug("Attempting to check for a non-whitespace topic ");
+        if (string.IsNullOrWhiteSpace(topic))
         {
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to serialize payload");
-            var body = payload.ToString(Formatting.None);
-            var content = new StringContent(body, Encoding.UTF8, "application/json");
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build HTTP request");
-            var httpReq = new HttpRequestMessage( HttpMethod.Post, path );
-            httpReq.Content = content;
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to setup HTTP client");
-            using var client = Factory.CreateClient();
-            client.BaseAddress = new Uri(endpoint);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to send HTTP request");
-            var httpRes = await client.SendAsync(httpReq);
-
-            logger.Inspect(nameof(httpRes.StatusCode), httpRes.StatusCode);
-
-            httpRes.EnsureSuccessStatusCode();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to read JSON output");
-            var output = await httpRes.Content.ReadAsStringAsync();
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to result");
-            var result = new ContentResult
-            {
-                StatusCode  = 200,
-                ContentType = "application/json",
-                Content     = output
-            };
-
-
-
-            // *****************************************************************
-            return result;
-
-
-        }
-        catch (Exception cause)
-        {
-
-            logger.Error( cause, "Process failed");
-
-            var result = new ExceptionResult
-            {
-                Kind = ErrorKind.Functional,
-                Explanation = "Failed to Process Synchronous Work Request"
-            };
-
-            return result;
-
+            logger.Debug("BadRequest: Topic not valid");
+            return new BadRequestResult();
         }
 
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build DispatchWorkRequest");
+        var request = new DispatchWorkRequest
+        {
+            TopicName     = topic,
+            Payload       = jo,
+            DeliveryDelay = TimeSpan.FromSeconds(delaySecs),
+            TimeToLive    = TimeSpan.FromSeconds(timeToLiveSecs)
+        };
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request to Mediator");
+        var response = await Mediator.Send(request);
+
+        if (!response.Ok)
+            return BuildErrorResult(response);
+
+
+
+        // *****************************************************************
+        return BuildResult(response);
 
     }
 
@@ -206,11 +139,3 @@ public class DispatchController: BaseController
 
 }
 
-public class DispatchOptions
-{
-
-    public string Topic { get; set; } = "";
-
-    public int DelaySecs { get; set; } = 0;
-
-}

@@ -50,7 +50,7 @@ namespace Fabrica.Work.Processor
         public string DefaultQueue { get; set; } = "";
 
 
-        public async Task Dispatch( string queueName, WorkRequest request, TimeSpan delayed=default )
+        public async Task Dispatch( string queueName, WorkRequest request, TimeSpan delayed=default, TimeSpan timeToLive = default )
         {
 
             var logger = this.GetLogger();
@@ -86,9 +86,9 @@ namespace Fabrica.Work.Processor
 
 
 
-        public async Task Dispatch( WorkRequest request, TimeSpan delayed = default )
+        public async Task Dispatch( WorkRequest request, TimeSpan delayed = default, TimeSpan timeToLive = default )
         {
-            await Dispatch(DefaultQueue, request, delayed );
+            await Dispatch(DefaultQueue, request, delayed, timeToLive );
         }
 
 

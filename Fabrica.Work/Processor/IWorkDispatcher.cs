@@ -32,8 +32,8 @@ namespace Fabrica.Work.Processor
     public interface IWorkDispatcher
     {
 
-        Task Dispatch( [NotNull] string queueName, [NotNull] WorkRequest request, TimeSpan delayed = default );
-        Task Dispatch( [NotNull] WorkRequest request, TimeSpan delayed=default );
+        Task Dispatch( string queueName, WorkRequest request, TimeSpan delayed = default, TimeSpan timeToLive = default );
+        Task Dispatch( WorkRequest request, TimeSpan delayed=default, TimeSpan timeToLive = default );
 
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Amazon.SQS;
@@ -11,6 +12,7 @@ using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
+using Fabrica.Api.Support.Swagger;
 using Fabrica.Aws;
 using Fabrica.Aws.Secrets;
 using Fabrica.Http;
@@ -28,15 +30,18 @@ using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
+using Fabrica.Work.Mediator.Handlers;
 using Fabrica.Work.Persistence.Contexts;
 using Fabrica.Work.Processor;
 using Fabrica.Work.Processor.Parsers;
 using Fabrica.Work.Queue;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using MySqlConnector;
 using Newtonsoft.Json;
 using SmartFormat;
@@ -118,12 +123,13 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
     public override void ConfigureServices(IServiceCollection services)
     {
 
-        services.AddMvc(builder =>
+
+        services.AddMvcCore(builder =>
             {
 
-                builder.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
+                if (RequiresAuthentication)
+                    builder.Conventions.Add(new DefaultAuthorizeConvention<TokenAuthorizationFilter>());
 
-                
                 builder.Filters.Add(typeof(ExceptionFilter));
                 builder.Filters.Add(typeof(ResultFilter));
 
@@ -131,13 +137,18 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
             .AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.ContractResolver = new ModelContractResolver();
-                opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+                opt.SerializerSettings.DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate;
                 opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+                opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             })
-            .AddApplicationPart(GetType().Assembly);
+            .AddApplicationPart(GetType().Assembly)
+            .AddApiExplorer()
+            .AddAuthorization()
+            .AddFormatterMappings()
+            .AddDataAnnotations();
+
 
 
         services.Configure<ForwardedHeadersOptions>(options =>
@@ -160,14 +171,141 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
 
 
 
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("data", new OpenApiInfo { Title = "Fabrica Work API", Version = "v1" });
+            c.EnableAnnotations();
+            c.SchemaFilter<NoAdditionalPropertiesFilter>();
+
+            c.TagActionsBy(api =>
+            {
+                if (api.GroupName != null)
+                {
+                    return new[] { api.GroupName };
+                }
+
+                if (api.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
+                {
+                    return new[] { controllerActionDescriptor.ControllerName };
+                }
+
+                throw new InvalidOperationException("Unable to determine tag for endpoint.");
+            });
+
+            c.OrderActionsBy((api) => $"{api.GroupName ?? ""}_{api.HttpMethod}");
+
+            c.DocInclusionPredicate((_,_) => true);
+
+        });
+
+        services.AddSwaggerGenNewtonsoftSupport();
+
+
     }
 
     public override void ConfigureContainer(ContainerBuilder builder)
     {
 
-        using var logger = this.EnterMethod();
+        using var logger = EnterMethod();
 
         logger.LogObject("TheBootstrap", this);
+
+
+        builder.UseRules();
+        builder.AddRules(GetType().Assembly);
+
+        builder.UseMediator(typeof(QueryWorkTopicHandler).Assembly);
+
+        builder.AddAuditJournalHandler();
+
+        builder.RegisterAutoMapper(GetType().Assembly);
+
+        builder.UseModelMeta()
+            .AddModelMetaSource(GetType().Assembly);
+
+        builder.AddEndpointComponent();
+
+
+        builder.Register(c =>
+        {
+
+            var corr     = c.Resolve<ICorrelation>();
+            var meta     = c.Resolve<IModelMetaService>();
+            var mediator = c.Resolve<IMessageMediator>();
+            var factory  = c.Resolve<IMediatorRequestFactory>();
+
+            var comp = new PatchResolver(corr, meta, mediator, factory);
+            return comp;
+
+        })
+            .AsSelf()
+            .As<IPatchResolver>()
+            .InstancePerLifetimeScope();
+
+
+        builder.Register(c =>
+        {
+
+            var corr = c.Resolve<ICorrelation>();
+            var comp = new MediatorRequestFactory(corr);
+
+            return comp;
+
+        })
+            .As<IMediatorRequestFactory>()
+            .SingleInstance();
+
+
+
+        builder.UsePersistence()
+            .AddSingleTenantResolver(MySqlConnectorFactory.Instance, ReplicaDbConnectionString, OriginDbConnectionString);
+
+
+        builder.Register(c =>
+        {
+
+            var corr     = c.Resolve<ICorrelation>();
+            var factory  = c.Resolve<ILoggerFactory>();
+            var resolver = c.Resolve<IConnectionResolver>();
+
+            var ob = new DbContextOptionsBuilder();
+            ob.UseMySql(resolver.ReplicaConnectionStr, ServerVersion.AutoDetect(resolver.ReplicaConnectionStr));
+
+            var ctx = new ExplorerDbContext(corr, ob.Options, factory);
+
+            return ctx;
+
+        })
+            .AsSelf()
+            .As<ReplicaDbContext>()
+            .InstancePerLifetimeScope();
+
+
+        builder.Register(c =>
+        {
+
+            var corr     = c.Resolve<ICorrelation>();
+            var resolver = c.Resolve<IConnectionResolver>();
+            var uow      = c.Resolve<IUnitOfWork>();
+            var rules    = c.Resolve<IRuleSet>();
+            var factory  = c.Resolve<ILoggerFactory>();
+
+
+            var ob = new DbContextOptionsBuilder();
+            ob.UseMySql(uow.OriginConnection, ServerVersion.AutoDetect(resolver.OriginConnectionStr));
+
+            var ctx = new WorkDbContext(corr, rules, ob.Options, factory);
+            ctx.Database.UseTransaction(uow.Transaction);
+
+            return ctx;
+
+        })
+            .AsSelf()
+            .InstancePerLifetimeScope();
+
+
+
+
 
 
         builder.UseAws(this);
@@ -307,98 +445,6 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
 
 
 
-        builder.UseRules();
-        builder.AddRules(GetType().Assembly);
-
-        builder.UseMediator(GetType().Assembly);
-
-        builder.AddAuditJournalHandler();
-
-        builder.RegisterAutoMapper(GetType().Assembly);
-
-        builder.UseModelMeta()
-            .AddModelMetaSource(GetType().Assembly);
-
-        builder.AddEndpointComponent();
-
-
-        builder.Register(c =>
-        {
-
-            var corr = c.Resolve<ICorrelation>();
-            var meta = c.Resolve<IModelMetaService>();
-            var mediator = c.Resolve<IMessageMediator>();
-            var factory = c.Resolve<IMediatorRequestFactory>();
-
-            var comp = new PatchResolver(corr, meta, mediator, factory);
-            return comp;
-
-
-        })
-            .AsSelf()
-            .As<IPatchResolver>()
-            .InstancePerLifetimeScope();
-
-
-        builder.Register(c =>
-        {
-
-            var corr = c.Resolve<ICorrelation>();
-            var comp = new MediatorRequestFactory(corr);
-
-            return comp;
-
-        })
-            .As<IMediatorRequestFactory>()
-            .SingleInstance();
-
-
-
-        builder.UsePersistence()
-            .AddSingleTenantResolver(MySqlConnectorFactory.Instance, ReplicaDbConnectionString, OriginDbConnectionString);
-
-
-        builder.Register(c =>
-        {
-
-            var corr = c.Resolve<ICorrelation>();
-            var factory = c.Resolve<ILoggerFactory>();
-            var resolver = c.Resolve<IConnectionResolver>();
-
-            var ob = new DbContextOptionsBuilder();
-            ob.UseMySql(resolver.ReplicaConnectionStr, ServerVersion.AutoDetect(resolver.ReplicaConnectionStr));
-
-            var ctx = new ExplorerDbContext(corr, ob.Options, factory);
-
-            return ctx;
-
-        })
-            .AsSelf()
-            .As<ReplicaDbContext>()
-            .InstancePerLifetimeScope();
-
-
-        builder.Register(c =>
-        {
-
-            var corr = c.Resolve<ICorrelation>();
-            var resolver = c.Resolve<IConnectionResolver>();
-            var uow = c.Resolve<IUnitOfWork>();
-            var rules = c.Resolve<IRuleSet>();
-            var factory = c.Resolve<ILoggerFactory>();
-
-
-            var ob = new DbContextOptionsBuilder();
-            ob.UseMySql(uow.OriginConnection, ServerVersion.AutoDetect(resolver.OriginConnectionStr));
-
-            var ctx = new WorkDbContext(corr, rules, ob.Options, factory);
-            ctx.Database.UseTransaction(uow.Transaction);
-
-            return ctx;
-
-        })
-            .AsSelf()
-            .InstancePerLifetimeScope();
 
 
 
@@ -414,6 +460,25 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IWorkModule
         app.UseRequestLogging();
 
         app.UseForwardedHeaders();
+
+
+        app.UseSwagger(o =>
+        {
+
+            o.PreSerializeFilters.Add((d, r) =>
+            {
+                var url = $"https://{r.Host}";
+                d.Servers = new List<OpenApiServer> { new() { Url = url } };
+            });
+
+
+        });
+
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("data/swagger.json", "Fabrica Work API");
+        });
+
 
         app.UseRouting();
 

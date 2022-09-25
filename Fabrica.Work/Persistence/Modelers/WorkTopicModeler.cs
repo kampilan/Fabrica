@@ -1,6 +1,6 @@
 ﻿using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Utilities.Text;
-using Fabrica.Work.Models;
+using Fabrica.Work.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

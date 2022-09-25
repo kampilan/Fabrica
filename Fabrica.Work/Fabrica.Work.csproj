@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Fabrica.Work</RootNamespace>
     <AssemblyName>Appliance</AssemblyName>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Mediator\Requests\" />
     <Folder Include="Persistence\Entities\" />
     <Folder Include="Persistence\Rules\" />
   </ItemGroup>
@@ -36,6 +36,10 @@
     <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="MySqlConnector" Version="2.1.13" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
   </ItemGroup>
 
 </Project>

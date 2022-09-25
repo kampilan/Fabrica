@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Fabrica.Repository.Appliance;
+namespace Fabrica.Api.Support.Swagger;
 
 public class NoAdditionalPropertiesFilter: ISchemaFilter
 {

@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Reflection;
 using Fabrica.Api.Support.Identity.Token;
+using Fabrica.Api.Support.Swagger;
 using Fabrica.Models.Serialization;
 using Fabrica.Rules;
 
@@ -117,7 +118,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IRepositoryConfi
 
             c.OrderActionsBy((api) => $"{api.GroupName ?? ""}_{api.HttpMethod}");
 
-            c.DocInclusionPredicate((name, api) => true);
+            c.DocInclusionPredicate((_,_) => true);
 
         });
 

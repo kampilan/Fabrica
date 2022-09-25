@@ -2,7 +2,7 @@
 using Fabrica.Api.Support.Endpoints;
 using Fabrica.Api.Support.Models;
 using Fabrica.Models;
-using Fabrica.Work.Models;
+using Fabrica.Work.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -12,7 +12,7 @@ namespace Fabrica.Work.Endpoints;
 [SwaggerResponse(200, "Success", typeof(List<WorkTopic>))]
 [SwaggerResponse(400, "Bad Request", typeof(ErrorResponseModel))]
 [Route("/api/worktopics")]
-public class WorkTopicsQueryEndpoint : BaseQueryFromRqlEndpoint<Persistence.Entities.WorkTopic>
+public class WorkTopicsQueryEndpoint : BaseQueryFromRqlEndpoint<WorkTopic>
 {
     
     public WorkTopicsQueryEndpoint(IEndpointComponent component) : base(component)

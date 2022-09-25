@@ -1,6 +1,6 @@
 ﻿using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Utilities.Container;
-using Fabrica.Work.Models;
+using Fabrica.Work.Persistence.Entities;
 using Fabrica.Work.Persistence.Modelers;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ public class ExplorerDbContext: ReplicaDbContext
     {
     }
 
-    public DbSet<WorkTopic> WorkTopics { get; set; }
+    public DbSet<WorkTopic> WorkTopics { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

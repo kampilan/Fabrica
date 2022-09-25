@@ -4,14 +4,15 @@ using MediatR;
 
 namespace Fabrica.Omni.Email;
 
-public class SendEmailRequest: IRequest<Response<bool>>
+public class SendEmailRequest: IRequest<Response<SendResponse>>
 {
 
     public string FromAddress { get; set; } = "";
+    public string ReplyToAddress { get; set; } = "";
 
-    public List<string> ToAddresss { get; set; } = new();
-    public List<string> CcAddresss { get; set; } = new();
-    public List<string> BccAddresss { get; set; } = new();
+    public List<string> ToAddresses { get; set; } = new();
+    public List<string> CcAddresses { get; set; } = new();
+    public List<string> BccAddresses { get; set; } = new();
 
     public string Subject { get; set; } = "";
 
@@ -21,6 +22,27 @@ public class SendEmailRequest: IRequest<Response<bool>>
     public string TemplateName { get; set; } = "";
     public Dictionary<string, object> Model { get; set; } = new();
 
+    public List<SendAttachment> Attachments { get; set; } = new();
+
+
+}
+
+
+public class SendAttachment
+{
+
+    public string Location { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string ContentType { get; set; } = "";
+
+}    
+
+public class SendResponse
+{
+
+    public string MessageUid { get; set; } = "";
+    public string ErrorCode { get; set; } = "";
+    public string ErrorMessage { get; set; } = "";
 
 
 }

@@ -1,9 +1,8 @@
 ﻿using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
-using Fabrica.Work.Models;
+using Fabrica.Work.Persistence.Entities;
 using Fabrica.Work.Persistence.Modelers;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -12,11 +11,11 @@ namespace Fabrica.Work.Persistence.Contexts;
 public class WorkDbContext: OriginDbContext
 {
 
-    public WorkDbContext([NotNull] ICorrelation correlation, [NotNull] IRuleSet rules, [NotNull] DbContextOptions options, [NotNull] ILoggerFactory factory) : base(correlation, rules, options, factory)
+    public WorkDbContext( ICorrelation correlation, IRuleSet rules, DbContextOptions options, ILoggerFactory factory) : base(correlation, rules, options, factory)
     {
     }
 
-    public DbSet<WorkTopic> WorkTopics { get; set; }
+    public DbSet<WorkTopic> WorkTopics { get; set; } = null!;
 
     protected override void OnModelCreating( ModelBuilder builder )
     {

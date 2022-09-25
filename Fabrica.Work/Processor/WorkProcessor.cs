@@ -25,13 +25,14 @@ SOFTWARE.
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Identity.Proxy;
 using Fabrica.Identity;
 using Fabrica.Watch;
 using Fabrica.Work.Persistence.Contexts;
+using Fabrica.Work.Persistence.Entities;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -44,10 +45,16 @@ namespace Fabrica.Work.Processor
     public class WorkProcessor : IWorkProcessor
     {
 
+
         private class ProcessorArgs
         {
-            public WorkRequest Request { get; init; }
-            public Action<bool> CompletionHandler { get; init; }
+
+            public WorkRequest Request { get; init; } = null!;
+
+            public WorkTopic Topic { get; init; } = null!;
+
+            public Action<bool> CompletionHandler { get; init; } = null!;
+
         }
 
 
@@ -92,14 +99,30 @@ namespace Fabrica.Work.Processor
                 logger.Inspect("ConcurrentJobs", _workerCounter);
 
 
+
+                // *****************************************************************
+                logger.Debug("Attempting to get WorkTopic for requested Topic");
+                var topic = await Context.WorkTopics.SingleOrDefaultAsync(e => e.Topic == request.Topic);
+
+                if( topic is null )
+                {
+                    logger.ErrorFormat( "Topic ({1}) not found. Request will not be processed. RequestUid ({0}) ", request.Uid, request.Topic );
+                    return;
+                }
+
+                logger.LogObject(nameof(topic), topic);
+
+
+
                 var args = new ProcessorArgs
                 {
-                    Request = request,
+                    Request           = request,
+                    Topic             = topic,
                     CompletionHandler = completionHandler
                 };
 
 
-                if (!onCallerThread && (_workerCounter < MaximumWorkers))
+                if( !onCallerThread && _workerCounter < MaximumWorkers )
                 {
                     logger.Debug("Attempting to submit request to thread pool");
                     Interlocked.Increment(ref _workerCounter);
@@ -147,27 +170,15 @@ namespace Fabrica.Work.Processor
 
 
                 // *****************************************************************
-                logger.Debug("Attempting to get TopicEndpoint for requested Topic");
-                var topic = await Context.WorkTopics.SingleOrDefaultAsync(e => e.Topic == args.Request.Topic);
-
-
-
-                logger.LogObject(nameof(topic), topic);
-
-
-
-                // *****************************************************************
                 logger.Debug("Attempting to build Content from Json Payload");
                 var payload = args.Request.Payload.ToString(Formatting.None);
-                var content = new StringContent(payload);
-
-                content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to build Request message");
-                var message = new HttpRequestMessage(HttpMethod.Post, topic.Path)
+                var message = new HttpRequestMessage(HttpMethod.Post, args.Topic.Path)
                 {
                     Content = content
                 };
@@ -177,7 +188,7 @@ namespace Fabrica.Work.Processor
                 // *****************************************************************
                 logger.Debug("Attempting to create HTTP client from factory");
                 HttpClient client;
-                if( string.IsNullOrWhiteSpace(topic.FullUrl) )
+                if( string.IsNullOrWhiteSpace(args.Topic.FullUrl) )
                 {
 
                     var token = await TokenSource.GetToken();
@@ -190,9 +201,10 @@ namespace Fabrica.Work.Processor
                 {
 
                     client = Factory.CreateClient();
-                    client.BaseAddress = new Uri(topic.FullUrl);
+                    client.BaseAddress = new Uri(args.Topic.FullUrl);
 
                 }
+
 
 
                 // *****************************************************************

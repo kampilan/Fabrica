@@ -26,7 +26,7 @@ public class S3EventMessageBodyParser: IMessageBodyParser
         S3Event s3Event;
         try
         {
-            s3Event = JsonConvert.DeserializeObject<S3Event>(body);
+            s3Event = JsonConvert.DeserializeObject<S3Event>(body)!;
             if (s3Event is null)
                 throw new Exception("Could not parse S3 Event JSON message");
 
@@ -37,7 +37,7 @@ public class S3EventMessageBodyParser: IMessageBodyParser
         {
             var ctx = new {Body = body};
             logger.ErrorWithContext( cause, ctx, "Could not parse JSON body");
-            return Task.FromResult((false,(WorkRequest)null));
+            return Task.FromResult((false,(WorkRequest)null))!;
         }
 
 
@@ -46,7 +46,7 @@ public class S3EventMessageBodyParser: IMessageBodyParser
         var record = s3Event.Records?.FirstOrDefault();
 
         if( record is null )
-            return Task.FromResult((false, (WorkRequest)null));
+            return Task.FromResult((false, (WorkRequest)null))!;
 
 
 

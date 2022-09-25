@@ -29,8 +29,10 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Fabrica.Api.Support.ActionResult;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
+using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
@@ -74,6 +76,75 @@ public abstract class BaseController: Controller
         var logger = Correlation.EnterMethod(GetType(), name);
 
         return logger;
+
+    }
+
+
+    protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
+    {
+
+        using var logger = EnterMethod();
+
+
+        logger.LogObject(nameof(response), response);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        logger.Inspect(nameof(response.Ok), response.Ok);
+        if (response.Ok && typeof(TValue).IsValueType)
+            return Ok();
+
+        if (response.Ok)
+            return Ok(response.Value);
+
+
+        return BuildErrorResult(response);
+
+
+    }
+
+    protected virtual IActionResult BuildResult(Response<MemoryStream> response)
+    {
+
+        using var logger = EnterMethod();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        logger.Inspect(nameof(response.Ok), response.Ok);
+        if (response.Ok)
+            return new JsonStreamResult(response.Value);
+
+
+        return BuildErrorResult(response);
+
+
+    }
+
+    protected virtual IActionResult BuildResult(Response response)
+    {
+
+        using var logger = EnterMethod();
+
+
+
+        logger.LogObject(nameof(response), response);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        logger.Inspect(nameof(response.Ok), response.Ok);
+        if (response.Ok)
+            return Ok();
+
+
+        return BuildErrorResult(response);
+
+
 
     }
 
@@ -190,190 +261,6 @@ public abstract class BaseController: Controller
 
 
     }
-
-
-    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>() where TExplorer : class, IModel
-    {
-
-        using var logger = EnterMethod();
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to digout RQL query parameters");
-
-        var rqls = new List<string>();
-        foreach (var key in Request.Query.Keys)
-        {
-
-            logger.Inspect(nameof(key), key);
-            logger.LogObject("values", Request.Query[key]);
-
-            if (key == "rql")
-                rqls.AddRange(Request.Query[key].ToArray());
-
-        }
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to produce filters from supplied RQL");
-        var filters = new List<IRqlFilter<TExplorer>>();
-        if (rqls.Count > 0)
-            filters.AddRange(rqls.Select(s =>
-            {
-                var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree);
-            }));
-
-
-
-        // *****************************************************************
-        return filters;
-
-
-    }
-
-    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>(IEnumerable<string> rqls) where TExplorer : class, IModel
-    {
-
-        using var logger = EnterMethod();
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to produce filters from supplied RQL");
-        var filters = new List<IRqlFilter<TExplorer>>();
-        filters.AddRange(rqls.Select(s =>
-        {
-            var tree = RqlLanguageParser.ToCriteria(s);
-            return new RqlFilterBuilder<TExplorer>(tree);
-        }));
-
-
-        // *****************************************************************
-        return filters;
-
-
-    }
-
-    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>([NotNull] ICriteria criteria) where TExplorer : class, IModel
-    {
-
-        if (criteria == null) throw new ArgumentNullException(nameof(criteria));
-
-
-        using var logger = EnterMethod();
-
-
-        var filters = new List<IRqlFilter<TExplorer>>();
-        if (criteria.Rql?.Length > 0)
-        {
-            filters.AddRange(criteria.Rql.Select(s =>
-            {
-                var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree);
-            }));
-        }
-        else
-        {
-
-            // *****************************************************************
-            logger.Debug("Attempting to introspect criteria RQL");
-            var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-
-
-            // *****************************************************************
-            filters.Add(filter);
-
-        }
-
-        return filters;
-
-    }
-
-    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer, TCriteria>() where TExplorer : class, IModel where TCriteria : class, ICriteria, new()
-    {
-
-        using var logger = EnterMethod();
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to digout query parameters");
-
-        var rqls = new List<string>();
-        var parameters = new Dictionary<string, string>();
-        foreach (var key in Request.Query.Keys)
-        {
-
-            logger.Inspect(nameof(key), key);
-            logger.LogObject("values", Request.Query[key]);
-
-            if (key == "rql")
-                rqls.AddRange(Request.Query[key].ToArray());
-            else
-                parameters[key] = Request.Query[key].First();
-
-        }
-
-
-
-        var filters = new List<IRqlFilter<TExplorer>>();
-        if (rqls.Count > 0)
-        {
-            filters.AddRange(rqls.Select(s =>
-            {
-                var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree);
-            }));
-        }
-        else
-        {
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to map parameters to criteria model");
-            var jo = JObject.FromObject(parameters);
-            var criteria = jo.ToObject<TCriteria>();
-
-            criteria ??= new TCriteria();
-
-            logger.LogObject(nameof(criteria), criteria);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to introspect criteria RQL");
-            var filter = RqlFilterBuilder<TExplorer>.Create().Introspect(criteria);
-
-
-            // *****************************************************************
-            filters.Add(filter);
-
-
-        }
-
-
-        return filters;
-
-
-    }
-
-
-    protected virtual async Task<Dictionary<string, object>> FromBody()
-    {
-
-        using var logger = EnterMethod();
-
-
-        using var reader = new StreamReader(Request.Body, leaveOpen: true);
-        using var jreader = new JsonTextReader(reader);
-
-        var jo = await JObject.LoadAsync(jreader);
-        var delta = jo.ToObject<Dictionary<string, object>>();
-
-        return delta;
-
-    }
-
 
 
 
