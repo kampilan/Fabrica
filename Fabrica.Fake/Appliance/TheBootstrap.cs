@@ -119,8 +119,6 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
 
         builder.UseAws(this);
 
-//        builder.AddHttpClient("WebhookEndpoint", WebhookEndpoint);
-
 
         builder.UseRules();
 

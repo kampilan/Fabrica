@@ -127,14 +127,8 @@ public class ObjectRepoTests
 
 }
 
-public class RepoTestModule : Module, IRepositoryConfiguration
+public class RepoTestModule : Module
 {
-
-
-    public string RepositoryContainer { get; set; } = "after-serene-permanent";
-    public string PermanentRoot { get; set; } = "";
-    public string TransientRoot { get; set; } = "";
-    public string ResourceRoot { get; set; } = "";
 
 
     protected override void Load(ContainerBuilder builder)
@@ -142,7 +136,7 @@ public class RepoTestModule : Module, IRepositoryConfiguration
 
         builder.AddCorrelation();
 
-        builder.UseRepositoryClient("https://fabrica.ngrok.io/repository", Fabrica.Http.ServiceEndpoints.Repository);
+        builder.UseRepositoryRemoteClient("https://fabrica.ngrok.io/repository");
 
     }
 

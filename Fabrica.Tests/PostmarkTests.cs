@@ -168,24 +168,17 @@ public class PostmarkTests
 
 }
 
-public class PostmarkModule: Module, IRepositoryConfiguration, IPostmarkConfiguration
+public class PostmarkModule: Module, IPostmarkConfiguration
 {
 
-
-    public string RepositoryContainer => "after-serene-permanent";
-    public string PermanentRoot => "";
-    public string TransientRoot => "";
-    public string ResourceRoot => "";
-
     public string PostmarkAppApiKey => "";
-
 
     protected override void Load(ContainerBuilder builder)
     {
 
         builder.AddCorrelation();
 
-        builder.UseRepositoryClient("https://fabrica.ngrok.io/repository", Fabrica.Http.ServiceEndpoints.Repository);
+        builder.UseRepositoryRemoteClient("https://fabrica.ngrok.io/repository");
 
         builder.UseRules();
         builder.UseMediator(typeof(SendEmailHandler).Assembly);

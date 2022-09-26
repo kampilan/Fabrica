@@ -119,6 +119,7 @@ public abstract class BaseBootstrap: CorrelatedObject
 
         builder.Configuration.AddConfiguration(Configuration);
 
+        var mission = Configuration.Get<MissionContext>();
 
 
         // *****************************************************************
@@ -143,10 +144,16 @@ public abstract class BaseBootstrap: CorrelatedObject
 
 
             // *****************************************************************
-            inner.Debug("Attempting to Create named HttpClients for each Mission ServiceEndpoint");
-            var mission = Configuration.Get<MissionContext>();
+            inner.Debug("Attempting to create named HttpClients for each Mission ServiceEndpoint");
             foreach (var pair in mission.ServiceEndpoints)
-                s.AddHttpClient(pair.Key, c => c.BaseAddress = new Uri(pair.Value));
+            {
+
+                var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
+                var uri = new Uri(address);
+                
+                s.AddHttpClient(pair.Key, c => c.BaseAddress = uri );
+
+            }
 
 
             try
@@ -205,7 +212,6 @@ public abstract class BaseBootstrap: CorrelatedObject
 
             cb.AddCorrelation();
 
-            var mission = Configuration.Get<MissionContext>();
 
             cb.RegisterInstance(mission)
                 .As<IMissionContext>()
