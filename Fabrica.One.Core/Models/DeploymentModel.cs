@@ -98,6 +98,22 @@ namespace Fabrica.One.Models
         }
 
 
+        private string _serviceEndpointName = "";
+        [Required]
+        public string ServiceEndpointName
+        {
+            get => _serviceEndpointName;
+            set => _serviceEndpointName = value;
+        }
+
+        private string _serviceEndpointUrl = "";
+        [Required]
+        public string ServiceEndpointUrl
+        {
+            get => _serviceEndpointUrl;
+            set => _serviceEndpointUrl = value;
+        }
+
         private bool _deploy;
         [Required]
         public bool Deploy
