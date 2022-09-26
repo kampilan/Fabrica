@@ -38,6 +38,7 @@ using Amazon.SQS;
 using Autofac;
 using Fabrica.Aws.Repository;
 using Fabrica.Aws.Storage;
+using Fabrica.Repository;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
 using Fabrica.Utilities.Storage;
@@ -465,7 +466,7 @@ namespace Fabrica.Aws
 
         }
 
-        public static ContainerBuilder AddUrlProvider(this ContainerBuilder builder, string repository )
+        public static ContainerBuilder AddRepositoryProvider(this ContainerBuilder builder, string repository )
         {
 
             builder.Register(c =>
@@ -474,19 +475,19 @@ namespace Fabrica.Aws
                     var corr = c.Resolve<ICorrelation>();
                     var s3 = c.Resolve<IAmazonS3>();
 
-                    var comp = new S3RepositoryUrlProvider( corr, s3, repository );
+                    var comp = new S3RepositoryProvider( corr, s3, repository );
 
                     return comp;
 
                 })
-                .As<IRepositoryUrlProvider>()
+                .As<IRepositoryProvider>()
                 .SingleInstance();
 
             return builder;
 
         }
 
-        public static ContainerBuilder AddUrlProvider(this ContainerBuilder builder, IRepositoryConfiguration config )
+        public static ContainerBuilder AddRepositoryProvider(this ContainerBuilder builder, IRepositoryConfiguration config )
         {
 
             builder.Register(c =>
@@ -495,12 +496,12 @@ namespace Fabrica.Aws
                     var corr = c.Resolve<ICorrelation>();
                     var s3 = c.Resolve<IAmazonS3>();
 
-                    var comp = new S3RepositoryUrlProvider( corr, s3, config.RepositoryContainer );
+                    var comp = new S3RepositoryProvider( corr, s3, config.RepositoryContainer );
 
                     return comp;
 
                 })
-                .As<IRepositoryUrlProvider>()
+                .As<IRepositoryProvider>()
                 .SingleInstance();
 
             return builder;

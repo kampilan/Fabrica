@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Aws\Repository\" />
-  </ItemGroup>
-
 </Project>

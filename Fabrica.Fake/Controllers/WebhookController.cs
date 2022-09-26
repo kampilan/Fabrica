@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Amazon.S3;
-using Amazon.S3.Model;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Exceptions;
 using Fabrica.Fake.Persistence;
 using Fabrica.Mediator;
-using Fabrica.Models.Support;
 using Fabrica.Persistence.Patch;
 using Fabrica.Utilities.Container;
+using Fabrica.Work.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabrica.Fake.Controllers;
@@ -20,12 +20,12 @@ public class WebhookController: BaseController
 {
 
 
-    public WebhookController(ICorrelation correlation, IPatchResolver resolver, FakeReplicaDbContext context, IAmazonS3 client ) : base(correlation)
+    public WebhookController(ICorrelation correlation, IPatchResolver resolver, FakeReplicaDbContext context, IHttpClientFactory factory ) : base(correlation)
     {
 
         Resolver = resolver;
-        Context = context;
-        Client = client;
+        Context  = context;
+        Factory = factory;
 
         Context.Database.EnsureCreated();
 
@@ -33,7 +33,7 @@ public class WebhookController: BaseController
 
     private IPatchResolver Resolver { get; }
     private FakeReplicaDbContext Context { get; }
-    private IAmazonS3 Client { get; }
+    private IHttpClientFactory Factory { get; }
 
 
     [HttpPost("test-topic")]
@@ -53,9 +53,53 @@ public class WebhookController: BaseController
     }
 
 
+    [HttpPost("Rouchefoucauld")]
+    public IActionResult HandlePing()
+    {
 
-    [HttpPost("s3-events/{topic}")]
-    public async Task<StatusCodeResult> AcceptWorkRequest([FromRoute] string topic, [FromBody] S3Event s3)
+        using var logger = EnterMethod();
+
+
+        var utc = DateTime.UtcNow;
+
+        DateTime Convert(int diff)
+        {
+
+            var dt = utc.AddHours(diff);
+
+            return dt;
+
+        }
+
+        var dict = new Dictionary<string, DateTime>
+        {
+            ["Beverly Hills"] = Convert(-7),
+            ["Monte Carlo"]   = Convert(2),
+            ["London"]        = Convert(1),
+            ["Paris"]         = Convert(2),
+            ["Rome"]          = Convert(2),
+            ["Gstaad"]        = Convert(2)
+        };
+
+
+        var response = new Response<Dictionary<string,DateTime>>(dict);
+        response.WithDetail(new EventDetail
+        {
+            Category = EventDetail.EventCategory.Info, Explanation = "Time according to the Rouchefoucauld", Group = "Tests",
+            Source = "Louis Winthorpe III"
+        });
+        response.IsOk();
+
+        return Ok(response);
+
+    }
+
+
+
+
+
+    [HttpPost("ingest/test")]
+    public async Task<IActionResult> AcceptWorkRequest([FromRoute] string topic, [FromBody] IngestionEvent s3)
     {
 
         using var logger = EnterMethod();
@@ -64,32 +108,21 @@ public class WebhookController: BaseController
         logger.LogObject(nameof(s3), s3);
 
 
+        using var client = Factory.CreateClient();
 
-        // *****************************************************************
-        logger.Debug("Attempting to build delete object request");
-        var request = new DeleteObjectRequest
-        {
-            BucketName = s3.Bucket,
-            Key = s3.Key
-        };
+        var contents = await client.GetStringAsync(s3.Endpoint);
 
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to send request to S3");
-        var response = await Client.DeleteObjectAsync(request);
-
-        logger.LogObject(nameof(response), response);
-
+        logger.LogJson("contents", contents );
 
 
         // *****************************************************************
         return Ok();
 
+
     }
 
-    [HttpPost("s3-events-bad/{topic}")]
-    public Task<StatusCodeResult> AcceptBadWorkRequest([FromRoute] string topic, [FromBody] S3Event s3)
+    [HttpPost("ingest/error")]
+    public async Task<IActionResult> AcceptBadWorkRequest([FromRoute] string topic, [FromBody] IngestionEvent s3)
     {
 
         using var logger = EnterMethod();
@@ -97,20 +130,13 @@ public class WebhookController: BaseController
         logger.Inspect(nameof(topic), topic);
         logger.LogObject(nameof(s3), s3);
 
-        return Task.FromResult(new StatusCodeResult(400));
+        using var client = Factory.CreateClient();
 
-    }
+        var contents = await client.GetStringAsync(s3.Endpoint);
 
-    [HttpPost("s3-events-transient/{topic}")]
-    public Task<StatusCodeResult> AcceptTransientWorkRequest([FromRoute] string topic, [FromBody] S3Event s3)
-    {
+        logger.LogJson("contents", contents);
 
-        using var logger = EnterMethod();
-
-        logger.Inspect(nameof(topic), topic);
-        logger.LogObject(nameof(s3), s3);
-
-        return Task.FromResult(new StatusCodeResult(500));
+        return BadRequest();
 
     }
 
@@ -127,13 +153,3 @@ public class TestPayload
 
 }
 
-public class S3Event
-{
-
-    public string Region { get; set; }
-    public string Bucket { get; set; }
-    public string Key { get; set; }
-
-    public long Size { get; set; }
-
-}

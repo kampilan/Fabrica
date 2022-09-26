@@ -136,7 +136,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule, IRepositoryConfi
 
         // *****************************************************
         builder.UseAws(this)
-            .AddUrlProvider(this);
+            .AddRepositoryProvider(this);
 
 
         // *****************************************************

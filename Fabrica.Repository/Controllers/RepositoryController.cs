@@ -15,14 +15,14 @@ namespace Fabrica.Repository.Controllers;
 public class RepositoryController: BaseController
 {
 
-    public RepositoryController(ICorrelation correlation, IRepositoryUrlProvider provider ) : base(correlation)
+    public RepositoryController(ICorrelation correlation, IRepositoryProvider provider ) : base(correlation)
     {
 
         Provider = provider;
 
     }
 
-    private IRepositoryUrlProvider Provider { get; }
+    private IRepositoryProvider Provider { get; }
 
 
     [ApiExplorerSettings(IgnoreApi = true)]

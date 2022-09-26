@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
+using Fabrica.Work.Models;
 using Newtonsoft.Json;
 
 namespace Fabrica.Work.Processor.Parsers;
@@ -62,7 +63,15 @@ public class S3EventMessageBodyParser: IMessageBodyParser
 
         // *****************************************************************
         logger.Debug("Attempting to build WorkRequest payload");
-        var payload = new { Region=record.AwsRegion, Bucket = record.S3.Bucket.Name, record.S3.Object.Key, record.S3.Object.Size, Operation=record.EventName, Timestamp=record.EventTime };
+        var payload = new S3CreateEvent
+        {
+            Region      = record.AwsRegion, 
+            Bucket      = record.S3.Bucket.Name, 
+            Key         = record.S3.Object.Key, 
+            Size        = record.S3.Object.Size, 
+            Operation   = record.EventName, 
+            Timestamp   = record.EventTime
+        };
 
         logger.LogObject(nameof(payload), payload);
 

@@ -21,6 +21,7 @@ public class GetOptions
 
     public string Key { get; set; } = "";
 
+
     public Stream Content { get; set; }
 
     public bool Rewind { get; set; } = true;
@@ -41,6 +42,7 @@ public class PutOptions
     public string Key { get; set; } = "";
 
     public bool Transient { get; set; } = false;
+
 
     public bool Rewind { get; set; } = true;
 

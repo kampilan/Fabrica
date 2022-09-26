@@ -24,16 +24,12 @@ SOFTWARE.
 
 using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
-namespace Fabrica.Work.Processor
+namespace Fabrica.Work.Processor;
+
+public interface IWorkProcessor
 {
 
-    public interface IWorkProcessor
-    {
-
-        Task Process( [NotNull] WorkRequest request, [NotNull] Action<bool> completionHandler, bool onCallerThread = false );
-
-    }
+    Task Process( WorkRequest request, Func<bool,Task> completionHandler, bool onCallerThread = false );
 
 }

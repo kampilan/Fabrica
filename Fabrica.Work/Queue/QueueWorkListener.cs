@@ -30,203 +30,199 @@ using Fabrica.Watch;
 using Fabrica.Work.Processor;
 using Fabrica.Work.Processor.Parsers;
 
-namespace Fabrica.Work.Queue
+namespace Fabrica.Work.Queue;
+
+public class QueueWorkListener : IRequiresStart, IDisposable
 {
 
-    public class QueueWorkListener : IRequiresStart, IDisposable
+    public QueueWorkListener(IQueueComponent queue, IMessageBodyParser parser, IWorkProcessor processor)
     {
 
-        public QueueWorkListener(IQueueComponent queue, IMessageBodyParser parser, IWorkProcessor processor)
-        {
+        Queue     = queue;
+        Parser    = parser;
+        Processor = processor;
 
-            Queue     = queue;
-            Parser    = parser;
-            Processor = processor;
+    }
 
-        }
 
+    private IQueueComponent Queue { get; }
+    private IMessageBodyParser Parser { get; }
+    private IWorkProcessor Processor { get; }
 
-        private IQueueComponent Queue { get; }
-        private IMessageBodyParser Parser { get; }
-        private IWorkProcessor Processor { get; }
 
+    private Task Listener { get; set; } = null!;
+    private CancellationTokenSource MustStop { get; set; } = null!;
 
-        private Task Listener { get; set; }
-        private CancellationTokenSource MustStop { get; set; }
 
 
+    public string QueueName { get; set; } = "";
 
-        public string QueueName { get; set; } = "";
+    public TimeSpan PollingDuration { get; set; } = TimeSpan.FromSeconds(20);
+    public TimeSpan AcknowledgementTimeout { get; set; } = TimeSpan.FromSeconds(30);
+    public TimeSpan StopTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
-        public TimeSpan PollingDuration { get; set; } = TimeSpan.FromSeconds(20);
-        public TimeSpan AcknowledgementTimeout { get; set; } = TimeSpan.FromSeconds(30);
-        public TimeSpan StopTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
 
+    public Task Start()
+    {
 
-        public Task Start()
-        {
+        using var logger = this.EnterMethod();
 
-            using var logger = this.EnterMethod();
 
+        MustStop = new CancellationTokenSource();
 
-            MustStop = new CancellationTokenSource();
 
+        logger.Debug("Attempting to start listener thread");
 
-            logger.Debug("Attempting to start listener thread");
+        Listener = Task.Run(async () => await _listen());
 
-            Listener = Task.Run(async () => await _listen());
+        logger.Debug("QueueWorkListener start completed");
 
-            logger.Debug("QueueWorkListener start completed");
 
+        return Task.CompletedTask;
 
-            return Task.CompletedTask;
+    }
 
-        }
 
+    public void Dispose()
+    {
 
-        public void Dispose()
-        {
+        using var logger = this.EnterMethod();
 
-            using var logger = this.EnterMethod();
 
 
+        logger.Debug("Signal thread to stop");
+        MustStop.Cancel();
 
-            logger.Debug("Signal thread to stop");
-            MustStop.Cancel();
+        logger.DebugFormat("Waiting {0} second(s) for thread to stop", StopTimeout);
 
-            logger.DebugFormat("Waiting {0} second(s) for thread to stop", StopTimeout);
 
+        if (Listener.Wait(StopTimeout))
+            logger.Debug("Thread successfully stopped");
+        else
+            logger.Warning("Timeout occurred before thread stopped");
 
-            if (Listener.Wait(StopTimeout))
-                logger.Debug("Thread successfully stopped");
-            else
-                logger.Warning("Timeout occurred before thread stopped");
 
+    }
 
-        }
 
+    private async Task _listen()
+    {
 
-        private async Task _listen()
-        {
-
-            while (!MustStop.IsCancellationRequested)
-            {
-
-
-                // **********************************************************
-                IQueueItem message;
-                try
-                {
-
-                    message = await Queue.DequeueAsync(QueueName, PollingDuration, AcknowledgementTimeout, MustStop.Token);
-                    if (message == null)
-                        continue;
-
-                }
-                catch (TaskCanceledException)
-                {
-                    continue;
-                }
-                catch (Exception cause)
-                {
-                    this.GetLogger().ErrorFormat(cause, "DequeueAsync failed for Queue: {0}", QueueName);
-                    Thread.Sleep(1000);
-                    continue;
-                }
-
-
-                WorkRequest request = null;
-
-                // **********************************************************
-                var logger = this.GetLogger();
-                try
-                {
-
-                    logger.EnterScope($"Queue: {QueueName} Message: {message.Id}");
-
-
-
-                    // *********************************************************
-                    var body = message.Payload;
-                    logger.Inspect("body", body);
-
-
-
-                    // *********************************************************
-                    logger.Debug("Attempting to build request from message body");
-                    var result = await Parser.Parse(body);
-                    if( result.ok )
-                    {
-
-                        request = result.request;
-
-
-                        // *********************************************************
-                        logger.Debug("Attempting to submit request to processor");
-                        await Processor.Process(request, async ok => await _onCompletion(ok, message.ReceiptHandle));
-
-                    }
-
-
-
-                    // *********************************************************
-                    logger.Debug("Submission completed");
-
-
-
-                }
-                catch (Exception cause)
-                {
-                    logger.ErrorWithContext(cause, new { Message = message, Request = request }, $"Failed to process queue item from Queue: {QueueName} Message: {message.Id}");
-                }
-                finally
-                {
-                    logger.LeaveScope($"Queue: {QueueName} Message: {message.Id}");
-                }
-
-
-            }
-
-
-        }
-
-
-        private async Task _onCompletion(bool succeeded, string receiptHandle)
+        while (!MustStop.IsCancellationRequested)
         {
 
 
-            var logger = this.GetLogger();
-
+            // **********************************************************
+            IQueueItem message;
             try
             {
 
-                logger.EnterMethod();
+                message = await Queue.DequeueAsync(QueueName, PollingDuration, AcknowledgementTimeout, MustStop.Token);
+                if( message == null! )
+                    continue;
+
+            }
+            catch (TaskCanceledException)
+            {
+                continue;
+            }
+            catch (Exception cause)
+            {
+                this.GetLogger().ErrorFormat(cause, "DequeueAsync failed for Queue: {0}", QueueName);
+                Thread.Sleep(1000);
+                continue;
+            }
+
+
+            WorkRequest request = null!;
+
+            // **********************************************************
+            var logger = this.GetLogger();
+            try
+            {
+
+                logger.EnterScope($"Queue: {QueueName} Message: {message.Id}");
 
 
 
-                // **********************************************************
-                if (!succeeded)
-                    return;
+                // *********************************************************
+                var body = message.Payload;
+                logger.Inspect("body", body);
 
 
 
-                // **********************************************************
-                logger.Debug("Attempting to acknowledge (delete) message");
-                await Queue.AcknowledgeAsync(QueueName, receiptHandle);
+                // *********************************************************
+                logger.Debug("Attempting to build request from message body");
+                var result = await Parser.Parse(body);
+                if( result.ok )
+                {
+
+                    request = result.request!;
+
+
+                    // *********************************************************
+                    logger.Debug("Attempting to submit request to processor");
+                    await Processor.Process(request, async ok => await _onCompletion(ok, message.ReceiptHandle));
+
+                }
+
+
+
+                // *********************************************************
+                logger.Debug("Submission completed");
+
 
 
             }
             catch (Exception cause)
             {
-                logger.ErrorFormat(cause, "DeleteMessage failed for Queue: {0} ReceiptHandle: {1}", QueueName, receiptHandle);
+                logger.ErrorWithContext(cause, new { Message = message, Request = request }, $"Failed to process queue item from Queue: {QueueName} Message: {message.Id}");
             }
             finally
             {
-                logger.LeaveMethod();
+                logger.LeaveScope($"Queue: {QueueName} Message: {message.Id}");
             }
 
 
+        }
+
+
+    }
+
+
+    private async Task _onCompletion(bool succeeded, string receiptHandle)
+    {
+
+
+        var logger = this.GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+
+
+            // **********************************************************
+            if (!succeeded)
+                return;
+
+
+
+            // **********************************************************
+            logger.Debug("Attempting to acknowledge (delete) message");
+            await Queue.AcknowledgeAsync(QueueName, receiptHandle);
+
+
+        }
+        catch (Exception cause)
+        {
+            logger.ErrorFormat(cause, "DeleteMessage failed for Queue: {0} ReceiptHandle: {1}", QueueName, receiptHandle);
+        }
+        finally
+        {
+            logger.LeaveMethod();
         }
 
 

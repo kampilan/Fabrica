@@ -10,6 +10,7 @@ using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.One;
 using Fabrica.Aws;
 using Fabrica.Fake.Persistence;
+using Fabrica.Http;
 using Fabrica.Mediator;
 using Fabrica.Models;
 using Fabrica.Models.Serialization;
@@ -43,6 +44,8 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
     public int PersonCount { get; set; } = 1000;
     public int CompanyCount { get; set; } = 1000;
 
+
+    public string WebhookEndpoint { get; set; } = "";
 
     private static InMemoryDatabaseRoot _root = new();
 
@@ -134,6 +137,9 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
 
 
         builder.UseAws(this);
+
+        builder.AddHttpClient("WebhookEndpoint", WebhookEndpoint);
+
 
         builder.UseRules();
 

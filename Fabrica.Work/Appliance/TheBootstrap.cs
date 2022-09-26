@@ -27,8 +27,10 @@ using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.Patch;
 using Fabrica.Persistence.UnitOfWork;
+using Fabrica.Repository;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+using Fabrica.Utilities.Repository;
 using Fabrica.Watch;
 using Fabrica.Work.Mediator.Handlers;
 using Fabrica.Work.Persistence.Contexts;
@@ -48,7 +50,7 @@ using SmartFormat;
 
 namespace Fabrica.Work.Appliance;
 
-public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
+public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IRepositoryConfiguration, IWorkModule
 {
 
 
@@ -59,6 +61,12 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
     public string SecretKey { get; set; } = "";
 
     public bool RunningOnEC2 { get; set; } = true;
+
+
+    public string RepositoryContainer { get; set; } = "";
+    public string PermanentRoot { get; set; } = "";
+    public string TransientRoot { get; set; } = "";
+    public string ResourceRoot { get; set; } = "";
 
 
     public string WorkQueueName { get; set; } = "";
@@ -308,7 +316,9 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
 
 
 
-        builder.UseAws(this);
+        builder.UseAws(this)
+            .AddRepositoryProvider(this);
+
 
         builder.Register(c =>
         {
@@ -363,21 +373,38 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
             return comp;
 
         })
-            .As<IWorkProcessor>()
+            .AsSelf()
             .SingleInstance()
             .AutoActivate();
 
 
+        builder.Register(c =>
+            {
 
-        if (!string.IsNullOrWhiteSpace(WorkQueueName))
+                var factory     = c.Resolve<IHttpClientFactory>();
+                var context     = c.Resolve<WorkDbContext>();
+                var tokenSource = c.Resolve<IAccessTokenSource>();
+                var repo        = c.Resolve<IRepositoryProvider>();
+
+                var comp = new IngestionWorkProcessor(factory, context, tokenSource, repo);
+
+                return comp;
+
+            })
+            .AsSelf()
+            .SingleInstance()
+            .AutoActivate();
+
+
+        if( !string.IsNullOrWhiteSpace(WorkQueueName) )
         {
 
             builder.Register(c =>
             {
 
-                var queue = c.Resolve<IQueueComponent>();
-                var parser = new WorkMessageBodyParser();
-                var processor = c.Resolve<IWorkProcessor>();
+                var queue     = c.Resolve<IQueueComponent>();
+                var parser    = new WorkMessageBodyParser();
+                var processor = c.Resolve<WorkProcessor>();
 
 
                 var comp = new QueueWorkListener(queue, parser, processor)
@@ -416,7 +443,7 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
                     };
 
                     var parser = new S3EventMessageBodyParser(t);
-                    var processor = c.Resolve<IWorkProcessor>();
+                    var processor = c.Resolve<IngestionWorkProcessor>();
 
                     var comp = new QueueWorkListener(queue, parser, processor)
                     {
@@ -503,8 +530,6 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IWorkModule
 
 
     }
-
-
 
 }
 

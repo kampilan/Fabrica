@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Fabrica.Repository;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
 
@@ -9,11 +10,11 @@ namespace Fabrica.Aws.Repository
 {
 
 
-    public class S3RepositoryUrlProvider : CorrelatedObject, IRepositoryUrlProvider
+    public class S3RepositoryProvider : CorrelatedObject, IRepositoryProvider
     {
 
 
-        public S3RepositoryUrlProvider( ICorrelation correlation, IAmazonS3 client, string repository ): base(correlation)
+        public S3RepositoryProvider( ICorrelation correlation, IAmazonS3 client, string repository ): base(correlation)
         {
 
             Client = client;
@@ -139,6 +140,97 @@ namespace Fabrica.Aws.Repository
 
         }
 
+        public async Task Move(string sourceKey, string destinationKey)
+        {
+
+            var logger = GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+
+                // *****************************************************************
+                logger.Debug("Attempting to build CopyObjectRequest");
+                var copyReq = new CopyObjectRequest
+                {
+                    SourceBucket = RepositoryBucket,
+                    SourceKey = sourceKey,
+                    DestinationBucket = RepositoryBucket,
+                    DestinationKey = destinationKey
+                };
+
+                // *****************************************************************
+                logger.Debug("Attempting to call CopyObject");
+                var copyRes = await Client.CopyObjectAsync(copyReq);
+
+                logger.LogObject(nameof(copyRes), copyRes);
+
+                var delReq = new DeleteObjectRequest
+                {
+                    BucketName = RepositoryBucket,
+                    Key        = sourceKey
+                };
+
+
+                var delRes = await Client.DeleteObjectAsync(delReq);
+
+                logger.LogObject(nameof(delRes), delRes);
+
+
+            }
+            catch (Exception cause)
+            {
+                var ctx = new {RepositoryBucket, SourceKey = sourceKey, DestinationKey = destinationKey};
+                logger.ErrorWithContext( cause, ctx, "Move failed");
+                throw;
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+
+        }
+
+        public async Task Delete( string key )
+        {
+
+            var logger = GetLogger();
+
+            try
+            {
+
+                logger.EnterMethod();
+
+
+                var delReq = new DeleteObjectRequest
+                {
+                    BucketName = RepositoryBucket,
+                    Key        = key
+                };
+
+
+                var delRes = await Client.DeleteObjectAsync(delReq);
+
+                logger.LogObject(nameof(delRes), delRes);
+
+
+            }
+            catch (Exception cause)
+            {
+                var ctx = new { RepositoryBucket, Key = key };
+                logger.ErrorWithContext(cause, ctx, "Delete failed");
+                throw;
+            }
+            finally
+            {
+                logger.LeaveMethod();
+            }
+
+
+        }
 
     }
 
