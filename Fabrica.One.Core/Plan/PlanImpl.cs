@@ -58,6 +58,8 @@ namespace Fabrica.One.Plan
         [JsonIgnore]
         public string InstallationRoot { get; set; } = "";
 
+        [JsonIgnore]
+        public Dictionary<string, string> ServiceEndpoints { get; set; } = new Dictionary<string, string>();
 
         public void SetRepositoryVersion( string version )
         {

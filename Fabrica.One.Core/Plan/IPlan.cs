@@ -24,6 +24,7 @@ namespace Fabrica.One.Plan
 
         List<DeploymentUnit> Deployments { get;  }
 
+        Dictionary<string, string> ServiceEndpoints { get; set; }
 
         string RepositoryRoot { get; }
 

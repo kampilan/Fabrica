@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -30,6 +29,11 @@ namespace Fabrica.One.Plan
 
         [Required]
         public string Assembly { get; set; } = "";
+
+
+        public string ServiceEndpointName { get; set; } = "";
+        public string ServiceEndpointUrl { get; set; } = "";
+
 
         [Required]
         public bool Deploy { get; set; }

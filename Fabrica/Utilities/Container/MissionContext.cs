@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Collections.Generic;
+
 namespace Fabrica.Utilities.Container
 {
 
@@ -40,6 +42,7 @@ namespace Fabrica.Utilities.Container
         public string ApplianceId { get; set; } = "";
         public string ApplianceRoot { get; set; } = "";
 
+        public Dictionary<string, string> ServiceEndpoints { get; set; } = new();
 
     }
 

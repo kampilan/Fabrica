@@ -141,6 +141,14 @@ public abstract class BaseBootstrap: CorrelatedObject
 
             using var inner = GetLogger();
 
+
+            // *****************************************************************
+            inner.Debug("Attempting to Create named HttpClients for each Mission ServiceEndpoint");
+            var mission = Configuration.Get<MissionContext>();
+            foreach (var pair in mission.ServiceEndpoints)
+                s.AddHttpClient(pair.Key, c => c.BaseAddress = new Uri(pair.Value));
+
+
             try
             {
                 ConfigureServices(s);

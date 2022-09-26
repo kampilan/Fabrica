@@ -246,13 +246,22 @@ namespace Fabrica.One.Plan
                     unit.ExecutionCommand   = "dotnet";
                     unit.ExecutionArguments = $"{unit.InstallationLocation}{Path.DirectorySeparatorChar}{unit.Assembly}.dll";
 
-                    unit.MissionConfiguration["MissionName"]     = plan.Name;
-                    unit.MissionConfiguration["Environment"]     = plan.Environment;
-                    unit.MissionConfiguration["ApplianceName"]   = unit.Name;
-                    unit.MissionConfiguration["ApplianceBuild"]  = unit.Build;
-                    unit.MissionConfiguration["ApplianceId"]     = unit.Uid;
-                    unit.MissionConfiguration["ApplianceRoot"]   = unit.InstallationLocation;
-                    unit.MissionConfiguration["TokenSigningKey"] = tokenSigningKey;
+
+                    // *****************************************************************
+                    logger.Debug("Attempting to checking if the deployment unit publishes an endpoint");
+                    if (!string.IsNullOrWhiteSpace(unit.ServiceEndpointName) && !string.IsNullOrWhiteSpace(unit.ServiceEndpointUrl))
+                        plan.ServiceEndpoints.Add(unit.ServiceEndpointName, unit.ServiceEndpointUrl);
+
+
+                    unit.MissionConfiguration["MissionName"]      = plan.Name;
+                    unit.MissionConfiguration["Environment"]      = plan.Environment;
+                    unit.MissionConfiguration["ApplianceName"]    = unit.Name;
+                    unit.MissionConfiguration["ApplianceBuild"]   = unit.Build;
+                    unit.MissionConfiguration["ApplianceId"]      = unit.Uid;
+                    unit.MissionConfiguration["ApplianceRoot"]    = unit.InstallationLocation;
+                    unit.MissionConfiguration["TokenSigningKey"]  = tokenSigningKey;
+                    unit.MissionConfiguration["ServiceEndpoints"] = plan.ServiceEndpoints;
+
 
                 }
 
