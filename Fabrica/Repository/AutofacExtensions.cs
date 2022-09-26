@@ -9,26 +9,17 @@ namespace Fabrica.Repository;
 public static class AutofacExtensions
 {
 
-    private static string DefaultRepositoryClientName => "Fabrica.Repository.Default";
 
-    public static ContainerBuilder UseRepositoryClient(this ContainerBuilder builder, string repositoryAddress, string repositoryClientName="" )
+    public static ContainerBuilder UseRepositoryClient(this ContainerBuilder builder)
     {
 
-        var client  = string.IsNullOrEmpty( repositoryClientName ) ? DefaultRepositoryClientName : repositoryClientName;
-        var address = repositoryAddress.EndsWith("/") ? repositoryAddress : $"{repositoryAddress}/";
-        var uri     = new Uri(address);
-
-        var sc = new ServiceCollection();
-        sc.AddHttpClient( client, c => c.BaseAddress = uri );
-
-        builder.Populate(sc);
 
         builder.Register(c =>
             {
 
                 var factory = c.Resolve<IHttpClientFactory>();
 
-                var comp = new ObjectRepository( factory, client );
+                var comp = new ObjectRepository(factory, Fabrica.Http.ServiceEndpoints.Repository);
 
                 return comp;
 
@@ -41,6 +32,40 @@ public static class AutofacExtensions
 
 
     }
+
+
+    public static ContainerBuilder UseRepositoryClient(this ContainerBuilder builder, string clientName, string url)
+    {
+
+
+        var address = url.EndsWith("/") ? url : $"{url}/";
+        var uri = new Uri(address);
+
+        var sc = new ServiceCollection();
+        sc.AddHttpClient(clientName, c => c.BaseAddress = uri);
+
+        builder.Populate(sc);
+
+
+        builder.Register(c =>
+            {
+
+                var factory = c.Resolve<IHttpClientFactory>();
+
+                var comp = new ObjectRepository(factory, clientName);
+
+                return comp;
+
+            })
+            .As<IObjectRepository>()
+            .InstancePerDependency();
+
+
+        return builder;
+
+
+    }
+
 
 
 }

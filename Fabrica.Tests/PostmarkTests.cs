@@ -185,7 +185,7 @@ public class PostmarkModule: Module, IRepositoryConfiguration, IPostmarkConfigur
 
         builder.AddCorrelation();
 
-        builder.UseRepositoryClient("https://fabrica.ngrok.io/repository");
+        builder.UseRepositoryClient("https://fabrica.ngrok.io/repository", Fabrica.Http.ServiceEndpoints.Repository);
 
         builder.UseRules();
         builder.UseMediator(typeof(SendEmailHandler).Assembly);

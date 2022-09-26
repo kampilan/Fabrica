@@ -50,25 +50,6 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
     private static InMemoryDatabaseRoot _root = new();
 
 
-    public override void ConfigureWatch()
-    {
-
-#if DEBUG
-        ConfigureDebugWatch(s =>
-        {
-            s
-                .WhenMatched("Fabrica.Diagnostics.Http", "", Level.Debug, Color.Thistle)
-                .WhenMatched("Fabrica.Fake", "", Level.Debug, Color.LightSalmon)
-                .WhenMatched("Microsoft", "", Level.Warning, Color.BurlyWood)
-                .WhenNotMatched(Level.Warning, Color.Azure);
-        });
-#else
-        base.ConfigureWatch();
-#endif
-
-    }
-
-
 
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -138,7 +119,7 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
 
         builder.UseAws(this);
 
-        builder.AddHttpClient("WebhookEndpoint", WebhookEndpoint);
+//        builder.AddHttpClient("WebhookEndpoint", WebhookEndpoint);
 
 
         builder.UseRules();

@@ -142,7 +142,7 @@ public class RepoTestModule : Module, IRepositoryConfiguration
 
         builder.AddCorrelation();
 
-        builder.UseRepositoryClient("https://fabrica.ngrok.io/repository");
+        builder.UseRepositoryClient("https://fabrica.ngrok.io/repository", Fabrica.Http.ServiceEndpoints.Repository);
 
     }
 
