@@ -17,7 +17,7 @@ public class ObjectRepository: IObjectRepository
 
         Factory = factory;
 
-        RepositoryClientName = string.IsNullOrWhiteSpace(repositoryClientName) ? "Api" : repositoryClientName;
+        RepositoryClientName = string.IsNullOrWhiteSpace(repositoryClientName) ? Fabrica.Http.ServiceEndpoints.Repository : repositoryClientName;
 
     }
 

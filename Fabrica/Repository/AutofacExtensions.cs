@@ -52,7 +52,7 @@ public static class AutofacExtensions
 
                 var factory = c.Resolve<IHttpClientFactory>();
 
-                var comp = new ObjectRepository( factory );
+                var comp = new ObjectRepository( factory, Http.ServiceEndpoints.Repository );
 
                 return comp;
 
