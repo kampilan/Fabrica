@@ -1,9 +1,8 @@
 ﻿using Fabrica.Api.Support.Controllers;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Repository;
 using Fabrica.Utilities.Text;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
+using MimeTypes;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Repository.Controllers;
@@ -84,6 +83,26 @@ public class RepositoryController: BaseController
 
 
         // *****************************************************************
+        logger.Debug("Attempting to dig out Content-Type ");
+        if( string.IsNullOrWhiteSpace(request.ContentType) && !string.IsNullOrWhiteSpace(request.Extension) )
+        {
+            var contentType = MimeTypeMap.GetMimeType(request.Extension);
+            request.ContentType = contentType;
+        }
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to dig out Content-Type ");
+        if( string.IsNullOrWhiteSpace(request.Extension) && !string.IsNullOrWhiteSpace(request.ContentType) )
+        {
+            var ext = MimeTypeMap.GetExtension(request.ContentType);
+            request.Extension = ext;
+        }
+
+
+
+        // *****************************************************************
         logger.Debug("Attempting to check for leading. in Extension");
         if( !string.IsNullOrWhiteSpace(request.Extension) && request.Extension.StartsWith(".") )
             request.Extension = request.Extension[1..];
@@ -128,24 +147,6 @@ public class RepositoryController: BaseController
 
         }
 
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to dig out Content-Type ");
-        if( string.IsNullOrWhiteSpace(request.ContentType) && !string.IsNullOrWhiteSpace(request.Extension) )
-        {
-
-            var provider = new FileExtensionContentTypeProvider();
-
-            var ext = !string.IsNullOrWhiteSpace(request.Extension) ? request.Extension : "dat";
-            var fileName = $"document.{ext}";
-
-            if( !provider.TryGetContentType(fileName, out var contentType) )
-                contentType = "";
-
-            request.ContentType = contentType;
-
-        }
 
 
         // *****************************************************************

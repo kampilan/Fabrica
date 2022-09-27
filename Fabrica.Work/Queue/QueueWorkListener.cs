@@ -25,6 +25,7 @@ SOFTWARE.
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Work.Processor;
@@ -32,23 +33,21 @@ using Fabrica.Work.Processor.Parsers;
 
 namespace Fabrica.Work.Queue;
 
-public class QueueWorkListener : IRequiresStart, IDisposable
+public class QueueWorkListener<TParser,TProcessor> : IRequiresStart, IDisposable where TParser: IMessageBodyParser where TProcessor: IWorkProcessor
 {
 
-    public QueueWorkListener(IQueueComponent queue, IMessageBodyParser parser, IWorkProcessor processor)
+
+    public QueueWorkListener( ILifetimeScope rootScope, IQueueComponent queue )
     {
 
+        RootScope = rootScope;
         Queue     = queue;
-        Parser    = parser;
-        Processor = processor;
 
     }
 
 
+    private ILifetimeScope RootScope { get; }
     private IQueueComponent Queue { get; }
-    private IMessageBodyParser Parser { get; }
-    private IWorkProcessor Processor { get; }
-
 
     private Task Listener { get; set; } = null!;
     private CancellationTokenSource MustStop { get; set; } = null!;
@@ -151,19 +150,27 @@ public class QueueWorkListener : IRequiresStart, IDisposable
                 logger.Inspect("body", body);
 
 
-
                 // *********************************************************
-                logger.Debug("Attempting to build request from message body");
-                var result = await Parser.Parse(body);
-                if( result.ok )
+                await using (var scope = RootScope.BeginLifetimeScope())
                 {
 
-                    request = result.request!;
+                    var parser    = scope.Resolve<TParser>();
+                    var processor = scope.Resolve<TProcessor>();
+
+                    logger.Debug("Attempting to build request from message body");
+                    var result = await parser.Parse(body);
+                    if (result.ok)
+                    {
+
+                        request = result.request!;
 
 
-                    // *********************************************************
-                    logger.Debug("Attempting to submit request to processor");
-                    await Processor.Process(request, async ok => await _onCompletion(ok, message.ReceiptHandle));
+                        // *********************************************************
+                        logger.Debug("Attempting to submit request to processor");
+                        await processor.Process(request, async ok => await _onCompletion(ok, message.ReceiptHandle));
+
+                    }
+
 
                 }
 

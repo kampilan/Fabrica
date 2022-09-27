@@ -342,6 +342,7 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IRepositoryConf
         builder.Register(c =>
         {
 
+
             var claims = new ClaimSetModel
             {
                 Subject = IdentitySubject,
@@ -361,94 +362,117 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IRepositoryConf
 
 
 
-        builder.Register(c =>
-        {
-
-            var factory = c.Resolve<IHttpClientFactory>();
-            var context = c.Resolve<WorkDbContext>();
-            var tokenSource = c.Resolve<IAccessTokenSource>();
-
-            var comp = new WorkProcessor(factory, context, tokenSource);
-
-            return comp;
-
-        })
-            .AsSelf()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        builder.Register(c =>
-            {
-
-                var factory     = c.Resolve<IHttpClientFactory>();
-                var context     = c.Resolve<WorkDbContext>();
-                var tokenSource = c.Resolve<IAccessTokenSource>();
-                var repo        = c.Resolve<IRepositoryProvider>();
-
-                var comp = new IngestionWorkProcessor(factory, context, tokenSource, repo);
-
-                return comp;
-
-            })
-            .AsSelf()
-            .SingleInstance()
-            .AutoActivate();
 
 
         if( !string.IsNullOrWhiteSpace(WorkQueueName) )
         {
 
+
             builder.Register(c =>
-            {
-
-                var queue     = c.Resolve<IQueueComponent>();
-                var parser    = new WorkMessageBodyParser();
-                var processor = c.Resolve<WorkProcessor>();
-
-
-                var comp = new QueueWorkListener(queue, parser, processor)
                 {
-                    QueueName = WorkQueueName,
-                    PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
-                    AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
-                };
 
-                return comp;
+                    var factory = c.Resolve<IHttpClientFactory>();
+                    var context = c.Resolve<WorkDbContext>();
+                    var tokenSource = c.Resolve<IAccessTokenSource>();
 
-            })
+                    var comp = new WorkProcessor(factory, context, tokenSource);
+
+                    return comp;
+
+                })
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
+
+
+            builder.RegisterType<WorkMessageBodyParser>()
+                .AsSelf()
+                .As<IMessageBodyParser>()
+                .InstancePerLifetimeScope();
+
+
+
+            builder.Register(c =>
+                {
+
+                    var scope = c.Resolve<ILifetimeScope>();
+                    var queue = c.Resolve<IQueueComponent>();
+
+
+                    var comp = new QueueWorkListener<WorkMessageBodyParser, WorkProcessor>(scope, queue)
+                    {
+                        QueueName              = WorkQueueName,
+                        PollingDuration        = TimeSpan.FromSeconds(PollingDurationSecs),
+                        AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
+                    };
+
+                    return comp;
+
+                })
                 .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
+                .SingleInstance();
 
         }
 
 
-        if (!string.IsNullOrWhiteSpace(S3EventQueueName))
+
+        if( !string.IsNullOrWhiteSpace(S3EventQueueName) )
         {
+
+
+            builder.Register(c =>
+                {
+
+                    var factory = c.Resolve<IHttpClientFactory>();
+                    var context = c.Resolve<WorkDbContext>();
+                    var tokenSource = c.Resolve<IAccessTokenSource>();
+                    var repo = c.Resolve<IRepositoryProvider>();
+
+                    var comp = new IngestionWorkProcessor(factory, context, tokenSource, repo);
+
+                    return comp;
+
+                })
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
+
 
             builder.Register(c =>
                 {
 
                     var corr = c.Resolve<ICorrelation>();
-                    var queue = c.Resolve<IQueueComponent>();
 
                     var t = new WorkTopicTransformer(corr)
                     {
                         PrefixCount = 2,
                         SuffixCount = 1,
-                        Prepend     = "Ingest",
-                        Separator   = "",
+                        Prepend = "Ingest",
+                        Separator = "",
                         DefaultName = "root"
                     };
 
-                    var parser = new S3EventMessageBodyParser(t);
-                    var processor = c.Resolve<IngestionWorkProcessor>();
+                    var comp = new S3EventMessageBodyParser(t);
 
-                    var comp = new QueueWorkListener(queue, parser, processor)
+                    return comp;
+
+                })
+                .AsSelf()
+                .As<IMessageBodyParser>()
+                .InstancePerLifetimeScope();
+
+
+
+            builder.Register(c =>
+                {
+
+                    var scope = c.Resolve<ILifetimeScope>();
+                    var queue = c.Resolve<IQueueComponent>();
+
+                    var comp = new QueueWorkListener<S3EventMessageBodyParser, IngestionWorkProcessor>(scope, queue)
                     {
-                        QueueName = S3EventQueueName,
-                        PollingDuration = TimeSpan.FromSeconds(PollingDurationSecs),
+                        QueueName              = S3EventQueueName,
+                        PollingDuration        = TimeSpan.FromSeconds(PollingDurationSecs),
                         AcknowledgementTimeout = TimeSpan.FromSeconds(AcknowledgementTimeoutSecs)
                     };
 

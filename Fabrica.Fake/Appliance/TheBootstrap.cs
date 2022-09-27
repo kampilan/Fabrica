@@ -18,6 +18,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.Patch;
 using Fabrica.Persistence.UnitOfWork;
+using Fabrica.Repository;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -118,6 +119,8 @@ public class TheBootstrap: BaseBootstrap, IAwsCredentialModule
 
 
         builder.UseAws(this);
+
+        builder.UseRepositoryClient();
 
 
         builder.UseRules();

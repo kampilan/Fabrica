@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Fabrica.Api.Support.Controllers;
 using Fabrica.Exceptions;
 using Fabrica.Fake.Persistence;
 using Fabrica.Mediator;
 using Fabrica.Persistence.Patch;
+using Fabrica.Repository;
 using Fabrica.Utilities.Container;
 using Fabrica.Work.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Fabrica.Fake.Controllers;
 
@@ -20,12 +24,13 @@ public class WebhookController: BaseController
 {
 
 
-    public WebhookController(ICorrelation correlation, IPatchResolver resolver, FakeReplicaDbContext context, IHttpClientFactory factory ) : base(correlation)
+    public WebhookController(ICorrelation correlation, IPatchResolver resolver, FakeReplicaDbContext context, IHttpClientFactory factory, IObjectRepository repository ) : base(correlation)
     {
 
-        Resolver = resolver;
-        Context  = context;
-        Factory = factory;
+        Resolver   = resolver;
+        Context    = context;
+        Factory    = factory;
+        Repository = repository;
 
         Context.Database.EnsureCreated();
 
@@ -34,6 +39,7 @@ public class WebhookController: BaseController
     private IPatchResolver Resolver { get; }
     private FakeReplicaDbContext Context { get; }
     private IHttpClientFactory Factory { get; }
+    private IObjectRepository Repository { get; }
 
 
     [HttpPost("test-topic")]
@@ -121,6 +127,69 @@ public class WebhookController: BaseController
 
     }
 
+
+    [HttpPost("ingest/inbound-email")]
+    public async Task<IActionResult> AcceptInboundEmail([FromRoute] string topic, [FromBody] IngestionEvent s3)
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Inspect(nameof(topic), topic);
+        logger.LogObject(nameof(s3), s3);
+
+
+        using var client = Factory.CreateClient();
+
+        var contents = await client.GetStringAsync(s3.Endpoint);
+        logger.LogJson("contents", contents);
+
+        var model = JsonConvert.DeserializeObject<InboundEmail>( contents );
+
+        
+        var buff = Convert.FromBase64String(model!.Body);
+        using var cs = new MemoryStream(buff);
+        var key =  await Repository.Put(b =>
+        {
+            b.Content = cs;
+            b.Extension = "pdf";
+            b.Rewind = true;
+        });
+
+        logger.Inspect(nameof(key), key);
+
+        model.Key = key;
+
+        foreach( var a in model.Attachments )
+        {
+
+            var ab  = Convert.FromBase64String(a.Content);
+            using var ats = new MemoryStream(ab);
+            var ak = await Repository.Put(b =>
+            {
+                b.Content     = ats;
+                b.ContentType = a.ContentType;
+                b.Rewind      = true;
+            });
+
+            logger.Inspect( nameof(ak), ak );
+
+            a.Key = ak;
+
+        }
+
+        logger.LogObject(nameof(model), model);
+
+
+        // *****************************************************************
+        return Ok();
+
+
+    }
+
+
+
+
+
     [HttpPost("ingest/error")]
     public async Task<IActionResult> AcceptBadWorkRequest([FromRoute] string topic, [FromBody] IngestionEvent s3)
     {
@@ -153,3 +222,41 @@ public class TestPayload
 
 }
 
+public class InboundEmail
+{
+
+    public string MessageUid { get; set; } = "";
+
+    [JsonProperty("MailHash")]
+    public string Tag { get; set; } = "";
+
+    public string FromName { get; set; } = "";
+    public string FromEmail { get; set; } = "";
+
+    public string Subject { get; set; } = "";
+
+    public string Body { get; set; } = "";
+
+    public string Key { get; set; } = "";
+
+    public List<InboundEmailAttachment> Attachments { get; set; } = new ();
+
+
+}
+
+
+public class InboundEmailAttachment
+{
+
+    public string Name { get; set; } = "";
+
+    public string ContentType { get; set; } = "";
+
+    public int ContentLength { get; set; }
+
+    public string Content { get; set; } = "";
+
+    public string Key { get; set; } = "";
+
+
+}
