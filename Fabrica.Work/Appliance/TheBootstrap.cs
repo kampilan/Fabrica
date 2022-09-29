@@ -340,25 +340,25 @@ public class TheBootstrap : BaseBootstrap, IAwsCredentialModule, IRepositoryConf
         builder.AddProxyTokenEncoder(TokenSigningKey);
 
         builder.Register(c =>
-        {
-
-
-            var claims = new ClaimSetModel
             {
-                Subject = IdentitySubject,
-                Name = IdentityName
-            };
 
-            var encoder = c.Resolve<IProxyTokenEncoder>();
-            var token = encoder.Encode(claims);
 
-            var comp = new StaticAccessTokenSource("Api", token);
+                var claims = new ClaimSetModel
+                {
+                    Subject = IdentitySubject,
+                    Name = IdentityName
+                };
 
-            return comp;
+                var encoder = c.Resolve<IProxyTokenEncoder>();
+                var token = encoder.Encode(claims);
 
-        })
+                var comp = new StaticAccessTokenSource("Api", token);
+
+                return comp;
+
+            })
             .As<IAccessTokenSource>()
-            .SingleInstance();
+            .InstancePerDependency();
 
 
 

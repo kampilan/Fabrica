@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Http;
+using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 
 namespace Fabrica.Repository;
@@ -17,7 +18,7 @@ public class ObjectRepository: IObjectRepository
 
         Factory = factory;
 
-        RepositoryClientName = string.IsNullOrWhiteSpace(repositoryClientName) ? Fabrica.Http.ServiceEndpoints.Repository : repositoryClientName;
+        RepositoryClientName = string.IsNullOrWhiteSpace(repositoryClientName) ? ServiceEndpoints.Repository : repositoryClientName;
 
     }
 
@@ -71,6 +72,31 @@ public class ObjectRepository: IObjectRepository
 
     }
 
+
+    public Task<string> CreateKey( string extension="", DateTime date = default )
+    {
+
+        using var logger = this.EnterMethod();
+
+        if( date == default )
+            date = DateTime.Now;
+
+
+        var ts    = date.ToUniversalTime();
+        var year  = ts.Year.ToString().PadLeft(4, '0');
+        var month = ts.Month.ToString().PadLeft(2, '0');
+        var day   = ts.Day.ToString().PadLeft(2, '0');
+        var guid  = Base62Converter.NewGuid();
+        var ext   = !string.IsNullOrWhiteSpace(extension) ? extension : "";
+
+        var key = $"{year}/{month}/{day}/{guid}";
+        if( !string.IsNullOrWhiteSpace(ext) )
+            key = $"{key}/document.{ext}";
+
+        return Task.FromResult(key);
+
+
+    }
 
     public async Task<bool> Get( Action<GetOptions> builder, CancellationToken token = default )
     {

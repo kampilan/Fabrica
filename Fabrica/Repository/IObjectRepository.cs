@@ -10,6 +10,8 @@ namespace Fabrica.Repository;
 public interface IObjectRepository
 {
 
+    Task<string> CreateKey(string extension = "", DateTime date = default);
+
     Task<bool> Get( [NotNull] Action<GetOptions> builder, CancellationToken token = default );
     Task<string> Put( [NotNull] Action<PutOptions> builder, CancellationToken token = default );
 
