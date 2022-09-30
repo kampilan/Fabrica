@@ -34,7 +34,7 @@ public class OmniClient
 
         using var client = Factory.CreateClient("Fabrica.Omni.Email");
 
-        var res = await client.PostAsJsonAsync("/outbound-email/send", json);
+        var res = await client.PostAsJsonAsync("/mail/send", json);
 
         var resJson = await res.Content.ReadAsStringAsync();
 

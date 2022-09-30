@@ -114,7 +114,7 @@ namespace Fabrica.Omni
         public static OutboundEmail WithAttachment(this OutboundEmail model, string fileName, string location )
         {
             
-            model.Attachments.Add( new OutboundEmailAttachment{FileName = fileName, ContentLocation = location} );
+            model.Attachments.Add( new OutboundEmailAttachment{FileName = fileName, ContentReference = location} );
             
             return model;
 
