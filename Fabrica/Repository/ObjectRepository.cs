@@ -111,25 +111,30 @@ public class ObjectRepository: IObjectRepository
 
         logger.LogObject(nameof(ops), ops);
 
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to build Repo request");
-        var req = new RepositoryRequest
+        if( string.IsNullOrWhiteSpace(ops.Url) )
         {
-            Key         = ops.Key,
-            GenerateGet = true,
-            TimeToLive  = 120
-        };
+
+            // *****************************************************************
+            logger.Debug("Attempting to build Repo request");
+            var req = new RepositoryRequest
+            {
+                Key = ops.Key,
+                GenerateGet = true,
+                TimeToLive = 120
+            };
 
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to send Repo request");
-        var res = await Send( req, token );
+            // *****************************************************************
+            logger.Debug("Attempting to send Repo request");
+            var res = await Send(req, token);
 
-        if (!res.Exists)
-            return false;
+            if (!res.Exists)
+                return false;
+
+            ops.Url = res.GetUrl;
+
+        }
 
 
         // *****************************************************************
@@ -140,7 +145,7 @@ public class ObjectRepository: IObjectRepository
 
         // *****************************************************************
         logger.Debug("Attempting to send Get request ");
-        var input = await client.GetStreamAsync( res.GetUrl );
+        var input = await client.GetStreamAsync( ops.Url );
 
 
 
@@ -176,24 +181,32 @@ public class ObjectRepository: IObjectRepository
         logger.LogObject(nameof(ops), ops);
 
 
-
-        // *****************************************************************
-        logger.Debug("Attempting to build repo request");
-        var req = new RepositoryRequest
+        if( string.IsNullOrWhiteSpace(ops.Url) )
         {
-            Transient     = ops.Transient,
-            Key           = ops.Key,
-            Extension     = ops.Extension,
-            ContentType   = ops.ContentType,
-            GeneratePut   = true,
-            TimeToLive    = 120
-        };
+
+            // *****************************************************************
+            logger.Debug("Attempting to build repo request");
+            var req = new RepositoryRequest
+            {
+                Transient = ops.Transient,
+                Key = ops.Key,
+                Extension = ops.Extension,
+                ContentType = ops.ContentType,
+                GeneratePut = true,
+                TimeToLive = 120
+            };
 
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to send Repo request");
-        var res = await Send(req, token);
+            // *****************************************************************
+            logger.Debug("Attempting to send Repo request");
+            var res = await Send(req, token);
+
+            ops.Key         = res.Key;
+            ops.Url         = res.PutUrl;
+            ops.ContentType = res.ContentType;
+
+        }
 
 
 
@@ -210,18 +223,18 @@ public class ObjectRepository: IObjectRepository
             ops.Content.Seek(0, SeekOrigin.Begin);
 
         var hc = new StreamContent(ops.Content);
-        hc.Headers.ContentType = new MediaTypeHeaderValue(res.ContentType);
+        hc.Headers.ContentType = new MediaTypeHeaderValue(ops.ContentType);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to send Put request ");
-        await client.PutAsync(res.PutUrl, hc, token );
+        await client.PutAsync(ops.Url, hc, token );
 
 
 
         // *****************************************************************
-        return res.Key;
+        return ops.Key;
 
     }
 

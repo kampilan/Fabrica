@@ -22,7 +22,7 @@ public class GetOptions
 {
 
     public string Key { get; set; } = "";
-
+    public string Url { get; set; } = "";
 
     public Stream Content { get; set; }
 
@@ -45,6 +45,7 @@ public class PutOptions
 
     public bool Transient { get; set; } = false;
 
+    public string Url { get; set; } = "";
 
     public bool Rewind { get; set; } = true;
 
