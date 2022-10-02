@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Fabrica.Repository;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Repository;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
