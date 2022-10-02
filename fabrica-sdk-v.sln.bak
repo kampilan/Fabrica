@@ -39,8 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Tests", "Fabrica.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Identity.Auth0", "Fabrica.Identity.Auth0\Fabrica.Identity.Auth0.csproj", "{E1934D6F-2617-4A1C-92BF-DDB3386AAF7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Work", "Fabrica.Work\Fabrica.Work.csproj", "{8449F594-FC67-41FE-816C-55D790694F5E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Press.Generation", "Fabrica.Press.Generation\Fabrica.Press.Generation.csproj", "{91287193-A929-4CA0-B7E9-DD30322176F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Api", "Fabrica.Watch.Api\Fabrica.Watch.Api.csproj", "{5A3DB926-8BD2-4A4C-95A2-427250FB7DAB}"
@@ -74,8 +72,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{56590FEE-0542-4CB8-BE54-3A0B984A006A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Identity.Keycloak", "Fabrica.Identity.Keycloak\Fabrica.Identity.Keycloak.csproj", "{C2013476-3ED0-47E5-A04D-13BB5230717C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Repository", "Fabrica.Repository\Fabrica.Repository.csproj", "{1B32D8BA-010F-47ED-B39D-B0CA5CB49C07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
