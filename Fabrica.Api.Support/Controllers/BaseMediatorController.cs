@@ -17,6 +17,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace Fabrica.Api.Support.Controllers;
 
@@ -541,7 +542,24 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
+    protected virtual Dictionary<string, object> FromDelta(object delta)
+    {
 
+        using var logger = EnterMethod();
+
+
+        var dict = new Dictionary<string, object>();
+
+        foreach (var pi in delta.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead))
+        {
+            var value = pi.GetValue(delta, null);
+            if (value is not null)
+                dict[pi.Name] = value;
+        }
+
+        return dict;
+
+    }
 
     protected virtual async Task<IActionResult> HandleQuery<TExplorer,TCriteria>() where TExplorer : class, IExplorableModel where TCriteria : class, ICriteria, new()
     {
