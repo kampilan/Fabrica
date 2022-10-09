@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Fabrica.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabrica.Repository;
@@ -18,8 +19,9 @@ public static class AutofacExtensions
             {
 
                 var factory = c.Resolve<IHttpClientFactory>();
+                var source  = c.Resolve<IAccessTokenSource>();
 
-                var comp = new ObjectRepository(factory, Http.ServiceEndpoints.Repository);
+                var comp = new ObjectRepository(factory, source, Http.ServiceEndpoints.Repository);
 
                 return comp;
 

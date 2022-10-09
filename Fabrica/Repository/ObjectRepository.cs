@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabrica.Http;
+using Fabrica.Identity;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 
@@ -16,13 +17,26 @@ public class ObjectRepository: IObjectRepository
     internal ObjectRepository( IHttpClientFactory factory, string repositoryClientName = "" )
     {
 
-        Factory = factory;
+        Factory     = factory;
+        TokenSource = null!;
 
         RepositoryClientName = string.IsNullOrWhiteSpace(repositoryClientName) ? ServiceEndpoints.Repository : repositoryClientName;
 
     }
 
+    internal ObjectRepository(IHttpClientFactory factory, IAccessTokenSource tokenSource, string repositoryClientName = "")
+    {
+
+        Factory = factory;
+        TokenSource = tokenSource;
+
+        RepositoryClientName = string.IsNullOrWhiteSpace(repositoryClientName) ? ServiceEndpoints.Repository : repositoryClientName;
+
+    }
+
+
     private IHttpClientFactory Factory { get; }
+    private IAccessTokenSource TokenSource { get; }
     private string RepositoryClientName { get; }
 
 
@@ -47,6 +61,17 @@ public class ObjectRepository: IObjectRepository
         var httpReq = HttpRequestBuilder.Post()
             .WithBody(request)
             .ToRequest();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to add access token to message if source is available");
+        if( TokenSource is not null )
+        {
+            logger.Debug("Adding Access token");
+            var accessToken = await TokenSource.GetToken();
+            httpReq.CustomHeaders.Add("X-Fabrica-Proxy-Token", accessToken);
+        }
 
 
 
