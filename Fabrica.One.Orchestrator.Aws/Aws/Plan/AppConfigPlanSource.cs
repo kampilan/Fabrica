@@ -155,16 +155,16 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                 logger.Inspect(nameof(ConfigurationToken), ConfigurationToken);
 
 
-                if( string.IsNullOrWhiteSpace(ConfigurationToken) )
+                if (string.IsNullOrWhiteSpace(ConfigurationToken))
                 {
 
                     // *****************************************************************
                     logger.Debug("Attempting to call StartConfigurationSession");
                     var req = new StartConfigurationSessionRequest
                     {
-                        ApplicationIdentifier                = Application,
-                        ConfigurationProfileIdentifier       = Configuration,
-                        EnvironmentIdentifier                = Environment,
+                        ApplicationIdentifier = Application,
+                        ConfigurationProfileIdentifier = Configuration,
+                        EnvironmentIdentifier = Environment,
                         RequiredMinimumPollIntervalInSeconds = 15
                     };
 
@@ -215,16 +215,19 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
 
 
                 // *****************************************************************
-                logger.InfoFormat( "New version ({0}) acquired for Application: ({1}) Environment: ({2}) Configuration: ({3}).", ConfigurationToken, Application, Environment, Configuration );
+                logger.InfoFormat("New version ({0}) acquired for Application: ({1}) Environment: ({2}) Configuration: ({3}).", ConfigurationToken, Application, Environment, Configuration);
                 return true;
 
 
             }
             catch (Exception cause)
             {
-                var ctx = new {Application, Environment, Configuration};
-                logger.ErrorWithContext( cause, ctx, "CheckForUpdate failed." );
+
+                var ctx = new { Application, Environment, Configuration, ConfigurationToken };
+                logger.ErrorWithContext(cause, ctx, "CheckForUpdate failed.");
+                ConfigurationToken = "";
                 return false;
+
             }
             finally
             {

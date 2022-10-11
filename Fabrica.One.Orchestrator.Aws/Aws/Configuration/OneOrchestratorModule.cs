@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Amazon.AppConfigData;
 using Amazon.S3;
 using Autofac;
@@ -35,6 +36,7 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
 
 
         public bool UseInstanceMetadata { get; set; } = true;
+        public int AppConfigCheckIntervalSecs { get; set; } = 30;
         public string AppConfigPlanSourceApplication { get; set; } = "";
         public string AppConfigPlanSourceEnvironment { get; set; } = "";
         public string AppConfigPlanSourceConfiguration { get; set; } = "";
@@ -100,6 +102,10 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
                 builder.Register(c =>
                     {
 
+                        var ts = TimeSpan.FromSeconds(AppConfigCheckIntervalSecs);
+                        if( ts.TotalSeconds < 15 )
+                            ts = TimeSpan.FromSeconds(15);
+
                         var client = c.Resolve<IAmazonAppConfigData>();
 
                         var comp = new AppConfigPlanSource(client)
@@ -107,7 +113,8 @@ namespace Fabrica.One.Orchestrator.Aws.Configuration
                             UseInstanceMetadata  = UseInstanceMetadata,
                             Application          = AppConfigPlanSourceApplication,
                             Environment          = AppConfigPlanSourceEnvironment,
-                            Configuration        = AppConfigPlanSourceConfiguration
+                            Configuration        = AppConfigPlanSourceConfiguration,
+                            CheckInterval        = ts
                         };
 
                         return comp;
