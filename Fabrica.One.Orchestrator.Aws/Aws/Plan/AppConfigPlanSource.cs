@@ -192,8 +192,11 @@ namespace Fabrica.One.Orchestrator.Aws.Plan
                 logger.Debug("Attempting to execute request");
                 var response = await Client.GetLatestConfigurationAsync(request);
 
-                if (response.Configuration == null || response.Configuration.Length == 0)
+                if( response.Configuration == null || response.Configuration.Length == 0 )
+                {
+                    ConfigurationToken = response.NextPollConfigurationToken;
                     return false;
+                }
 
 
 
