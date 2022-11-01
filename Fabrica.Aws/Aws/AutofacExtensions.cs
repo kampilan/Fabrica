@@ -33,6 +33,7 @@ using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.SecretsManager;
 using Amazon.SecurityToken;
+using Amazon.SimpleNotificationService;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SQS;
 using Autofac;
@@ -262,6 +263,13 @@ namespace Fabrica.Aws
                 .AutoActivate();
 
 
+            // ******************************************************************
+            builder.Register(c => new AmazonSimpleNotificationServiceClient())
+                .As<IAmazonSimpleNotificationService>()
+                .SingleInstance()
+                .AutoActivate();
+
+
             builder.Register(c => new AmazonSimpleSystemsManagementClient())
                 .As<IAmazonSimpleSystemsManagement>()
                 .SingleInstance()
@@ -328,6 +336,13 @@ namespace Fabrica.Aws
             // ******************************************************************
             builder.Register(c => new AmazonSQSClient(endpoint))
                 .As<IAmazonSQS>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSimpleNotificationServiceClient(endpoint))
+                .As<IAmazonSimpleNotificationService>()
                 .SingleInstance()
                 .AutoActivate();
 
@@ -400,6 +415,13 @@ namespace Fabrica.Aws
             // ******************************************************************
             builder.Register(c => new AmazonSQSClient(credentials, endpoint))
                 .As<IAmazonSQS>()
+                .SingleInstance()
+                .AutoActivate();
+
+
+            // ******************************************************************
+            builder.Register(c => new AmazonSimpleNotificationServiceClient(credentials, endpoint))
+                .As<IAmazonSimpleNotificationService>()
                 .SingleInstance()
                 .AutoActivate();
 
