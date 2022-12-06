@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.7.101.7" />
-    <PackageReference Include="GemBox.Document" Version="35.0.1130" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.101.29" />
+    <PackageReference Include="GemBox.Document" Version="35.0.1163" />
     <PackageReference Include="System.Management.Automation" Version="7.2.7" />
   </ItemGroup>
 
