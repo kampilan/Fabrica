@@ -264,8 +264,8 @@ public class BuildApplianceCmdLet: Cmdlet
 
             }
 
-
-
+            if (string.IsNullOrWhiteSpace(DocumentSource))
+                return;
 
             await using (var docoStrm = new MemoryStream())
             await using (var writer = new StreamWriter(docoStrm))
