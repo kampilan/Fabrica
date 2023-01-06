@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="One\" />
     <Folder Include="Persistence\Thin\" />
     <Folder Include="Utilities\Sql\" />
   </ItemGroup>

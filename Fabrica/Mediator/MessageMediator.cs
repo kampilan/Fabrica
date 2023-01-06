@@ -24,7 +24,7 @@ namespace Fabrica.Mediator
 
         private ILifetimeScope RootScope { get; }
 
-        private void Evaluatate(params object[] facts)
+        private void Evaluate(params object[] facts)
         {
 
             var logger = GetLogger();
@@ -71,7 +71,7 @@ namespace Fabrica.Mediator
 
             // *****************************************************************
             logger.Debug("Attempting to evaluate request");
-            Evaluatate(request);
+            Evaluate(request);
 
 
 
@@ -114,7 +114,7 @@ namespace Fabrica.Mediator
 
                 // *****************************************************************
                 logger.Debug("Attempting to evaluate request");
-                Evaluatate(request);
+                Evaluate(request);
 
 
 
@@ -163,7 +163,7 @@ namespace Fabrica.Mediator
 
                 // *****************************************************************
                 logger.Debug("Attempting to evaluate request");
-                Evaluatate(notification);
+                Evaluate(notification);
 
 
 

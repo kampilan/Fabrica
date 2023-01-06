@@ -12,7 +12,7 @@ using ILogger = Fabrica.Watch.ILogger;
 
 namespace Fabrica.Api.Support.One;
 
-public static class ApplianceOneExtentions
+public static class ApplianceOneExtensions
 {
 
     public static IHostBuilder UseApplianceConsoleLifetime(this IHostBuilder hostBuilder)

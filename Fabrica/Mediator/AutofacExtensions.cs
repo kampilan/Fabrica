@@ -46,6 +46,43 @@ namespace Fabrica.Mediator
         }
 
 
+        public static ContainerBuilder UseScopedMediator(this ContainerBuilder builder, params Assembly[] assemblies)
+        {
+
+            builder.Register(c =>
+                {
+
+                    var correlation = c.ResolveOptional<ICorrelation>() ?? new Correlation();
+                    var rules = c.Resolve<IRuleSet>();
+                    var root = c.Resolve<ILifetimeScope>();
+
+                    var comp = new ScopedMessageMediator(correlation, rules, root);
+
+                    return comp;
+
+                })
+                .As<IMessageMediator>()
+                .InstancePerLifetimeScope();
+
+
+            if( assemblies.Length > 0 )
+            {
+
+                var types = assemblies.SelectMany(a => a.GetTypes()).Where(t => typeof(MediatorHandler).IsAssignableFrom(t));
+
+                builder.RegisterTypes(types.ToArray())
+                    .AsImplementedInterfaces()
+                    .InstancePerDependency();
+
+            }
+
+
+            return builder;
+
+        }
+
+
+
         public static ContainerBuilder AddHttpRpcHandler(this ContainerBuilder builder)
         {
 
