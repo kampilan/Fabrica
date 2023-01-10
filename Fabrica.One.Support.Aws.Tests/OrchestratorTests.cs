@@ -1,19 +1,17 @@
-using System;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
-using Fabrica.One.Orchestrator.Aws.Configuration;
 using Fabrica.One.Plan;
+using Fabrica.One.Support.Aws.Configuration;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
 
-namespace Fabrica.One.Orchestrator.Aws.Tests;
+namespace Fabrica.One.Support.Aws.Tests;
 
 #nullable disable
 

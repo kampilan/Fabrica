@@ -7,13 +7,13 @@ using Fabrica.Aws;
 using Fabrica.Exceptions;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
-using Fabrica.One.Orchestrator.Aws.Loader;
-using Fabrica.One.Orchestrator.Aws.Plan;
 using Fabrica.One.Plan;
+using Fabrica.One.Support.Aws.Loader;
+using Fabrica.One.Support.Aws.Plan;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
-namespace Fabrica.One.Orchestrator.Aws.Configuration
+namespace Fabrica.One.Support.Aws.Configuration
 {
 
 

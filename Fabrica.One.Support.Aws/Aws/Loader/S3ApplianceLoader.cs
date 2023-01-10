@@ -10,7 +10,7 @@ using Fabrica.One.Plan;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 
-namespace Fabrica.One.Orchestrator.Aws.Loader
+namespace Fabrica.One.Support.Aws.Loader
 {
 
     

@@ -27,6 +27,8 @@ public abstract class BaseBootstrap: CorrelatedObject
 
 
     public bool RealtimeLogging { get; set; } = false;
+    public bool RelayLogging { get; set; } = false;
+
 
     public string WatchEventStoreUri { get; set; } = "";
     public string WatchDomainName { get; set; } = "";
@@ -60,8 +62,11 @@ public abstract class BaseBootstrap: CorrelatedObject
     {
 
         var maker = WatchFactoryBuilder.Create();
-        if (RealtimeLogging || string.IsNullOrWhiteSpace(WatchDomainName) || string.IsNullOrWhiteSpace(WatchEventStoreUri))
+
+        if( RealtimeLogging || string.IsNullOrWhiteSpace(WatchDomainName) || string.IsNullOrWhiteSpace(WatchEventStoreUri) )
             maker.UseRealtime(Level.Debug, Color.LightPink);
+        else if( RelayLogging || string.IsNullOrWhiteSpace(WatchDomainName) || string.IsNullOrWhiteSpace(WatchEventStoreUri) )
+            maker.UseRelaySink();
         else
             maker.UseMongo(WatchEventStoreUri, WatchDomainName);
 
@@ -73,9 +78,14 @@ public abstract class BaseBootstrap: CorrelatedObject
     {
 
         var maker = WatchFactoryBuilder.Create();
-        maker.UseRealtime();
+        
+        if( RealtimeLogging )
+            maker.UseRealtime();
+        else if (RelayLogging)
+            maker.UseRelaySink();
 
-        if (!(switchBuilder is null))
+
+        if( switchBuilder is not null )
         {
             var switches = maker.UseLocalSwitchSource();
             switchBuilder(switches);

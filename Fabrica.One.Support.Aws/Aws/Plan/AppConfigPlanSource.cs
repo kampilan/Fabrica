@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Amazon.AppConfigData;
 using Amazon.AppConfigData.Model;
@@ -14,7 +13,7 @@ using Fabrica.Watch;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace Fabrica.One.Orchestrator.Aws.Plan
+namespace Fabrica.One.Support.Aws.Plan
 {
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]

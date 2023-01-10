@@ -60,10 +60,11 @@ namespace Fabrica.One
 
                     var startInfo = new ProcessStartInfo
                     {
-                        FileName        = Unit.ExecutionCommand,
-                        Arguments       = Unit.ExecutionArguments,
-                        UseShellExecute = Unit.ShowWindow,
-                        CreateNoWindow  = true
+                        WorkingDirectory = Unit.InstallationLocation,
+                        FileName         = Unit.ExecutionCommand,
+                        Arguments        = Unit.ExecutionArguments,
+                        UseShellExecute  = Unit.ShowWindow,
+                        CreateNoWindow   = true
                     };
 
                     TheProcess = Process.Start(startInfo);

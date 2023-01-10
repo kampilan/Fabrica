@@ -19,7 +19,7 @@ using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 
-namespace Fabrica.One.Orchestrator.Aws.Repository
+namespace Fabrica.One.Support.Aws.Repository
 {
 
 
@@ -990,13 +990,13 @@ namespace Fabrica.One.Orchestrator.Aws.Repository
 
             // *****************************************************************
             logger.Debug("Attempting to create paginator");
-            var missions = client.Paginators.ListObjectsV2(new ListObjectsV2Request { BucketName = CurrentBucketName, Prefix = BuildPrefix });
+            var builds = client.Paginators.ListObjectsV2(new ListObjectsV2Request { BucketName = CurrentBucketName, Prefix = BuildPrefix });
 
 
 
             // *****************************************************************
             logger.Debug("Attempting to process S3Objects");
-            await foreach (var o in missions.S3Objects)
+            await foreach (var o in builds.S3Objects)
             {
 
                 if (!BuildFilter(o.Key))

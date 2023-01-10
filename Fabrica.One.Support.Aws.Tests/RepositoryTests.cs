@@ -3,12 +3,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Fabrica.One.Orchestrator.Aws.Repository;
+using Fabrica.One.Support.Aws.Repository;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
 
-namespace Fabrica.One.Orchestrator.Aws.Tests;
+namespace Fabrica.One.Support.Aws.Tests;
 
 
 [TestFixture]

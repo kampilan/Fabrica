@@ -1,11 +1,11 @@
 ﻿using Autofac;
-using Fabrica.One.Orchestrator.Aws.Configuration;
+using Fabrica.One.Support.Aws.Configuration;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace Fabrica.One.Aws.Service;
+namespace Fabrica.One.Orchestrator.Aws;
 
 #nullable disable
 public class AwsService: BackgroundService

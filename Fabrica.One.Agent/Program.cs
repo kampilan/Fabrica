@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+using System;
+using System.Drawing;
+using System.Threading.Tasks;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Watch;
 using Fabrica.Watch.Mongo;
@@ -8,9 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-#nullable disable
-
-namespace Fabrica.One.Aws.Service;
+namespace Fabrica.One;
 
 public class Program
 {
@@ -23,8 +23,8 @@ public class Program
     {
 
 
-        Console.WriteLine("Fabrica One AWS Orchestrator Service");
-        Console.WriteLine("Pond Hawk Technologies Inc. (c) 2022");
+        Console.WriteLine("Fabrica One Agent");
+        Console.WriteLine("Pond Hawk Technologies Inc. (c) 2023");
         Console.WriteLine("");
 
         Console.WriteLine("Press Ctrl-C to Stop");
@@ -44,7 +44,6 @@ public class Program
             Console.WriteLine(cause);
             return;
         }
-
 
 
         try
@@ -75,7 +74,6 @@ public class Program
         }
 
 
-
         await CreateHostBuilder(args).Build().RunAsync();
 
 
@@ -85,10 +83,10 @@ public class Program
     public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
         .UseWindowsService()
         .UseSystemd()
-        .ConfigureServices((_, services) =>
+        .ConfigureServices(( _, services) =>
         {
-            services.AddSingleton<ILoggerFactory>(new Fabrica.Watch.Bridges.MicrosoftImpl.LoggerFactory());
-            services.AddHostedService<AwsService>();
+            services.AddSingleton<ILoggerFactory>(new Watch.Bridges.MicrosoftImpl.LoggerFactory());
+            services.AddHostedService<OneService>();
         });
 
 

@@ -68,58 +68,57 @@ public static class Appliance
 
     }
 
-    public static async Task<WebApplication> Bootstrap<TModule>() where TModule : BaseBootstrap
+    public static async Task<WebApplication> Bootstrap<TBootstrap>() where TBootstrap : BaseBootstrap
     {
 
-        var app = await Bootstrap<TModule, InitService>();
+        var app = await Bootstrap<TBootstrap, InitService>();
 
         return app;
 
     }    
 
-    public static async Task<WebApplication> Bootstrap<TModule,TService>( string localConfigFile=null ) where TModule : BaseBootstrap where TService: InitService
+    public static async Task<WebApplication> Bootstrap<TBootstrap,TService>( string localConfigFile=null ) where TBootstrap : BaseBootstrap where TService: InitService
     {
 
         WebApplication app;
         try
         {
 
-            using ( var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Appliance.Bootstrap") )
-            {
-                // *****************************************************************
-                logger.Debug("Loading Configuration");
-                var cfgb = new ConfigurationBuilder();
-
-                cfgb
-                    .AddYamlFile("configuration.yml", true)
-                    .AddJsonFile("environment.json", true)
-                    .AddJsonFile("mission.json", true);
-
-                if (!string.IsNullOrWhiteSpace(localConfigFile))
-                    cfgb.AddYamlFile(localConfigFile, true);
-
-                var configuration = cfgb.Build();
+            using var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Appliance.Bootstrap");
 
 
+            // *****************************************************************
+            logger.Debug("Loading Configuration");
+            var cfgb = new ConfigurationBuilder();
 
-                // *****************************************************************
-                logger.Debug("Building BaseBootstrap");
-                var bootstrap = configuration.Get<TModule>();
-                bootstrap.Configuration = configuration;
+            cfgb
+                .AddYamlFile("configuration.yml", true)
+                .AddJsonFile("environment.json", true)
+                .AddJsonFile("mission.json", true);
+
+            if (!string.IsNullOrWhiteSpace(localConfigFile))
+                cfgb.AddYamlFile(localConfigFile, true);
+
+            var configuration = cfgb.Build();
 
 
 
-                // *****************************************************************
-                logger.Debug("Configuring Watch");
-                bootstrap.ConfigureWatch();
+            // *****************************************************************
+            logger.Debug("Building BaseBootstrap");
+            var bootstrap = configuration.Get<TBootstrap>();
+            bootstrap.Configuration = configuration;
 
 
 
-                // *****************************************************************
-                logger.Debug("Bootstrapping Appliance");
-                app = await bootstrap.Boot<TService>();
+            // *****************************************************************
+            logger.Debug("Configuring Watch");
+            bootstrap.ConfigureWatch();
 
-            }
+
+
+            // *****************************************************************
+            logger.Debug("Bootstrapping Appliance");
+            app = await bootstrap.Boot<TService>();
 
 
         }

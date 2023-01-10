@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Fabrica.One</RootNamespace>
     <ApplicationIcon>smithy.ico</ApplicationIcon>
+    <AssemblyName>Fabrica.One.Agent</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
