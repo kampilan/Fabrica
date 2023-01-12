@@ -245,13 +245,6 @@ namespace Fabrica.Proxy.Appliance
 
                 });
 
-                services.AddAntiforgery(o =>
-                {
-                    o.HeaderName = "X-XSRF-TOKEN";
-                    o.Cookie.Name = "__Host-X-XSRF-TOKEN";
-                    o.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
-                    o.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                });
 
             }
 
