@@ -5,6 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Fabrica.One.Support</RootNamespace>
+	<Title>Fabrica One Orch AWS</Title>
+	<Description>Fabrica One Orch using AWS</Description>
+	<Authors>Pond Hawk Technologies Inc.</Authors>
+	<Company>Pond Hawk Technologies Inc.</Company>
+	<Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
+	<PackageIcon>../smithy.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
