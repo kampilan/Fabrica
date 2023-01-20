@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7</TargetFramework>
@@ -8,7 +8,6 @@
 	<Authors>Pond Hawk Technologies Inc.</Authors>
 	<Company>Pond Hawk Technologies Inc.</Company>
 	<Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
-	<PackageIcon>../smithy.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,7 +10,6 @@
     <Authors>Pond Hawk Technologies Inc.</Authors>
     <Company>Pond Hawk Technologies Inc.</Company>
     <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
-    <PackageIcon>smithy.png</PackageIcon>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -27,13 +26,6 @@
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
 		<PackageReference Include="System.Text.Json" Version="7.0.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="../smithy.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
 	</ItemGroup>
 
 
