@@ -22,66 +22,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 
-namespace Fabrica.Utilities.Types
+namespace Fabrica.Utilities.Types;
+
+public class TypeSource
 {
 
+    private static Func<Type, bool> DefaultPredicate { get; } = _=>true;
 
-    public class TypeSource
+    protected virtual Func<Type, bool> GetPredicate()
+    {
+        return DefaultPredicate;
+    }
+
+
+    public void AddTypes( params Assembly[] assemblies )
     {
 
-        private static Func<Type, bool> DefaultPredicate { get; } = t=>true;
+        if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
 
-        protected virtual Func<Type, bool> GetPredicate()
-        {
-            return DefaultPredicate;
-        }
-
-
-        public void AddTypes([NotNull] params Assembly[] assemblies )
-        {
-
-            if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
-
-            foreach ( var type in assemblies.SelectMany(a=>a.GetTypes()).Where(GetPredicate()) )
-                Types.Add(type);
-        }
+        foreach ( var type in assemblies.SelectMany(a=>a.GetTypes()).Where(GetPredicate()) )
+            Types.Add(type);
+    }
 
 
-        public void AddTypes([NotNull] params Type[] types )
-        {
+    public void AddTypes( params Type[] types )
+    {
 
-            if (types == null) throw new ArgumentNullException(nameof(types));
+        if (types == null) throw new ArgumentNullException(nameof(types));
 
-            foreach (var type in types.Where(GetPredicate()))
-                Types.Add(type);
-        }
-
-
-        public void AddTypes([NotNull] IEnumerable<Type> candidates )
-        {
-
-            if (candidates == null) throw new ArgumentNullException(nameof(candidates));
-
-            foreach (var type in candidates.Where( GetPredicate() ) )
-                Types.Add(type);
-        }
+        foreach (var type in types.Where(GetPredicate()))
+            Types.Add(type);
+    }
 
 
-        private HashSet<Type> Types { get; } = new HashSet<Type>();
+    public void AddTypes( IEnumerable<Type> candidates )
+    {
 
-        public IEnumerable<Type> GetTypes()
-        {
-            return Types;
-        }
+        if (candidates == null) throw new ArgumentNullException(nameof(candidates));
+
+        foreach (var type in candidates.Where( GetPredicate() ) )
+            Types.Add(type);
+    }
 
 
+    private HashSet<Type> Types { get; } = new ();
+
+    public IEnumerable<Type> GetTypes()
+    {
+        return Types;
     }
 
 

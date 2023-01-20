@@ -1,11 +1,8 @@
-﻿namespace Fabrica.Api.Support.Filters
+﻿namespace Fabrica.Api.Support.Filters;
+
+public interface IApiKeyValidator
 {
 
-    public interface IApiKeyValidator
-    {
-
-        bool IsValid( string key );
-
-    }
+    bool IsValid( string key );
 
 }

@@ -1,5 +1,9 @@
-﻿using Microsoft.OpenApi.Models;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 namespace Fabrica.Api.Support.Swagger;
 

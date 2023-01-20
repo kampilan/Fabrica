@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Fabrica.Utilities.Text
 {
@@ -34,7 +31,7 @@ namespace Fabrica.Utilities.Text
 
         private const string CharacterSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-        private static byte[] BaseConvert(byte[] source, int sourceBase, int targetBase)
+        private static IEnumerable<byte> BaseConvert(byte[] source, int sourceBase, int targetBase)
         {
             var result = new List<int>();
             int count;

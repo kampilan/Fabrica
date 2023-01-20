@@ -22,24 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class BadRequestException: PredicateException
 {
 
-    public class BadRequestException: PredicateException
+    public BadRequestException(string message) : base(message)
     {
+        Kind = ErrorKind.BadRequest;
+    }
 
-        public BadRequestException(string message) : base(message)
-        {
-            Kind = ErrorKind.BadRequest;
-        }
-
-        public BadRequestException(string message, Exception inner) : base(message, inner)
-        {
-            Kind = ErrorKind.BadRequest;
-        }
-
+    public BadRequestException(string message, Exception inner) : base(message, inner)
+    {
+        Kind = ErrorKind.BadRequest;
     }
 
 }

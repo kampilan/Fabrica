@@ -1,8 +1,5 @@
 ﻿// ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Identity;

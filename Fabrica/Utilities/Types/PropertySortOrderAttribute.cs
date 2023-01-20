@@ -1,20 +1,15 @@
-﻿using System;
+﻿namespace Fabrica.Utilities.Types;
 
-namespace Fabrica.Utilities.Types
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class PropertySortOrder : Attribute
 {
 
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class PropertySortOrder : Attribute
+    public PropertySortOrder(int order)
     {
-
-        public PropertySortOrder(int order)
-        {
-            Order = order;
-        }
-        public int Order { get; }
-
-
-
+        Order = order;
     }
+    public int Order { get; }
+
+
 
 }

@@ -22,135 +22,118 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 
-namespace Fabrica.Utilities.Types
+namespace Fabrica.Utilities.Types;
+
+public static class AssemblyExtensions
 {
 
-
-    public static class AssemblyExtensions
+    public static Stream? GetResource( this Assembly target, string name )
     {
 
-        public static Stream GetResource( [NotNull] this Assembly target, [NotNull] string name)
-        {
-            if (name == null) throw new ArgumentNullException(nameof(name));
+        ArgumentException.ThrowIfNullOrEmpty(nameof(name));
 
-            return target.GetManifestResourceStream(name);
-        }
-
-        [NotNull]
-        public static IEnumerable<string> GetResourceNames( this Assembly target, [NotNull] Func<string, bool> filter )
-        {
-
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-
-            var results = target.GetManifestResourceNames().Where(filter);
-            return results;
-        
-        }
-
-        [NotNull]
-        public static IEnumerable<string> GetResourceNamesByPath( this Assembly target, [NotNull] string path )
-        {
-
-            if (string.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(path));
-
-
-            bool Filter(string r) => r.StartsWith(path);
-
-            var results = target.GetManifestResourceNames().Where(Filter);
-            return results;
-
-        }    
-
-        [NotNull]
-        public static IEnumerable<string> GetResourceNamesByExt( this Assembly target, [NotNull] string extension )
-        {
-
-            if (string.IsNullOrWhiteSpace(extension))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(extension));
-
-            bool Filter(string r) => r.EndsWith(extension);
-
-            var results = target.GetManifestResourceNames().Where( Filter );
-            return results;
-
-        }
-
-
-        [NotNull]
-        public static IEnumerable<string> GetResourceNamesByPathAndExt( this Assembly target, [NotNull] string path, [NotNull] string extension )
-        {
-
-            if (string.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(path));
-
-            if (string.IsNullOrWhiteSpace(extension))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(extension));
-
-            bool Filter(string r) => r.StartsWith(path) && r.EndsWith(extension);
-
-            var results = target.GetManifestResourceNames().Where( Filter );
-            return results;
-
-        }
-
-
-        [NotNull]
-        public static IEnumerable<Type> GetFilteredTypes( this Assembly target, [NotNull] Func<Type, bool> filter )
-        {
-
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-
-            return target.GetTypes().Where(filter);
-
-        }
-
-        [NotNull]
-        public static IEnumerable<Type> GetImplementations( this Assembly target, [NotNull] Type implements )
-        {
-
-            if (implements == null) throw new ArgumentNullException(nameof(implements));
-
-            bool Filter(Type t) => (t != implements) && (implements.IsAssignableFrom(t));
-
-            return target.GetTypes().Where( Filter );
-
-        }
-
-
-        [NotNull]
-        public static IEnumerable<Type> GetTypesWithAttribute( this Assembly target, [NotNull] Type attribute )
-        {
-
-            if (attribute == null) throw new ArgumentNullException(nameof(attribute));
-
-            bool Filter(Type t) => t.GetCustomAttributes(attribute, false).Length > 0;
-
-            return target.GetTypes().Where( Filter );
-
-        }
-
-        [NotNull]
-        public static IEnumerable<Type> GetImplementationsWithAttribute( this Assembly target, [NotNull] Type implements, [NotNull] Type attribute )
-        {
-
-            if (implements == null) throw new ArgumentNullException(nameof(implements));
-            if (attribute == null) throw new ArgumentNullException(nameof(attribute));
-
-            bool Predicate(Type t) => (t != implements) && (implements.IsAssignableFrom(t)) && (t.GetCustomAttributes(attribute, false).Length > 0);
-
-            return target.GetTypes().Where( Predicate );
-
-        }
-
+        return target.GetManifestResourceStream(name);
 
     }
+
+    public static IEnumerable<string> GetResourceNames( this Assembly target, [NotNull] Func<string, bool> filter )
+    {
+
+        ArgumentNullException.ThrowIfNull(filter);
+
+        var results = target.GetManifestResourceNames().Where(filter);
+        return results;
+        
+    }
+
+    public static IEnumerable<string> GetResourceNamesByPath( this Assembly target, string path )
+    {
+
+        ArgumentException.ThrowIfNullOrEmpty(nameof(path));
+
+
+        bool Filter(string r) => r.StartsWith(path);
+
+        var results = target.GetManifestResourceNames().Where(Filter);
+        return results;
+
+    }    
+
+    public static IEnumerable<string> GetResourceNamesByExt( this Assembly target, string extension )
+    {
+
+        ArgumentException.ThrowIfNullOrEmpty(nameof(extension));
+
+        bool Filter(string r) => r.EndsWith(extension);
+
+        var results = target.GetManifestResourceNames().Where( Filter );
+        return results;
+
+    }
+
+
+    public static IEnumerable<string> GetResourceNamesByPathAndExt( this Assembly target, string path, string extension )
+    {
+
+        ArgumentException.ThrowIfNullOrEmpty(nameof(path));
+        ArgumentException.ThrowIfNullOrEmpty(nameof(extension));
+
+        bool Filter(string r) => r.StartsWith(path) && r.EndsWith(extension);
+
+        var results = target.GetManifestResourceNames().Where( Filter );
+        return results;
+
+    }
+
+
+    public static IEnumerable<Type> GetFilteredTypes( this Assembly target, Func<Type, bool> filter )
+    {
+
+        ArgumentNullException.ThrowIfNull(filter);
+
+
+        return target.GetTypes().Where(filter);
+
+    }
+
+    public static IEnumerable<Type> GetImplementations( this Assembly target, Type implements )
+    {
+
+        ArgumentNullException.ThrowIfNull(implements);
+
+
+        bool Filter(Type t) => (t != implements) && (implements.IsAssignableFrom(t));
+
+        return target.GetTypes().Where( Filter );
+
+    }
+
+
+    public static IEnumerable<Type> GetTypesWithAttribute( this Assembly target, Type attribute )
+    {
+
+        ArgumentNullException.ThrowIfNull(attribute);
+
+        bool Filter(Type t) => t.GetCustomAttributes(attribute, false).Length > 0;
+
+        return target.GetTypes().Where( Filter );
+
+    }
+
+    public static IEnumerable<Type> GetImplementationsWithAttribute( this Assembly target, Type implements, Type attribute )
+    {
+
+        ArgumentNullException.ThrowIfNull(implements);
+        ArgumentNullException.ThrowIfNull(attribute);
+
+        bool Predicate(Type t) => (t != implements) && (implements.IsAssignableFrom(t)) && (t.GetCustomAttributes(attribute, false).Length > 0);
+
+        return target.GetTypes().Where( Predicate );
+
+    }
+
 
 }

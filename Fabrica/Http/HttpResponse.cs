@@ -22,119 +22,113 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+
+// ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Global
+
+
 using System.Net;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Fabrica.Http
-{
- 
-    
-    public class HttpResponse
-    {
 
-        public HttpResponse(HttpStatusCode statusCode, string reasonPhrase, bool wasSuccessful, string content = "")
-        {
-            StatusCode    = statusCode;
-            ReasonPhrase  = reasonPhrase;
-            WasSuccessful = wasSuccessful;
-            Content       = content;
-        }
+namespace Fabrica.Http;
+
+public class HttpResponse
+{
+
+    public HttpResponse(HttpStatusCode statusCode, string reasonPhrase, bool wasSuccessful, string content = "")
+    {
+        StatusCode    = statusCode;
+        ReasonPhrase  = reasonPhrase;
+        WasSuccessful = wasSuccessful;
+        Content       = content;
+    }
 
         
-        public HttpStatusCode StatusCode { get;  }
+    public HttpStatusCode StatusCode { get;  }
 
-        public string ReasonPhrase { get; }
-
-
-        public bool WasSuccessful { get; }
+    public string ReasonPhrase { get; }
 
 
-        public bool HasContent => !string.IsNullOrWhiteSpace(Content);
+    public bool WasSuccessful { get; }
 
 
-        public string Content { get; set; }
+    public bool HasContent => !string.IsNullOrWhiteSpace(Content);
 
 
-        [NotNull]
-        protected virtual JsonSerializer GetSerializer([CanBeNull] IContractResolver resolver = null)
+    public string Content { get; set; }
+
+
+    protected virtual JsonSerializer GetSerializer( IContractResolver? resolver = null)
+    {
+
+        var settings = new JsonSerializer
         {
+            DateTimeZoneHandling       = DateTimeZoneHandling.Local,
+            DefaultValueHandling       = DefaultValueHandling.Ignore,
+            DateFormatHandling         = DateFormatHandling.IsoDateFormat,
+            DateParseHandling          = DateParseHandling.DateTime,
+            ContractResolver           = new DefaultContractResolver(),
+            Formatting                 = Formatting.None,
+            MissingMemberHandling      = MissingMemberHandling.Ignore,
+            NullValueHandling          = NullValueHandling.Ignore,
+            ObjectCreationHandling     = ObjectCreationHandling.Auto,
+            ReferenceLoopHandling      = ReferenceLoopHandling.Serialize,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+        };
 
-            var settings = new JsonSerializer
-            {
-                DateTimeZoneHandling       = DateTimeZoneHandling.Local,
-                DefaultValueHandling       = DefaultValueHandling.Ignore,
-                DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-                DateParseHandling          = DateParseHandling.DateTime,
-                ContractResolver           = new DefaultContractResolver(),
-                Formatting                 = Formatting.None,
-                MissingMemberHandling      = MissingMemberHandling.Ignore,
-                NullValueHandling          = NullValueHandling.Ignore,
-                ObjectCreationHandling     = ObjectCreationHandling.Auto,
-                ReferenceLoopHandling      = ReferenceLoopHandling.Serialize,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects
-            };
-
-            if (resolver != null)
-                settings.ContractResolver = resolver;
+        if (resolver != null)
+            settings.ContractResolver = resolver;
 
 
-            return settings;
+        return settings;
 
-        }
+    }
 
 
 
-        public TModel FromBody<TModel>( [CanBeNull] IContractResolver resolver = null ) where TModel: class
-        {
+    public TModel? FromBody<TModel>( IContractResolver? resolver = null ) where TModel: class
+    {
 
-            var serializer = GetSerializer(resolver);
+        var serializer = GetSerializer(resolver);
 
-            using( var reader = new StringReader(HasContent ? Content : "{}") )
-            using( var jreader = new JsonTextReader(reader) )
-            {
-                var model = serializer.Deserialize<TModel>(jreader);
-                return model;
-            }
+        using var reader = new StringReader(HasContent ? Content : "{}");
+        using var jreader = new JsonTextReader(reader);
 
-        }
+        var model = serializer.Deserialize<TModel>(jreader);
 
+        return model;
 
-        public object FromBody( [NotNull] Type modelType, [CanBeNull] IContractResolver resolver = null )
-        {
-
-            var serializer = GetSerializer(resolver);
-
-            using( var reader = new StringReader(HasContent ? Content : "{}") )
-            using( var jreader = new JsonTextReader(reader) )
-            {
-                var model = serializer.Deserialize(jreader, modelType);
-                return model;
-            }
+    }
 
 
-        }
+    public object? FromBody( Type modelType, IContractResolver? resolver = null )
+    {
+
+        var serializer = GetSerializer(resolver);
+
+        using var reader = new StringReader(HasContent ? Content : "{}");
+        using var jreader = new JsonTextReader(reader);
+
+        var model = serializer.Deserialize(jreader, modelType);
+
+        return model;
+
+    }
 
 
-        public List<TType> FromBodyToList<TType>( [CanBeNull] IContractResolver resolver = null ) where TType: class
-        {
+    public List<TType?> FromBodyToList<TType>( IContractResolver? resolver = null ) where TType: class
+    {
 
-            var serializer = GetSerializer(resolver);
+        var serializer = GetSerializer(resolver);
 
-            var array = JArray.Parse( HasContent ? Content : "[]" );
+        var array = JArray.Parse( HasContent ? Content : "[]" );
 
-            var list = array.Select( token => token.ToObject<TType>( serializer ) ).ToList();
+        var list = array.Select( token => token.ToObject<TType>( serializer ) ).ToList();
 
-            return list;
-
-        }
-
+        return list;
 
     }
 

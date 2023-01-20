@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+// ReSharper disable UnusedMember.Global
+
 using Autofac;
 using Fabrica.Utilities.Container;
 

@@ -1,9 +1,13 @@
-﻿using System.Data;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using System.Data;
 using AutoMapper;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using FileHelpers;
 using RepoDb;
+
 
 namespace Fabrica.Persistence.Etl;
 
@@ -56,7 +60,8 @@ public class EtlComponent: CorrelatedObject
 
         // *****************************************************************
         logger.Debug("Attempting to process each inbound record");
-        using (var reader = new StreamReader(inbound, leaveOpen: true))
+        using var reader = new StreamReader(inbound, leaveOpen: true);
+
         using (engine.BeginReadStream(reader))
         {
 
@@ -102,7 +107,8 @@ public class EtlComponent: CorrelatedObject
 
         // *****************************************************************
         logger.Debug("Attempting to process each inbound record");
-        using (var reader = new StreamReader(inbound, leaveOpen: true))
+        using var reader = new StreamReader(inbound, leaveOpen: true);
+
         using (engine.BeginReadStream(reader))
         {
 
@@ -220,63 +226,59 @@ public class EtlComponent: CorrelatedObject
 
         // *****************************************************************
         logger.Debug("Attempting to beginning Transaction");
-        using( var trx = (await connection.EnsureOpenAsync()).BeginTransaction() )
+        using var trx = (await connection.EnsureOpenAsync()).BeginTransaction();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to process each inbound record");
+        using (var reader = new StreamReader(inbound, leaveOpen: true))
+        using (engine.BeginReadStream(reader))
         {
 
-
-            // *****************************************************************
-            logger.Debug("Attempting to process each inbound record");
-            using (var reader = new StreamReader(inbound, leaveOpen: true))
-            using (engine.BeginReadStream(reader))
+            foreach( var spec in engine )
             {
 
-                foreach( var spec in engine )
+                if( logger.IsTraceEnabled )
+                    logger.LogObject(nameof(spec), spec);
+
+
+                try
                 {
 
-                    if( logger.IsTraceEnabled )
-                        logger.LogObject(nameof(spec), spec);
+                    var target = Mapper.Map<TTarget>(spec);
 
+                    Evaluate(spec, target);
 
-                    try
+                    results.Add(target);
+
+                    if (results.Count >= batchSize)
                     {
-
-                        var target = Mapper.Map<TTarget>(spec);
-
-                        Evaluate(spec, target);
-
-                        results.Add(target);
-
-                        if (results.Count >= batchSize)
-                        {
-                            logger.DebugFormat("Attempting to persist batch of {0} to database", results.Count);
-                            logger.Inspect(nameof(results.Count), results.Count);
-                            await Persist();
-                        }
-
-                    }
-                    catch (Exception cause)
-                    {
-                        logger.ErrorWithContext(cause, spec, "Caught Exception processing inbound file");
-                        if( stopOnError )
-                            throw;
+                        logger.DebugFormat("Attempting to persist batch of {0} to database", results.Count);
+                        logger.Inspect(nameof(results.Count), results.Count);
+                        await Persist();
                     }
 
+                }
+                catch (Exception cause)
+                {
+                    logger.ErrorWithContext(cause, spec, "Caught Exception processing inbound file");
+                    if( stopOnError )
+                        throw;
                 }
 
             }
 
-
-            // *****************************************************************
-            logger.Debug("Attempting to persist last objects");
-            await Persist();
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to commit Transaction");
-            trx.Commit();
-
-
         }
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to persist last objects");
+        await Persist();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to commit Transaction");
+        trx.Commit();
 
 
         async Task Persist()
@@ -315,7 +317,8 @@ public class EtlComponent: CorrelatedObject
 
         // *****************************************************************
         logger.Debug("Attempting to loop through source specs");
-        using (var writer = new StreamWriter(outbound, leaveOpen: true))
+        using var writer = new StreamWriter(outbound, leaveOpen: true);
+
         using (engine.BeginWriteStream(writer))
         {
 
@@ -347,7 +350,8 @@ public class EtlComponent: CorrelatedObject
 
         // *****************************************************************
         logger.Debug("Attempting to loop through source specs");
-        using (var writer = new StreamWriter(outbound, leaveOpen: true))
+        using var writer = new StreamWriter(outbound, leaveOpen: true);
+
         using (engine.BeginWriteStream(writer))
         {
 

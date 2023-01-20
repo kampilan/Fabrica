@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Fabrica.Exceptions;
+﻿using Fabrica.Exceptions;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -18,14 +15,14 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
     }
 
 
-    protected virtual bool TryValidate([CanBeNull] BaseDelta delta, out IActionResult error)
+    protected virtual bool TryValidate(BaseDelta? delta, out IActionResult error)
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(delta), delta);
 
-        error = null;
+        error = null!;
 
 
         if (!ModelState.IsValid)

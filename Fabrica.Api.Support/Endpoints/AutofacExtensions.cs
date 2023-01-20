@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using Autofac;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Patch;
@@ -12,10 +15,10 @@ public static class AutofacExtensions
     private class EndpointComponentImpl : IEndpointComponent
     {
 
-        public ICorrelation Correlation { get; init; }
-        public IModelMetaService Meta { get; init; }
-        public IMessageMediator Mediator { get; init; }
-        public IPatchResolver Resolver { get; set; }
+        public ICorrelation Correlation { get; init; } = null!;
+        public IModelMetaService Meta { get; init; } = null!;
+        public IMessageMediator Mediator { get; init; } = null!;
+        public IPatchResolver Resolver { get; init; } = null!;
 
     }
 

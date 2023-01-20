@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿
+// ReSharper disable UnusedMember.Global
+
 using Fabrica.Mediator;
 using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Patch;
 using Fabrica.Utilities.Container;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabrica.Api.Support.Controllers;
@@ -25,7 +24,7 @@ public abstract class BasePatchController : BaseMediatorController
     protected IPatchResolver Resolver { get; }
 
 
-    protected virtual async Task<IActionResult> Send( [NotNull] IEnumerable<ModelPatch> source )
+    protected virtual async Task<IActionResult> Send( IEnumerable<ModelPatch> source )
     {
 
         if (source == null) throw new ArgumentNullException(nameof(source));

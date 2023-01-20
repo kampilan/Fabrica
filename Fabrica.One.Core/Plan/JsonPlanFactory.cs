@@ -126,7 +126,7 @@ namespace Fabrica.One.Plan
                     var exp = new PredicateException( "Bad JSON encountered during parse.", cause );
                     exp
                         .WithErrorCode("MalformedMissionJson")
-                        .WithExplaination(cause.Message);
+                        .WithExplanation(cause.Message);
 
                     throw exp;
 
@@ -169,7 +169,7 @@ namespace Fabrica.One.Plan
 
 
                     if (details.Count == 0)
-                        exp.WithErrorCode("InvalidMissionJson").WithExplaination($"{results.InstanceLocation} - {results.Message}");
+                        exp.WithErrorCode("InvalidMissionJson").WithExplanation($"{results.InstanceLocation} - {results.Message}");
                     else
                         exp.WithErrorCode("InvalidMissionJson").WithDetails(details);
 

@@ -1,9 +1,6 @@
 ﻿// ReSharper disable UnusedMember.Global
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 
 namespace Fabrica.Identity
 {
@@ -12,7 +9,7 @@ namespace Fabrica.Identity
     public interface IIdentityProvider
     {
 
-        Task<SyncUserResponse> SyncUser( [NotNull] SyncUserRequest request );
+        Task<SyncUserResponse> SyncUser( SyncUserRequest request );
 
     }
 
@@ -26,10 +23,10 @@ namespace Fabrica.Identity
         public string CurrentEmail { get; set; } = "";
 
         public bool? NewEnabled { get; set; }
-        public string NewUsername { get; set; }
-        public string NewEmail { get; set; }
-        public string NewFirstName { get; set; }
-        public string NewLastName { get; set; }
+        public string? NewUsername { get; set; }
+        public string? NewEmail { get; set; }
+        public string? NewFirstName { get; set; }
+        public string? NewLastName { get; set; }
 
         public Dictionary<string, IEnumerable<string>> Attributes { get; } = new ();
 

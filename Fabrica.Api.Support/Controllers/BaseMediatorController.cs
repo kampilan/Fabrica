@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Fabrica.Api.Support.ActionResult;
+﻿using Fabrica.Api.Support.ActionResult;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
@@ -38,14 +33,14 @@ public abstract class BaseMediatorController : BaseController
     protected IMessageMediator Mediator { get; }
 
 
-    protected virtual bool TryValidate([CanBeNull] BaseCriteria criteria, out IActionResult error)
+    protected virtual bool TryValidate(BaseCriteria? criteria, out IActionResult error)
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(criteria), criteria);
 
-        error = null;
+        error = null!;
 
 
         if (!ModelState.IsValid)
@@ -58,7 +53,7 @@ public abstract class BaseMediatorController : BaseController
                 Explanation = $"Errors occurred while parsing criteria for {Request.Method} at {Request.Path}"
             };
 
-            var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
+            var errors = ModelState.Keys.SelectMany(x => ModelState[x].Errors);
 
             foreach (var e in errors)
                 info.Details.Add(new EventDetail { Category = EventDetail.EventCategory.Violation, RuleName = "ModelState.Validator", Explanation = e.ErrorMessage, Group = "Model" });
@@ -110,14 +105,14 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
-    protected virtual bool TryValidate([CanBeNull] BaseDelta delta, out IActionResult error)
+    protected virtual bool TryValidate(BaseDelta? delta, out IActionResult error)
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(delta), delta);
 
-        error = null;
+        error = null!;
 
 
         if (!ModelState.IsValid)
@@ -182,14 +177,14 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
-    protected virtual bool TryValidate<TEntity>([CanBeNull] IDictionary<string,object> delta, OperationType op, out IActionResult error) where TEntity: class, IModel
+    protected virtual bool TryValidate<TEntity>(IDictionary<string,object>? delta, OperationType op, out IActionResult error) where TEntity: class, IModel
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(delta), delta);
 
-        error = null;
+        error = null!;
 
 
         if (!ModelState.IsValid)
@@ -273,7 +268,7 @@ public abstract class BaseMediatorController : BaseController
 
 
 
-    protected virtual async Task<IActionResult> Send<TValue>([NotNull] IRequest<Response<TValue>> request)
+    protected virtual async Task<IActionResult> Send<TValue>( IRequest<Response<TValue>> request )
     {
 
         if (request == null) throw new ArgumentNullException(nameof(request));
@@ -302,7 +297,7 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
-    protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response<MemoryStream>> request)
+    protected virtual async Task<IActionResult> Send( IRequest<Response<MemoryStream>> request)
     {
 
         if (request == null) throw new ArgumentNullException(nameof(request));
@@ -331,7 +326,7 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
-    protected virtual async Task<IActionResult> Send([NotNull] IRequest<Response> request)
+    protected virtual async Task<IActionResult> Send( IRequest<Response> request)
     {
 
         if (request == null) throw new ArgumentNullException(nameof(request));
@@ -423,7 +418,7 @@ public abstract class BaseMediatorController : BaseController
 
     }
 
-    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>([NotNull] ICriteria criteria) where TExplorer : class, IModel
+    protected virtual List<IRqlFilter<TExplorer>> ProduceFilters<TExplorer>( ICriteria criteria ) where TExplorer : class, IModel
     {
 
         if (criteria == null) throw new ArgumentNullException(nameof(criteria));

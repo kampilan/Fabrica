@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Reflection;
+﻿using System.Reflection;
 using MediatR;
 using Newtonsoft.Json;
 
@@ -55,7 +53,7 @@ public class HttpRpcRequest<TResponse> : IHttpRpcRequest, IRequest<Response<TRes
     public Dictionary<string, string> CustomHeaders { get; } = new();
 
     public HttpMethod Method { get; set; } = HttpMethod.Post;
-    public string Path { get; set; }
+    public string Path { get; set; } = "";
 
     public string BodyContent { get; set; } = "{}";
 

@@ -22,24 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class ConcurrencyException: FunctionalException
 {
 
-    public class ConcurrencyException: FunctionalException
+    public ConcurrencyException( string message ) : base(message)
     {
+        Kind = ErrorKind.Concurrency;
+    }
 
-        public ConcurrencyException( string message ) : base(message)
-        {
-            Kind = ErrorKind.Concurrency;
-        }
-
-        public ConcurrencyException( string message, Exception inner ) : base(message, inner)
-        {
-            Kind = ErrorKind.Concurrency;
-        }
-
+    public ConcurrencyException( string message, Exception inner ) : base(message, inner)
+    {
+        Kind = ErrorKind.Concurrency;
     }
 
 }

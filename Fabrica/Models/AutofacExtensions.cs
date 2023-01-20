@@ -1,62 +1,59 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedMember.Global
+
 using System.Reflection;
 using Autofac;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Container;
 
-namespace Fabrica.Models
+namespace Fabrica.Models;
+
+public static class AutofacExtensions
 {
 
-    
-    public static class AutofacExtensions
+
+    public static ContainerBuilder UseModelMeta( this ContainerBuilder builder )
     {
 
+        builder.Register(c =>
+            {
 
-        public static ContainerBuilder UseModelMeta( this ContainerBuilder builder )
-        {
+                var sources = c.Resolve<IEnumerable<ModelMetaSource>>();
 
-            builder.Register(c =>
-                {
+                var comp = new ModelMetaService( sources );
 
-                    var sources = c.Resolve<IEnumerable<ModelMetaSource>>();
+                return comp;
 
-                    var comp = new ModelMetaService( sources );
+            })
+            .As<IModelMetaService>()
+            .As<IRequiresStart>()
+            .SingleInstance()
+            .AutoActivate();
 
-                    return comp;
-
-                })
-                .As<IModelMetaService>()
-                .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
-
-            return builder;
-
-        }
-
-
-        public static ContainerBuilder AddModelMetaSource(this ContainerBuilder builder, params Assembly[] assemblies)
-        {
-
-            builder.Register(c =>
-                {
-
-                    var comp = new ModelMetaSource();
-
-                    comp.AddTypes(assemblies);
-
-                    return comp;
-
-                })
-                .AsSelf()
-                .SingleInstance()
-                .AutoActivate();
-
-            return builder;
-
-        }
-
+        return builder;
 
     }
+
+
+    public static ContainerBuilder AddModelMetaSource(this ContainerBuilder builder, params Assembly[] assemblies)
+    {
+
+        builder.Register(_ =>
+            {
+
+                var comp = new ModelMetaSource();
+
+                comp.AddTypes(assemblies);
+
+                return comp;
+
+            })
+            .AsSelf()
+            .SingleInstance()
+            .AutoActivate();
+
+        return builder;
+
+    }
+
 
 }

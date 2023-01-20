@@ -1,17 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <RootNamespace>Fabrica.Watch</RootNamespace>
+    <Title>Fabrica Watch Mongo</Title>
+    <Description>Fabrica Watch MongoDB Sink and SwitchSource implementations</Description>
+    <Authors>Pond Hawk Technologies Inc.</Authors>
+    <Company>Pond Hawk Technologies Inc.</Company>
+    <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>	
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
-    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,4 +1,8 @@
-﻿using Fabrica.Exceptions;
+﻿
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMemberInSuper.Global
+
+using Fabrica.Exceptions;
 
 namespace Fabrica.Mediator;
 

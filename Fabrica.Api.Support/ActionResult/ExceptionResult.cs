@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+// ReSharper disable UnusedMember.Global
+
 using Fabrica.Exceptions;
 
 namespace Fabrica.Api.Support.ActionResult;

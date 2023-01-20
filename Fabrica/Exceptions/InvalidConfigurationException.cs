@@ -22,29 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class InvalidConfigurationException : Exception
 {
 
-
-    public class InvalidConfigurationException : Exception
+    public InvalidConfigurationException( string moduleName, string propertyName, string errorMessage ) : base( $"Configuration failed. {moduleName}.{propertyName} - {errorMessage}" )
     {
 
-        public InvalidConfigurationException( string moduleName, string propertyName, string errorMessage ) : base( $"Configuration failed. {moduleName}.{propertyName} - {errorMessage}" )
-        {
-
-            ModuleName   = moduleName;
-            PropertyName = propertyName;
-            ErrorMessage = errorMessage;
-
-        }
-
-        public string ModuleName { get;  }
-        public string PropertyName { get; }
-        public string ErrorMessage { get; }
+        ModuleName   = moduleName;
+        PropertyName = propertyName;
+        ErrorMessage = errorMessage;
 
     }
 
+    public string ModuleName { get;  }
+    public string PropertyName { get; }
+    public string ErrorMessage { get; }
 
 }

@@ -1,21 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Fabrica.Api.Support</RootNamespace>
+    <Title>Fabrica API Support</Title>
+    <Description>Fabrica Support for building REST APIs</Description>
+    <Authors>Pond Hawk Technologies Inc.</Authors>
+    <Company>Pond Hawk Technologies Inc.</Company>
+    <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>	
   </PropertyGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
+    <PackageReference Include="jose-jwt" Version="4.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+    <ProjectReference Include="..\Fabrica.One.Appliance\Fabrica.One.Appliance.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
-    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="jose-jwt" Version="4.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
-  </ItemGroup>
-
+	
 </Project>

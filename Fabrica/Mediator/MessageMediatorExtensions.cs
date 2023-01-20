@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿
+// ReSharper disable UnusedMember.Global
+
 using Fabrica.Persistence.Patch;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 
 namespace Fabrica.Mediator;
 
@@ -12,7 +10,7 @@ public static class MessageMediatorExtensions
 {
 
 
-    public static async Task<BatchResponse> Send([NotNull] this IMessageMediator mediator, [NotNull] IEnumerable<PatchRequest> requests, bool stopOnFailure = true, CancellationToken token = default )
+    public static async Task<BatchResponse> Send( this IMessageMediator mediator, IEnumerable<PatchRequest> requests, bool stopOnFailure = true, CancellationToken token = default )
     {
 
         if (mediator == null) throw new ArgumentNullException(nameof(mediator));

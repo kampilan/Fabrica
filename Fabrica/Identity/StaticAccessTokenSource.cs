@@ -1,28 +1,22 @@
-﻿using System.Threading.Tasks;
+﻿namespace Fabrica.Identity;
 
-namespace Fabrica.Identity
+public class StaticAccessTokenSource: IAccessTokenSource
 {
 
-    public class StaticAccessTokenSource: IAccessTokenSource
+    public StaticAccessTokenSource( string name, string token)
     {
+        Name        = name;
+        AccessToken = token;
+    }
 
-        public StaticAccessTokenSource( string name, string token)
-        {
-            Name        = name;
-            AccessToken = token;
-        }
+    private string AccessToken { get; }
 
-        private string AccessToken { get; }
+    public string Name { get; }
 
-        public string Name { get; }
-
-        public bool HasExpired => false;
-        public Task<string> GetToken()
-        {
-            return Task.FromResult(AccessToken);
-        }
-
-
+    public bool HasExpired => false;
+    public Task<string> GetToken()
+    {
+        return Task.FromResult(AccessToken);
     }
 
 

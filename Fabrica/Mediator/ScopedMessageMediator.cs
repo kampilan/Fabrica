@@ -1,11 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
-using JetBrains.Annotations;
 using MediatR;
 
 namespace Fabrica.Mediator;
@@ -57,7 +53,7 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
     }
 
 
-    public async Task<TResponse> Send<TResponse>([NotNull] IRequest<TResponse> request, CancellationToken cancellationToken = default)
+    public async Task<TResponse> Send<TResponse>( IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
 
         if (request == null) throw new ArgumentNullException(nameof(request));

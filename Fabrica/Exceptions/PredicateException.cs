@@ -22,28 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class PredicateException : FluentException<PredicateException>
 {
 
-    public class PredicateException : FluentException<PredicateException>
+    public PredicateException( string message ) : base(message)
     {
 
-        public PredicateException( string message ) : base(message)
-        {
+        Kind = ErrorKind.Predicate;
 
-            Kind = ErrorKind.Predicate;
+    }
 
-        }
+    public PredicateException( string message, Exception inner ) : base(message, inner)
+    {
 
-        public PredicateException( string message, Exception inner ) : base(message, inner)
-        {
-
-            Kind = ErrorKind.Predicate;
-
-        }
-
+        Kind = ErrorKind.Predicate;
 
     }
 

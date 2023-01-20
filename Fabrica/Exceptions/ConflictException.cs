@@ -22,24 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class ConflictException: FunctionalException
 {
 
-    public class ConflictException: FunctionalException
+    public ConflictException(string message) : base(message)
     {
+        Kind = ErrorKind.Conflict;
+    }
 
-        public ConflictException(string message) : base(message)
-        {
-            Kind = ErrorKind.Conflict;
-        }
-
-        public ConflictException(string message, Exception inner) : base(message, inner)
-        {
-            Kind = ErrorKind.Conflict;
-        }
-
+    public ConflictException(string message, Exception inner) : base(message, inner)
+    {
+        Kind = ErrorKind.Conflict;
     }
 
 }

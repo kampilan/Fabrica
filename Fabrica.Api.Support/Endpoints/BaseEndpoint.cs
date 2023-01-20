@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿
+// ReSharper disable UnusedMember.Global
+
 using System.Net;
 using System.Runtime.CompilerServices;
 using Fabrica.Api.Support.ActionResult;
@@ -11,6 +12,7 @@ using Fabrica.Persistence.Patch;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -181,12 +183,12 @@ public abstract class BaseEndpoint: ControllerBase
 
 
         // *****************************************************************
-        logger.Inspect("response.Type", response.Value.GetType());
+        logger.Inspect("response.Type", response.Value?.GetType());
 
         if( response.Ok && typeof(TValue).IsValueType )
             return Ok();
 
-        if( response.Ok && response.Value is MemoryStream ms )
+        if( response is {Ok: true, Value: MemoryStream ms} )
             return new JsonStreamResult(ms);
 
         return Ok(response.Value);

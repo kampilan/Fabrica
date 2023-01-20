@@ -24,31 +24,28 @@ SOFTWARE.
 
 using MongoDB.Bson;
 
-namespace Fabrica.Watch.Mongo.Switches
+namespace Fabrica.Watch.Mongo.Switches;
+
+public class SwitchEntity
 {
-
-    public class SwitchEntity
-    {
         
-        public ObjectId Id { get; set; }
+    public ObjectId Id { get; set; }
 
-        public string Uid { get; set; }
+    public string? Uid { get; set; }
 
-        public string DomainUid { get; set; }
+    public string? DomainUid { get; set; }
 
-        public string Pattern { get; set; }
-        public string Tag { get; set; }
-
-
-        public string FilterType { get; set; }
-        public string FilterTarget { get; set; }
+    public string? Pattern { get; set; }
+    public string? Tag { get; set; }
 
 
-        public string Level { get; set; }
+    public string? FilterType { get; set; }
+    public string? FilterTarget { get; set; }
 
-        public string Color { get; set; }
 
+    public string? Level { get; set; }
 
-    }
+    public string? Color { get; set; }
+
 
 }

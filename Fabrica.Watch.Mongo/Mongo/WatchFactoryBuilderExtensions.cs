@@ -22,114 +22,112 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+
+// ReSharper disable UnusedMember.Global
+
 using Fabrica.Watch.Mongo.Sink;
 using Fabrica.Watch.Mongo.Switches;
 
-namespace Fabrica.Watch.Mongo
+
+namespace Fabrica.Watch.Mongo;
+
+public static class WatchFactoryBuilderExtensions
 {
 
-    public static class WatchFactoryBuilderExtensions
+
+    public static WatchFactoryBuilder UseMongo( this WatchFactoryBuilder builder, IWatchMongoModule module )
+    {
+
+        builder.UseMongoSink( module );
+        builder.UseWatchSwitchSource( module );
+
+        return builder;
+
+    }
+
+
+    public static WatchFactoryBuilder UseMongo( this WatchFactoryBuilder builder, string serverUri, string domainName, bool useBatching = true )
+    {
+
+        if( useBatching )
+            builder.UseBatching();
+
+        builder.UseMongoSink( serverUri, domainName );
+        builder.UseWatchSwitchSource( serverUri, domainName );
+
+        return builder;
+
+    }
+
+
+
+    public static WatchFactoryBuilder UseMongoSink( this WatchFactoryBuilder builder, IWatchMongoModule module )
     {
 
 
-        public static WatchFactoryBuilder UseMongo( this WatchFactoryBuilder builder, IWatchMongoModule module )
+        var mongoSink = new MongoEventSink
         {
+            ServerUri  = module.WatchEventStoreUri,
+            DomainName = module.WatchDomainName
+        };
 
-            builder.UseMongoSink( module );
-            builder.UseWatchSwitchSource( module );
-
-            return builder;
-
-        }
+        builder.Sinks.AddSink(mongoSink);
 
 
-        public static WatchFactoryBuilder UseMongo( this WatchFactoryBuilder builder, string serverUri, string domainName, bool useBatching = true )
+        return builder;
+
+    }
+
+
+    public static WatchFactoryBuilder UseMongoSink(this WatchFactoryBuilder builder, string serverUri, string domainName )
+    {
+
+        var mongoSink = new MongoEventSink
         {
+            ServerUri  = serverUri,
+            DomainName = domainName
+        };
 
-            if( useBatching )
-                builder.UseBatching();
-
-            builder.UseMongoSink( serverUri, domainName );
-            builder.UseWatchSwitchSource( serverUri, domainName );
-
-            return builder;
-
-        }
+        builder.Sinks.AddSink(mongoSink);
 
 
+        return builder;
 
-        public static WatchFactoryBuilder UseMongoSink( this WatchFactoryBuilder builder, IWatchMongoModule module )
+    }
+
+
+    public static WatchFactoryBuilder UseWatchSwitchSource( this WatchFactoryBuilder builder, IWatchMongoModule module )
+    {
+
+        var source = new MongoSwitchSource
         {
+            DomainName          = module.WatchDomainName,
+            ServerUri           = module.WatchEventStoreUri,
+            PollingInterval     = TimeSpan.FromSeconds(module.WatchPollingDurationSecs),
+            WaitForStopInterval = TimeSpan.FromSeconds(30)
+        };
 
 
-            var mongoSink = new MongoEventSink
-            {
-                ServerUri  = module.WatchEventStoreUri,
-                DomainName = module.WatchDomainName
-            };
+        builder.Source = source;
 
-            builder.Sinks.AddSink(mongoSink);
+        return builder;
+
+    }
 
 
-            return builder;
 
-        }
+    public static WatchFactoryBuilder UseWatchSwitchSource( this WatchFactoryBuilder builder, string serverUri, string domainName )
+    {
 
-
-        public static WatchFactoryBuilder UseMongoSink(this WatchFactoryBuilder builder, string serverUri, string domainName )
+        var source = new MongoSwitchSource
         {
+            ServerUri  = serverUri,
+            DomainName = domainName
+        };
 
-            var mongoSink = new MongoEventSink
-            {
-                ServerUri  = serverUri,
-                DomainName = domainName
-            };
+        builder.Source = source;
 
-            builder.Sinks.AddSink(mongoSink);
-
-
-            return builder;
-
-        }
-
-
-        public static WatchFactoryBuilder UseWatchSwitchSource( this WatchFactoryBuilder builder, IWatchMongoModule module )
-        {
-
-            var source = new MongoSwitchSource
-            {
-                DomainName          = module.WatchDomainName,
-                ServerUri           = module.WatchEventStoreUri,
-                PollingInterval     = TimeSpan.FromSeconds(module.WatchPollingDurationSecs),
-                WaitForStopInterval = TimeSpan.FromSeconds(30)
-            };
-
-
-            builder.Source = source;
-
-            return builder;
-
-        }
-
-
-
-        public static WatchFactoryBuilder UseWatchSwitchSource( this WatchFactoryBuilder builder, string serverUri, string domainName )
-        {
-
-            var source = new MongoSwitchSource
-            {
-                ServerUri  = serverUri,
-                DomainName = domainName
-            };
-
-            builder.Source = source;
-
-            return builder;
-
-        }
-
-
+        return builder;
 
     }
 

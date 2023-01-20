@@ -22,10 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Linq;
 using System.Security.Cryptography;
-using JetBrains.Annotations;
 
 namespace Fabrica.Utilities.Text
 {
@@ -36,7 +33,6 @@ namespace Fabrica.Utilities.Text
         private static RandomNumberGenerator Rng { get; } = RandomNumberGenerator.Create();
 
 
-        [NotNull]
         public static string Base36( int length )
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -46,8 +42,7 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
-        public static string BaseX([NotNull] string chars, [NotNull] byte[] random )
+        public static string BaseX( string chars, byte[] random )
         {
             if (chars == null) throw new ArgumentNullException(nameof(chars));
             if (random == null) throw new ArgumentNullException(nameof(random));
@@ -66,7 +61,6 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
         public static string Base32( int length )
         {
             const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -76,8 +70,7 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
-        public static string Base32([NotNull] byte[] random )
+        public static string Base32( byte[] random )
         {
 
             if (random == null) throw new ArgumentNullException(nameof(random));
@@ -88,7 +81,6 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
         public static string Base32Clean( int length )
         {
             const string chars = "BBCDDFGHJKLMNPQRSTTVWXXZ23456789";
@@ -98,8 +90,7 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
-        public static string Base32Clean([NotNull] byte[] random )
+        public static string Base32Clean( byte[] random )
         {
 
             if (random == null) throw new ArgumentNullException(nameof(random));
@@ -110,7 +101,6 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
         public static string Base62( int length )
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -120,8 +110,7 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
-        public static string Base62([NotNull] byte[] random )
+        public static string Base62( byte[] random )
         {
 
             if (random == null) throw new ArgumentNullException(nameof(random));
@@ -132,7 +121,6 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
         public static string Base62Clean( int length )
         {
             const string chars = "BBCDDFGHHJKLMNNPQRSTTVWXXZzbcdffghjjklmnppqrstvvwxzz0123456789";
@@ -142,8 +130,7 @@ namespace Fabrica.Utilities.Text
         }
 
 
-        [NotNull]
-        public static string Base62Clean([NotNull] byte[] random )
+        public static string Base62Clean( byte[] random )
         {
 
             if (random == null) throw new ArgumentNullException(nameof(random));

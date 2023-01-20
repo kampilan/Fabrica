@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Fabrica.Identity;
 
@@ -9,11 +7,11 @@ public class ClaimSetModel: IClaimSet
 
     [JsonPropertyName("aty")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string AuthenticationType { get; set; }
+    public string? AuthenticationType { get; set; }
 
     [JsonPropertyName("flw")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string AuthenticationFlow { get; set; }
+    public string? AuthenticationFlow { get; set; }
 
 
     [JsonPropertyName("exp")]
@@ -28,23 +26,23 @@ public class ClaimSetModel: IClaimSet
 
     [JsonPropertyName("ten")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string Tenant { get; set; }
+    public string? Tenant { get; set; }
 
     [JsonPropertyName("sub")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string Subject { get; set; }
+    public string? Subject { get; set; }
 
     [JsonPropertyName("nam")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("eml")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
     [JsonPropertyName("pic")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string Picture { get; set; }
+    public string? Picture { get; set; }
 
     [JsonPropertyName("rol")]
     public List<string> Roles { get; set; } = new ();

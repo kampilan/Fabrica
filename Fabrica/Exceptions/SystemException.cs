@@ -22,29 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class SystemException : FluentException<SystemException>
 {
 
-    public class SystemException : FluentException<SystemException>
+
+    public SystemException( string message) : base(message)
     {
 
+        Kind = ErrorKind.System;
 
-        public SystemException( string message) : base(message)
-        {
+    }
 
-            Kind = ErrorKind.System;
+    public SystemException( string message, Exception inner ) : base( message, inner )
+    {
 
-        }
-
-        public SystemException( string message, Exception inner ) : base( message, inner )
-        {
-
-            Kind = ErrorKind.System;
-
-        }
-
+        Kind = ErrorKind.System;
 
     }
 

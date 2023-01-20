@@ -2,6 +2,7 @@
 using AutoMapper;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Persistence.Etl;
 

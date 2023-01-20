@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Threading.Tasks;
 using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Text;
+using Humanizer;
 
 // ReSharper disable CollectionNeverUpdated.Local
 
@@ -25,9 +21,9 @@ public class ModelMetaService: IModelMetaService, IRequiresStart
     private static ISet<string> Empty { get; } = new HashSet<string>();
 
 
-    private IReadOnlyDictionary<string,ModelMeta> AliasMap { get; set; }
-    private IReadOnlyDictionary<string,ModelMeta> ResourceMap { get; set; }
-    private IReadOnlyDictionary<Type,ModelMeta> TypeMap { get; set; }
+    private IReadOnlyDictionary<string, ModelMeta> AliasMap { get; set; } = null!;
+    private IReadOnlyDictionary<string,ModelMeta> ResourceMap { get; set; } = null!;
+    private IReadOnlyDictionary<Type,ModelMeta> TypeMap { get; set; } = null!;
     public Task Start()
     {
 

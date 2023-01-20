@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Fabrica.Identity;
 
-namespace Fabrica.Identity
+public interface IClaimSet
 {
 
+    string? AuthenticationType { get; }
 
-    public interface IClaimSet
-    {
+    string? AuthenticationFlow { get; }
 
-        string AuthenticationType { get; }
+    long? Expiration { get; }
 
-        string AuthenticationFlow { get; }
+    void SetExpiration(TimeSpan ttl);
 
-        long? Expiration { get; }
+    string? Tenant { get; }
 
-        void SetExpiration(TimeSpan ttl);
+    string? Subject { get; }
 
-        string Tenant { get; }
+    string? Name { get; }
 
-        string Subject { get; }
+    string? Email { get; }
 
-        string Name { get; }
+    string? Picture { get; }
 
-        string Email { get; }
-
-        string Picture { get; }
-
-        public IEnumerable<string> Roles { get;}
-
-
-    }
+    public IEnumerable<string> Roles { get;}
 
 
 }

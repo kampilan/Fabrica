@@ -26,6 +26,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using Fabrica.Utilities.Pooling;
+using Fabrica.Utilities.Text;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Switching;
@@ -161,7 +162,7 @@ namespace Fabrica.Watch
                 return Silencer;
 
 
-            var corrId = ShortGuid.NewGuid().ToString();
+            var corrId = Base62Converter.NewGuid();
             var sw     = Switches.Lookup( category );
 
 

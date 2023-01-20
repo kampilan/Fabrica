@@ -1,20 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <RootNamespace>Fabrica.Watch</RootNamespace>
+    <Title>Fabrica Watch Realtime</Title>
+    <Description>Fabrica Watch Realtime sink implementation</Description>
+    <Authors>Pond Hawk Technologies Inc.</Authors>
+    <Company>Pond Hawk Technologies Inc.</Company>
+    <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>	
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Realtime\" />
-  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="SmartInspect" Version="3.4.0.101" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+	</ItemGroup>
+
 
 </Project>

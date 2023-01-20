@@ -1,18 +1,11 @@
-﻿using System;
+﻿namespace Fabrica.Watch.Bridges.MicrosoftImpl;
 
-namespace Fabrica.Watch.Bridges.MicrosoftImpl
+public class LoggingContext: IDisposable
 {
 
-    
-    public class LoggingContext: IDisposable
+    public void Dispose()
     {
 
-        public void Dispose()
-        {
-
-        }
-
     }
-
 
 }

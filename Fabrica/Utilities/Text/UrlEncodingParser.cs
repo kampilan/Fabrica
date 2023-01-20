@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2017 The Kampilan Group Inc.
+Copyright © 2012-2019 Rick Strahl, West Wind Technologies
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using JetBrains.Annotations;
 
 namespace Fabrica.Utilities.Text
 {
@@ -69,7 +66,7 @@ namespace Fabrica.Utilities.Text
         /// re-written with the new query string.
         /// </param>
         /// <param name="decodeSpacesAsPlusSigns"></param>
-        public UrlEncodingParser([CanBeNull] string queryStringOrUrl = null, bool decodeSpacesAsPlusSigns = false)
+        public UrlEncodingParser( string? queryStringOrUrl = null, bool decodeSpacesAsPlusSigns = false)
         {
             Url = string.Empty;
             DecodePlusSignsAsSpaces = decodeSpacesAsPlusSigns;
@@ -85,7 +82,7 @@ namespace Fabrica.Utilities.Text
         /// </summary>
         /// <param name="key"></param>
         /// <param name="values"></param>
-        public void SetValues(string key, [NotNull] IEnumerable<string> values)
+        public void SetValues( string key, IEnumerable<string> values )
         {
             foreach (var val in values)
                 Add(key, val);
@@ -100,7 +97,6 @@ namespace Fabrica.Utilities.Text
         /// passed the URL is re-written in Write operation
         /// </param>
         /// <returns></returns>
-        [NotNull]
         public NameValueCollection Parse(string query)
         {
             if (Uri.IsWellFormedUriString(query, UriKind.Absolute))
@@ -146,10 +142,10 @@ namespace Fabrica.Utilities.Text
         /// <returns>urlencoded data or url</returns>
         public override string ToString()
         {
-            string query = string.Empty;
+            var query = string.Empty;
             foreach (string key in Keys)
             {
-                string[] values = GetValues(key);
+                var values = GetValues(key);
                 if (values == null)
                     continue;
 

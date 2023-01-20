@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Fabrica.Utilities.Container;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Fabrica.Identity;
 
 public static class AutofacExtensions

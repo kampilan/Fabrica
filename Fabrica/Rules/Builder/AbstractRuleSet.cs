@@ -33,10 +33,10 @@ namespace Fabrica.Rules.Builder
     {
         internal AbstractRuleSet()
         {
-            DecisionThreashold = 0;
+            DecisionThreshold = 0;
         }
         
-        public int DecisionThreashold { get; set; }
+        public int DecisionThreshold { get; set; }
 
         [NotNull]
         public Func<object, bool> Predicate
@@ -47,13 +47,13 @@ namespace Fabrica.Rules.Builder
         public virtual bool Decide( params object[] facts )
         {
             EvaluationResults result = Evaluate( facts );
-            return result.Score >= DecisionThreashold;
+            return result.Score >= DecisionThreshold;
         }
 
-        public virtual bool Decide( int threashold, params object[] facts )
+        public virtual bool Decide( int threshold, params object[] facts )
         {
             EvaluationResults result = Evaluate( facts );
-            return result.Score >= threashold;
+            return result.Score >= threshold;
         }
 
 

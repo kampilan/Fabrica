@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fabrica.Exceptions;
+﻿using Fabrica.Exceptions;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -22,14 +18,14 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
     }
 
 
-    protected virtual bool TryValidate([CanBeNull] BaseCriteria criteria, out IActionResult error)
+    protected virtual bool TryValidate(BaseCriteria? criteria, out IActionResult error)
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(criteria), criteria);
 
-        error = null;
+        error = null!;
 
 
         if (!ModelState.IsValid)
@@ -119,7 +115,7 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
         // *****************************************************************
         logger.Debug("Attempting to produce filters from Criteria");
         var filters = new List<IRqlFilter<TExplorer>>();
-        if( criteria.Rql?.Length > 0 )
+        if( criteria.Rql.Length > 0 )
         {
             filters.AddRange(criteria.Rql.Select(s =>
             {

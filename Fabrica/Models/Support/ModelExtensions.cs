@@ -1,6 +1,5 @@
-﻿using System;
-using System.Reflection;
-using Fabrica.Utilities.Text;
+﻿using System.Reflection;
+using Humanizer;
 using JetBrains.Annotations;
 
 namespace Fabrica.Models.Support;
@@ -12,7 +11,7 @@ public static class ModelExtensions
     public static string ToAlias([NotNull] this Type type)
     {
 
-        var attr = (ModelAttribute)type.GetCustomAttribute(typeof(ModelAttribute));
+        var attr = (ModelAttribute?)type.GetCustomAttribute(typeof(ModelAttribute));
         if (attr != null && !string.IsNullOrWhiteSpace(attr.Alias))
             return attr.Alias;
 
@@ -24,7 +23,7 @@ public static class ModelExtensions
     {
 
 
-        var attr = (ModelAttribute)model.GetType().GetCustomAttribute(typeof(ModelAttribute));
+        var attr = (ModelAttribute?)model.GetType().GetCustomAttribute(typeof(ModelAttribute));
         if (attr != null && !string.IsNullOrWhiteSpace(attr.Alias))
             return attr.Alias;
 
@@ -51,12 +50,12 @@ public static class ModelExtensions
 
         }
 
-        var attr = (ModelAttribute)type.GetCustomAttribute(typeof(ModelAttribute));
+        var attr = (ModelAttribute?)type.GetCustomAttribute(typeof(ModelAttribute));
 
         if( attr != null && !string.IsNullOrWhiteSpace(attr.Resource) )
             return attr.Resource.Pluralize().ToLowerInvariant();
 
-        if( attr != null && attr.RefersTo != null )    
+        if( attr is {RefersTo: { }} )    
             return FromType(attr, attr.RefersTo );
 
         if( attr != null )

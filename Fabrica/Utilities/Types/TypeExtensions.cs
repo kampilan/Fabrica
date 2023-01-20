@@ -22,241 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.IO.Compression;
-using JetBrains.Annotations;
+namespace Fabrica.Utilities.Types;
 
-namespace Fabrica.Utilities.Types
+public static class TypeExtensions
 {
 
-    public static class TypeExtensions
+
+    public static string ToHexString( this byte[] bytes )
     {
 
-        public static T As<T>([NotNull] this object value)
-        {
+        if (bytes == null) throw new ArgumentNullException(nameof(bytes));
 
-            if (value.GetType().IsAssignableFrom(typeof(T)))
-                return (T)value;
+        var hex = BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+        return hex;
 
-            if (value is IConvertible convertible)
-                return (T)convertible.ToType(typeof(T), CultureInfo.CurrentCulture );
+    }
 
-            return (T)value;
 
-        }
+    public static string ToTimestampString( this DateTime source )
+    {
 
+        var utc = source.ToUniversalTime();
 
-        [NotNull]
-        public static dynamic AsExpando<TTarget>( this TTarget value  ) where TTarget: class
-        {
-            return new ExpandoWrapper<TTarget>( value );
-        }
+        var y = utc.Year.ToString().PadLeft(4,'0');
+        var m = utc.Month.ToString().PadLeft(2, '0');
+        var d = utc.Day.ToString().PadLeft(2, '0');
+        var t = utc.TimeOfDay.Ticks.ToString().PadLeft(20, '0');
 
-
-        public static object As([NotNull] this object value, [NotNull] Type type )
-        {
-
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
-            if (value.GetType().IsAssignableFrom(type))
-                return value;
-
-            if (value is IConvertible convertible)
-                return convertible.ToType(type, CultureInfo.CurrentCulture );
-
-            return value;
-
-        }
-
-
-        [NotNull]
-        public static T Copy<T>( this object source ) where T : new()
-        {
-
-            var target = new T();
-
-            Copy( source, target, new HashSet<string>() );
-
-            return target;
-
-        }
-
-
-        public static void Copy( this object source, [NotNull] object target )
-        {
-
-            if (target == null) throw new ArgumentNullException(nameof(target));
-
-            Copy(source, target, new HashSet<string>());
-        }
-
-
-        [NotNull]
-        public static T Copy<T>( this object source, [NotNull] ISet<string> ignore ) where T : new()
-        {
-
-            if (ignore == null) throw new ArgumentNullException(nameof(ignore));
-
-            var target = new T();
-
-            Copy(source, target, ignore );
-
-            return target;
-
-        }
-
-
-        public static void Copy( this object source, [NotNull] object target, [NotNull] ISet<string> ignore )
-        {
-
-            if (target == null) throw new ArgumentNullException(nameof(target));
-            if (ignore == null) throw new ArgumentNullException(nameof(ignore));
-
-            foreach (var prop in target.GetType().GetProperties() )
-            {
-
-                if (!prop.CanWrite)
-                    continue;
-
-                var fromProp = source.GetType().GetProperty(prop.Name);
-                if ((fromProp == null) || !(fromProp.CanRead))
-                    continue;
-
-                if ( ignore.Contains( fromProp.Name ) )
-                    continue;
-
-                var oValue = fromProp.GetValue(source, null);
-                prop.SetValue(target, oValue, null);
-
-            }
-        }
-
-
-        public static string ToGZip( this string source, CompressionLevel level = CompressionLevel.Optimal )
-        {
-
-            string b64;
-            using (var input = new MemoryStream())
-            {
-
-                using (var writer = new StreamWriter(input))
-                {
-
-
-                    // *****************************************************
-                    writer.Write(source);
-                    writer.Flush();
-
-                    input.Seek(0, SeekOrigin.Begin);
-
-
-
-                    // *****************************************************
-                    using( var output = new MemoryStream() )
-                    {
-
-                        // *****************************************************                        
-                        using( var gzip = new GZipStream( output, CompressionLevel.Optimal, true ) )
-                        {
-                            input.CopyTo( gzip );
-                            gzip.Flush();
-                        }
-
-                        output.Seek(0, SeekOrigin.Begin);
-
-
-
-                        // *****************************************************
-                        b64 = Convert.ToBase64String(output.ToArray());
-
-
-                    }
-
-                }
-
-            }
-
-            return b64;
-            
-        }
-
-
-        public static string FromGZip(this string source)
-        {
-
-
-            // *****************************************************
-            var buf = Convert.FromBase64String(source);
-
-
-            
-            // *****************************************************
-            string clear;
-            using (var input = new MemoryStream(buf))
-            {
-
-
-                // *****************************************************
-                using( var output = new MemoryStream() )
-                {
-
-                    // *****************************************************
-                    using( var gzip = new GZipStream( input, CompressionMode.Decompress ) )
-                    {
-                        gzip.CopyTo( output );
-                        gzip.Flush();
-                    }
-
-                    output.Seek( 0, SeekOrigin.Begin );
-
-
-
-                    // *****************************************************
-                    using( var reader = new StreamReader( output ) )
-                        clear = reader.ReadToEnd();
-
-
-                }
-
-
-            }
-
-
-
-            // *****************************************************
-            return clear;
-
-        }
-
-
-        public static string ToHexString( [NotNull] this byte[] bytes )
-        {
-
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
-            var hex = BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
-            return hex;
-
-        }
-
-
-        public static string ToTimestampString(this DateTime source)
-        {
-
-            var utc = source.ToUniversalTime();
-
-            var y = utc.Year.ToString().PadLeft(4,'0');
-            var m = utc.Month.ToString().PadLeft(2, '0');
-            var d = utc.Day.ToString().PadLeft(2, '0');
-            var t = utc.TimeOfDay.Ticks.ToString().PadLeft(20, '0');
-
-            var ts = string.Join("", y, m, d, t);
-            return ts;
-
-        }
+        var ts = string.Join("", y, m, d, t);
+        return ts;
 
     }
 

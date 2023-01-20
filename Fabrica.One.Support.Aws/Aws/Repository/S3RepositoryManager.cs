@@ -17,6 +17,7 @@ using Fabrica.One.Repository;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
+using Humanizer;
 using JetBrains.Annotations;
 
 namespace Fabrica.One.Support.Aws.Repository

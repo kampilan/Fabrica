@@ -1,41 +1,37 @@
-﻿using System;
-using Autofac;
-using JetBrains.Annotations;
+﻿
+// ReSharper disable UnusedMember.Global
 
-namespace Fabrica.Api.Support.Identity.Token
+using Autofac;
+
+namespace Fabrica.Api.Support.Identity.Token;
+
+public static  class AutofacExtensions
 {
 
-    
-    public static  class AutofacExtensions
+
+    public static ContainerBuilder AddProxyTokenEncoder( this ContainerBuilder builder,  string tokenSigningKey )
     {
 
+        builder.Register(c =>
+            {
 
-        public static ContainerBuilder AddProxyTokenEncoder( [NotNull] this ContainerBuilder builder,  [NotNull] string tokenSigningKey )
-        {
+                byte[] key = null!;
+                if (!string.IsNullOrWhiteSpace(tokenSigningKey))
+                    key = Convert.FromBase64String(tokenSigningKey);
 
-            builder.Register(c =>
+                var comp = new ProxyTokenJwtEncoder
                 {
+                    TokenSigningKey = key
+                };
 
-                    byte[] key = null;
-                    if (!string.IsNullOrWhiteSpace(tokenSigningKey))
-                        key = Convert.FromBase64String(tokenSigningKey);
+                return comp;
 
-                    var comp = new ProxyTokenJwtEncoder
-                    {
-                        TokenSigningKey = key
-                    };
-
-                    return comp;
-
-                })
-                .As<IProxyTokenEncoder>()
-                .SingleInstance();
+            })
+            .As<IProxyTokenEncoder>()
+            .SingleInstance();
 
 
-            return builder;
-
-        }
-
+        return builder;
 
     }
 

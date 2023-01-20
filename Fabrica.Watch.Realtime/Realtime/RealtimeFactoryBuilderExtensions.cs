@@ -23,6 +23,8 @@ SOFTWARE.
 */
 
 
+// ReSharper disable UnusedMember.Global
+
 using System.Drawing;
 
 namespace Fabrica.Watch.Realtime

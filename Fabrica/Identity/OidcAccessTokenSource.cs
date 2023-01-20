@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Fabrica.Utilities.Container;
+﻿using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Newtonsoft.Json;
 
@@ -22,8 +19,8 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
     private IHttpClientFactory Factory { get; }
     private ICredentialGrant Grant { get; }
 
-    private MetaModel Meta { get; set; }
-    private TokenModel Token { get; set; }
+    private MetaModel? Meta { get; set; }
+    private TokenModel? Token { get; set; }
 
     public string Name => Grant.Name;
 
@@ -60,7 +57,7 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
 
 
         // *****************************************************************
-        var token = Token.AccessToken ?? "";
+        var token = Token?.AccessToken ?? "";
 
         logger.Inspect(nameof(token.Length), token.Length);
 
@@ -153,7 +150,7 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
 
             // *****************************************************************
             logger.Debug("Attempting to fetch tokens form identity provider");
-            var res = await client.PostAsync(Meta.TokenEndpoint, content);
+            var res = await client.PostAsync(Meta?.TokenEndpoint, content);
 
             logger.Inspect(nameof(res.StatusCode), res.StatusCode);
 

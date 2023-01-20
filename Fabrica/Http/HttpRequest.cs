@@ -22,97 +22,88 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Fabrica.Http
+namespace Fabrica.Http;
+
+public class HttpRequest
 {
 
+    public string HttpClientName { get; set; } = "Api";
 
-    public class HttpRequest
+    public string Path { get; set; } = "";
+
+    public HttpMethod Method { get; set; } = HttpMethod.Get;
+
+
+    public IDictionary<string, string> CustomHeaders { get; } = new Dictionary<string, string>();
+
+
+    public HttpContent? BodyContent { get; set; }
+
+
+    public bool DebugMode { get; set; }
+
+
+    [NotNull]
+    protected virtual JsonSerializerSettings GetSerializerSettings( IContractResolver? resolver = null)
     {
 
-        public string HttpClientName { get; set; } = "Api";
-
-        public string Path { get; set; }
-
-        public HttpMethod Method { get; set; } = HttpMethod.Get;
-
-
-        public IDictionary<string, string> CustomHeaders { get; } = new Dictionary<string, string>();
-
-
-        public HttpContent BodyContent { get; set; }
-
-
-        public bool DebugMode { get; set; }
-
-
-        [NotNull]
-        protected virtual JsonSerializerSettings GetSerializerSettings([CanBeNull] IContractResolver resolver = null)
+        var settings = new JsonSerializerSettings
         {
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            DefaultValueHandling = DefaultValueHandling.Populate,
+            DateFormatHandling = DateFormatHandling.IsoDateFormat,
+            DateParseHandling = DateParseHandling.DateTime,
+            Formatting = Formatting.None,
+            MissingMemberHandling = MissingMemberHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+        };
 
-            var settings = new JsonSerializerSettings
-            {
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                DefaultValueHandling = DefaultValueHandling.Populate,
-                DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                DateParseHandling = DateParseHandling.DateTime,
-                Formatting = Formatting.None,
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                NullValueHandling = NullValueHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects
-            };
-
-            if (resolver != null)
-                settings.ContractResolver = resolver;
+        if (resolver != null)
+            settings.ContractResolver = resolver;
 
 
-            return settings;
-
-        }
-
-
-        public void ToBody([NotNull] object model, [CanBeNull] IContractResolver resolver = null)
-        {
-
-            if (model == null) throw new ArgumentNullException(nameof(model));
-
-            using var logger = this.EnterMethod();
-
-
-            var settings = GetSerializerSettings(resolver);
-            var json = JsonConvert.SerializeObject(model, settings);
-
-            ToBody(json);
-
-        }
-
-
-        public void ToBody([NotNull] string json )
-        {
-
-            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(json));
-
-
-            using var logger = this.EnterMethod();
-
-            logger.Inspect(nameof(json), json);
-
-            BodyContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-        }
-
+        return settings;
 
     }
 
+
+    public void ToBody( object model, IContractResolver? resolver = null )
+    {
+
+        if (model == null) throw new ArgumentNullException(nameof(model));
+
+        using var logger = this.EnterMethod();
+
+
+        var settings = GetSerializerSettings(resolver);
+        var json = JsonConvert.SerializeObject(model, settings);
+
+        ToBody(json);
+
+    }
+
+
+    public void ToBody( string json )
+    {
+
+        if (string.IsNullOrWhiteSpace(json)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(json));
+
+
+        using var logger = this.EnterMethod();
+
+        logger.Inspect(nameof(json), json);
+
+        BodyContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+    }
 
 
 }

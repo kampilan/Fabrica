@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabrica.Http;
+﻿using Fabrica.Http;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
@@ -24,7 +20,7 @@ namespace Fabrica.Persistence.Http.Mediator.Handlers
         protected override async Task<List<TExplorer>> Perform(CancellationToken cancellationToken = default)
         {
 
-            var logger = this.GetLogger();
+            var logger = GetLogger();
 
             try
             {
@@ -66,7 +62,7 @@ namespace Fabrica.Persistence.Http.Mediator.Handlers
 
 
                 // *****************************************************************
-                return list;
+                return list!;
 
 
 

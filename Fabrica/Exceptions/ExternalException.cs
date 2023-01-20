@@ -22,9 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-
 namespace Fabrica.Exceptions
 {
 
@@ -47,7 +44,7 @@ namespace Fabrica.Exceptions
             ErrorCode   = GetType().Name.Replace("Exception", "");
             Explanation = message;
 
-            if (!(inner is InternalException intra))
+            if (inner is not InternalException intra)
                 return;
 
             InnerExplanation = intra.Explanation;
@@ -72,9 +69,9 @@ namespace Fabrica.Exceptions
 
 
         public ErrorKind Kind        { get; protected set; } = ErrorKind.System;
-        public string ErrorCode   { get; protected set; }
+        public string ErrorCode { get; protected set; }
         public string Explanation { get; protected set; }
-        public string InnerExplanation { get; protected set; }
+        public string InnerExplanation { get; protected set; } = "";
 
         public string CorrelationId { get; protected set; } = "";
 

@@ -22,24 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class NotFoundException: FunctionalException
 {
 
-    public class NotFoundException: FunctionalException
+    public NotFoundException(string message) : base(message)
     {
+        Kind = ErrorKind.NotFound;
+    }
 
-        public NotFoundException(string message) : base(message)
-        {
-            Kind = ErrorKind.NotFound;
-        }
-
-        public NotFoundException(string message, Exception inner) : base(message, inner)
-        {
-            Kind = ErrorKind.NotFound;
-        }
-
+    public NotFoundException(string message, Exception inner) : base(message, inner)
+    {
+        Kind = ErrorKind.NotFound;
     }
 
 }

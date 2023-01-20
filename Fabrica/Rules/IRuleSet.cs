@@ -22,22 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using Fabrica.Rules.Evaluation;
 
-namespace Fabrica.Rules
+namespace Fabrica.Rules;
+
+public interface IRuleSet : IEvaluator
 {
 
-    public interface IRuleSet : IEvaluator
-    {
-
-        EvaluationContext GetEvaluationContext();
+    EvaluationContext GetEvaluationContext();
         
-        int DecisionThreashold { get; set; }
-        Func<object, bool> Predicate { get; }
+    int DecisionThreshold { get; set; }
+    Func<object, bool> Predicate { get; }
 
-        bool Decide( params object[] facts );
-        bool Decide( int threashold, params object[] facts );
-    }
-
+    bool Decide( params object[] facts );
+    bool Decide( int threshold, params object[] facts );
 }

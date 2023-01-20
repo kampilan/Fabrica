@@ -22,23 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Exceptions
+namespace Fabrica.Exceptions;
+
+public class MissingImplementationException: PredicateException
 {
 
-
-    public class MissingImplementationException: PredicateException
+    public MissingImplementationException(string message) : base(message)
     {
+        Kind = ErrorKind.NotImplemented;
+    }
 
-        public MissingImplementationException(string message) : base(message)
-        {
-            Kind = ErrorKind.NotImplemented;
-        }
-
-        public MissingImplementationException(string message, System.Exception inner) : base(message, inner)
-        {
-            Kind = ErrorKind.NotImplemented;
-        }
-
+    public MissingImplementationException(string message, System.Exception inner) : base(message, inner)
+    {
+        Kind = ErrorKind.NotImplemented;
     }
 
 }

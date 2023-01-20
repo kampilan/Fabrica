@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Fabrica.Utilities.Container;
 using Newtonsoft.Json;
 
@@ -43,8 +39,8 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
         logger.Debug("Attempting to build Inner Request");
         var innerRequest = new HttpRequestMessage
         {
-            Method     = Request.Method,
-            RequestUri = new Uri(client.BaseAddress, Request.Path)
+            Method  = Request.Method,
+            RequestUri = client.BaseAddress is null ? new Uri(Request.Path) : new Uri(client.BaseAddress, Request.Path)
         };
 
 
@@ -61,7 +57,7 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
 
         // *****************************************************************
         logger.Debug("Attempting to add body content");
-        if( Request.BodyContent != null )
+        if( string.IsNullOrWhiteSpace(Request.BodyContent) )
             innerRequest.Content =  new StringContent(Request.BodyContent, Encoding.UTF8, "application/json");
 
 
@@ -80,13 +76,13 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
 
             // *****************************************************************
             logger.Debug("Attempting to read body content");
-            var content = await innerResponse.Content.ReadAsStringAsync();
+            var content = await innerResponse.Content.ReadAsStringAsync(token);
 
             var response = JsonConvert.DeserializeObject<TResponse>(content);
 
 
             // *****************************************************************
-            return response;
+            return response!;
 
 
         }

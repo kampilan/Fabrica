@@ -1,3 +1,6 @@
+
+// ReSharper disable UnusedMember.Global
+
 /*
 The MIT License (MIT)
 
@@ -22,11 +25,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
-using Fabrica.Utilities.Types;
+
 
 namespace Fabrica.Models
 {
@@ -56,7 +58,7 @@ namespace Fabrica.Models
         public virtual string SubjectDescription { get; set; } = "";
 
         [ModelMeta(Scope = PropertyScope.Immutable)]
-        public virtual DateTime Occurred { get; set; } = new DateTime(1883, 11, 19, 0, 0, 0, 0);
+        public virtual DateTime Occurred { get; set; } = new (1883, 11, 19, 0, 0, 0, 0);
 
         [ModelMeta(Scope = PropertyScope.Immutable)]
         public virtual string TypeCode { get; set; } = "";

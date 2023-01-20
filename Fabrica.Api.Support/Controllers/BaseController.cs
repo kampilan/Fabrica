@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-using System.IO;
+// ReSharper disable UnusedMember.Global
+
 using System.Net;
 using System.Runtime.CompilerServices;
 using Fabrica.Api.Support.ActionResult;

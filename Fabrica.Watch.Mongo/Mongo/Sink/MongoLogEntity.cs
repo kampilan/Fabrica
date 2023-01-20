@@ -22,43 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using MongoDB.Bson;
 
-namespace Fabrica.Watch.Mongo.Sink
+namespace Fabrica.Watch.Mongo.Sink;
+
+public class MongoLogEntity
 {
 
-    public class MongoLogEntity
-    {
+    public ObjectId Id { get; set; }
 
-        public ObjectId Id { get; set; }
-
-        public string Category { get; set; }
-        public string CorrelationId { get; set; }
+    public string? Category { get; set; }
+    public string? CorrelationId { get; set; }
 
 
-        public string Title { get; set; }
+    public string? Title { get; set; }
 
 
-        public string Tenant { get; set; }
-        public string Subject { get; set; }
-        public string Tag { get; set; }
+    public string? Tenant { get; set; }
+    public string? Subject { get; set; }
+    public string? Tag { get; set; }
 
 
-        public int Level { get; set; }
-        public int Color { get; set; }
-        public int Nesting { get; set; }
+    public int Level { get; set; }
+    public int Color { get; set; }
+    public int Nesting { get; set; }
 
 
-        public int Type { get; set; }
-        public string Payload { get; set; }
+    public int Type { get; set; }
+    public string? Payload { get; set; }
 
 
-        public DateTime Occurred { get; set; }
-        public DateTime TimeToLive { get; set; }
-
-
-    }
+    public DateTime Occurred { get; set; }
+    public DateTime TimeToLive { get; set; }
 
 
 }

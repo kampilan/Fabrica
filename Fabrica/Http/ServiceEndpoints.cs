@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace Fabrica.Http;
+﻿namespace Fabrica.Http;
 
 public static  class ServiceEndpoints
 {

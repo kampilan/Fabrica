@@ -1,11 +1,6 @@
-﻿namespace Fabrica.Models.Serialization
+﻿namespace Fabrica.Models.Serialization;
+
+public class ModelExplorerContractResolver: ModelContractResolver
 {
-
-
-    public class ModelExplorerContractResolver: ModelContractResolver
-    {
-
-    }
-
 
 }

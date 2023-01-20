@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabrica.Models.Support;
+﻿using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;

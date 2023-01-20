@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+// ReSharper disable UnusedMember.Global
+
 using System.ComponentModel;
-using System.Linq;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -20,7 +19,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     public bool Ok { get; private set; }
 
-    public virtual object GetValue() => null;
+    public virtual object GetValue() => null!;
     public void EnsureSuccess()
     {
         if( !Ok )
@@ -42,27 +41,26 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
     public bool HasViolations => Details.Any(d => d.Category == EventDetail.EventCategory.Violation);
 
 
-    [NotNull]
+
     public TDescendant IsOk()
     {
         Ok = true;
         return (TDescendant)this;
     }
 
-    [NotNull]
+
     public TDescendant From( ExternalException ex )
     {
 
         WithKind(ex.Kind);
         WithErrorCode(ex.ErrorCode);
-        WithExplaination(ex.Explanation);
+        WithExplanation(ex.Explanation);
         WithDetails(ex.Details);
 
         return (TDescendant)this;
 
     }
 
-    [NotNull]
     public TDescendant WithKind(ErrorKind kind)
     {
 
@@ -71,8 +69,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     }
 
-    [NotNull]
-    public TDescendant WithErrorCode([NotNull] string code)
+    public TDescendant WithErrorCode( string code)
     {
 
         ErrorCode = code ?? throw new ArgumentNullException(nameof(code));
@@ -80,17 +77,15 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     }
 
-    [NotNull]
-    public TDescendant WithExplaination([NotNull] string explaination)
+    public TDescendant WithExplanation( string explanation)
     {
 
-        Explanation = explaination ?? throw new ArgumentNullException(nameof(explaination));
+        Explanation = explanation ?? throw new ArgumentNullException(nameof(explanation));
         return (TDescendant)this;
 
     }
 
-    [NotNull]
-    public TDescendant WithDetail([NotNull] EventDetail detail)
+    public TDescendant WithDetail( EventDetail detail)
     {
 
         if (detail == null) throw new ArgumentNullException(nameof(detail));
@@ -100,8 +95,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     }
 
-    [NotNull]
-    public TDescendant WithDetails([NotNull] IEnumerable<EventDetail> details)
+    public TDescendant WithDetails( IEnumerable<EventDetail> details)
     {
 
         if (details == null) throw new ArgumentNullException(nameof(details));
@@ -137,9 +131,10 @@ public class Response<TValue>: FluentResponse<Response<TValue>>
 
     public Response()
     {
+        Value = default!;
     }
 
-    public Response( TValue value, IEnumerable<EventDetail> details=null )
+    public Response( TValue value, IEnumerable<EventDetail>? details=null )
     {
 
         Value = value;
@@ -151,6 +146,6 @@ public class Response<TValue>: FluentResponse<Response<TValue>>
 
     public TValue Value { get; }
 
-    public override object GetValue() => Value;
+    public override object GetValue() => Value!;
 
 }

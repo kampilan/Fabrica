@@ -23,25 +23,21 @@ SOFTWARE.
 */
 
 
-namespace Fabrica.Exceptions
+namespace Fabrica.Exceptions;
+
+public enum ErrorKind
 {
-
-
-    public enum ErrorKind
-    {
-        Unknown,
-        Predicate,
-        BadRequest,
-        Functional,
-        NotImplemented,
-        NotFound,
-        Concurrency,
-        System,
-        None,
-        AuthenticationRequired,
-        NotAuthorized,
-        Conflict,
-        Remote
-    }
-
+    Unknown,
+    Predicate,
+    BadRequest,
+    Functional,
+    NotImplemented,
+    NotFound,
+    Concurrency,
+    System,
+    None,
+    AuthenticationRequired,
+    NotAuthorized,
+    Conflict,
+    Remote
 }

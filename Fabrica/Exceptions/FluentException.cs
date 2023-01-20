@@ -22,98 +22,82 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public abstract class FluentException<TDescendant>: ExternalException where TDescendant: FluentException<TDescendant>
 {
 
-    public abstract class FluentException<TDescendant>: ExternalException where TDescendant: FluentException<TDescendant>
+    protected FluentException(string message) : base(message)
     {
+    }
 
-        protected FluentException(string message) : base(message)
-        {
-        }
-
-        protected FluentException(string message, Exception inner) : base(message, inner)
-        {
-        }
+    protected FluentException(string message, Exception inner) : base(message, inner)
+    {
+    }
 
 
-        [NotNull]
-        public TDescendant WithKind(ErrorKind kind)
-        {
-            Kind = kind;
-            return (TDescendant)this;
-        }
+    public TDescendant WithKind(ErrorKind kind)
+    {
+        Kind = kind;
+        return (TDescendant)this;
+    }
 
-        [NotNull]
-        public TDescendant WithErrorCode([NotNull] string code)
-        {
-            ErrorCode = code ?? throw new ArgumentNullException(nameof(code));
-            return (TDescendant)this;
-        }
+    public TDescendant WithErrorCode( string code )
+    {
+        ErrorCode = code ?? throw new ArgumentNullException(nameof(code));
+        return (TDescendant)this;
+    }
 
-        [NotNull]
-        public TDescendant WithExplaination([NotNull] string explaination)
-        {
-            Explanation = explaination ?? throw new ArgumentNullException(nameof(explaination));
-            return (TDescendant)this;
-
-        }
-        [NotNull]
-        public TDescendant WithCorrelationId([NotNull] string correlationId)
-        {
-            CorrelationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
-            return (TDescendant)this;
-
-        }
-
-        [NotNull]
-        public TDescendant WithDetail([NotNull] EventDetail detail)
-        {
-
-            if (detail == null) throw new ArgumentNullException(nameof(detail));
-
-            Details.Add(detail);
-            return (TDescendant)this;
-
-        }
-
-        [NotNull]
-        public TDescendant WithDetails([NotNull] IEnumerable<EventDetail> details)
-        {
-            if (details == null) throw new ArgumentNullException(nameof(details));
-
-            foreach (var d in details)
-                Details.Add(d);
-
-            return (TDescendant)this;
-
-        }
-
-
-        [NotNull]
-        public TDescendant With([NotNull] IExceptionInfo info )
-        {
-
-            if (info == null) throw new ArgumentNullException(nameof(info));
-
-            this
-                .WithKind(info.Kind)
-                .WithErrorCode(info.ErrorCode)
-                .WithExplaination(info.Explanation)
-                .WithDetails(info.Details);
-
-
-            return (TDescendant)this;
-
-        }
-
-
+    public TDescendant WithExplanation( string explanation )
+    {
+        Explanation = explanation ?? throw new ArgumentNullException(nameof(explanation));
+        return (TDescendant)this;
 
     }
+
+    public TDescendant WithCorrelationId( string correlationId)
+    {
+        CorrelationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
+        return (TDescendant)this;
+
+    }
+
+    public TDescendant WithDetail( EventDetail detail)
+    {
+
+        if (detail == null) throw new ArgumentNullException(nameof(detail));
+
+        Details.Add(detail);
+        return (TDescendant)this;
+
+    }
+
+    public TDescendant WithDetails( IEnumerable<EventDetail> details)
+    {
+        if (details == null) throw new ArgumentNullException(nameof(details));
+
+        foreach (var d in details)
+            Details.Add(d);
+
+        return (TDescendant)this;
+
+    }
+
+    public TDescendant With( IExceptionInfo info )
+    {
+
+        if (info == null) throw new ArgumentNullException(nameof(info));
+
+        WithKind(info.Kind);
+        WithErrorCode(info.ErrorCode);
+        WithExplanation(info.Explanation);
+        WithDetails(info.Details);
+
+
+        return (TDescendant)this;
+
+    }
+
 
 
 }

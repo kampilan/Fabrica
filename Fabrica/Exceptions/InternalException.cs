@@ -22,24 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class InternalException: Exception
 {
 
-    public class InternalException: Exception
+    public  InternalException( string message ): base(message)
     {
-
-        public  InternalException( string message ): base(message)
-        {
-            Explanation = message;
-        }
-
-
-        public string Explanation { get; protected set; }
-        public IList<EventDetail> Details { get; protected set; } = new List<EventDetail>();
-
+        Explanation = message;
     }
+
+
+    public string Explanation { get; protected set; }
+    public IList<EventDetail> Details { get; protected set; } = new List<EventDetail>();
 
 }

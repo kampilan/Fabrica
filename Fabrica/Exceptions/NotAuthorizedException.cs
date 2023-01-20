@@ -22,23 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class NotAuthorizedException: PredicateException
 {
-
-    public class NotAuthorizedException: PredicateException
+    public NotAuthorizedException(string message) : base(message)
     {
-        public NotAuthorizedException(string message) : base(message)
-        {
-            Kind = ErrorKind.NotAuthorized;
-        }
+        Kind = ErrorKind.NotAuthorized;
+    }
 
-        public NotAuthorizedException(string message, Exception inner) : base(message, inner)
-        {
-            Kind = ErrorKind.NotAuthorized;
-        }
-
+    public NotAuthorizedException(string message, Exception inner) : base(message, inner)
+    {
+        Kind = ErrorKind.NotAuthorized;
     }
 
 }

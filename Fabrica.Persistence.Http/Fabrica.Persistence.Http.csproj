@@ -1,11 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <RootNamespace>Fabrica.Persistence</RootNamespace>
-    <Company>The Kampilan Group Inc.</Company>
-    <Description>Http handlers for Persistence requests</Description>
-    <Copyright>The Kampilan Group Inc. (c) 2021</Copyright>
+    <Title>Fabrica Persistence Http</Title>
+    <Description>Fabrica Persistence handlers for Http</Description>
+    <Authors>Pond Hawk Technologies Inc.</Authors>
+    <Company>Pond Hawk Technologies Inc.</Company>
+    <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
+    <PackageIcon>smithy.png</PackageIcon>	
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabrica.Utilities.Types
+﻿namespace Fabrica.Utilities.Types
 {
 
     

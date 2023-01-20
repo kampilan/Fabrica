@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fabrica.Identity;
+﻿namespace Fabrica.Identity;
 
 public interface ICredentialGrant
 {

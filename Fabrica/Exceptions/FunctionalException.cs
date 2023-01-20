@@ -22,30 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class FunctionalException : FluentException<FunctionalException>
 {
 
-    public class FunctionalException : FluentException<FunctionalException>
+
+    public FunctionalException( string message ) : base(message)
     {
 
-
-        public FunctionalException( string message ) : base(message)
-        {
-
-            Kind = ErrorKind.Functional;
-
-        }
-
-        public FunctionalException( string message, Exception inner ) : base(message, inner)
-        {
-
-            Kind = ErrorKind.Functional;
-
-        }
-
+        Kind = ErrorKind.Functional;
 
     }
+
+    public FunctionalException( string message, Exception inner ) : base(message, inner)
+    {
+
+        Kind = ErrorKind.Functional;
+
+    }
+
 
 }

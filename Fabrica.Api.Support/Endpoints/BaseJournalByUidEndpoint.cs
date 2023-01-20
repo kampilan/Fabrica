@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabrica.Api.Support.ActionResult;
+﻿using Fabrica.Api.Support.ActionResult;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +28,7 @@ public abstract class BaseJournalByUidEndpoint<TTarget>: BaseEndpoint where TTar
         logger.Debug("Attempting to dispatch request");
         var request = new AuditJournalStreamRequest
         {
-            Entity = typeof(TTarget).FullName,
+            Entity = typeof(TTarget).FullName??"",
             EntityUid = uid
         };
 

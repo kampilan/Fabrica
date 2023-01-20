@@ -1,43 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 
-namespace Fabrica.Utilities.Types
+namespace Fabrica.Utilities.Types;
+
+public class PropertySorterConverter : TypeConverter
 {
 
+    public override bool GetPropertiesSupported(ITypeDescriptorContext? context)
+    {
+        return true;
+    }
 
-    public class PropertySorterConverter : TypeConverter
+    public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext? context, object value, Attribute[]? attributes)
     {
 
-        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
+        var list = new List<PropertyDescriptor>();
+        foreach( PropertyDescriptor pd in TypeDescriptor.GetProperties(value, attributes) )
+            list.Add(pd);
 
-        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
-        {
+        var allProperties = list
+            .Select(x => new
+            {
+                PropertyDescriptor  = x,
+                Attribute = (PropertySortOrder)x.Attributes[typeof(PropertySortOrder)]!
+            })
+            .OrderBy(x => x.Attribute?.Order??9999)
+            .Select(a=>a.PropertyDescriptor)
+            .ToArray();
 
-            var list = new List<PropertyDescriptor>();
-            foreach( PropertyDescriptor pd in TypeDescriptor.GetProperties(value, attributes) )
-                list.Add(pd);
+        var result = new PropertyDescriptorCollection( allProperties );
 
-            var allProperties = list
-                .Select(x => new
-                {
-                    PropertyDescriptor  = x,
-                    Attribute = (PropertySortOrder)x.Attributes[typeof(PropertySortOrder)]
-                })
-                .OrderBy(x => x.Attribute?.Order??9999)
-                .Select(a=>a.PropertyDescriptor)
-                .ToArray();
-
-            var result = new PropertyDescriptorCollection( allProperties );
-
-            return result;
-
-        }
-
+        return result;
 
     }
 

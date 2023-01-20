@@ -22,10 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
+using ErrorEventArgs = Newtonsoft.Json.Serialization.ErrorEventArgs;
 
 namespace Fabrica.Watch.Sink
 {
@@ -70,9 +69,9 @@ namespace Fabrica.Watch.Sink
 
         public string Title { get; set; } = "";
 
-        public string Tenant { get; set; }
-        public string Subject { get; set; }
-        public string Tag { get; set; }
+        public string Tenant { get; set; } = "";
+        public string Subject { get; set; } = "";
+        public string Tag { get; set; } = "";
 
         [JsonConverter(typeof(StringEnumConverter))]
         public Level Level { get; set; } = Level.Trace;

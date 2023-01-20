@@ -22,74 +22,68 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Threading.Tasks;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Fabrica.Api.Support.Middleware
+namespace Fabrica.Api.Support.Middleware;
+
+public class DebugMiddleware
 {
 
-    public class DebugMiddleware
+    public DebugMiddleware(RequestDelegate next)
     {
-
-        public DebugMiddleware(RequestDelegate next)
-        {
-            Next = next;
-        }
+        Next = next;
+    }
         
-        private RequestDelegate Next { get; }
+    private RequestDelegate Next { get; }
 
 
-        public Task Invoke( [NotNull] HttpContext context, [NotNull] ICorrelation correlation )
-        {
+    public Task Invoke( HttpContext context, ICorrelation correlation )
+    {
             
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (correlation == null) throw new ArgumentNullException(nameof(correlation));
+        if (context == null) throw new ArgumentNullException(nameof(context));
+        if (correlation == null) throw new ArgumentNullException(nameof(correlation));
 
-            using( var logger = correlation.GetLogger(this) )
+        using( var logger = correlation.GetLogger(this) )
+        {
+
+            var debug = false;
+
+            // *****************************************************************
+            logger.Debug("Attempting to check for Fabrica-Watch-Debug header");
+            if (context.Request.Headers.ContainsKey("X-Fabrica-Watch-Debug"))
             {
 
-                var debug = false;
+                logger.Debug("Fabrica-Watch-Debug IS present");
+                var candidate = context.Request.Headers["X-Fabrica-Watch-Debug"];
 
-                // *****************************************************************
-                logger.Debug("Attempting to check for Fabrica-Watch-Debug header");
-                if (context.Request.Headers.ContainsKey("X-Fabrica-Watch-Debug"))
-                {
-
-                    logger.Debug("Fabrica-Watch-Debug IS present");
-                    var candidate = context.Request.Headers["X-Fabrica-Watch-Debug"];
-
-                    logger.Inspect(nameof(candidate), candidate);
+                logger.Inspect(nameof(candidate), candidate);
 
 
-                    logger.Debug("Attempting to check candidate is a valid int");
-                    if (int.TryParse(candidate, out var debugFlag))
-                        debug = debugFlag != 0;
-                    else
-                        logger.Debug("Not a valid value");
-
-                }
+                logger.Debug("Attempting to check candidate is a valid int");
+                if (int.TryParse(candidate, out var debugFlag))
+                    debug = debugFlag != 0;
                 else
-                {
-                    logger.Debug("X-Fabrica-Watch-Debug IS NOT present");
-                }
+                    logger.Debug("Not a valid value");
 
-
-                ((Correlation)correlation).Debug = debug;
-
-
+            }
+            else
+            {
+                logger.Debug("X-Fabrica-Watch-Debug IS NOT present");
             }
 
 
-            return Next(context);
+            ((Correlation)correlation).Debug = debug;
 
 
         }
 
 
+        return Next(context);
+
+
     }
+
 
 }

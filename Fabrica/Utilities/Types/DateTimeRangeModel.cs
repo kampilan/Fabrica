@@ -1,24 +1,17 @@
-﻿using System;
+﻿namespace Fabrica.Utilities.Types;
 
-namespace Fabrica.Utilities.Types
+public class DateTimeRangeModel: IDateTimeRange
 {
 
+    public string Label { get; set; } = "Today";
 
-    public class DateTimeRangeModel: IDateTimeRange
-    {
+    public DateTimeRange RangeKind { get; set; } = DateTimeRange.Today;
 
-        public string Label { get; set; } = "Today";
+    public DateTime Begin => DateTimeHelpers.CalculateRange(RangeKind).begin;
+    public DateTime End => DateTimeHelpers.CalculateRange(RangeKind).end;
 
-        public DateTimeRange RangeKind { get; set; } = DateTimeRange.Today;
-
-        public DateTime Begin => DateTimeHelpers.CalculateRange(RangeKind).begin;
-        public DateTime End => DateTimeHelpers.CalculateRange(RangeKind).end;
-
-        string IDateTimeRange.Label => Label;
-        DateTime IDateTimeRange.Begin => Begin;
-        DateTime IDateTimeRange.End => End;
-
-    }
-
+    string IDateTimeRange.Label => Label;
+    DateTime IDateTimeRange.Begin => Begin;
+    DateTime IDateTimeRange.End => End;
 
 }

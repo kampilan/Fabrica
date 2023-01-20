@@ -1,16 +1,12 @@
-﻿namespace Fabrica.Watch.Mongo
+﻿namespace Fabrica.Watch.Mongo;
+
+public interface IWatchMongoModule
 {
 
-    public interface IWatchMongoModule
-    {
+    string WatchEventStoreUri { get; set; }
+    string WatchDomainName { get; set; }
 
-        string WatchEventStoreUri { get; set; }
-        string WatchDomainName { get; set; }
-
-        int WatchPollingDurationSecs { get; set; }
-
-
-    }
+    int WatchPollingDurationSecs { get; set; }
 
 
 }

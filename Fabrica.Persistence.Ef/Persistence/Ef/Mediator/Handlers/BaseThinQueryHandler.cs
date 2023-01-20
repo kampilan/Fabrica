@@ -18,6 +18,7 @@ using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Sql;
 using Fabrica.Utilities.Text;
+using Humanizer;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

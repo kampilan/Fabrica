@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fabrica.Exceptions;
+﻿namespace Fabrica.Exceptions;
 
 public interface IExceptionInfo
 {

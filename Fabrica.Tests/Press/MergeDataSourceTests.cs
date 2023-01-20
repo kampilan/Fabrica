@@ -96,36 +96,6 @@ namespace Fabrica.Tests.Press
 
         }
 
-
-        [Test]
-        public void Test0900_0400_ManyCreateExpando()
-        {
-
-            var o1 = new Person { FirstName = "James", LastName="Moring", Age = 58};
-            var o2 = new Person { FirstName = "Wilma", LastName = "Laluna", Age = 45 };
-
-            var ds = new ModelDataSource<Person>( o1, o2 );
-            ds.AddDerivedProperty("FullName", o => $"{o.FirstName} {o.LastName}");
-
-            var region = ds.Region;
-
-            while (ds.MoveNext())
-            {
-
-                ds.TryGetValue("FullName", out var name);
-                ds.TryGetValue("Age", out var age);
-
-                Assert.IsNotNull(name);
-                Assert.IsNotNull(age);
-
-            }
-
-        }
-
-
-
-
-
     }
 
     public class Person

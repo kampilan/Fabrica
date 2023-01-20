@@ -22,26 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+namespace Fabrica.Exceptions;
 
-namespace Fabrica.Exceptions
+public class AuthenticationRequiredException: PredicateException
 {
 
-
-    public class AuthenticationRequiredException: PredicateException
+    public AuthenticationRequiredException(string message) : base(message)
     {
-
-        public AuthenticationRequiredException(string message) : base(message)
-        {
-            Kind = ErrorKind.AuthenticationRequired;
-        }
-
-        public AuthenticationRequiredException(string message, Exception inner) : base(message, inner)
-        {
-            Kind = ErrorKind.AuthenticationRequired;
-        }
-
-
+        Kind = ErrorKind.AuthenticationRequired;
     }
+
+    public AuthenticationRequiredException(string message, Exception inner) : base(message, inner)
+    {
+        Kind = ErrorKind.AuthenticationRequired;
+    }
+
 
 }

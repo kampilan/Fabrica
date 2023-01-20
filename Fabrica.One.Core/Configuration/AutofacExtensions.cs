@@ -24,7 +24,7 @@ namespace Fabrica.One.Configuration
         }
 
 
-        public static ContainerBuilder AddFileStatusRepostory(this ContainerBuilder builder, string oneRoot)
+        public static ContainerBuilder AddFileStatusRepository(this ContainerBuilder builder, string oneRoot)
         {
 
             builder.Register(c =>

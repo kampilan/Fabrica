@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Mediator;
 

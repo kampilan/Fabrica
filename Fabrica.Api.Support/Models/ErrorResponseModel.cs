@@ -22,30 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
 using System.ComponentModel;
 using Fabrica.Exceptions;
 
-namespace Fabrica.Api.Support.Models
+namespace Fabrica.Api.Support.Models;
+
+public class ErrorResponseModel
 {
 
+    [DefaultValue("")]
+    public string ErrorCode { get; set; } = "";
 
-    public class ErrorResponseModel
-    {
+    [DefaultValue("")]
+    public string Explanation { get; set; } = "";
 
-        [DefaultValue("")]
-        public string ErrorCode { get; set; } = "";
+    [DefaultValue(null)] 
+    public IList<EventDetail> Details { get; set; } = null!;
 
-        [DefaultValue("")]
-        public string Explanation { get; set; } = "";
-
-        [DefaultValue(null)]
-        public IList<EventDetail> Details { get; set; }
-
-        [DefaultValue("")]
-        public string CorrelationId { get; set; } = "";
-
-    }
-
+    [DefaultValue("")]
+    public string CorrelationId { get; set; } = "";
 
 }

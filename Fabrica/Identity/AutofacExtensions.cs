@@ -1,8 +1,5 @@
 ﻿// ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using Autofac;
 using Fabrica.Utilities.Container;
 
@@ -12,7 +9,7 @@ public static class AutofacExtensions
 {
 
 
-    public static ContainerBuilder AddClientCredentialGrant( this ContainerBuilder builder, string name, string metaEndpoint, string clientId, string clientSecret, string tokenEndpoint="", IDictionary<string, string> additional = null )
+    public static ContainerBuilder AddClientCredentialGrant( this ContainerBuilder builder, string name, string metaEndpoint, string clientId, string clientSecret, string tokenEndpoint="", IDictionary<string, string>? additional = null )
     {
 
         var grant = new ClientCredentialGrant
@@ -44,7 +41,7 @@ public static class AutofacExtensions
     }
 
 
-    public static ContainerBuilder AddResourceOwnerGrant(this ContainerBuilder builder, string name, string metaEndpoint, string clientId, string clientSecret, string userName, string password, string tokenEndpoint = "", IDictionary<string, string> additional = null )
+    public static ContainerBuilder AddResourceOwnerGrant(this ContainerBuilder builder, string name, string metaEndpoint, string clientId, string clientSecret, string userName, string password, string tokenEndpoint = "", IDictionary<string, string>? additional = null )
     {
 
         var grant = new ResourceOwnerGrant

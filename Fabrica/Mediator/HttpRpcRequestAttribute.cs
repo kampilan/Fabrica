@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-
-namespace Fabrica.Mediator;
+﻿namespace Fabrica.Mediator;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class HttpRpcRequestAttribute: Attribute

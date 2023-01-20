@@ -22,37 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// ReSharper disable UnusedMember.Global
+
 using Microsoft.AspNetCore.Builder;
 
-namespace Fabrica.Api.Support.Middleware
+namespace Fabrica.Api.Support.Middleware;
+
+public static class MiddlewareExtensions
 {
 
 
-    public static class MiddlewareExtensions
+    public static IApplicationBuilder UsePipelineMonitor(this IApplicationBuilder app)
     {
+        app.UseMiddleware<PipelineMonitorMiddleware>();
+        return app;
+    }
 
 
-        public static IApplicationBuilder UsePipelineMonitor(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<PipelineMonitorMiddleware>();
-            return app;
-        }
+    public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<RequestLoggingMiddleware>();
+        return app;
+    }
 
 
-        public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<RequestLoggingMiddleware>();
-            return app;
-        }
-
-
-        public static IApplicationBuilder UseDebugMode(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<DebugMiddleware>();
-            return app;
-        }
-
-
+    public static IApplicationBuilder UseDebugMode(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<DebugMiddleware>();
+        return app;
     }
 
 

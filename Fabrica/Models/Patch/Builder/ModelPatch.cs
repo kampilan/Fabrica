@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using Fabrica.Models.Support;
@@ -23,7 +21,7 @@ public class ModelPatch
     public bool IsMember => Membership != null;
 
     [DefaultValue(null)]
-    public PropertyPath Membership { get; set; }
+    public PropertyPath? Membership { get; set; }
     public bool ShouldSerializeMembership() => Membership != null;
 
 
@@ -59,7 +57,7 @@ public class ModelPatch<TModel> : ModelPatch where TModel: class
 
         if( prop.Body is MemberExpression {NodeType: ExpressionType.MemberAccess} me ) 
         {
-            Properties.Add( me.Member.Name, value );
+            Properties.Add( me.Member.Name, value! );
         }
 
         return this;

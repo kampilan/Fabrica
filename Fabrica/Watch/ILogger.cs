@@ -22,101 +22,102 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
+
+
 using System.Runtime.CompilerServices;
 using Fabrica.Watch.Sink;
 using JetBrains.Annotations;
 
-namespace Fabrica.Watch
+
+namespace Fabrica.Watch;
+
+public interface ILogger: IDisposable
 {
 
-    public interface ILogger: IDisposable
-    {
+    ILogEvent CreateEvent(Level level, object? title);
+    ILogEvent CreateEvent(Level level, object? title, PayloadType type, string payload);
+    ILogEvent CreateEvent(Level level, object? title, object payload);
+    ILogEvent CreateEvent(Level level, object? title, Exception ex, object context);
 
-        ILogEvent CreateEvent(Level level, [CanBeNull] object title);
-        ILogEvent CreateEvent(Level level, [CanBeNull] object title, PayloadType type, [NotNull] string payload);
-        ILogEvent CreateEvent(Level level, [CanBeNull] object title, [NotNull] object payload);
-        ILogEvent CreateEvent(Level level, [CanBeNull] object title, Exception ex, object context);
-
-        void LogEvent( [NotNull] ILogEvent logEvent);
+    void LogEvent(  ILogEvent logEvent );
 
 
-        bool IsTraceEnabled { get; }
-        bool IsDebugEnabled { get; }
-        bool IsInfoEnabled { get; }
-        bool IsWarningEnabled { get; }
-        bool IsErrorEnabled { get; }
+    bool IsTraceEnabled { get; }
+    bool IsDebugEnabled { get; }
+    bool IsInfoEnabled { get; }
+    bool IsWarningEnabled { get; }
+    bool IsErrorEnabled { get; }
 
 
-        void Trace( [CanBeNull] object message );
-        void Trace( [NotNull] Func<string> expression );
-        void Trace( [NotNull] Exception ex, [CanBeNull]object message = null);
+    void Trace( object? message );
+    void Trace( Func<string> expression );
+    void Trace( Exception ex, object? message = null);
 
-        [StringFormatMethod("template")]
-        void TraceFormat( [NotNull] string template, params object[] args);
-        [StringFormatMethod("template")]
-        void TraceFormat( [NotNull] Exception ex, [NotNull] string template, params object[] args);
-
-
-        void Debug( [CanBeNull] object message );
-        void Debug( [NotNull] Func<string> expression);
-        void Debug([NotNull] Exception ex, object message = null);
-
-        [StringFormatMethod("template")]
-        void DebugFormat( [NotNull] string template, params object[] args );
-        [StringFormatMethod("template")]
-        void DebugFormat( [NotNull] Exception ex, [NotNull] string template, params object[] args );
+    [StringFormatMethod("template")]
+    void TraceFormat( string template, params object[] args);
+    [StringFormatMethod("template")]
+    void TraceFormat( Exception ex, string template, params object[] args);
 
 
-        void Info([CanBeNull] object message);
-        void Info( [NotNull] Func<string> expression);
-        void Info( [NotNull]Exception ex, [CanBeNull] object message = null );
+    void Debug( object? message );
+    void Debug( Func<string> expression);
+    void Debug( Exception ex, object? message = null);
 
-        [StringFormatMethod("template")]
-        void InfoFormat([NotNull] string template, params object[] args);
-        [StringFormatMethod("template")]
-        void InfoFormat( [NotNull] Exception ex, [NotNull] string template, params object[] args );
-
-
-        void Warning( [CanBeNull] object message );
-        void Warning( [NotNull] Func<string> expression);
-        void Warning( [NotNull] Exception ex, [CanBeNull] object message = null);
-        void WarningWithContext([NotNull] Exception ex, [NotNull] object context, [CanBeNull] object message = null);
-
-        [StringFormatMethod("template")]
-        void WarningFormat([NotNull] string template, params object[] args);
-        [StringFormatMethod("template")]
-        void WarningFormat( [NotNull] Exception ex, [NotNull] string template, params object[] args);
+    [StringFormatMethod("template")]
+    void DebugFormat( string template, params object[] args );
+    [StringFormatMethod("template")]
+    void DebugFormat( Exception ex, string template, params object[] args );
 
 
-        void Error( [CanBeNull] object message );
-        void Error( [NotNull] Func<string> expression);
-        void Error( [NotNull] Exception ex, [CanBeNull] object message = null);
-        void ErrorWithContext([NotNull] Exception ex, [NotNull] object context, [CanBeNull] object message = null);
+    void Info( object? message);
+    void Info( Func<string> expression);
+    void Info( Exception ex, object? message = null );
 
-        [StringFormatMethod("template")]
-        void ErrorFormat([NotNull] string template, params object[] args);
-        [StringFormatMethod("template")]
-        void ErrorFormat( [NotNull] Exception ex, [NotNull] string template, params object[] args);
+    [StringFormatMethod("template")]
+    void InfoFormat( string template, params object[] args);
+    [StringFormatMethod("template")]
+    void InfoFormat( Exception ex, string template, params object[] args );
 
 
-        void EnterMethod( [CallerMemberName] string name = "" );
-        void LeaveMethod( [CallerMemberName] string name = "" );
+    void Warning( object? message );
+    void Warning( Func<string> expression );
+    void Warning( Exception ex, object? message = null);
+    void WarningWithContext( Exception ex, object context, object? message = null);
 
-        void EnterScope( [NotNull] string name );
-        void LeaveScope( [NotNull] string name );
+    [StringFormatMethod("template")]
+    void WarningFormat( string template, params object[] args);
+    [StringFormatMethod("template")]
+    void WarningFormat( Exception ex, string template, params object[] args );
 
-        void Inspect([NotNull] object name, [CanBeNull] object value);
 
-        void LogSql( [NotNull] string title, [CanBeNull] string sql );
-        void LogXml( [NotNull] string title, [CanBeNull] string xml, bool pretty = true );
-        void LogJson( [NotNull] string title, [CanBeNull] string json, bool pretty = true );
-        void LogYaml( [NotNull] string title, [CanBeNull] string yaml );
+    void Error( object? message );
+    void Error( Func<string> expression);
+    void Error(  Exception ex, object? message = null);
+    void ErrorWithContext( Exception ex, object context, object? message = null);
 
-        void LogObject( [NotNull] string title, [CanBeNull] object source );
+    [StringFormatMethod("template")]
+    void ErrorFormat( string template, params object[] args);
+    [StringFormatMethod("template")]
+    void ErrorFormat( Exception ex, string template, params object[] args);
 
-        IDisposable BeginScope<TState>( TState state );
 
-    }
+    void EnterMethod( [CallerMemberName] string name = "" );
+    void LeaveMethod( [CallerMemberName] string name = "" );
+
+    void EnterScope( string name );
+    void LeaveScope( string name );
+
+    void Inspect(object name, object? value);
+
+    void LogSql( string title, string? sql );
+    void LogXml( string title, string? xml, bool pretty = true );
+    void LogJson( string title, string? json, bool pretty = true );
+    void LogYaml( string title, string? yaml );
+
+    void LogObject( string title, object? source );
+
+    IDisposable BeginScope<TState>( TState state );
 
 }

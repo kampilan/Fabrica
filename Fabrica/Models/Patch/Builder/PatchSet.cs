@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Fabrica.Models.Support;
+﻿using Fabrica.Models.Support;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Models.Patch.Builder
 {
@@ -21,47 +17,43 @@ namespace Fabrica.Models.Patch.Builder
             var patch = JsonConvert.DeserializeObject<ModelPatch>(json, Settings);
 
             var set = new PatchSet();
-            set.Patches.Add(patch);
+            set.Patches.Add(patch!);
 
             return set;
 
         }
 
-        public static PatchSet FromJsonOne( Stream strm )
+        public static PatchSet FromJsonOne( Stream stream )
         {
 
-            using (var reader = new StreamReader(strm))
-            {
-                var set = FromJsonOne(reader);
-                return set;
-            }
+            using var reader = new StreamReader(stream);
+
+            var set = FromJsonOne(reader);
+
+            return set;
 
         }
 
         public static PatchSet FromJsonOne( TextReader reader )
         {
 
-            using (var jr = new JsonTextReader(reader))
+            using var jr = new JsonTextReader(reader);
+
+            var serializer = new JsonSerializer()
             {
+                Formatting                 = Formatting.Indented,
+                DateFormatHandling         = DateFormatHandling.IsoDateFormat,
+                DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
+                DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
+            };
 
-                var serializer = new JsonSerializer()
-                {
-                    Formatting                 = Formatting.Indented,
-                    DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-                    DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
-                    DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
-                };
+            var patch = serializer.Deserialize<ModelPatch>(jr);
 
-                var patch = serializer.Deserialize<ModelPatch>(jr);
-
-                var set = new PatchSet();
-                set.Patches.Add(patch);
+            var set = new PatchSet();
+            set.Patches.Add(patch!);
 
 
-                return set;
-
-            }
-
+            return set;
         }
 
 
@@ -71,49 +63,45 @@ namespace Fabrica.Models.Patch.Builder
 
             var set = new PatchSet
             {
-                Patches = JsonConvert.DeserializeObject<List<ModelPatch>>(json, Settings)
+                Patches = JsonConvert.DeserializeObject<List<ModelPatch>>(json, Settings)!
             };
 
             return set;
 
         }
 
-        public static PatchSet FromJsonMany( Stream strm )
+        public static PatchSet FromJsonMany( Stream stream )
         {
 
-            using( var reader = new StreamReader(strm) )
-            {
-                var set = FromJsonMany(reader);
-                return set;
-            }
+            using var reader = new StreamReader(stream);
+
+            var set = FromJsonMany(reader);
+
+            return set;
 
         }    
 
         public static PatchSet FromJsonMany( TextReader reader )
         {
 
-            using( var jr = new JsonTextReader(reader) )
+            using var jr = new JsonTextReader(reader);
+
+            var serializer = new JsonSerializer
             {
+                Formatting                 = Formatting.Indented,
+                DateFormatHandling         = DateFormatHandling.IsoDateFormat,
+                DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
+                DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
+            };
 
-                var serializer = new JsonSerializer
-                {
-                    Formatting                 = Formatting.Indented,
-                    DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-                    DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
-                    DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
-                };
+            var patches = serializer.Deserialize<List<ModelPatch>>( jr );
 
-                var patches = serializer.Deserialize<List<ModelPatch>>( jr );
+            var set = new PatchSet
+            {
+                Patches = patches!
+            };
 
-                var set = new PatchSet
-                {
-                    Patches = patches
-                };
-
-                return set;
-
-            }
-
+            return set;
         }
 
 
@@ -222,10 +210,10 @@ namespace Fabrica.Models.Patch.Builder
                 if (p.Verb == PatchVerb.Unmodified)
                     return false;
 
-                if (p.Verb == PatchVerb.Update && p.Properties.Count == 0 )
+                if (p is {Verb: PatchVerb.Update, Properties.Count: 0} )
                     return false;
 
-                if (p.Verb == PatchVerb.Create && p.Properties.Count == 0)
+                if (p is {Verb: PatchVerb.Create, Properties.Count: 0})
                     return false;
 
                 return true;
@@ -237,7 +225,7 @@ namespace Fabrica.Models.Patch.Builder
         }
 
 
-        private List<ModelPatch> Patches { get; set; } = new List<ModelPatch>();
+        private List<ModelPatch> Patches { get; set; } = new ();
 
         public int Count => Patches.Count;
 
@@ -252,10 +240,10 @@ namespace Fabrica.Models.Patch.Builder
                 if (p.Verb == PatchVerb.Unmodified)
                     return false;
 
-                if (p.Verb == PatchVerb.Update && p.Properties.Count == 0)
+                if (p is {Verb: PatchVerb.Update, Properties.Count: 0})
                     return false;
 
-                if (p.Verb == PatchVerb.Create && p.Properties.Count == 0)
+                if (p is {Verb: PatchVerb.Create, Properties.Count: 0})
                     return false;
 
                 return true;
@@ -269,7 +257,7 @@ namespace Fabrica.Models.Patch.Builder
         }
 
 
-        private static readonly JsonSerializerSettings Settings  = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings Settings  = new()
         {
             Formatting                 = Formatting.Indented,
             DateFormatHandling         = DateFormatHandling.IsoDateFormat,
@@ -284,7 +272,7 @@ namespace Fabrica.Models.Patch.Builder
         }
 
 
-        protected virtual void HandleObject([NotNull] string parentType, [NotNull] string parentUid, [NotNull] string parentProperty, [NotNull] IMutableModel source)
+        protected virtual void HandleObject( string parentType, string parentUid, string parentProperty, IMutableModel source)
         {
 
             if (parentType == null) throw new ArgumentNullException(nameof(parentType));
@@ -358,14 +346,14 @@ namespace Fabrica.Models.Patch.Builder
                 foreach (var prop in source.GetDelta().Values)
                 {
 
-                    if( prop.IsReference && prop.Current == null && prop.Original is IReferenceModel )
+                    if( prop is {IsReference: true, Current: null, Original: IReferenceModel} )
                         patch.Properties[prop.Name] = "";
-                    else if ( prop.IsReference && prop.Current is IReferenceModel cur )
+                    else if ( prop is {IsReference: true, Current: IReferenceModel cur} )
                         patch.Properties[prop.Name] = cur.Uid;
-                    else if( prop.IsCollection && prop.Current is IAggregateCollection collection )
-                        HandlCollection(prop.Parent, prop.ParentUid, prop.Name, collection);
+                    else if( prop is {IsCollection: true, Current: IAggregateCollection collection} )
+                        HandleCollection(prop.Parent, prop.ParentUid, prop.Name, collection);
                     else
-                        patch.Properties[prop.Name] = prop.Current;
+                        patch.Properties[prop.Name] = prop.Current!;
 
                 }
 
@@ -380,7 +368,7 @@ namespace Fabrica.Models.Patch.Builder
             }
         }
  
-        protected virtual void HandlCollection([NotNull] string parentType, [NotNull] string parentUid, [NotNull] string parentProperty, [NotNull] IAggregateCollection set)
+        protected virtual void HandleCollection( string parentType, string parentUid, string parentProperty, IAggregateCollection set )
         {
 
 

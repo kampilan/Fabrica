@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Fabrica.Identity;
+﻿namespace Fabrica.Identity;
 
 public interface IAccessTokenSource
 {

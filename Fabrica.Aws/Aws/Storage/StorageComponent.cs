@@ -22,430 +22,312 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Storage;
-using JetBrains.Annotations;
 
-namespace Fabrica.Aws.Storage
+namespace Fabrica.Aws.Storage;
+
+public class StorageComponent : CorrelatedObject, IRemoteStorageProvider
 {
 
 
-    public class StorageComponent : CorrelatedObject, IRemoteStorageProvider
+    public StorageComponent( ICorrelation correlation, IAmazonS3 client ) : base(correlation)
     {
 
-        public StorageComponent([NotNull] ICorrelation correlation, [NotNull] IAmazonS3 client) : base(correlation)
+        Client = client ?? throw new ArgumentNullException(nameof(client));
+
+    }
+
+
+    private IAmazonS3 Client { get; }
+
+
+    public bool Exists(string root, string key)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+        using var logger = EnterMethod();
+
+        return Task.Run(async () => await ExistsAsync(root, key)).ConfigureAwait(false).GetAwaiter().GetResult();
+
+    }
+
+    public async Task<bool> ExistsAsync(string root, string key)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+
+        using var logger = EnterMethod();
+
+        try
         {
 
-            Client = client ?? throw new ArgumentNullException(nameof(client));
 
-        }
-
-
-        private IAmazonS3 Client { get; }
+            logger.Inspect(nameof(root), root);
+            logger.Inspect(nameof(key), key);
 
 
-        public bool Exists(string root, string key)
-        {
 
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+            // *****************************************************************
+            logger.Debug("Attempting to get Object Metadata");
 
-            var logger = this.GetLogger();
-
-            try
+            var request = new GetObjectMetadataRequest
             {
+                BucketName = root,
+                Key = key
+            };
 
-                logger.EnterMethod();
+            var response = await Client.GetObjectMetadataAsync(request);
 
-                return Task.Run(async () => await ExistsAsync(root, key)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-        }
-
-        public async Task<bool> ExistsAsync(string root, string key)
-        {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-
-
-            var logger = GetLogger();
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.Inspect(nameof(root), root);
-                logger.Inspect(nameof(key), key);
+            var found = response.HttpStatusCode == HttpStatusCode.OK;
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to get Object Metadata");
-
-                var request = new GetObjectMetadataRequest
-                {
-                    BucketName = root,
-                    Key = key
-                };
-
-                var response = await Client.GetObjectMetadataAsync(request);
-
-                var found = response.HttpStatusCode == HttpStatusCode.OK;
-
-
-
-                // *****************************************************************
-                return found;
-
-
-            }
-            catch (AmazonS3Exception cause) when (cause.ErrorCode == "NotFound")
-            {
-                return false;
-            }
-            catch (Exception cause)
-            {
-                var context = new { Root = root, Key = key };
-                logger.ErrorWithContext(cause, context, "Exists failed");
-                throw;
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            // *****************************************************************
+            return found;
 
 
         }
-
-
-        public void Get(string root, string key, Stream content, bool rewind = true)
+        catch (AmazonS3Exception cause) when (cause.ErrorCode == "NotFound")
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-            if (content == null) throw new ArgumentNullException(nameof(content));
-
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                Task.Run(async () => await GetAsync(root, key, content, rewind)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
+            return false;
         }
-
-        public async Task GetAsync(string root, string key, Stream content, bool rewind = true)
+        catch (Exception cause)
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-
-
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.Inspect("root", root);
-                logger.Inspect("key", key);
-
-
-                // *********************************************************************
-                logger.Debug("Attempting to build S3 GetObjectRequest");
-                var request = new GetObjectRequest
-                {
-                    BucketName = root,
-                    Key = key
-                };
-
-
-
-                // *********************************************************************
-                logger.Debug("Attempting to call GetObject from S3");
-                var response = await Client.GetObjectAsync(request);
-
-                if (response.HttpStatusCode != HttpStatusCode.OK)
-                {
-                    logger.LogObject("response", response);
-                    throw new IOException($"Could not Get item using Root=({root}) Key=({key})");
-                }
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to copy response stream to content");
-                using (var stream = response.ResponseStream)
-                {
-                    await stream.CopyToAsync(content);
-                    if (rewind && content.CanSeek)
-                        content.Seek(0, SeekOrigin.Begin);
-                }
-
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
+            var context = new { Root = root, Key = key };
+            logger.ErrorWithContext(cause, context, "Exists failed");
+            throw;
         }
 
 
-        public void Put(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false)
+    }
+
+
+    public void Get(string root, string key, Stream content, bool rewind = true)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+        if (content == null) throw new ArgumentNullException(nameof(content));
+
+        using var logger = EnterMethod();
+
+        Task.Run(async () => await GetAsync(root, key, content, rewind)).ConfigureAwait(false).GetAwaiter().GetResult();
+
+    }
+
+    public async Task GetAsync(string root, string key, Stream content, bool rewind = true)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+
+        using var logger = EnterMethod();
+
+
+        logger.Inspect("root", root);
+        logger.Inspect("key", key);
+
+
+        // *********************************************************************
+        logger.Debug("Attempting to build S3 GetObjectRequest");
+        var request = new GetObjectRequest
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-            if (content == null) throw new ArgumentNullException(nameof(content));
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                Task.Run(async () => await PutAsync(root, key, content, contentType, rewind, autoClose)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            BucketName = root,
+            Key = key
+        };
 
 
 
-        }
+        // *********************************************************************
+        logger.Debug("Attempting to call GetObject from S3");
+        var response = await Client.GetObjectAsync(request);
 
-        public async Task PutAsync(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = true)
+        if (response.HttpStatusCode != HttpStatusCode.OK)
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-            if (content == null) throw new ArgumentNullException(nameof(content));
-
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.Inspect("root", root);
-                logger.Inspect("key", key);
-
-
-
-                // *********************************************************************
-                logger.Debug("Attempting to build S3 PutObjectRequest");
-                var request = new PutObjectRequest
-                {
-                    AutoResetStreamPosition = rewind,
-                    AutoCloseStream = autoClose,
-                    BucketName = root,
-                    Key = key,
-                    ContentType = contentType,
-                    InputStream = content
-                };
-
-
-
-                // *********************************************************************
-                logger.Debug("Attempting to call PutObject from S3");
-                var response = await Client.PutObjectAsync(request);
-
-                if (response.HttpStatusCode != HttpStatusCode.OK)
-                {
-                    logger.LogObject("response", response);
-                    throw new IOException($"Could not Put item using Root=({root}) Key=({key})");
-                }
-
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
+            logger.LogObject("response", response);
+            throw new IOException($"Could not Get item using Root=({root}) Key=({key})");
         }
 
 
-        public void Delete(string root, string key)
+
+        // *****************************************************************
+        logger.Debug("Attempting to copy response stream to content");
+        await using var stream = response.ResponseStream;
+
+        await stream.CopyToAsync(content);
+        if (rewind && content.CanSeek)
+            content.Seek(0, SeekOrigin.Begin);
+
+
+
+    }
+
+
+    public void Put(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+        if (content == null) throw new ArgumentNullException(nameof(content));
+
+
+        using var logger = EnterMethod();
+
+        Task.Run(async () => await PutAsync(root, key, content, contentType, rewind, autoClose)).ConfigureAwait(false).GetAwaiter().GetResult();
+
+    }
+
+    public async Task PutAsync(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = true)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+        if (content == null) throw new ArgumentNullException(nameof(content));
+
+
+        using var logger = EnterMethod();
+
+
+        logger.Inspect("root", root);
+        logger.Inspect("key", key);
+
+
+
+        // *********************************************************************
+        logger.Debug("Attempting to build S3 PutObjectRequest");
+        var request = new PutObjectRequest
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                Task.Run(async () => await DeleteAsync(root, key)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            AutoResetStreamPosition = rewind,
+            AutoCloseStream = autoClose,
+            BucketName = root,
+            Key = key,
+            ContentType = contentType,
+            InputStream = content
+        };
 
 
+
+        // *********************************************************************
+        logger.Debug("Attempting to call PutObject from S3");
+        var response = await Client.PutObjectAsync(request);
+
+        if (response.HttpStatusCode != HttpStatusCode.OK)
+        {
+            logger.LogObject("response", response);
+            throw new IOException($"Could not Put item using Root=({root}) Key=({key})");
         }
 
-        public async Task DeleteAsync(string root, string key)
+
+    }
+
+
+    public void Delete(string root, string key)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+        using var logger = EnterMethod();
+
+
+        Task.Run(async () => await DeleteAsync(root, key)).ConfigureAwait(false).GetAwaiter().GetResult();
+
+
+    }
+
+    public async Task DeleteAsync(string root, string key)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+
+        using var logger = EnterMethod();
+
+
+        logger.Inspect("root", root);
+        logger.Inspect("key", key);
+
+
+        // *********************************************************************
+        logger.Debug("Attempting to build S3 GetObjectRequest");
+        var request = new DeleteObjectRequest
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-
-
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.Inspect("root", root);
-                logger.Inspect("key", key);
-
-
-                // *********************************************************************
-                logger.Debug("Attempting to build S3 GetObjectRequest");
-                var request = new DeleteObjectRequest
-                {
-                    BucketName = root,
-                    Key = key
-                };
+            BucketName = root,
+            Key = key
+        };
 
 
 
-                // *********************************************************************
-                logger.Debug("Attempting to call DeleteObject from S3");
-                var response = await Client.DeleteObjectAsync(request);
+        // *********************************************************************
+        logger.Debug("Attempting to call DeleteObject from S3");
+        var response = await Client.DeleteObjectAsync(request);
 
-                if (response.HttpStatusCode != HttpStatusCode.OK)
-                    logger.LogObject("response", response);
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+        if (response.HttpStatusCode != HttpStatusCode.OK)
+            logger.LogObject("response", response);
 
 
-        }
+    }
 
 
-        public string GetReference(string root, string key, TimeSpan timeToLive)
+    public string GetReference(string root, string key, TimeSpan timeToLive)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+
+        using var logger = EnterMethod();
+
+
+        return Task.Run(async () => await GetReferenceAsync(root, key, timeToLive)).ConfigureAwait(false).GetAwaiter().GetResult();
+
+    }
+
+    public Task<string> GetReferenceAsync(string root, string key, TimeSpan timeToLive)
+    {
+
+        if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
+        if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+
+        using var logger = EnterMethod();
+
+
+
+        logger.Inspect(nameof(root), root);
+        logger.Inspect(nameof(key), key);
+        logger.Inspect(nameof(timeToLive), timeToLive.ToString());
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to Get signed url");
+        var request = new GetPreSignedUrlRequest
         {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                return Task.Run(async () => await GetReferenceAsync(root, key, timeToLive)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-        }
-
-        public Task<string> GetReferenceAsync(string root, string key, TimeSpan timeToLive)
-        {
-
-            if (string.IsNullOrWhiteSpace(root)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(root));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+            Protocol = Protocol.HTTPS,
+            BucketName = root,
+            Verb = HttpVerb.GET,
+            Expires = DateTime.UtcNow + timeToLive,
+            Key = key
+        };
 
 
-            var logger = GetLogger();
+        var url = Client.GetPreSignedURL(request);
 
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.Inspect(nameof(root), root);
-                logger.Inspect(nameof(key), key);
-                logger.Inspect(nameof(timeToLive), timeToLive.ToString());
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to Get signed url");
-                var request = new GetPreSignedUrlRequest
-                {
-                    Protocol = Protocol.HTTPS,
-                    BucketName = root,
-                    Verb = HttpVerb.GET,
-                    Expires = DateTime.UtcNow + timeToLive,
-                    Key = key
-                };
-
-
-                var url = Client.GetPreSignedURL(request);
-
-                logger.Inspect(nameof(url), url);
+        logger.Inspect(nameof(url), url);
 
 
 
-                // *****************************************************************
-                return Task.FromResult(url);
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
-        }
+        // *****************************************************************
+        return Task.FromResult(url);
 
 
     }

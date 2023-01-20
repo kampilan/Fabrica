@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabrica.Models.Serialization;
-using Fabrica.Watch;
-using Newtonsoft.Json;
+﻿using Fabrica.Watch;
 
 namespace Fabrica.Http;
 
@@ -39,7 +31,7 @@ public static class HttpClientExtensions
                 logger.Inspect(nameof(client.BaseAddress), client.BaseAddress);
                 logger.Inspect(nameof(request.Method), request.Method);
                 logger.Inspect(nameof(request.Path), request.Path);
-                logger.Inspect(nameof(request.BodyContent), request.BodyContent != null);
+                logger.Inspect(nameof(request.BodyContent), request.BodyContent! );
 
 
 
@@ -65,8 +57,7 @@ public static class HttpClientExtensions
 
                 // *****************************************************************
                 logger.Debug("Attempting to add body content");
-                if (request.BodyContent != null)
-                    innerRequest.Content = request.BodyContent;
+                innerRequest.Content = request.BodyContent;
 
 
 
