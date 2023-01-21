@@ -13,10 +13,10 @@ namespace Fabrica.One.Appliance;
 public static class Appliance
 {
 
-    public static async Task<IAppliance> Bootstrap<TBootstrap>() where TBootstrap : IBootstrap
+    public static async Task<IAppliance> Bootstrap<TBootstrap>(string localConfigFile = null!) where TBootstrap : IBootstrap
     {
 
-        var app = await Bootstrap<TBootstrap, InitService>();
+        var app = await Bootstrap<TBootstrap, InitService>(localConfigFile);
 
         return app;
 
