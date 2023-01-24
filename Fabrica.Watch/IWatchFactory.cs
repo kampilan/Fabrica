@@ -22,11 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+using Fabrica.Watch.Sink;
+using Fabrica.Watch.Switching;
 
-public interface IPooled<out TPooled>: IDisposable
+namespace Fabrica.Watch;
+
+public interface IWatchFactory
 {
 
-    TPooled Object { get; }
+    void Configure( ISwitchSource switches,  IEventSink sink, bool quiet=false );
+
+    bool Quiet { get; } 
+
+    ISwitchSource Switches { get; }
+    IEventSink Sink { get; }
+
+
+    IEventSink GetSink<T>() where T : class, IEventSink;
+       
+
+    TType GetInfrastructure<TType>() where TType : class;
+    void AddInfrastructure( object item );
+
+    void Start();
+    void Stop();
+
+
+    ILogger GetLogger( string category, bool retroOn = true );
+    ILogger GetLogger<T>( bool retroOn = true );
+    ILogger GetLogger( Type type, bool retroOn = true );
+
+    ILogger GetLogger( LoggerRequest request, bool retroOn = true );
+
 
 }

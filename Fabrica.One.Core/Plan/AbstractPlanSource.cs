@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Fabrica.One.Plan
+﻿namespace Fabrica.One.Plan
 {
 
 

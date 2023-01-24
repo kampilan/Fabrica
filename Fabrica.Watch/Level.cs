@@ -22,11 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+namespace Fabrica.Watch;
 
-public interface IPooled<out TPooled>: IDisposable
-{
-
-    TPooled Object { get; }
-
-}
+public enum Level { Trace, Debug, Info, Warning, Error, Quiet }

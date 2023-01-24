@@ -1,11 +1,7 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Fabrica.One.Plan;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Fabrica.One.Installer
@@ -15,7 +11,7 @@ namespace Fabrica.One.Installer
     public class ZipInstaller : IApplianceInstaller
     {
 
-        public Task Clean( [NotNull] IPlan plan )
+        public Task Clean( IPlan plan )
         {
 
             if (plan == null) throw new ArgumentNullException(nameof(plan));
@@ -75,7 +71,7 @@ namespace Fabrica.One.Installer
 
 
 
-        public async Task Install([NotNull] IPlan plan, [NotNull] DeploymentUnit unit)
+        public async Task Install( IPlan plan, DeploymentUnit unit)
         {
 
             if (plan == null) throw new ArgumentNullException(nameof(plan));
@@ -175,18 +171,17 @@ namespace Fabrica.One.Installer
                 {
 
 
-                    logger.Debug("Attempting to serialize confguration to JSON");
+                    logger.Debug("Attempting to serialize configuration to JSON");
                     var json = unit.Configuration.ToString();
                     logger.LogJson("Unit Configuration", json);
 
 
                     logger.Debug("Attempting to write config file");
-                    using (var file = new FileStream(unit.UnitConfigLocation, FileMode.Create, FileAccess.Write))
-                    using (var writer = new StreamWriter(file))
-                    {
-                        await writer.WriteAsync(json);
-                        await writer.FlushAsync();
-                    }
+                    await using var file = new FileStream(unit.UnitConfigLocation, FileMode.Create, FileAccess.Write);
+                    await using var writer = new StreamWriter(file);
+
+                    await writer.WriteAsync(json);
+                    await writer.FlushAsync();
 
 
                 }
@@ -208,7 +203,7 @@ namespace Fabrica.One.Installer
                 {
 
 
-                    logger.Debug("Attempting to serialize mission confguration to JSON");
+                    logger.Debug("Attempting to serialize mission configuration to JSON");
 
                     var options = new JsonSerializerOptions(JsonSerializerDefaults.General)
                     {
@@ -220,12 +215,11 @@ namespace Fabrica.One.Installer
 
 
                     logger.Debug("Attempting to write mission config file");
-                    using (var file = new FileStream(unit.MissionConfigLocation, FileMode.Create, FileAccess.Write))
-                    using (var writer = new StreamWriter(file))
-                    {
-                        await writer.WriteAsync(json);
-                        await writer.FlushAsync();
-                    }
+                    await using var file = new FileStream(unit.MissionConfigLocation, FileMode.Create, FileAccess.Write);
+                    await using var writer = new StreamWriter(file);
+
+                    await writer.WriteAsync(json);
+                    await writer.FlushAsync();
 
 
                 }

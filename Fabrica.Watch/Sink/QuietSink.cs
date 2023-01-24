@@ -22,11 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+namespace Fabrica.Watch.Sink;
 
-public interface IPooled<out TPooled>: IDisposable
+public class QuietSink: IEventSink
 {
 
-    TPooled Object { get; }
+
+    public void Start()
+    {
+    }
+
+    public void Stop()
+    {
+    }
+
+    public Task Accept(ILogEvent logEvent)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task Accept(IEnumerable<ILogEvent> batch)
+    {
+        return Task.CompletedTask;
+    }
 
 }

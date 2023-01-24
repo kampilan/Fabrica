@@ -22,11 +22,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+using System.Drawing;
 
-public interface IPooled<out TPooled>: IDisposable
+namespace Fabrica.Watch;
+
+public static class WatchFactoryLocator
 {
 
-    TPooled Object { get; }
+    static WatchFactoryLocator()
+    {
+
+        var builder = new WatchFactoryBuilder();
+
+        builder.UseConsoleSink();
+        builder.UseLocalSwitchSource()
+            .WhenNotMatched(Level.Warning, Color.Green);
+
+        builder.Build();
+
+    }
+
+    public static void SetFactory( IWatchFactory factory )
+    {
+
+        if (factory == null) throw new ArgumentNullException(nameof(factory));
+
+
+        var previous = Factory;
+
+        factory.Start();
+        Factory = factory;
+
+        previous?.Stop();
+
+    }
+
+
+    public static IWatchFactory Factory { get; private set; }
+
 
 }

@@ -22,11 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+namespace Fabrica.Watch.Switching;
 
-public interface IPooled<out TPooled>: IDisposable
+public interface ISwitchSource
 {
 
-    TPooled Object { get; }
+    void Start();
+    void Stop();
+
+
+    ISwitch Lookup( string category );
+
+    bool Lookup( string filterType, string filterTarget, string category, out ISwitch found );
+
+
+    IList<SwitchDef> CurrentSwitchDefs { get; }
+    void Update( IEnumerable<SwitchDef> switchSource );
+
+
+    ISwitch GetDefaultSwitch();
+    ISwitch GetDebugSwitch();
+
 
 }

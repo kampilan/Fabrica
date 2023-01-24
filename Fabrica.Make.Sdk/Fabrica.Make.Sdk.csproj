@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Watch\Fabrica.Watch.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 

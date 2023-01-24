@@ -22,11 +22,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+using System.Drawing;
 
-public interface IPooled<out TPooled>: IDisposable
+namespace Fabrica.Watch.Switching;
+
+public class Switch : ISwitch
 {
 
-    TPooled Object { get; }
+    public static Switch Create()
+    {
+        var sw = new Switch();
+        return sw;
+    }
+
+    public string Pattern { get; set; } = "";
+
+    public string Tag { get; set; } = "";
+
+    public Level Level { get; set; } = Level.Error;
+    public Color Color { get; set; } = Color.White;
+
+    public Switch WhenMatched( string pattern )
+    {
+        Pattern = pattern;
+        return this;
+    }
+
+    public Switch UseLevel( Level level )
+    {
+        Level = level;
+        return this;
+    }
+
+    public Switch UseColor( Color color )
+    {
+        Color = color;
+        return this;
+    }
+
 
 }

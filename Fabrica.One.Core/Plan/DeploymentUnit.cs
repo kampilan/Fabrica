@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Fabrica.Utilities.Text;
 using Json.Schema.Generation;
@@ -49,7 +47,7 @@ namespace Fabrica.One.Plan
 
 
         [JsonIgnore]
-        public Dictionary<string, object> MissionConfiguration { get; } = new Dictionary<string, object>();
+        public Dictionary<string, object> MissionConfiguration { get; } = new ();
 
 
         [JsonIgnore]

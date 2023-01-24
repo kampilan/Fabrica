@@ -22,11 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
 
-public interface IPooled<out TPooled>: IDisposable
+using System.Drawing;
+
+namespace Fabrica.Watch.Switching;
+
+public class SwitchDef
 {
 
-    TPooled Object { get; }
+    public string Pattern { get; set; } = "";
+    public string FilterType { get; set; } = "";
+    public string FilterTarget { get; set; } = "";
+
+    public string Tag { get; set; } = "";
+
+    public Level Level { get; set; } = Level.Error;
+    public Color Color { get; set; } = Color.LightGray;
 
 }

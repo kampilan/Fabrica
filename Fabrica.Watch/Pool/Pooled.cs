@@ -22,11 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+namespace Fabrica.Watch.Pool;
 
-public interface IPooled<out TPooled>: IDisposable
+public class Pooled<TPooled>: IPooled<TPooled> where TPooled: class
 {
 
-    TPooled Object { get; }
+    public Pooled(Func<TPooled> acquire, Action<TPooled> release )
+    {
+
+        Acquire = acquire ?? throw new ArgumentNullException(nameof(acquire));
+        Release = release ?? throw new ArgumentNullException(nameof(release));
+
+    }
+
+
+    private Func<TPooled>   Acquire { get; }
+    private Action<TPooled> Release { get; }
+        
+    private TPooled _object;
+
+    public TPooled Object => _object ??= Acquire();
+
+    public void Dispose()
+    {
+        if( _object != null )
+            Release( _object );
+    }
 
 }

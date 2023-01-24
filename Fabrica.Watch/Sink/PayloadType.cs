@@ -22,11 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Utilities.Pooling;
+namespace Fabrica.Watch.Sink;
 
-public interface IPooled<out TPooled>: IDisposable
+public enum PayloadType
 {
-
-    TPooled Object { get; }
-
-}
+    None,
+    Json,
+    Xml,
+    Sql,
+    Text,
+    Yaml
+};

@@ -253,15 +253,16 @@ namespace Fabrica.One.Plan
                         plan.ServiceEndpoints.Add(unit.ServiceEndpointName, unit.ServiceEndpointUrl);
 
 
-                    unit.MissionConfiguration["MissionName"]      = plan.Name;
-                    unit.MissionConfiguration["Environment"]      = plan.Environment;
-                    unit.MissionConfiguration["ApplianceName"]    = unit.Name;
-                    unit.MissionConfiguration["ApplianceBuild"]   = unit.Build;
-                    unit.MissionConfiguration["ApplianceId"]      = unit.Uid;
-                    unit.MissionConfiguration["ApplianceRoot"]    = unit.InstallationLocation;
-                    unit.MissionConfiguration["TokenSigningKey"]  = tokenSigningKey;
-                    unit.MissionConfiguration["ServiceEndpoints"] = plan.ServiceEndpoints;
-
+                    unit.MissionConfiguration["MissionName"]        = plan.Name;
+                    unit.MissionConfiguration["Environment"]        = plan.Environment;
+                    unit.MissionConfiguration["ApplianceName"]      = unit.Name;
+                    unit.MissionConfiguration["ApplianceBuild"]     = unit.Build;
+                    unit.MissionConfiguration["ApplianceId"]        = unit.Uid;
+                    unit.MissionConfiguration["ApplianceRoot"]      = unit.InstallationLocation;
+                    unit.MissionConfiguration["ApplianceStartTime"] = DateTime.Now;
+                    unit.MissionConfiguration["TokenSigningKey"]    = tokenSigningKey;
+                    unit.MissionConfiguration["ServiceEndpoints"]   = plan.ServiceEndpoints;
+                    
 
                 }
 
