@@ -24,26 +24,21 @@ SOFTWARE.
 
 using System.Security.Principal;
 
-namespace Fabrica.Utilities.Container
+namespace Fabrica.Utilities.Container;
+
+public interface ICorrelation
 {
 
 
-    public interface ICorrelation
-    {
+    string Uid { get; }
 
 
-        string Uid { get; }
+    string Tenant { get; }
+
+    IPrincipal? Caller { get; }
 
 
-        string Tenant { get; }
-
-        IPrincipal Caller { get; }
-
-
-        bool Debug { get; }
-
-
-    }
+    bool Debug { get; }
 
 
 }
