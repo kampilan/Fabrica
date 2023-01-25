@@ -4,7 +4,7 @@
     public interface ICriteria
     {
 
-        public string[] Rql { get; }
+        public string[]? Rql { get; }
 
     }
 

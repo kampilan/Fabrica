@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fabrica.Models.Support;
+﻿namespace Fabrica.Models.Support;
 
 public  interface IApiModel
 {

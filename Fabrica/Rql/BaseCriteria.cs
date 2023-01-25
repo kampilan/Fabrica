@@ -1,27 +1,22 @@
 ﻿// ReSharper disable CollectionNeverUpdated.Local
 
-using System.Collections.Generic;
 using Fabrica.Models.Support;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Fabrica.Rql
+namespace Fabrica.Rql;
+
+public class BaseCriteria: ICriteria, IApiModel
 {
 
-    public class BaseCriteria: ICriteria, IApiModel
-    {
+    public string[]? Rql { get; set; }
 
-        public string[] Rql { get; set; }
+    [JsonExtensionData]
+    private Dictionary<string, JToken> Overposts { get; } = new();
 
-        [JsonExtensionData]
-        private Dictionary<string, JToken> Overposts { get; } = new();
+    public bool IsOverposted() => Overposts.Count > 0;
 
-        public bool IsOverposted() => Overposts.Count > 0;
-
-        public IEnumerable<string> GetOverpostNames() => Overposts.Keys;
-
-
-    }
+    public IEnumerable<string> GetOverpostNames() => Overposts.Keys;
 
 
 }
