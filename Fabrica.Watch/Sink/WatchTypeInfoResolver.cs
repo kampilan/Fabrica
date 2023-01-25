@@ -21,27 +21,6 @@ public class WatchTypeInfoResolver: DefaultJsonTypeInfoResolver
 
             if( property.PropertyType.GetCustomAttribute<SensitiveAttribute>() is not null )
                 property.Get = o=> $"Sensitive - HasValue: {!string.IsNullOrWhiteSpace(o?.ToString())}";
-            else
-            {
-
-                var extractor = property.Get;
-                if( extractor is not null )
-                {
-                    property.Get = o =>
-                    {
-                        try
-                        {
-                            var val = extractor.Invoke(o);
-                            return val;
-                        }
-                        catch
-                        {
-                            return default;
-                        }
-                    };
-                }
-
-            }
 
         }
 
