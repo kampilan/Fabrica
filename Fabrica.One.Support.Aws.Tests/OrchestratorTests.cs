@@ -35,9 +35,8 @@ public class OrchestratorTests
 
         var module = new OneOrchestratorConfiguration();
 
-        module.Profile = "fortium";
-        module.RegionName = "us-east-1";
-        module.RunningOnEC2 = false;
+        module.AwsProfileName = "fortium";
+        module.UseLocalAwsCredentials = false;
 
         module.OneRoot = @"e:\fabrica-one";
         

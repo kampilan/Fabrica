@@ -15,13 +15,9 @@ namespace Fabrica.One.Support.Aws.Configuration;
 
 public class OneOrchestratorConfiguration: Module, IAwsCredentialConfiguration
 {
-
         
-    public string Profile { get; set; } = "";
-    public string RegionName { get; set; } = "";
-    public string AccessKey { get; set; } = "";
-    public string SecretKey { get; set; } = "";
-    public bool RunningOnEC2 { get; set; } = true;
+    public string AwsProfileName { get; set; } = "";
+    public bool UseLocalAwsCredentials { get; set; } = false;
 
     public string OneRoot { get; set; } = "";
 
@@ -146,7 +142,7 @@ public class OneOrchestratorConfiguration: Module, IAwsCredentialConfiguration
 
             // *****************************************************************
             logger.Debug("Attempting to build PlanFactory");
-            builder.Register(c =>
+            builder.Register( _ =>
                 {
 
                     var factory = new JsonPlanFactory(RepositoryRoot, InstallationRoot);
@@ -177,7 +173,7 @@ public class OneOrchestratorConfiguration: Module, IAwsCredentialConfiguration
 
             // *****************************************************************
             logger.Debug("Attempting to register Repository appliance installer");
-            builder.Register(c =>
+            builder.Register( _ =>
                 {
 
                     var installer = new FileRepositoryInstaller();
@@ -192,7 +188,7 @@ public class OneOrchestratorConfiguration: Module, IAwsCredentialConfiguration
 
             // *****************************************************************
             logger.Debug("Attempting to register Plan writer");
-            builder.Register(c =>
+            builder.Register( _ =>
                 {
 
 

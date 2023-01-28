@@ -3,9 +3,9 @@
 public interface IAwsCredentialConfiguration
 {
 
-    string Profile { get; set; }
+    string AwsProfileName { get; set; }
 
     // ReSharper disable once InconsistentNaming
-    bool RunningOnEC2 { get; set; }
+    bool UseLocalAwsCredentials { get; set; }
 
 }

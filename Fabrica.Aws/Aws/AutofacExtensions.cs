@@ -67,12 +67,12 @@ public static class AutofacExtensions
 
 
         // *****************************************************************
-        return builder.UseAws(configuration.Profile, configuration.RunningOnEC2);
+        return builder.UseAws(configuration.AwsProfileName, configuration.UseLocalAwsCredentials);
 
 
     }
 
-    public static ContainerBuilder UseAws(this ContainerBuilder builder, string profileName = "", bool runningOnEc2 = true)
+    public static ContainerBuilder UseAws(this ContainerBuilder builder, string profileName = "", bool useLocalCredentials = false )
     {
 
 
@@ -86,7 +86,7 @@ public static class AutofacExtensions
         // *****************************************************************
         logger.Debug("Attempting to check if running on EC2");
         AWSCredentials credentials;
-        if( runningOnEc2 )
+        if( !useLocalCredentials )
         {
             logger.Debug("Attempting to build instance profile credentials");
             credentials = new InstanceProfileAWSCredentials(profileName);
