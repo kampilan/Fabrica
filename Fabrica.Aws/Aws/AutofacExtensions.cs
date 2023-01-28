@@ -26,8 +26,6 @@ SOFTWARE.
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Global
 
-
-using Amazon;
 using Amazon.AppConfig;
 using Amazon.AppConfigData;
 using Amazon.DynamoDBv2;
@@ -55,253 +53,112 @@ public static class AutofacExtensions
 {
 
 
-    public static ContainerBuilder UseAws(this ContainerBuilder builder, IAwsCredentialModule module )
+    public static ContainerBuilder UseAws(this ContainerBuilder builder, IAwsCredentialConfiguration configuration)
     {
 
-        if (module == null) throw new ArgumentNullException(nameof(module));
+        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
 
-        var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
+        using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
 
-        try
-        {
+        logger.EnterScope(nameof(UseAws));
 
-            logger.EnterScope( nameof(UseAws) );
-
-
-            logger.LogObject(nameof(module), module);
+        logger.LogObject(nameof(configuration), configuration);
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to check for AccessKey");
-            if (!string.IsNullOrWhiteSpace(module.AccessKey))
-                return builder.UseAws( module.RegionName, module.AccessKey, module.SecretKey );
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to check for Profile");
-            if (!string.IsNullOrWhiteSpace(module.Profile))
-                return builder.UseAws( module.RegionName, module.Profile, module.RunningOnEC2 );
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to use AWS with automatic credentials");
-            if( !string.IsNullOrWhiteSpace(module.RegionName) )
-                return builder.UseAws( module.RegionName );
-
-
-            // *****************************************************************
-            return builder.UseAws();
-
-
-        }
-        finally
-        {
-            logger.LeaveScope( nameof(UseAws) );
-        }
-
+        // *****************************************************************
+        return builder.UseAws(configuration.Profile, configuration.RunningOnEC2);
 
 
     }
 
-    public static ContainerBuilder UseAws( this ContainerBuilder builder, string regionName="" )
+    public static ContainerBuilder UseAws(this ContainerBuilder builder, string profileName = "", bool runningOnEc2 = true)
     {
 
 
-        var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
+        using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
 
-        try
+
+        logger.EnterScope(nameof(UseAws));
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check if running on EC2");
+        AWSCredentials credentials;
+        if( runningOnEc2 )
         {
-
-            logger.EnterScope(nameof(UseAws));
-
-
-            // ******************************************************************
-            if( !string.IsNullOrWhiteSpace(regionName))
-                _addServices( builder, regionName );
-            else
-                _addServices( builder );
-
-
-            // ******************************************************************
-            return builder;
-
-
+            logger.Debug("Attempting to build instance profile credentials");
+            credentials = new InstanceProfileAWSCredentials(profileName);
         }
-        finally
-        {
-            logger.LeaveScope(nameof(UseAws));
-        }
-
-
-    }
-
-    public static ContainerBuilder UseAws(this ContainerBuilder builder, string regionName, string accessKey, string secretKey )
-    {
-
-
-        if (string.IsNullOrWhiteSpace(regionName))
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(regionName));
-
-        if (string.IsNullOrWhiteSpace(accessKey))
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(accessKey));
-
-        if (string.IsNullOrWhiteSpace(secretKey))
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(secretKey));
-
-
-        var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
-
-        try
+        else
         {
 
-            logger.EnterScope(nameof(UseAws));
+            var sharedFile = new SharedCredentialsFile();
+            if (!(sharedFile.TryGetProfile(profileName, out var profile) && AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out credentials)))
+                throw new Exception($"Local profile {profile} could not be loaded");
 
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build Basic credentials");
-            var credentials = new BasicAWSCredentials(accessKey, secretKey);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to add services");
-            _addServices(builder, credentials, regionName);
-
-
-
-            // ******************************************************************
-            return builder;
-
-
-        }
-        finally
-        {
-            logger.LeaveScope(nameof(UseAws));
         }
 
 
-    }
-
-    public static ContainerBuilder UseAws(this ContainerBuilder builder, string regionName, string profileName, bool runningOnEc2=false )
-    {
-
-        if (string.IsNullOrWhiteSpace(profileName))
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(profileName));
-
-
-        var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
-
-        try
-        {
-
-            logger.EnterScope(nameof(UseAws));
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to check if running on EC2");
-            AWSCredentials credentials;
-            if( runningOnEc2 )
-            {
-                logger.Debug("Attempting to build instance profile credentials");
-                credentials = new InstanceProfileAWSCredentials(profileName);
-            }
-            else
-            {
-
-                var sharedFile = new SharedCredentialsFile();
-                if( !(sharedFile.TryGetProfile(profileName, out var profile) && AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out credentials)) )
-                    throw new Exception($"Local profile {profile} could not be loaded");
-
-            }
-
-
-            // ******************************************************************
-            _addServices(builder, credentials, regionName );
-
-
-
-            // ******************************************************************
-            return builder;
-
-
-        }
-        finally
-        {
-            logger.LeaveScope(nameof(UseAws));
-        }
-
-
-    }
-
-
-    private static void _addServices(ContainerBuilder builder)
-    {
-
+        builder.Register(c => credentials)
+            .As<AWSCredentials>()
+            .SingleInstance();
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonS3Client())
+        builder.Register(c => new AmazonS3Client(credentials))
             .As<IAmazonS3>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonSecurityTokenServiceClient())
+        builder.Register(c => new AmazonSecurityTokenServiceClient(credentials))
             .As<IAmazonSecurityTokenService>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonSQSClient())
+        builder.Register(c => new AmazonSQSClient(credentials))
             .As<IAmazonSQS>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonSimpleNotificationServiceClient())
+        builder.Register(c => new AmazonSimpleNotificationServiceClient(credentials))
             .As<IAmazonSimpleNotificationService>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
-        builder.Register(c => new AmazonSimpleSystemsManagementClient())
+
+        builder.Register(c => new AmazonSimpleSystemsManagementClient(credentials))
             .As<IAmazonSimpleSystemsManagement>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
+
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonAppConfigClient())
+        builder.Register(c => new AmazonAppConfigClient(credentials))
             .As<IAmazonAppConfig>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
+
 
         // ******************************************************************
-        builder.Register(c => new AmazonAppConfigDataClient())
+        builder.Register(c => new AmazonAppConfigDataClient(credentials))
             .As<IAmazonAppConfigData>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonSecretsManagerClient())
+        builder.Register(c => new AmazonSecretsManagerClient(credentials))
             .As<IAmazonSecretsManager>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
         // ******************************************************************
-        builder.Register(c => new AmazonDynamoDBClient())
+        builder.Register(c => new AmazonDynamoDBClient(credentials))
             .As<IAmazonDynamoDB>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
         // ******************************************************************
         builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
@@ -309,161 +166,9 @@ public static class AutofacExtensions
             .InstancePerDependency();
 
 
-    }
-
-
-    private static void _addServices(ContainerBuilder builder, string regionName)
-    {
-
 
         // ******************************************************************
-        var endpoint = RegionEndpoint.GetBySystemName(regionName);
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonS3Client(endpoint))
-            .As<IAmazonS3>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSecurityTokenServiceClient(endpoint))
-            .As<IAmazonSecurityTokenService>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSQSClient(endpoint))
-            .As<IAmazonSQS>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSimpleNotificationServiceClient(endpoint))
-            .As<IAmazonSimpleNotificationService>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        builder.Register(c => new AmazonSimpleSystemsManagementClient(endpoint))
-            .As<IAmazonSimpleSystemsManagement>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonAppConfigClient(endpoint))
-            .As<IAmazonAppConfig>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonAppConfigDataClient())
-            .As<IAmazonAppConfigData>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSecretsManagerClient(endpoint))
-            .As<IAmazonSecretsManager>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonDynamoDBClient(endpoint))
-            .As<IAmazonDynamoDB>()
-            .SingleInstance()
-            .AutoActivate();
-
-        // ******************************************************************
-        builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
-            .As<IDynamoDBContext>()
-            .InstancePerDependency();
-
-
-    }
-
-
-
-    private static void _addServices( ContainerBuilder builder,  AWSCredentials credentials, string regionName )
-    {
-
-
-        // ******************************************************************
-        var endpoint = RegionEndpoint.GetBySystemName(regionName);
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonS3Client(credentials, endpoint))
-            .As<IAmazonS3>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSecurityTokenServiceClient(credentials, endpoint))
-            .As<IAmazonSecurityTokenService>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSQSClient(credentials, endpoint))
-            .As<IAmazonSQS>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSimpleNotificationServiceClient(credentials, endpoint))
-            .As<IAmazonSimpleNotificationService>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        builder.Register(c => new AmazonSimpleSystemsManagementClient( credentials, endpoint))
-            .As<IAmazonSimpleSystemsManagement>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonAppConfigClient( credentials, endpoint) )
-            .As<IAmazonAppConfig>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonAppConfigDataClient(credentials, endpoint))
-            .As<IAmazonAppConfigData>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonSecretsManagerClient( credentials, endpoint))
-            .As<IAmazonSecretsManager>()
-            .SingleInstance()
-            .AutoActivate();
-
-
-        // ******************************************************************
-        builder.Register(c => new AmazonDynamoDBClient( credentials, endpoint))
-            .As<IAmazonDynamoDB>()
-            .SingleInstance()
-            .AutoActivate();
-
-        // ******************************************************************
-        builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
-            .As<IDynamoDBContext>()
-            .InstancePerDependency();
+        return builder;
 
 
     }
@@ -474,9 +179,9 @@ public static class AutofacExtensions
 
         builder.Register(c =>
             {
-                var corr   = c.Resolve<ICorrelation>();
+                var corr = c.Resolve<ICorrelation>();
                 var client = c.Resolve<IAmazonS3>();
-                var comp   = new StorageComponent( corr, client );
+                var comp = new StorageComponent(corr, client);
                 return comp;
             })
             .As<IStorageProvider>()
@@ -489,7 +194,8 @@ public static class AutofacExtensions
 
     }
 
-    public static ContainerBuilder AddRepositoryProvider(this ContainerBuilder builder, string repository )
+
+    public static ContainerBuilder AddRepositoryProvider(this ContainerBuilder builder, string repository)
     {
 
         builder.Register(c =>
@@ -498,7 +204,7 @@ public static class AutofacExtensions
                 var corr = c.Resolve<ICorrelation>();
                 var s3 = c.Resolve<IAmazonS3>();
 
-                var comp = new S3RepositoryProvider( corr, s3, repository );
+                var comp = new S3RepositoryProvider(corr, s3, repository);
 
                 return comp;
 
@@ -510,7 +216,7 @@ public static class AutofacExtensions
 
     }
 
-    public static ContainerBuilder AddRepositoryProvider(this ContainerBuilder builder, IRepositoryConfiguration config )
+    public static ContainerBuilder AddRepositoryProvider(this ContainerBuilder builder, IRepositoryConfiguration config)
     {
 
         builder.Register(c =>
@@ -519,7 +225,7 @@ public static class AutofacExtensions
                 var corr = c.Resolve<ICorrelation>();
                 var s3 = c.Resolve<IAmazonS3>();
 
-                var comp = new S3RepositoryProvider( corr, s3, config.RepositoryContainer );
+                var comp = new S3RepositoryProvider(corr, s3, config.RepositoryContainer);
 
                 return comp;
 

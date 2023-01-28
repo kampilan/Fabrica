@@ -1,11 +1,13 @@
-﻿RegionName: us-east-2
-Profile: kampilan
-RunningOnEC2: false
+﻿WatchEventStoreUri: "mondodb://<MONGO-SERVER>:27017"
+WatchDomainName: "Fabrica.One.Production"
 
-OneRoot: "e:/fabrica-one"
+OneRoot: "/home/<USER>/fabrica-one-root"
 
-AppConfigPlanSourceApplication: "fabrica-one-test"
-AppConfigPlanSourceConfiguration: "mission"
-AppConfigPlanSourceEnvironment: "development"
+#UseInstanceMetadata: true
 
-RepositoryBucketName: "pondhawk-appliance-repository"
+#AppConfigCheckIntervalSecs: 30
+#AppConfigPlanSourceApplication: ""
+#AppConfigPlanSourceConfiguration: ""
+#AppConfigPlanSourceEnvironment: ""
+
+RepositoryBucketName: "<REPO-NAME>-appliance-repository"

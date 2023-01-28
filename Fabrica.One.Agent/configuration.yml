@@ -1,3 +1,8 @@
-﻿OneRoot: "e:/fabrica-one-root"
+﻿WatchEventStoreUri: "mondodb://<MONGO-SERVER>:27017"
+WatchDomainName: "Fabrica.One.Production"
 
-UnderOrchestration: true
+OneRoot: "/home/<USER>/fabrica-one-root"
+
+#UnderOrchestration: true
+#UseExternalPlanSource: true
+#ProduceEmptyPlans: true

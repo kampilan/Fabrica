@@ -1,18 +1,13 @@
-﻿namespace Fabrica.Utilities.Storage
+﻿namespace Fabrica.Utilities.Storage;
+
+public class LookThroughStorageProvider: BaseLookThroughStorageProvider
 {
 
 
-    public class LookThroughStorageProvider: BaseLookThroughStorageProvider
+    public LookThroughStorageProvider( ILocalStorageProvider local, IRemoteStorageProvider remote )
     {
-
-
-        public LookThroughStorageProvider( ILocalStorageProvider local, IRemoteStorageProvider remote )
-        {
-            Local  = local;
-            Remote = remote;
-        }
-
-
+        Local  = local;
+        Remote = remote;
     }
 
 

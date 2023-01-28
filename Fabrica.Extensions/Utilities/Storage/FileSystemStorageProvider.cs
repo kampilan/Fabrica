@@ -1,254 +1,246 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Fabrica.Watch;
+﻿using Fabrica.Watch;
 
-namespace Fabrica.Utilities.Storage
+namespace Fabrica.Utilities.Storage;
+
+public class FileSystemStorageProvider: ILocalStorageProvider
 {
 
 
-    public class FileSystemStorageProvider: ILocalStorageProvider
+    public DirectoryInfo BaseDirectory { get; set; } = new DirectoryInfo( "c:/" );
+
+    private FileInfo BuildFile( string root, string key )
+    {
+        var path = $"{BaseDirectory.FullName}{Path.DirectorySeparatorChar}{root}{Path.DirectorySeparatorChar}{key}";
+        var info = new FileInfo(path);
+        return info;
+    }
+
+    public bool Exists(string root, string key)
     {
 
+        var logger = this.GetLogger();
 
-        public DirectoryInfo BaseDirectory { get; set; } = new DirectoryInfo( "c:/" );
-
-        private FileInfo BuildFile( string root, string key )
-        {
-            var path = $"{BaseDirectory.FullName}{Path.DirectorySeparatorChar}{root}{Path.DirectorySeparatorChar}{key}";
-            var info = new FileInfo(path);
-            return info;
-        }
-
-        public bool Exists(string root, string key)
+        try
         {
 
-            var logger = this.GetLogger();
+            logger.EnterMethod();
 
-            try
-            {
+            var info = BuildFile(root, key);
 
-                logger.EnterMethod();
-
-                var info = BuildFile(root, key);
-
-                return info.Exists;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            return info.Exists;
 
         }
-
-        public Task<bool> ExistsAsync(string root, string key)
+        finally
         {
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                var info = BuildFile(root, key);
-
-                return Task.FromResult(info.Exists);
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
+            logger.LeaveMethod();
         }
 
-        public void Get(string root, string key, Stream content, bool rewind = true)
+    }
+
+    public Task<bool> ExistsAsync(string root, string key)
+    {
+
+        var logger = this.GetLogger();
+
+        try
         {
 
-            var logger = this.GetLogger();
+            logger.EnterMethod();
 
-            try
+
+            var info = BuildFile(root, key);
+
+            return Task.FromResult(info.Exists);
+
+        }
+        finally
+        {
+            logger.LeaveMethod();
+        }
+
+    }
+
+    public void Get(string root, string key, Stream content, bool rewind = true)
+    {
+
+        var logger = this.GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+            var info = BuildFile(root, key);
+
+            using( var fs = new FileStream(info.ToString(), FileMode.Open, FileAccess.Read) )
             {
-
-                logger.EnterMethod();
-
-                var info = BuildFile(root, key);
-
-                using( var fs = new FileStream(info.ToString(), FileMode.Open, FileAccess.Read) )
-                {
-                    fs.CopyTo(content);
-                    if( rewind )
-                        content.Seek(0, SeekOrigin.Begin);
-                }
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
+                fs.CopyTo(content);
+                if( rewind )
+                    content.Seek(0, SeekOrigin.Begin);
             }
 
 
         }
-
-        public async Task GetAsync(string root, string key, Stream content, bool rewind = true)
+        finally
         {
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                var info = BuildFile(root, key);
-
-                using (var fs = new FileStream(info.ToString(), FileMode.Open, FileAccess.Read))
-                {
-                    await fs.CopyToAsync(content);
-                    if (rewind)
-                        content.Seek(0, SeekOrigin.Begin);
-                }
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
+            logger.LeaveMethod();
         }
 
-        public void Put(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false)
+
+    }
+
+    public async Task GetAsync(string root, string key, Stream content, bool rewind = true)
+    {
+
+        var logger = this.GetLogger();
+
+        try
         {
 
-            var logger = this.GetLogger();
+            logger.EnterMethod();
 
-            try
+            var info = BuildFile(root, key);
+
+            using (var fs = new FileStream(info.ToString(), FileMode.Open, FileAccess.Read))
             {
-
-                logger.EnterMethod();
-
-                var info = BuildFile(root, key);
-
-                using( var fs = new FileStream(info.ToString(), FileMode.Create, FileAccess.Write) )
-                {
-
-                    if (rewind)
-                        content.Seek(0, SeekOrigin.Begin);
-
-                    content.CopyTo(fs);
-
-                }
-
-                if( autoClose )
-                    content.Close();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
+                await fs.CopyToAsync(content);
+                if (rewind)
+                    content.Seek(0, SeekOrigin.Begin);
             }
 
 
         }
-
-        public async Task PutAsync(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false)
+        finally
         {
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                var info = BuildFile(root, key);
-
-                using (var fs = new FileStream(info.ToString(), FileMode.Create, FileAccess.Write))
-                {
-
-                    if (rewind)
-                        content.Seek(0, SeekOrigin.Begin);
-
-                    await content.CopyToAsync(fs);
-
-                }
-
-                if( autoClose )
-                    content.Close();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
+            logger.LeaveMethod();
         }
 
-        public void Delete(string root, string key)
+    }
+
+    public void Put(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false)
+    {
+
+        var logger = this.GetLogger();
+
+        try
         {
 
-            var logger = this.GetLogger();
+            logger.EnterMethod();
 
-            try
+            var info = BuildFile(root, key);
+
+            using( var fs = new FileStream(info.ToString(), FileMode.Create, FileAccess.Write) )
             {
 
-                logger.EnterMethod();
+                if (rewind)
+                    content.Seek(0, SeekOrigin.Begin);
 
-                var info = BuildFile(root, key);
-
-                info.Delete();
+                content.CopyTo(fs);
 
             }
-            finally
-            {
-                logger.LeaveMethod();
-            }
 
+            if( autoClose )
+                content.Close();
 
         }
-
-        public Task DeleteAsync(string root, string key)
+        finally
         {
-
-            var logger = this.GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                var info = BuildFile(root, key);
-
-                info.Delete();
-
-                return Task.CompletedTask;
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
-        }
-
-        public string GetReference(string root, string key, TimeSpan timeToLive)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetReferenceAsync(string root, string key, TimeSpan timeToLive)
-        {
-            throw new NotImplementedException();
+            logger.LeaveMethod();
         }
 
 
+    }
+
+    public async Task PutAsync(string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false)
+    {
+
+        var logger = this.GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+            var info = BuildFile(root, key);
+
+            using (var fs = new FileStream(info.ToString(), FileMode.Create, FileAccess.Write))
+            {
+
+                if (rewind)
+                    content.Seek(0, SeekOrigin.Begin);
+
+                await content.CopyToAsync(fs);
+
+            }
+
+            if( autoClose )
+                content.Close();
+
+        }
+        finally
+        {
+            logger.LeaveMethod();
+        }
+
+
+    }
+
+    public void Delete(string root, string key)
+    {
+
+        var logger = this.GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+            var info = BuildFile(root, key);
+
+            info.Delete();
+
+        }
+        finally
+        {
+            logger.LeaveMethod();
+        }
+
+
+    }
+
+    public Task DeleteAsync(string root, string key)
+    {
+
+        var logger = this.GetLogger();
+
+        try
+        {
+
+            logger.EnterMethod();
+
+            var info = BuildFile(root, key);
+
+            info.Delete();
+
+            return Task.CompletedTask;
+
+        }
+        finally
+        {
+            logger.LeaveMethod();
+        }
+
+
+    }
+
+    public string GetReference(string root, string key, TimeSpan timeToLive)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> GetReferenceAsync(string root, string key, TimeSpan timeToLive)
+    {
+        throw new NotImplementedException();
     }
 
 

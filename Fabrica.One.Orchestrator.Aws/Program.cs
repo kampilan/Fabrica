@@ -24,7 +24,7 @@ public class Program
 
 
         Console.WriteLine("Fabrica One AWS Orchestrator Service");
-        Console.WriteLine("Pond Hawk Technologies Inc. (c) 2022");
+        Console.WriteLine("Pond Hawk Technologies Inc. (c) 2023");
         Console.WriteLine("");
 
         Console.WriteLine("Press Ctrl-C to Stop");

@@ -22,37 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+namespace Fabrica.Utilities.Storage;
 
-namespace Fabrica.Utilities.Storage
+public interface IStorageProvider
 {
-
-    
-    public interface IStorageProvider
-    {
        
 
-        bool Exists( [NotNull] string root, [NotNull] string key );
-        Task<bool> ExistsAsync( [NotNull] string root, [NotNull] string key );
+    bool Exists( string root, string key );
+    Task<bool> ExistsAsync( string root, string key );
 
-        void Get( [NotNull] string root, [NotNull] string key, [NotNull] Stream content, bool rewind = true );
-        Task GetAsync([NotNull] string root, [NotNull] string key, [NotNull] Stream content, bool rewind = true);
+    void Get( string root, string key, Stream content, bool rewind = true );
+    Task GetAsync( string root, string key, Stream content, bool rewind = true);
 
-        void Put( [NotNull] string root, [NotNull] string key, [NotNull] Stream content, string contentType = "", bool rewind = true, bool autoClose = false );
-        Task PutAsync([NotNull] string root, [NotNull] string key, [NotNull] Stream content, string contentType = "", bool rewind = true, bool autoClose = false);
+    void Put( string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false );
+    Task PutAsync( string root, string key, Stream content, string contentType = "", bool rewind = true, bool autoClose = false);
 
-        void Delete( [NotNull] string root, [NotNull] string key );
-        Task DeleteAsync( [NotNull] string root, [NotNull] string key );
-
-
-        string GetReference( [NotNull] string root, [NotNull] string key, TimeSpan timeToLive );
-        Task<string> GetReferenceAsync([NotNull] string root, [NotNull] string key, TimeSpan timeToLive);
+    void Delete( string root, string key );
+    Task DeleteAsync( string root, string key );
 
 
-    }
+    string GetReference( string root, string key, TimeSpan timeToLive );
+    Task<string> GetReferenceAsync( string root, string key, TimeSpan timeToLive);
 
 
 }

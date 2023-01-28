@@ -34,7 +34,7 @@ public class AwsService: BackgroundService
 
             // *****************************************************************
             logger.Debug("Attempting to bind to HostModule");
-            var module = Program.TheConfiguration.Get<OneOrchestratorModule>();
+            var module = Program.TheConfiguration.Get<OneOrchestratorConfiguration>();
             builder.RegisterModule(module);
 
             logger.LogObject(nameof(module), module);

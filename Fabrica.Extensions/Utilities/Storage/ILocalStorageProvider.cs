@@ -1,8 +1,5 @@
-﻿namespace Fabrica.Utilities.Storage
+﻿namespace Fabrica.Utilities.Storage;
+
+public interface ILocalStorageProvider: IStorageProvider
 {
-
-    public interface ILocalStorageProvider: IStorageProvider
-    {
-    }
-
 }

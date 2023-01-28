@@ -33,7 +33,7 @@ public class OrchestratorTests
 
 
 
-        var module = new OneOrchestratorModule();
+        var module = new OneOrchestratorConfiguration();
 
         module.Profile = "fortium";
         module.RegionName = "us-east-1";

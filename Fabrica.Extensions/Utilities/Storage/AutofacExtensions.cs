@@ -1,36 +1,31 @@
-﻿using System.IO;
-using Autofac;
+﻿using Autofac;
 
-namespace Fabrica.Utilities.Storage
+namespace Fabrica.Utilities.Storage;
+
+public static  class AutofacExtensions
 {
 
-    public static  class AutofacExtensions
+
+    public static ContainerBuilder AddFileSystemStorage( this ContainerBuilder builder, string directory )
     {
 
+        builder.Register( _ =>
+            {
 
-        public static ContainerBuilder AddFileSystemStorage( this ContainerBuilder builder, string directory )
-        {
-
-            builder.Register(c =>
+                var provider = new FileSystemStorageProvider
                 {
+                    BaseDirectory = new DirectoryInfo(directory)
+                };
 
-                    var provider = new FileSystemStorageProvider
-                    {
-                        BaseDirectory = new DirectoryInfo(directory)
-                    };
+                return provider;
 
-                    return provider;
-
-                })
-                .As<IStorageProvider>()
-                .As<ILocalStorageProvider>()
-                .SingleInstance();
+            })
+            .As<IStorageProvider>()
+            .As<ILocalStorageProvider>()
+            .SingleInstance();
 
 
-            return builder;
-
-        }
-
+        return builder;
 
     }
 

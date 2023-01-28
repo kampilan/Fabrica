@@ -49,7 +49,7 @@ public static class AwsSecretsHelper
 
 
             // *****************************************************************
-            logger.Debug("Attempting to create AWS Secrets Managet Client");
+            logger.Debug("Attempting to create AWS Secrets Manager Client");
             using (client)
             {
                 var request = new GetSecretValueRequest

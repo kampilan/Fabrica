@@ -11,7 +11,7 @@
 
             Local = local;
 
-            Remote = new BackgroudStorageProvider(remote);
+            Remote = new BackgroundStorageProvider(remote);
 
         }
 

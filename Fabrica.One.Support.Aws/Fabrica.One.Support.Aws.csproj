@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Aws\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
     <ProjectReference Include="..\Fabrica.One.Core\Fabrica.One.Core.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
