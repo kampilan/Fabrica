@@ -26,6 +26,7 @@ SOFTWARE.
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Global
 
+using Amazon;
 using Amazon.AppConfig;
 using Amazon.AppConfigData;
 using Amazon.DynamoDBv2;
@@ -94,9 +95,14 @@ public static class AutofacExtensions
         else
         {
 
+            logger.Debug("Attempting to build local profile credentials");
             var sharedFile = new SharedCredentialsFile();
             if (!(sharedFile.TryGetProfile(profileName, out var profile) && AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out credentials)))
                 throw new Exception($"Local profile {profile} could not be loaded");
+
+            logger.Inspect(nameof(profile.Region), profile.Region.SystemName);
+
+            AWSConfigs.AWSRegion = profile.Region.SystemName;
 
         }
 

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
     <ProjectReference Include="..\Fabrica.Identity.Auth0\Fabrica.Identity.Auth0.csproj" />
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
     <ProjectReference Include="..\Fabrica.Identity.Keycloak\Fabrica.Identity.Keycloak.csproj" />
