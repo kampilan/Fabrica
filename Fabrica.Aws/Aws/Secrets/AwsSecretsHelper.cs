@@ -13,7 +13,7 @@ public static class AwsSecretsHelper
 {
 
 
-    public static async Task PopulateWithSecrets(object target, string secretId, string profileName = "", bool runningOnEc2 = true)
+    public static async Task PopulateWithSecrets(object target, string secretId, string profileName = "", bool useLocalCredentials = false)
     {
 
         using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AwsSecretsHelper));
@@ -26,11 +26,7 @@ public static class AwsSecretsHelper
         // *****************************************************************
         logger.Debug("Attempting to check if running on EC2");
         AmazonSecretsManagerClient client;
-        if (runningOnEc2)
-        {
-            client = new AmazonSecretsManagerClient();
-        }
-        else
+        if( useLocalCredentials )
         {
 
             var sharedFile = new SharedCredentialsFile();
@@ -40,6 +36,10 @@ public static class AwsSecretsHelper
 
             client = new AmazonSecretsManagerClient(credentials);
 
+        }
+        else
+        {
+            client = new AmazonSecretsManagerClient();
         }
 
 
