@@ -31,6 +31,7 @@ using Amazon.AppConfig;
 using Amazon.AppConfigData;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model.Internal.MarshallTransformations;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
@@ -87,9 +88,14 @@ public static class AutofacExtensions
         // *****************************************************************
         logger.Debug("Attempting to check if running on EC2");
         AWSCredentials credentials;
-        if( !useLocalCredentials )
+        if( !useLocalCredentials && string.IsNullOrWhiteSpace(profileName) )
         {
-            logger.Debug("Attempting to build instance profile credentials");
+            logger.Debug("Attempting to build default instance profile");
+            credentials = new InstanceProfileAWSCredentials();
+        }
+        else if( !useLocalCredentials && !string.IsNullOrWhiteSpace(profileName) )
+        {
+            logger.Debug("Attempting to build default instance profile");
             credentials = new InstanceProfileAWSCredentials(profileName);
         }
         else
