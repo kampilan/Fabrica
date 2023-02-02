@@ -2,20 +2,17 @@
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint where TEntity: class, IModel where TDelta: BaseDelta
+public abstract class BaseCreateFromDictEndpoint<TEntity> : BaseEndpoint where TEntity : class, IModel
 {
 
-
-    protected BaseUpdateFromDeltaEndpoint( IEndpointComponent component ) : base( component )
+    protected BaseCreateFromDictEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
-
-    protected virtual bool TryValidate(BaseDelta? delta, out IActionResult error)
+    protected virtual bool TryValidate(IDictionary<string, object>? delta, out IActionResult error)
     {
 
         using var logger = EnterMethod();
@@ -32,7 +29,7 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
             {
                 Kind = ErrorKind.BadRequest,
                 ErrorCode = "ModelInvalid",
-                Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
+                Explanation = $"Errors occurred while parsing delta for {Request.Method} at {Request.Path}"
             };
 
             var errors = ModelState.Keys.SelectMany(x => ModelState[x]?.Errors);
@@ -54,7 +51,7 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
             {
                 Kind = ErrorKind.BadRequest,
                 ErrorCode = "ModelInvalid",
-                Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
+                Explanation = $"Errors occurred while parsing delta for {Request.Method} at {Request.Path}"
             };
 
             error = BuildErrorResult(info);
@@ -64,15 +61,18 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
         }
 
 
+        var mm = Meta.GetMetaFromType(typeof(TEntity));
 
-        if (delta.IsOverposted())
+        var ob = mm.CheckForCreate(delta.Keys);
+
+        if (ob.Count > 0)
         {
 
             var info = new ExceptionInfoModel
             {
                 Kind = ErrorKind.BadRequest,
                 ErrorCode = "DisallowedProperties",
-                Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})"
+                Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', ob)})"
             };
 
             error = BuildErrorResult(info);
@@ -88,9 +88,8 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
     }
 
 
-    [SwaggerOperation(Summary = "Update", Description = "Ally update from Delta RTO")]
-    [HttpPut("{uid}")]
-    public async Task<IActionResult> Handle( [FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid, [FromBody] TDelta delta )
+    [HttpPost]
+    public async Task<IActionResult> Handle([FromBody] Dictionary<string, object> delta)
     {
 
         using var logger = EnterMethod();
@@ -105,12 +104,10 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = new UpdateEntityRequest<TEntity>
+        var request = new CreateEntityRequest<TEntity>
         {
-            Uid = uid
+            Delta = delta
         };
-
-        request.FromObject(delta);
 
 
 
@@ -132,8 +129,8 @@ public abstract class BaseUpdateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
         return result;
 
 
-
     }
+
 
 
 

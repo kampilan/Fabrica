@@ -5,9 +5,9 @@ using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseApplyPatchEndpoint<TEntity>: BaseEndpoint where TEntity: class, IModel
+public abstract class BaseApplyPatchEndpoint<TEntity> : BaseEndpoint where TEntity : class, IModel
 {
 
     protected BaseApplyPatchEndpoint(IEndpointComponent component) : base(component)
@@ -16,7 +16,7 @@ public abstract class BaseApplyPatchEndpoint<TEntity>: BaseEndpoint where TEntit
 
     [SwaggerOperation(Summary = "Persist changes", Description = "Persist changes by patch")]
     [HttpPatch("{uid}")]
-    public async Task<IActionResult> Handle( [FromRoute] string uid, [FromBody] List<ModelPatch> source )
+    public async Task<IActionResult> Handle([FromRoute] string uid, [FromBody] List<ModelPatch> source)
     {
 
         if (source == null) throw new ArgumentNullException(nameof(source));
@@ -97,7 +97,7 @@ public abstract class BaseApplyPatchEndpoint : BaseEndpoint
 
     [SwaggerOperation(Summary = "Persist changes", Description = "Persist changes by patch")]
     [HttpPatch]
-    public async Task<IActionResult> Handle( [FromBody] List<ModelPatch> source )
+    public async Task<IActionResult> Handle([FromBody] List<ModelPatch> source)
     {
 
         if (source == null) throw new ArgumentNullException(nameof(source));

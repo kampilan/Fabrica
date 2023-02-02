@@ -14,12 +14,12 @@ using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseEndpoint: ControllerBase
+public abstract class BaseEndpoint : ControllerBase
 {
 
-    protected BaseEndpoint( IEndpointComponent component )
+    protected BaseEndpoint(IEndpointComponent component)
     {
 
         Component = component;
@@ -119,7 +119,7 @@ public abstract class BaseEndpoint: ControllerBase
 
     }
 
-    protected IActionResult BuildErrorResult( IExceptionInfo error )
+    protected IActionResult BuildErrorResult(IExceptionInfo error)
     {
 
 
@@ -166,7 +166,7 @@ public abstract class BaseEndpoint: ControllerBase
     }
 
 
-    protected virtual IActionResult BuildResult<TValue>( Response<TValue> response )
+    protected virtual IActionResult BuildResult<TValue>(Response<TValue> response)
     {
 
         using var logger = EnterMethod();
@@ -177,7 +177,7 @@ public abstract class BaseEndpoint: ControllerBase
 
         // *****************************************************************
         logger.Debug("Attempting to check for success");
-        if ( !response.Ok )
+        if (!response.Ok)
             return BuildErrorResult(response);
 
 
@@ -185,10 +185,10 @@ public abstract class BaseEndpoint: ControllerBase
         // *****************************************************************
         logger.Inspect("response.Type", response.Value?.GetType());
 
-        if( response.Ok && typeof(TValue).IsValueType )
+        if (response.Ok && typeof(TValue).IsValueType)
             return Ok();
 
-        if( response is {Ok: true, Value: MemoryStream ms} )
+        if (response is { Ok: true, Value: MemoryStream ms })
             return new JsonStreamResult(ms);
 
         return Ok(response.Value);
@@ -197,7 +197,7 @@ public abstract class BaseEndpoint: ControllerBase
     }
 
 
-    protected virtual IActionResult BuildResult( Response response )
+    protected virtual IActionResult BuildResult(Mediator.Response response)
     {
 
         using var logger = EnterMethod();

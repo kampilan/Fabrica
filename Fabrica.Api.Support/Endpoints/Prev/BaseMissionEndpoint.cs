@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public class BaseMissionEndpoint: BaseEndpoint
+public class BaseMissionEndpoint : BaseEndpoint
 {
 
     public BaseMissionEndpoint(IEndpointComponent component, IMissionContext mission) : base(component)

@@ -7,13 +7,13 @@ using Fabrica.Rql.Parser;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEndpoint where TExplorer: class, IExplorableModel where TCriteria: BaseCriteria
+public abstract class BaseQueryFromCriteriaEndpoint<TExplorer, TCriteria> : BaseEndpoint where TExplorer : class, IExplorableModel where TCriteria : BaseCriteria
 {
 
 
-    protected BaseQueryFromCriteriaEndpoint( IEndpointComponent component ) : base( component )
+    protected BaseQueryFromCriteriaEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
@@ -94,14 +94,14 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
 
     [SwaggerOperation(Summary = "Using Criteria", Description = "Query using Criteria model")]
     [HttpGet]
-    public async Task<IActionResult> Handle( [FromBody] TCriteria criteria, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int limit = 0)
+    public async Task<IActionResult> Handle([FromBody] TCriteria criteria, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int limit = 0)
     {
 
         using var logger = EnterMethod();
 
 
-        
-        if( !TryValidate(criteria, out var error) )
+
+        if (!TryValidate(criteria, out var error))
             return error;
 
 
@@ -115,12 +115,12 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
         // *****************************************************************
         logger.Debug("Attempting to produce filters from Criteria");
         var filters = new List<IRqlFilter<TExplorer>>();
-        if( criteria.Rql.Length > 0 )
+        if (criteria.Rql.Length > 0)
         {
             filters.AddRange(criteria.Rql.Select(s =>
             {
                 var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree){RowLimit = limit};
+                return new RqlFilterBuilder<TExplorer>(tree) { RowLimit = limit };
             }));
         }
         else
@@ -142,7 +142,7 @@ public abstract class BaseQueryFromCriteriaEndpoint<TExplorer,TCriteria>: BaseEn
         logger.Debug("Attempting to build request");
         var request = new QueryEntityRequest<TExplorer>
         {
-            Filters  = filters,
+            Filters = filters,
         };
 
 

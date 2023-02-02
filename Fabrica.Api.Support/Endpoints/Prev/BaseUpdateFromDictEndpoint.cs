@@ -3,16 +3,16 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseCreateFromDictEndpoint<TEntity>: BaseEndpoint where TEntity: class, IModel
+public abstract class BaseUpdateFromDictEndpoint<TEntity> : BaseEndpoint where TEntity : class, IModel
 {
 
-    protected BaseCreateFromDictEndpoint(IEndpointComponent component) : base(component)
+    protected BaseUpdateFromDictEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
-    protected virtual bool TryValidate( IDictionary<string, object>? delta, out IActionResult error )
+    protected virtual bool TryValidate(IDictionary<string, object>? delta, out IActionResult error)
     {
 
         using var logger = EnterMethod();
@@ -63,7 +63,7 @@ public abstract class BaseCreateFromDictEndpoint<TEntity>: BaseEndpoint where TE
 
         var mm = Meta.GetMetaFromType(typeof(TEntity));
 
-        var ob = mm.CheckForCreate(delta.Keys);
+        var ob = mm.CheckForUpdate(delta.Keys);
 
         if (ob.Count > 0)
         {
@@ -88,8 +88,8 @@ public abstract class BaseCreateFromDictEndpoint<TEntity>: BaseEndpoint where TE
     }
 
 
-    [HttpPost]
-    public async Task<IActionResult> Handle([FromBody] Dictionary<string,object> delta)
+    [HttpPut("{uid}")]
+    public async Task<IActionResult> Handle([FromRoute] string uid, [FromBody] Dictionary<string, object> delta)
     {
 
         using var logger = EnterMethod();
@@ -97,15 +97,16 @@ public abstract class BaseCreateFromDictEndpoint<TEntity>: BaseEndpoint where TE
 
         // *****************************************************************
         logger.Debug("Attempting to validate delta model");
-        if( !TryValidate(delta, out var error) )
+        if (!TryValidate(delta, out var error))
             return error;
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = new CreateEntityRequest<TEntity>
+        var request = new UpdateEntityRequest<TEntity>
         {
+            Uid = uid,
             Delta = delta
         };
 
@@ -129,7 +130,9 @@ public abstract class BaseCreateFromDictEndpoint<TEntity>: BaseEndpoint where TE
         return result;
 
 
+
     }
+
 
 
 

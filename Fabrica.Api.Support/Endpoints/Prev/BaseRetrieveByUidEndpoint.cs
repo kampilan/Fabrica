@@ -3,19 +3,19 @@ using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseRetrieveByUidEndpoint<TEntity>: BaseEndpoint where TEntity: class, IModel
+public abstract class BaseRetrieveByUidEndpoint<TEntity> : BaseEndpoint where TEntity : class, IModel
 {
 
-    protected BaseRetrieveByUidEndpoint( IEndpointComponent component) : base( component )
+    protected BaseRetrieveByUidEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
 
     [HttpGet("{uid}")]
     [SwaggerOperation(Summary = "By UID", Description = "Retrieve by Uid")]
-    public virtual async Task<IActionResult> Handle([FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid )
+    public virtual async Task<IActionResult> Handle([FromRoute, SwaggerParameter(Description = "Uid", Required = true)] string uid)
     {
 
         using var logger = EnterMethod();

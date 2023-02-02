@@ -4,18 +4,18 @@ using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseCreateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint where TEntity: class, IModel where TDelta: BaseDelta
+public abstract class BaseCreateFromDeltaEndpoint<TEntity, TDelta> : BaseEndpoint where TEntity : class, IModel where TDelta : BaseDelta
 {
 
 
-    protected BaseCreateFromDeltaEndpoint( IEndpointComponent component ) : base( component )
+    protected BaseCreateFromDeltaEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
 
-    protected virtual bool TryValidate( BaseDelta? delta, out IActionResult error )
+    protected virtual bool TryValidate(BaseDelta? delta, out IActionResult error)
     {
 
         using var logger = EnterMethod();
@@ -90,7 +90,7 @@ public abstract class BaseCreateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
 
     [SwaggerOperation(Summary = "Create", Description = "Create from Delta RTO")]
     [HttpPost]
-    public async Task<IActionResult> Handle( [FromBody] TDelta delta )
+    public async Task<IActionResult> Handle([FromBody] TDelta delta)
     {
 
         using var logger = EnterMethod();
@@ -137,7 +137,7 @@ public abstract class BaseCreateFromDeltaEndpoint<TEntity,TDelta>: BaseEndpoint 
 
 
 
-public abstract class BaseCreateFromDeltaEndpoint<TParent,TEntity,TDelta> : BaseEndpoint where TParent: class, IModel  where TEntity : class, IAggregateModel where TDelta : BaseDelta
+public abstract class BaseCreateFromDeltaEndpoint<TParent, TEntity, TDelta> : BaseEndpoint where TParent : class, IModel where TEntity : class, IAggregateModel where TDelta : BaseDelta
 {
 
 
@@ -236,7 +236,7 @@ public abstract class BaseCreateFromDeltaEndpoint<TParent,TEntity,TDelta> : Base
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = new CreateMemberEntityRequest<TParent,TEntity>
+        var request = new CreateMemberEntityRequest<TParent, TEntity>
         {
             ParentUid = uid
         };

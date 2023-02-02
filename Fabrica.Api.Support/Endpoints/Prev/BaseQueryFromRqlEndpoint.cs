@@ -6,12 +6,13 @@ using Fabrica.Rql.Parser;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public class BaseThinQueryFromRqlEndpoint<TExplorer> : BaseEndpoint where TExplorer : class, IExplorableModel
+public abstract class BaseQueryFromRqlEndpoint<TExplorer> : BaseEndpoint where TExplorer : class, IExplorableModel
 {
 
-    protected BaseThinQueryFromRqlEndpoint(IEndpointComponent component) : base(component)
+
+    protected BaseQueryFromRqlEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
@@ -60,7 +61,7 @@ public class BaseThinQueryFromRqlEndpoint<TExplorer> : BaseEndpoint where TExplo
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = new QueryThinEntityRequest<TExplorer>
+        var request = new QueryEntityRequest<TExplorer>
         {
             Filters = filters
         };
@@ -85,6 +86,7 @@ public class BaseThinQueryFromRqlEndpoint<TExplorer> : BaseEndpoint where TExplo
         return result;
 
     }
+
 
 
 }

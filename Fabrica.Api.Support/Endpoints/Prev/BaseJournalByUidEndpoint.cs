@@ -4,20 +4,20 @@ using Fabrica.Persistence.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseJournalByUidEndpoint<TTarget>: BaseEndpoint where TTarget: class, IModel
+public abstract class BaseJournalByUidEndpoint<TTarget> : BaseEndpoint where TTarget : class, IModel
 {
 
 
-    protected BaseJournalByUidEndpoint( IEndpointComponent component ) : base( component )
+    protected BaseJournalByUidEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
     [SwaggerOperation(Summary = "Journal", Description = "Audit Journal for Uid")]
 
     [HttpGet("{uid}/journal")]
-    public async Task<IActionResult> Handle( [FromRoute] string uid )
+    public async Task<IActionResult> Handle([FromRoute] string uid)
     {
 
         using var logger = EnterMethod();
@@ -28,7 +28,7 @@ public abstract class BaseJournalByUidEndpoint<TTarget>: BaseEndpoint where TTar
         logger.Debug("Attempting to dispatch request");
         var request = new AuditJournalStreamRequest
         {
-            Entity = typeof(TTarget).FullName??"",
+            Entity = typeof(TTarget).FullName ?? "",
             EntityUid = uid
         };
 

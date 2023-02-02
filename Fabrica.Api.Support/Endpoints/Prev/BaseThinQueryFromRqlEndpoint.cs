@@ -6,20 +6,19 @@ using Fabrica.Rql.Parser;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Prev;
 
-public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TExplorer: class, IExplorableModel
+public class BaseThinQueryFromRqlEndpoint<TExplorer> : BaseEndpoint where TExplorer : class, IExplorableModel
 {
 
-
-    protected BaseQueryFromRqlEndpoint( IEndpointComponent component ) : base( component )
+    protected BaseThinQueryFromRqlEndpoint(IEndpointComponent component) : base(component)
     {
     }
 
 
     [HttpGet]
     [SwaggerOperation(Summary = "Using RQL", Description = "Query using RQL")]
-    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int  limit=0 )
+    public virtual async Task<IActionResult> Handle([FromQuery, SwaggerParameter(Description = "RQL", Required = true)] string rql, [FromQuery, SwaggerParameter(Description = "Limit", Required = false)] int limit = 0)
     {
 
         using var logger = EnterMethod();
@@ -53,7 +52,7 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
             filters.AddRange(rqls.Select(s =>
             {
                 var tree = RqlLanguageParser.ToCriteria(s);
-                return new RqlFilterBuilder<TExplorer>(tree){ RowLimit = limit };
+                return new RqlFilterBuilder<TExplorer>(tree) { RowLimit = limit };
             }));
 
 
@@ -61,9 +60,9 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
 
         // *****************************************************************
         logger.Debug("Attempting to build request");
-        var request = new QueryEntityRequest<TExplorer>
+        var request = new QueryThinEntityRequest<TExplorer>
         {
-            Filters  = filters
+            Filters = filters
         };
 
 
@@ -86,7 +85,6 @@ public abstract class BaseQueryFromRqlEndpoint<TExplorer>: BaseEndpoint where TE
         return result;
 
     }
-
 
 
 }
