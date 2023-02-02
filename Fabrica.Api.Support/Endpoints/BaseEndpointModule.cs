@@ -18,11 +18,11 @@ namespace Fabrica.Api.Support.Endpoints;
 
 
 [AttributeUsage(AttributeTargets.Class)]
-public class BasePathAttribute : Attribute
+public class ModuleRouteAttribute : Attribute
 {
 
     public string Prefix { get; set; } = "";
-    private string Resource { get; set; } = "";
+    public string Resource { get; set; } = "";
     public string Path => $"{Prefix}/{Resource}";
 
 }
@@ -48,11 +48,24 @@ public abstract class BaseEndpointModule: AbstractEndpointModule
 
     public static JsonSerializerSettings Settings { get; }
 
+    protected static string ExtractResource<T>() where T : class
+    {
+
+        var attr = typeof(T).GetCustomAttribute<ModelAttribute>();
+        var path = attr is not null ? attr.Resource : "";
+
+        if( string.IsNullOrWhiteSpace(path) )
+            path = typeof(T).Name.Pluralize().ToLowerInvariant();
+
+        return path;
+
+    }
+
 
     protected BaseEndpointModule()
     {
 
-        if (GetType().GetCustomAttribute<BasePathAttribute>() is { } attr)
+        if (GetType().GetCustomAttribute<ModuleRouteAttribute>() is { } attr)
             BasePath = attr.Path;
 
     }
@@ -65,6 +78,7 @@ public abstract class BaseEndpointModule: AbstractEndpointModule
 
     }
 
+
 }
 
 
@@ -75,8 +89,11 @@ public abstract class BaseQueryEndpointModule<TExplorer,TEntity> : BaseEndpointM
     protected BaseQueryEndpointModule()
     {
 
-        var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
-        BasePath = attr is not null ? attr.Resource : typeof(TEntity).Name.ToLowerInvariant().Pluralize();
+        var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+        var prefix = attr is not null ? attr.Prefix : "";
+        var resource = !string.IsNullOrWhiteSpace(attr?.Resource) ? attr.Resource : ExtractResource<TEntity>();
+
+        BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
@@ -206,8 +223,11 @@ public abstract class BaseQueryEndpointModule<TCriteria,TExplorer,TEntity> : Bas
     protected BaseQueryEndpointModule()
     {
 
-        var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
-        BasePath = attr is not null ? attr.Resource : typeof(TEntity).Name.ToLowerInvariant().Pluralize();
+        var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+        var prefix = attr is not null ? attr.Prefix : "";
+        var resource = !string.IsNullOrWhiteSpace(attr?.Resource) ? attr.Resource : ExtractResource<TEntity>();
+
+        BasePath = $"{prefix}/{resource}";
 
         IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
@@ -362,8 +382,11 @@ public abstract class BaseCommandEndpointModule<TDelta,TEntity>: BaseEndpointMod
     protected BaseCommandEndpointModule()
     {
 
-        var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
-        BasePath = attr is not null ? attr.Resource : typeof(TEntity).Name.ToLowerInvariant().Pluralize();
+        var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+        var prefix = attr is not null ? attr.Prefix : "";
+        var resource = !string.IsNullOrWhiteSpace(attr?.Resource) ? attr.Resource : ExtractResource<TEntity>();
+
+        BasePath = $"{prefix}/{resource}";
 
 
         IncludeInOpenApi();
