@@ -21,33 +21,8 @@ namespace Fabrica.Api.Support.Endpoints;
 public class BasePathAttribute : Attribute
 {
 
-    public BasePathAttribute(string path)
-    {
-        Path = path;
-    }
-    
-    public string Path { get; }
-
-}
-
-
-public interface IBasePathSource
-{
-    string Path { get; }
-}
-
-[AttributeUsage(AttributeTargets.Class)]
-public class BasePathAttribute<T> : Attribute, IBasePathSource where T : class
-{
-
-    public BasePathAttribute()
-    {
-        var attr = typeof(T).GetCustomAttribute<ModelAttribute>();
-        Resource = attr is not null ? attr.Resource : typeof(T).Name.ToLowerInvariant().Pluralize();
-    }
-
     public string Prefix { get; set; } = "";
-    private string Resource { get; }
+    private string Resource { get; set; } = "";
     public string Path => $"{Prefix}/{Resource}";
 
 }
@@ -77,9 +52,7 @@ public abstract class BaseEndpointModule: AbstractEndpointModule
     protected BaseEndpointModule()
     {
 
-        if (GetType().GetCustomAttribute(typeof(BasePathAttribute<>)) is IBasePathSource attrT)
-            BasePath = attrT.Path;
-        else if (GetType().GetCustomAttribute<BasePathAttribute>() is { } attr)
+        if (GetType().GetCustomAttribute<BasePathAttribute>() is { } attr)
             BasePath = attr.Path;
 
     }
