@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
 using Fabrica.Api.Support.Models;
+using Fabrica.Mediator;
 using Fabrica.Models;
+using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
+using Fabrica.Persistence.Patch;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
@@ -509,6 +512,135 @@ public abstract class BaseCommandEndpointModule<TDelta,TEntity>: BaseEndpointMod
 
 
     }
+
+
+}
+
+
+public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule where TEntity : class, IModel
+{
+
+
+    protected BaseCommandEndpointModule()
+    {
+
+        var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+        var prefix = attr is not null ? attr.Prefix : "";
+        var resource = !string.IsNullOrWhiteSpace(attr?.Resource) ? attr.Resource : ExtractResource<TEntity>();
+
+        BasePath = $"{prefix}/{resource}";
+
+
+        IncludeInOpenApi();
+        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+
+    }
+
+    protected BaseCommandEndpointModule(string route) : base(route)
+    {
+
+        IncludeInOpenApi();
+        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+
+    }
+
+
+    public override void AddRoutes(IEndpointRouteBuilder app)
+    {
+
+        app.MapPatch("", async ([AsParameters] PatchHandler handler) => await handler.Handle())
+            .WithSummary("Patch")
+            .WithDescription($"CreateApply Patches and Retrieve {typeof(TEntity).Name} but UID")
+            .Produces<TEntity>()
+            .Produces<ErrorResponseModel>(422);
+
+    }
+
+
+    protected class PatchHandler : BaseMediatorHandler
+    {
+
+
+        [FromRoute]
+        public string Uid { get; set; } = null!;
+
+        [FromBody] 
+        public List<ModelPatch> Source { get; set; } = null!;
+
+        [FromServices] 
+        public IModelMetaService Meta { get; set; } = null!;
+
+        [FromServices] 
+        public IPatchResolver Resolver { get; set; } = null!;
+
+
+        public override async Task<IResult> Handle()
+        {
+
+            using var logger = EnterMethod();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build patch set");
+            var set = new PatchSet();
+            set.Add(Source);
+
+            logger.Inspect(nameof(set.Count), set.Count);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to resolve patch set");
+            var requests = Resolver.Resolve(set);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send request via Mediator");
+            var patchResponse = await Mediator.Send(requests);
+
+            logger.Inspect(nameof(patchResponse.HasErrors), patchResponse.HasErrors);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to BatchResponse for success");
+            patchResponse.EnsureSuccess();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to retrieve entity using Uid");
+            var request = new RetrieveEntityRequest<TEntity>
+            {
+                Uid = Uid
+            };
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send request via Mediator");
+
+            var retrieveResponse = await Mediator.Send(request);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build action result");
+
+            var result = BuildResult(retrieveResponse);
+
+
+
+            // *****************************************************************
+            return result;
+
+        }
+
+
+    }
+
+
 
 
 }
