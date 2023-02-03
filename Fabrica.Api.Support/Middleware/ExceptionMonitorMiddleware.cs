@@ -160,10 +160,9 @@ public class ExceptionMonitorMiddleware
         using var logger = Correlation.EnterMethod(GetType());
 
 
-
         // ***********************************************************************
 
-        if (exception is JsonReaderException je)
+        if( exception is JsonReaderException je )
         {
             var errorRes = new ErrorResponseModel
             {
@@ -182,7 +181,7 @@ public class ExceptionMonitorMiddleware
 
 
         // ***********************************************************************
-        if (exception is ViolationsExistException ve)
+        if( exception is ViolationsExistException ve )
         {
             var errorRes = new ErrorResponseModel
             {
@@ -202,9 +201,10 @@ public class ExceptionMonitorMiddleware
         }
 
 
+        var diagLogger = Correlation.GetLogger("Fabrica.Diagnostics.Http");
 
         // ***********************************************************************
-        if (exception is ExternalException bex)
+        if ( exception is ExternalException bex )
         {
 
             var errorRes = new ErrorResponseModel
@@ -217,7 +217,7 @@ public class ExceptionMonitorMiddleware
 
 
             if (bex.Kind == ErrorKind.System)
-                logger.Error(exception, "External Exception");
+                diagLogger.Error(exception, "External Exception");
             else
                 logger.Debug(exception, "External Exception");
 
@@ -237,7 +237,7 @@ public class ExceptionMonitorMiddleware
         };
 
 
-        logger.Error(exception, "Unhandled Exception");
+        diagLogger.Error(exception, "Unhandled Exception");
 
 
         return defErrorRes;
