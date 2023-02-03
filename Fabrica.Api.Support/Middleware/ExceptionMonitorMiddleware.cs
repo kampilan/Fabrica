@@ -217,7 +217,7 @@ public class ExceptionMonitorMiddleware
 
 
             if (bex.Kind == ErrorKind.System)
-                diagLogger.Error(exception, "External Exception");
+                diagLogger.Error(exception, "HTTP Request: Encountered unhandled Exception");
             else
                 logger.Debug(exception, "External Exception");
 
@@ -237,7 +237,7 @@ public class ExceptionMonitorMiddleware
         };
 
 
-        diagLogger.Error(exception, "Unhandled Exception");
+        diagLogger.Error(exception, "HTTP Request: Encountered unhandled Exception");
 
 
         return defErrorRes;
