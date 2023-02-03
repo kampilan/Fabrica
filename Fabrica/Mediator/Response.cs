@@ -27,7 +27,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
         switch (Ok)
         {
             case false when InnerException is not null:
-                throw InnerException;
+                throw new MediatorException(this, InnerException);
             case false:
                 throw new MediatorException(this);
         }
