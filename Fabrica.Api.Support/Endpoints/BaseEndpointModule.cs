@@ -564,9 +564,6 @@ public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule whe
         [FromRoute]
         public string Uid { get; set; } = null!;
 
-        [FromBody] 
-        public List<ModelPatch> Source { get; set; } = null!;
-
         [FromServices] 
         public IModelMetaService Meta { get; set; } = null!;
 
@@ -581,9 +578,17 @@ public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule whe
 
 
             // *****************************************************************
+            logger.Debug("Attempting to deserialize ModelPatch list");
+            var patches = await FromBody<List<ModelPatch>>();
+
+            logger.Inspect(nameof(patches.Count), patches.Count);
+
+
+
+            // *****************************************************************
             logger.Debug("Attempting to build patch set");
             var set = new PatchSet();
-            set.Add(Source);
+            set.Add(patches);
 
             logger.Inspect(nameof(set.Count), set.Count);
 

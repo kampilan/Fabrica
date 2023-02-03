@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -154,6 +155,31 @@ public abstract class BaseMediatorHandler
         var body = await reader.ReadToEndAsync();
         return body;
     }
+
+    protected async Task<TTarget> FromBody<TTarget>() where TTarget : class
+    {
+
+        using var logger = EnterMethod();
+
+        var serializer = JsonSerializer.Create(BaseEndpointModule.Settings);
+
+        using var reader = new StreamReader(Request.Body);
+        await using var jreader = new JsonTextReader(reader);
+
+        var token = await JToken.LoadAsync(jreader);
+        if (token is null)
+            throw new BadRequestException($"Could not parse JSON body in {GetType().FullName}.FromBody<>");
+
+        var target = token.ToObject<TTarget>( serializer );
+        if( target is null)
+            throw new BadRequestException( $"Could not parse Token in {GetType().FullName}.FromBody<>" );
+
+
+        return target;
+
+    }
+
+
 
 
     protected virtual IResult BuildResult<TValue>( Response<TValue> response, HttpStatusCode status=HttpStatusCode.OK ) where TValue : class
