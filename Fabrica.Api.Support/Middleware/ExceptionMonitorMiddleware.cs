@@ -38,16 +38,16 @@ public class ExceptionMonitorMiddleware
             Correlation = correlation;
 
 
-            using var logger = correlation.EnterMethod(GetType());
-            logger.Error(cause, "Caught unhandled Exception in middleware pipeline");
+            var error = BuildResponseModel(cause);
 
-            logger.Inspect(nameof(httpContext.Response.HasStarted), httpContext.Response.HasStarted);
-
-            if( httpContext.Response.HasStarted )
+            if ( httpContext.Response.HasStarted )
+            {
+                using var logger = correlation.GetLogger(GetType());
+                logger.Debug( cause, "Caught unhandled Exception after Response started" );
+                logger.LogObject(nameof(error), error);
                 return;
+            }
 
-
-            var em = BuildResponseModel( cause );
 
             httpContext.Response.StatusCode = MapExceptionToStatus(cause);
             httpContext.Response.ContentType = "application/json";
@@ -60,7 +60,7 @@ public class ExceptionMonitorMiddleware
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            serializer.Serialize(jwriter, em);
+            serializer.Serialize(jwriter, error);
             await jwriter.FlushAsync();
 
             stream.Seek(0, SeekOrigin.Begin);
@@ -80,7 +80,6 @@ public class ExceptionMonitorMiddleware
 
 
         using var logger = Correlation.EnterMethod(GetType());
-
 
 
         var kind = ErrorKind.System;
