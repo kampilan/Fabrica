@@ -117,6 +117,7 @@ public abstract class BaseEndpointModule: AbstractEndpointModule
 
             var response = new Response<Dictionary<string, DateTime>>(dict)
                 .IsOk()
+                .WithKind(ErrorKind.None)
                 .WithDetail(new EventDetail
                 {
                     Category = EventDetail.EventCategory.Info,
