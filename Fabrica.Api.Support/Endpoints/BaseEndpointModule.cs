@@ -517,7 +517,7 @@ public abstract class BaseCommandEndpointModule<TDelta,TEntity>: BaseEndpointMod
 }
 
 
-public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule where TEntity : class, IModel
+public abstract class BaseCommandEndpointModule<TEntity> : BaseEndpointModule where TEntity : class, IModel
 {
 
 
@@ -537,6 +537,147 @@ public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule whe
     }
 
     protected BaseCommandEndpointModule(string route) : base(route)
+    {
+
+        IncludeInOpenApi();
+        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+
+    }
+
+
+    public override void AddRoutes(IEndpointRouteBuilder app)
+    {
+
+        app.MapPost("", async ([AsParameters] CreateHandler handler) => await handler.Handle())
+            .WithSummary("Create")
+            .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
+            .Produces<TEntity>()
+            .Produces<ErrorResponseModel>(422);
+
+        app.MapPut("{uid}", async ([AsParameters] UpdateHandler handler) => await handler.Handle())
+            .WithSummary("Update")
+            .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
+            .Produces<TEntity>()
+            .Produces<ErrorResponseModel>(404)
+            .Produces<ErrorResponseModel>(422);
+
+
+        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler handler) => await handler.Handle())
+            .WithSummary("Delete")
+            .WithDescription($"Delete {typeof(TEntity).Name} using UID")
+            .Produces(200)
+            .Produces<ErrorResponseModel>(404);
+
+    }
+
+
+
+    protected class CreateHandler : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity>
+    {
+
+
+        [FromBody]
+        public Dictionary<string,object> Delta { get; set; } = null!;
+
+
+        protected override Task<CreateEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new CreateEntityRequest<TEntity>
+            {
+                Delta = Delta
+            };
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+    protected class UpdateHandler : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity>
+    {
+
+
+        [FromRoute]
+        public string Uid { get; set; } = null!;
+
+
+        [FromBody]
+        public Dictionary<string, object> Delta { get; set; } = null!;
+
+
+        protected override Task<UpdateEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new UpdateEntityRequest<TEntity>
+            {
+                Uid = Uid,
+                Delta = Delta
+            };
+
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
+    protected class DeleteHandler : BaseMediatorEndpointHandler<DeleteEntityRequest<TEntity>>
+    {
+
+
+        [FromRoute]
+        public string Uid { get; set; } = null!;
+
+
+        protected override Task<DeleteEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new DeleteEntityRequest<TEntity>
+            {
+                Uid = Uid
+            };
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
+}
+
+
+public abstract class BasePatchEndpointModule<TEntity>: BaseEndpointModule where TEntity : class, IModel
+{
+
+
+    protected BasePatchEndpointModule()
+    {
+
+        var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+        var prefix = attr is not null ? attr.Prefix : "";
+        var resource = !string.IsNullOrWhiteSpace(attr?.Resource) ? attr.Resource : ExtractResource<TEntity>();
+
+        BasePath = $"{prefix}/{resource}";
+
+
+        IncludeInOpenApi();
+        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+
+    }
+
+    protected BasePatchEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
