@@ -129,6 +129,8 @@ public class Response: FluentResponse<Response>
 public class Response<TValue>: FluentResponse<Response<TValue>>
 {
 
+    public static implicit operator TValue(Response<TValue> response) => response.Value;
+
     public Response()
     {
         Value = default!;
