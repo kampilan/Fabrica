@@ -32,9 +32,9 @@ public static class MiddlewareExtensions
 {
 
 
-    public static IApplicationBuilder UsePipelineMonitor(this IApplicationBuilder app)
+    public static IApplicationBuilder UseExceptionMonitor(this IApplicationBuilder app)
     {
-        app.UseMiddleware<PipelineMonitorMiddleware>();
+        app.UseMiddleware<ExceptionMonitorMiddleware>();
         return app;
     }
 
@@ -46,9 +46,9 @@ public static class MiddlewareExtensions
     }
 
 
-    public static IApplicationBuilder UseDebugMode(this IApplicationBuilder app)
+    public static IApplicationBuilder UseDebugMonitor(this IApplicationBuilder app)
     {
-        app.UseMiddleware<DebugMiddleware>();
+        app.UseMiddleware<DebugMonitorMiddleware>();
         return app;
     }
 

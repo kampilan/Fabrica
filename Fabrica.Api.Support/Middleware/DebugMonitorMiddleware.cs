@@ -28,10 +28,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Fabrica.Api.Support.Middleware;
 
-public class DebugMiddleware
+public class DebugMonitorMiddleware
 {
 
-    public DebugMiddleware(RequestDelegate next)
+    public DebugMonitorMiddleware(RequestDelegate next)
     {
         Next = next;
     }

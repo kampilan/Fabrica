@@ -17,11 +17,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Fabrica.Api.Support.Endpoints;
 
-public abstract class BaseMediatorHandler
+public abstract class BaseEndpointHandler
 {
 
 
-    [FromServices] 
+    [FromServices]
     public ICorrelation Correlation { get; set; } = null!;
 
     protected ILogger EnterMethod([CallerMemberName] string name = "")
@@ -30,9 +30,6 @@ public abstract class BaseMediatorHandler
         return logger;
     }
 
-
-    [FromServices]
-    public IMessageMediator Mediator { get; set; } = null!;
 
     public HttpContext Context { get; set; } = null!;
 
@@ -170,9 +167,9 @@ public abstract class BaseMediatorHandler
         if (token is null)
             throw new BadRequestException($"Could not parse JSON body in {GetType().FullName}.FromBody<>");
 
-        var target = token.ToObject<TTarget>( serializer );
-        if( target is null)
-            throw new BadRequestException( $"Could not parse Token in {GetType().FullName}.FromBody<>" );
+        var target = token.ToObject<TTarget>(serializer);
+        if (target is null)
+            throw new BadRequestException($"Could not parse Token in {GetType().FullName}.FromBody<>");
 
 
         return target;
@@ -180,40 +177,7 @@ public abstract class BaseMediatorHandler
     }
 
 
-
-
-    protected virtual IResult BuildResult<TValue>( Response<TValue> response, HttpStatusCode status=HttpStatusCode.OK ) where TValue : class
-    {
-
-        if( response.Value is MemoryStream stream )
-        {
-            using( stream )
-            {
-
-                using var reader = new StreamReader(stream);
-                var json = reader.ReadToEnd();
-
-                var result = Results.Content(json, "application/json", Encoding.UTF8, (int)status);
-
-                return result;
-
-            }
-
-        }
-        else
-        {
-
-            var json = JsonConvert.SerializeObject(response.Value, BaseEndpointModule.Settings);
-            var result = Results.Content(json, "application/json", Encoding.UTF8, (int) status);
-
-            return result;
-
-        }
-
-    }
-
-
-    protected virtual IResult BuildResult( object model, HttpStatusCode status = HttpStatusCode.OK)
+    protected virtual IResult BuildResult(object model, HttpStatusCode status = HttpStatusCode.OK)
     {
 
         var json = JsonConvert.SerializeObject(model, BaseEndpointModule.Settings);
@@ -222,7 +186,6 @@ public abstract class BaseMediatorHandler
         return result;
 
     }
-
 
 
     protected IResult BuildErrorResult(IExceptionInfo error)
@@ -339,37 +302,62 @@ public abstract class BaseMediatorHandler
 }
 
 
-public abstract class BaseMediatorHandler<TRequest,TResponse>: BaseMediatorHandler where TRequest : class, IRequest<Response<TResponse>> where TResponse: class
+public abstract class BaseMediatorEndpointHandler: BaseEndpointHandler
 {
 
 
-    protected abstract Task<TRequest> BuildRequest();
+    [FromServices]
+    public IMessageMediator Mediator { get; set; } = null!;
 
 
-    public override async Task<IResult> Handle()
+    protected async Task<IResult> Send<TValue>( IRequest<Response<TValue>> request )
     {
 
         using var logger = EnterMethod();
 
 
         // *****************************************************************
-        logger.Debug("Attempting to build request");
-        var request = await BuildRequest();
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to send request via mediator");
-        var response = await Mediator.Send(request);
-
-        if (!response.Ok)
-            return BuildErrorResult(response);
+        logger.Debug("Attempting to Send request via Mediator");
+        var response = await Mediator.Send( request );
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to build result");
+        logger.Debug("Attempting to check for success");
+        response.EnsureSuccess();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build Result");
         var result = BuildResult(response);
 
+
+        // *****************************************************************
+        return result;
+
+    }
+
+
+    protected async Task<IResult> Send( IRequest<Mediator.Response> request )
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to Send request via Mediator");
+        var response = await Mediator.Send(request);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to check for success");
+        response.EnsureSuccess();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build Result");
+        var result = Results.Ok();
 
 
         // *****************************************************************
@@ -379,11 +367,42 @@ public abstract class BaseMediatorHandler<TRequest,TResponse>: BaseMediatorHandl
 
 
 
+    protected virtual IResult BuildResult<TValue>( Response<TValue> response, HttpStatusCode status=HttpStatusCode.OK )
+    {
+
+        if( response.Value is MemoryStream stream )
+        {
+            using( stream )
+            {
+
+                using var reader = new StreamReader(stream);
+                var json = reader.ReadToEnd();
+
+                var result = Results.Content(json, "application/json", Encoding.UTF8, (int)status);
+
+                return result;
+
+            }
+
+        }
+        // ReSharper disable once RedundantIfElseBlock
+        else
+        {
+
+            var json = JsonConvert.SerializeObject(response.Value, BaseEndpointModule.Settings);
+            var result = Results.Content(json, "application/json", Encoding.UTF8, (int) status);
+
+            return result;
+
+        }
+
+    }
+
 
 }
 
 
-public abstract class BaseMediatorHandler<TRequest> : BaseMediatorHandler where TRequest : class, IRequest<Mediator.Response>
+public abstract class BaseMediatorEndpointHandler<TRequest,TResponse>: BaseMediatorEndpointHandler where TRequest : class, IRequest<Response<TResponse>> where TResponse: class
 {
 
 
@@ -403,17 +422,39 @@ public abstract class BaseMediatorHandler<TRequest> : BaseMediatorHandler where 
 
         // *****************************************************************
         logger.Debug("Attempting to send request via mediator");
-        var response = await Mediator.Send(request);
-
-        if (!response.Ok)
-            return BuildErrorResult(response);
-
+        var result = await Send(request);
 
 
         // *****************************************************************
-        logger.Debug("Attempting to build result");
-        var result = BuildResult(response);
+        return result;
 
+    }
+
+
+}
+
+
+public abstract class BaseMediatorEndpointHandler<TRequest> : BaseMediatorEndpointHandler where TRequest : class, IRequest<Mediator.Response>
+{
+
+
+    protected abstract Task<TRequest> BuildRequest();
+
+
+    public override async Task<IResult> Handle()
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = await BuildRequest();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request via mediator");
+        var result = await Send(request);
 
 
         // *****************************************************************

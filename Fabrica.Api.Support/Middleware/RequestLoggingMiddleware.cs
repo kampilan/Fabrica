@@ -51,18 +51,12 @@ public class RequestLoggingMiddleware
 
         if (context == null) throw new ArgumentNullException(nameof(context));
         if (correlation == null) throw new ArgumentNullException(nameof(correlation));
-
-        // ReSharper disable once UnusedVariable
-        using( var logger = correlation.EnterMethod(GetType()) )
-        {
-
-            await _performRequestLogging(context, correlation);
-
-        }
-
+        
+        await _performRequestLogging(context, correlation);
 
         await Next(context);
 
+        _performResponseLogging( context, correlation);
 
     }
 
@@ -255,6 +249,38 @@ public class RequestLoggingMiddleware
         finally
         {
             logger.LeaveMethod();
+        }
+
+
+    }
+
+    private void _performResponseLogging( HttpContext context, ICorrelation correlation )
+    {
+
+        using var diagLogger = correlation.GetLogger("Fabrica.Diagnostics.Http");
+
+
+        if( diagLogger.IsDebugEnabled )
+        {
+
+            var builder = new StringBuilder();
+            builder.AppendLine();
+            builder.AppendLine();
+            builder.AppendLine("********************************************************************************");
+            builder.AppendLine("HTTP Response Details");
+            builder.AppendLine("********************************************************************************");
+            builder.AppendLine();
+
+            builder.AppendLine("Response");
+            builder.AppendLine("********************************************************************************");
+            builder.AppendFormat("Status Code : {0}", context.Response.StatusCode);
+            builder.AppendLine();
+            builder.AppendLine();
+            builder.AppendLine("********************************************************************************");
+
+            var le = diagLogger.CreateEvent(Level.Debug, "HTTP Result", PayloadType.Text, builder.ToString());
+            diagLogger.LogEvent(le);
+
         }
 
 

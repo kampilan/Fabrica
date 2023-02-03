@@ -137,7 +137,7 @@ public abstract class BaseQueryEndpointModule<TExplorer,TEntity> : BaseEndpointM
 
     }
 
-    protected class QueryHandler : BaseMediatorHandler<QueryEntityRequest<TExplorer>, List<TExplorer>>
+    protected class QueryHandler : BaseMediatorEndpointHandler<QueryEntityRequest<TExplorer>, List<TExplorer>>
     {
 
 
@@ -167,7 +167,7 @@ public abstract class BaseQueryEndpointModule<TExplorer,TEntity> : BaseEndpointM
     }
 
 
-    protected class RetrieveHandler : BaseMediatorHandler<RetrieveEntityRequest<TEntity>,TEntity>
+    protected class RetrieveHandler : BaseMediatorEndpointHandler<RetrieveEntityRequest<TEntity>,TEntity>
     {
 
 
@@ -191,7 +191,7 @@ public abstract class BaseQueryEndpointModule<TExplorer,TEntity> : BaseEndpointM
     }
 
 
-    protected class JournalHandler : BaseMediatorHandler<AuditJournalStreamRequest, MemoryStream>
+    protected class JournalHandler : BaseMediatorEndpointHandler<AuditJournalStreamRequest, MemoryStream>
     {
 
 
@@ -274,7 +274,7 @@ public abstract class BaseQueryEndpointModule<TCriteria,TExplorer,TEntity> : Bas
 
 
 
-    protected class QueryHandler : BaseMediatorHandler<QueryEntityRequest<TExplorer>, List<TExplorer>>
+    protected class QueryHandler : BaseMediatorEndpointHandler<QueryEntityRequest<TExplorer>, List<TExplorer>>
     {
 
 
@@ -324,7 +324,7 @@ public abstract class BaseQueryEndpointModule<TCriteria,TExplorer,TEntity> : Bas
 
     }
 
-    protected class RetrieveHandler : BaseMediatorHandler<RetrieveEntityRequest<TEntity>, TEntity>
+    protected class RetrieveHandler : BaseMediatorEndpointHandler<RetrieveEntityRequest<TEntity>, TEntity>
     {
 
 
@@ -348,7 +348,7 @@ public abstract class BaseQueryEndpointModule<TCriteria,TExplorer,TEntity> : Bas
 
     }
 
-    protected class JournalHandler : BaseMediatorHandler<AuditJournalStreamRequest, MemoryStream>
+    protected class JournalHandler : BaseMediatorEndpointHandler<AuditJournalStreamRequest, MemoryStream>
     {
 
 
@@ -433,7 +433,7 @@ public abstract class BaseCommandEndpointModule<TDelta,TEntity>: BaseEndpointMod
 
 
 
-    protected class CreateHandler : BaseMediatorHandler<CreateEntityRequest<TEntity>,TEntity>
+    protected class CreateHandler : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>,TEntity>
     {
 
 
@@ -456,7 +456,7 @@ public abstract class BaseCommandEndpointModule<TDelta,TEntity>: BaseEndpointMod
 
     }
 
-    protected class UpdateHandler : BaseMediatorHandler<UpdateEntityRequest<TEntity>, TEntity>
+    protected class UpdateHandler : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity>
     {
 
 
@@ -488,7 +488,7 @@ public abstract class BaseCommandEndpointModule<TDelta,TEntity>: BaseEndpointMod
     }
 
 
-    protected class DeleteHandler : BaseMediatorHandler<DeleteEntityRequest<TEntity>>
+    protected class DeleteHandler : BaseMediatorEndpointHandler<DeleteEntityRequest<TEntity>>
     {
 
 
@@ -557,7 +557,7 @@ public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule whe
     }
 
 
-    protected class PatchHandler : BaseMediatorHandler
+    protected class PatchHandler : BaseMediatorEndpointHandler
     {
 
 
