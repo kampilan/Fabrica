@@ -20,11 +20,21 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
     public bool Ok { get; private set; }
 
     public virtual object GetValue() => null!;
+
+    
     public void EnsureSuccess()
     {
-        if( !Ok )
-            throw new MediatorException(this);
+        switch (Ok)
+        {
+            case false when InnerException is not null:
+                throw InnerException;
+            case false:
+                throw new MediatorException(this);
+        }
     }
+
+
+    public Exception? InnerException { get; protected set; }
 
     [JsonConverter(typeof(StringEnumConverter))]
     public ErrorKind Kind { get; protected set; } = ErrorKind.System;
@@ -51,7 +61,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     public TDescendant From( ExternalException ex )
     {
-
+        WithInner(ex);
         WithKind(ex.Kind);
         WithErrorCode(ex.ErrorCode);
         WithExplanation(ex.Explanation);
@@ -59,6 +69,12 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
         return (TDescendant)this;
 
+    }
+
+    public TDescendant WithInner(Exception inner)
+    {
+        InnerException = inner;
+        return (TDescendant)this;
     }
 
     public TDescendant WithKind(ErrorKind kind)

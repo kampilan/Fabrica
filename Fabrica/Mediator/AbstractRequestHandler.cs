@@ -121,7 +121,7 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         {
             logger.Error(cause, "Unhandled exception encountered");
             var ec = cause.GetType().FullName ?? "";
-            return CreateFailureResponse().WithKind(ErrorKind.System).WithErrorCode(ec).WithExplanation(cause.Message);
+            return CreateFailureResponse().WithInner(cause).WithKind(ErrorKind.System).WithErrorCode(ec).WithExplanation(cause.Message);
         }
         finally
         {
