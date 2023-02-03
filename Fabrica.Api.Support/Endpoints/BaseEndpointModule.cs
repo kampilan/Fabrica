@@ -548,7 +548,7 @@ public abstract class BaseCommandEndpointModule<TEntity>: BaseEndpointModule whe
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        app.MapPatch("", async ([AsParameters] PatchHandler handler) => await handler.Handle())
+        app.MapPatch("{uid}", async ([AsParameters] PatchHandler handler) => await handler.Handle())
             .WithSummary("Patch")
             .WithDescription($"CreateApply Patches and Retrieve {typeof(TEntity).Name} but UID")
             .Produces<TEntity>()
