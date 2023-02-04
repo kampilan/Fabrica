@@ -24,8 +24,7 @@ SOFTWARE.
  
 */
 
-
-namespace Fabrica.Api.Support.Endpoints.Response;
+namespace Fabrica.Api.Support.Endpoints.Negotiation;
 
 using System;
 using System.IO;

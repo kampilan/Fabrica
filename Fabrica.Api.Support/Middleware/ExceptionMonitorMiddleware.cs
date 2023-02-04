@@ -24,13 +24,14 @@ public class ExceptionMonitorMiddleware
     public async Task Invoke(HttpContext httpContext, ICorrelation correlation)
     {
 
-        if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
-        if (correlation == null) throw new ArgumentNullException(nameof(correlation));
-
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(correlation);
 
         try
         {
+
             await Next(httpContext);
+
         }
         catch (Exception cause)
         {
@@ -40,31 +41,30 @@ public class ExceptionMonitorMiddleware
 
             var error = BuildResponseModel(cause);
 
-            if ( httpContext.Response.HasStarted )
-            {
-                using var logger = correlation.GetLogger(GetType());
-                logger.Debug( cause, "Caught unhandled Exception after Response started" );
-                logger.LogObject(nameof(error), error);
+            if( httpContext.Response.HasStarted )
                 return;
-            }
 
 
             httpContext.Response.StatusCode = MapExceptionToStatus(cause);
             httpContext.Response.ContentType = "application/json";
 
-            using var stream = new MemoryStream();
-            await using var writer = new StreamWriter(stream);
-            await using var jwriter = new JsonTextWriter(writer);
+
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
 
+
+            using var stream = new MemoryStream();
+            await using var writer = new StreamWriter(stream);
+            await using var jwriter = new JsonTextWriter(writer);
+
             serializer.Serialize(jwriter, error);
             await jwriter.FlushAsync();
 
             stream.Seek(0, SeekOrigin.Begin);
-            await stream.CopyToAsync(httpContext.Response.Body);
+            await stream.CopyToAsync( httpContext.Response.Body );
+
         }
     }
 
@@ -167,8 +167,8 @@ public class ExceptionMonitorMiddleware
             var errorRes = new ErrorResponseModel
             {
                 CorrelationId = Correlation.Uid,
-                ErrorCode = "BadJsonRequest",
-                Explanation = $"Bad JSON in request near {je.Path} Line {je.LineNumber} Column {je.LinePosition}"
+                ErrorCode     = "BadJsonRequest",
+                Explanation   = $"Bad JSON in request near {je.Path} Line {je.LineNumber} Column {je.LinePosition}"
             };
 
 
@@ -186,9 +186,9 @@ public class ExceptionMonitorMiddleware
             var errorRes = new ErrorResponseModel
             {
                 CorrelationId = Correlation.Uid,
-                ErrorCode = "ValidationErrors",
-                Explanation = "Validation errors occurred",
-                Details = ve.Details
+                ErrorCode     = "ValidationErrors",
+                Explanation   = "Validation errors occurred",
+                Details       = ve.Details
             };
 
 
@@ -210,9 +210,9 @@ public class ExceptionMonitorMiddleware
             var errorRes = new ErrorResponseModel
             {
                 CorrelationId = Correlation.Uid,
-                ErrorCode = bex.ErrorCode,
-                Explanation = bex.Explanation,
-                Details = bex.Details
+                ErrorCode     = bex.ErrorCode,
+                Explanation   = bex.Explanation,
+                Details       = bex.Details
             };
 
 

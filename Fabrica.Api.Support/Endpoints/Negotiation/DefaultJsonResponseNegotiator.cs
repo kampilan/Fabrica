@@ -24,35 +24,35 @@ SOFTWARE.
  
 */
 
+namespace Fabrica.Api.Support.Endpoints.Negotiation;
 
-namespace Fabrica.Api.Support.Endpoints.Request;
-
-using System.IO;
-using System.Text;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Negotiation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
-public static class StreamExtensions
+public class DefaultJsonResponseNegotiator : IResponseNegotiator
 {
-    /// <summary>
-    /// Gets the <see cref="HttpRequest" /> Body <see cref="Stream"/> as <see cref="string"/> asynchronously in the optional <see cref="Encoding"/>
-    /// </summary>
-    /// <param name="stream">Current <see cref="Stream"/></param>
-    /// <param name="encoding">The character encoding to use or <see cref="Encoding.UTF8"/> by default</param>
-    /// <param name="cancellationToken">The cancellation instruction if required</param>
-    /// <returns>Awaited <see cref="Task{String}"/></returns>
-    public static async Task<string> AsStringAsync(this Stream stream, Encoding encoding = null, CancellationToken cancellationToken = default)
+    private readonly JsonSerializerOptions jsonSettings;
+
+    public DefaultJsonResponseNegotiator()
     {
-        using (var reader = new StreamReader(stream, encoding ?? Encoding.UTF8, leaveOpen: true))
-        {
-            var readStream = await reader.ReadToEndAsync();
+        jsonSettings = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    }
 
-            if (stream.CanSeek)
-            {
-                stream.Position = 0;
-            }
+    public bool CanHandle(MediaTypeHeaderValue accept)
+    {
+        return accept.MediaType.ToString().IndexOf("json", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
 
-            return readStream;
-        }
+    public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
+    {
+        res.ContentType = "application/json; charset=utf-8";
+
+        await JsonSerializer.SerializeAsync(res.Body, model, model == null ? typeof(object) : model.GetType(), jsonSettings, cancellationToken);
     }
 }

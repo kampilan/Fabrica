@@ -29,7 +29,7 @@ namespace Fabrica.Api.Support.Endpoints;
 
 using System;
 using System.Collections.Generic;
-using Fabrica.Api.Support.Endpoints.Negotiation;
+using Negotiation;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
