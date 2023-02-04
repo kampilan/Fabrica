@@ -1,4 +1,7 @@
-﻿using Fabrica.Exceptions;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.One;
 using Microsoft.AspNetCore.Http;

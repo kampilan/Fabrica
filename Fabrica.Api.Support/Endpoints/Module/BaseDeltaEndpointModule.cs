@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using System.Reflection;
 using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
 using Humanizer;

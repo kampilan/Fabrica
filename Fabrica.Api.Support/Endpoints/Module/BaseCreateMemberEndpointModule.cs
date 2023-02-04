@@ -1,4 +1,7 @@
-﻿using Fabrica.Api.Support.Models;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
 using Humanizer;
 using Microsoft.AspNetCore.Http;
