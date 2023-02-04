@@ -512,7 +512,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
             // *****************************************************************
             logger.Debug("Attempting to build action result");
 
-            var result = BuildResult(retrieveResponse);
+            var result = EndpointResult.Create(retrieveResponse);
 
 
 

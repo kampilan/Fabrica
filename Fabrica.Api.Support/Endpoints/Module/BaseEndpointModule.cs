@@ -1,30 +1,11 @@
 ﻿using System.Reflection;
-using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Humanizer;
-using Newtonsoft.Json;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
 public abstract class BaseEndpointModule : AbstractEndpointModule
 {
-
-    static BaseEndpointModule()
-    {
-
-        Settings = new JsonSerializerSettings
-        {
-            ContractResolver = new ModelContractResolver(),
-            DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
-            NullValueHandling = NullValueHandling.Ignore,
-            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-            PreserveReferencesHandling = PreserveReferencesHandling.None,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        };
-
-    }
-
-    public static JsonSerializerSettings Settings { get; }
 
     protected static string ExtractResource<T>() where T : class
     {

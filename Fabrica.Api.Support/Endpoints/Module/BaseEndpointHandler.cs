@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
+using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Utilities.Container;
@@ -17,6 +18,24 @@ namespace Fabrica.Api.Support.Endpoints.Module;
 
 public abstract class BaseEndpointHandler
 {
+
+    static BaseEndpointHandler()
+    {
+
+        Settings = new JsonSerializerSettings
+        {
+            ContractResolver = new ModelContractResolver(),
+            DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
+            NullValueHandling = NullValueHandling.Ignore,
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            PreserveReferencesHandling = PreserveReferencesHandling.None,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+    }
+
+    protected static JsonSerializerSettings Settings { get; }
+
 
 
     [FromServices]
@@ -50,44 +69,15 @@ public abstract class BaseEndpointHandler
         error = null!;
 
 
-
         if (criteria is null)
-        {
-
-            var info = new ExceptionInfoModel
-            {
-                Kind = ErrorKind.BadRequest,
-                ErrorCode = "CriteriaInvalid",
-                Explanation = $"Errors occurred while parsing criteria for {Request.Method} at {Request.Path}"
-            };
-
-            error = BuildErrorResult(info);
-
-            return false;
-
-        }
-
+            throw new BadRequestException($"Errors occurred while parsing criteria for {Request.Method} at {Request.Path}");
 
 
         if (criteria.IsOverposted())
-        {
-
-            var info = new ExceptionInfoModel
-            {
-                Kind = ErrorKind.BadRequest,
-                ErrorCode = "DisallowedProperties",
-                Explanation = $"The following properties were not found: ({string.Join(',', criteria.GetOverpostNames())})"
-            };
-
-            error = BuildErrorResult(info);
-
-            return false;
-
-        }
-
+            throw new BadRequestException($"The following properties were not found: ({string.Join(',', criteria.GetOverpostNames())})")
+                .WithErrorCode("DisallowedProperties");
 
         return true;
-
 
     }
 
@@ -103,42 +93,14 @@ public abstract class BaseEndpointHandler
 
 
         if (delta is null)
-        {
-
-            var info = new ExceptionInfoModel
-            {
-                Kind = ErrorKind.BadRequest,
-                ErrorCode = "ModelInvalid",
-                Explanation = $"Errors occurred while parsing model for {Request.Method} at {Request.Path}"
-            };
-
-            error = BuildErrorResult(info);
-
-            return false;
-
-        }
-
+            throw new BadRequestException($"Errors occurred while parsing model for {Request.Method} at {Request.Path}");
 
 
         if (delta.IsOverposted())
-        {
-
-            var info = new ExceptionInfoModel
-            {
-                Kind = ErrorKind.BadRequest,
-                ErrorCode = "DisallowedProperties",
-                Explanation = $"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})"
-            };
-
-            error = BuildErrorResult(info);
-
-            return false;
-
-        }
-
+            throw new BadRequestException($"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})")
+                .WithErrorCode("DisallowedProperties");
 
         return true;
-
 
     }
 
@@ -156,7 +118,7 @@ public abstract class BaseEndpointHandler
 
         using var logger = EnterMethod();
 
-        var serializer = JsonSerializer.Create(BaseEndpointModule.Settings);
+        var serializer = JsonSerializer.Create(Settings);
 
         using var reader = new StreamReader(Request.Body);
         await using var jreader = new JsonTextReader(reader);
@@ -171,128 +133,6 @@ public abstract class BaseEndpointHandler
 
 
         return target;
-
-    }
-
-
-    protected virtual IResult BuildResult(object model, HttpStatusCode status = HttpStatusCode.OK)
-    {
-
-        var json = JsonConvert.SerializeObject(model, BaseEndpointModule.Settings);
-        var result = Results.Content(json, "application/json", Encoding.UTF8, (int)status);
-
-        return result;
-
-    }
-
-
-    protected IResult BuildErrorResult(IExceptionInfo error)
-    {
-
-        using var logger = EnterMethod();
-
-
-        logger.LogObject(nameof(error), error);
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to build ErrorResponseModel");
-        var model = new ErrorResponseModel
-        {
-            ErrorCode = error.ErrorCode,
-            Explanation = error.Explanation,
-            Details = new List<EventDetail>(error.Details),
-            CorrelationId = Correlation.Uid
-        };
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to map error Kind to HttpStatusCode");
-        var status = MapErrorToStatus(error.Kind);
-
-        logger.Inspect(nameof(status), status);
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to build ObjectResult");
-        var result = BuildResult(model, status);
-
-
-
-        // *****************************************************************
-        return result;
-
-
-    }
-
-
-    protected virtual HttpStatusCode MapErrorToStatus(ErrorKind kind)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Inspect(nameof(kind), kind);
-
-
-        var statusCode = HttpStatusCode.InternalServerError;
-
-        switch (kind)
-        {
-
-            case ErrorKind.None:
-                statusCode = HttpStatusCode.OK;
-                break;
-
-            case ErrorKind.NotFound:
-                statusCode = HttpStatusCode.NotFound;
-                break;
-
-            case ErrorKind.NotImplemented:
-                statusCode = HttpStatusCode.NotImplemented;
-                break;
-
-            case ErrorKind.Predicate:
-                statusCode = HttpStatusCode.BadRequest;
-                break;
-
-            case ErrorKind.Conflict:
-                statusCode = HttpStatusCode.Conflict;
-                break;
-
-            case ErrorKind.Functional:
-                statusCode = HttpStatusCode.InternalServerError;
-                break;
-
-            case ErrorKind.Concurrency:
-                statusCode = HttpStatusCode.Gone;
-                break;
-
-            case ErrorKind.BadRequest:
-                statusCode = HttpStatusCode.BadRequest;
-                break;
-
-            case ErrorKind.AuthenticationRequired:
-                statusCode = HttpStatusCode.Unauthorized;
-                break;
-
-            case ErrorKind.NotAuthorized:
-                statusCode = HttpStatusCode.Forbidden;
-                break;
-
-            case ErrorKind.System:
-            case ErrorKind.Unknown:
-                statusCode = HttpStatusCode.InternalServerError;
-                break;
-
-        }
-
-        logger.Inspect(nameof(statusCode), statusCode);
-
-
-        return statusCode;
 
     }
 

@@ -1,10 +1,7 @@
-﻿using System.Net;
-using System.Text;
-using Fabrica.Mediator;
+﻿using Fabrica.Mediator;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -35,7 +32,7 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
 
         // *****************************************************************
         logger.Debug("Attempting to build Result");
-        var result = BuildResult(response);
+        var result = EndpointResult.Create(response);
 
 
         // *****************************************************************
@@ -71,38 +68,6 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
 
     }
 
-
-
-    protected virtual IResult BuildResult<TValue>(Response<TValue> response, HttpStatusCode status = HttpStatusCode.OK)
-    {
-
-        if (response.Value is MemoryStream stream)
-        {
-            using (stream)
-            {
-
-                using var reader = new StreamReader(stream);
-                var json = reader.ReadToEnd();
-
-                var result = Results.Content(json, "application/json", Encoding.UTF8, (int)status);
-
-                return result;
-
-            }
-
-        }
-        // ReSharper disable once RedundantIfElseBlock
-        else
-        {
-
-            var json = JsonConvert.SerializeObject(response.Value, BaseEndpointModule.Settings);
-            var result = Results.Content(json, "application/json", Encoding.UTF8, (int)status);
-
-            return result;
-
-        }
-
-    }
 
 
 }

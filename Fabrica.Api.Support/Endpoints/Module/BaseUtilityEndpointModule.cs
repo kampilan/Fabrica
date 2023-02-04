@@ -33,7 +33,7 @@ public abstract class BaseUtilityEndpointModule : BaseEndpointModule
         public override Task<IResult> Handle()
         {
 
-            var result = BuildResult(Mission);
+            var result = EndpointResult.Create(Mission);
 
             return Task.FromResult(result);
 
@@ -87,7 +87,7 @@ public abstract class BaseUtilityEndpointModule : BaseEndpointModule
                 });
 
 
-            var result = BuildResult(response);
+            var result = EndpointResult.Create( response );
 
             return Task.FromResult(result);
 
