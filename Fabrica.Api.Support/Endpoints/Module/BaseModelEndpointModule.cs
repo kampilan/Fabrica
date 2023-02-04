@@ -11,10 +11,10 @@ using Fabrica.Models;
 namespace Fabrica.Api.Support.Endpoints.Module;
 
 
-public abstract class BaseAllEndpointModule<TCriteria,TExplorer,TDelta,TEntity>: BasePersistenceEndpointModule where TCriteria: BaseCriteria where TExplorer: class, IExplorableModel where TDelta: BaseDelta where TEntity: class, IModel
+public abstract class BaseModelEndpointModule<TCriteria,TExplorer,TDelta,TEntity>: BasePersistenceEndpointModule where TCriteria: BaseCriteria where TExplorer: class, IExplorableModel where TDelta: BaseDelta where TEntity: class, IModel
 {
 
-    protected BaseAllEndpointModule()
+    protected BaseModelEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -29,7 +29,7 @@ public abstract class BaseAllEndpointModule<TCriteria,TExplorer,TDelta,TEntity>:
 
     }
 
-    protected BaseAllEndpointModule(string route) : base(route)
+    protected BaseModelEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
@@ -95,10 +95,10 @@ public abstract class BaseAllEndpointModule<TCriteria,TExplorer,TDelta,TEntity>:
 
 }
 
-public abstract class BaseAllEndpointModule<TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
+public abstract class BaseModelEndpointModule<TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
 {
 
-    protected BaseAllEndpointModule()
+    protected BaseModelEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -113,7 +113,7 @@ public abstract class BaseAllEndpointModule<TExplorer, TDelta, TEntity> : BasePe
 
     }
 
-    protected BaseAllEndpointModule(string route) : base(route)
+    protected BaseModelEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
@@ -180,10 +180,10 @@ public abstract class BaseAllEndpointModule<TExplorer, TDelta, TEntity> : BasePe
 }
 
 
-public abstract class BaseAllEndpointModule<TExplorer,TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TEntity : class, IModel
+public abstract class BaseModelEndpointModule<TExplorer,TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TEntity : class, IModel
 {
 
-    protected BaseAllEndpointModule()
+    protected BaseModelEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -198,7 +198,7 @@ public abstract class BaseAllEndpointModule<TExplorer,TEntity> : BasePersistence
 
     }
 
-    protected BaseAllEndpointModule(string route) : base(route)
+    protected BaseModelEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
