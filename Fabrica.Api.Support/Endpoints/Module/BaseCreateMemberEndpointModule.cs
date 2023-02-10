@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -50,8 +51,7 @@ public abstract class BaseCreateMemberEndpointModule<TParent,TEntity>: BasePersi
         var route = $"{{udi}}/{MemberSegment}";
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent,TEntity> handler) => await handler.Handle())
-            .WithSummary("Create")
-            .WithDescription( $"Create {typeof(TEntity).Name} on Parent {typeof(TParent).Name}" )
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
@@ -100,8 +100,7 @@ public abstract class BaseCreateMemberEndpointModule<TParent,TDelta,TEntity> : B
         var route = $"{{udi}}/{MemberSegment}";
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent,TDelta,TEntity> handler) => await handler.Handle())
-            .WithSummary("Create")
-            .WithDescription($"Create {typeof(TEntity).Name} on Parent {typeof(TParent).Name}")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

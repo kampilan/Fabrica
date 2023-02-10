@@ -8,6 +8,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -44,22 +45,19 @@ public abstract class BaseDeltaEndpointModule<TEntity> : BasePersistenceEndpoint
     {
 
         app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("Create")
-            .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("Update")
-            .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
             .Produces<ErrorResponseModel>(422);
 
 
         app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("Delete")
-            .WithDescription($"Delete {typeof(TEntity).Name} using UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
             .Produces(200)
             .Produces<ErrorResponseModel>(404);
 

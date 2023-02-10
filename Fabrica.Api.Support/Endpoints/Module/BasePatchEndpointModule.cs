@@ -8,6 +8,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -43,8 +44,7 @@ public abstract class BasePatchEndpointModule<TEntity> : BasePersistenceEndpoint
     {
 
         app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("Patch")
-            .WithDescription($"CreateApply Patches and Retrieve {typeof(TEntity).Name} but UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

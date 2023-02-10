@@ -8,6 +8,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -43,8 +44,7 @@ public abstract class BaseJournalEndpointModule<TEntity> : BasePersistenceEndpoi
     {
 
         app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("Journal")
-            .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
             .Produces<List<AuditJournalModel>>();
 
     }

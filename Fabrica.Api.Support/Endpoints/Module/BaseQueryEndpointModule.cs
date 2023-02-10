@@ -9,6 +9,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -43,8 +44,7 @@ public abstract class BaseQueryEndpointModule<TCriteria, TExplorer, TEntity> : B
 
 
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-            .WithSummary("Using RQL")
-            .WithDescription($"Query {typeof(TExplorer).Name.Pluralize()} using RQL")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
             .Produces<List<TExplorer>>()
             .Produces<ErrorResponseModel>(400);
 
@@ -83,8 +83,7 @@ public abstract class BaseQueryEndpointModule<TExplorer, TEntity> : BasePersiste
     {
 
         app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-            .WithSummary("Using RQL")
-            .WithDescription($"Query {typeof(TExplorer).Name.Pluralize()} using RQL")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
             .Produces<List<TExplorer>>()
             .Produces<ErrorResponseModel>(400);
 
