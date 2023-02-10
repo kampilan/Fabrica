@@ -8,6 +8,7 @@ using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -28,11 +29,12 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery]
+        [FromQuery(Name="rql")]
         public string Rql { get; set; } = null!;
 
 
-        [FromQuery]
+        [FromQuery(Name = "limit")]
+        [SwaggerParameter(Required = false)]
         public int? Limit { get; set; }
 
         protected override Task<QueryEntityRequest<TExplorer>> BuildRequest()
@@ -58,7 +60,8 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery]
+        [FromQuery(Name = "limit")]
+        [SwaggerParameter(Required = false)]
         public int? Limit { get; set; }
 
         [FromBody]
@@ -109,12 +112,13 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery]
+        [FromQuery(Name = "rql")]
         public string Rql { get; set; } = null!;
 
 
-        [FromQuery]
+        [FromQuery(Name = "limit")]
         public int? Limit { get; set; }
+
 
         protected override Task<QueryThinEntityRequest<TExplorer>> BuildRequest()
         {
@@ -139,7 +143,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery]
+        [FromQuery(Name = "limit")]
         public int? Limit { get; set; }
 
         [FromBody]
@@ -190,7 +194,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromRoute]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
 
@@ -238,7 +242,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
         [FromBody]
@@ -296,7 +300,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
         [FromBody]
@@ -326,7 +330,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromRoute]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
 
@@ -357,7 +361,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromRoute]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
 
@@ -388,7 +392,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromRoute]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
 
@@ -414,7 +418,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromRoute]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
 
@@ -440,7 +444,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromRoute]
+        [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
         [FromServices]
