@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Routing;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
@@ -40,8 +41,7 @@ public abstract class BaseRetrieveEndpointModule<TEntity>: BasePersistenceEndpoi
     {
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("By UID")
-            .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404);
 

@@ -4,6 +4,7 @@
 using System.ComponentModel;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
+using Fabrica.Utilities.Container;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -47,6 +48,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     [ExcludeEmpty]
     public List<EventDetail> Details { get; protected set; } = new ();
+
 
     public bool HasViolations => Details.Any(d => d.Category == EventDetail.EventCategory.Violation);
 
@@ -122,6 +124,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
         return (TDescendant)this;
 
     }
+
 
 }
 
