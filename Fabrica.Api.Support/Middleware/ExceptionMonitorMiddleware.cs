@@ -5,6 +5,7 @@ using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
+using Fabrica.Models.Serialization;
 
 namespace Fabrica.Api.Support.Middleware;
 
@@ -51,6 +52,7 @@ public class ExceptionMonitorMiddleware
 
             var serializer = new JsonSerializer
             {
+                ContractResolver = new ModelContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
 

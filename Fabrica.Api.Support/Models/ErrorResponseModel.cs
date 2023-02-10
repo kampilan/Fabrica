@@ -24,6 +24,8 @@ SOFTWARE.
 
 using System.ComponentModel;
 using Fabrica.Exceptions;
+using Fabrica.Models.Serialization;
+using Newtonsoft.Json;
 
 namespace Fabrica.Api.Support.Models;
 
@@ -31,15 +33,20 @@ public class ErrorResponseModel
 {
 
     [DefaultValue("")]
+    [JsonProperty(nameof(ErrorCode))]
     public string ErrorCode { get; set; } = "";
 
     [DefaultValue("")]
+    [JsonProperty(nameof(Explanation))]
     public string Explanation { get; set; } = "";
 
-    [DefaultValue(null)] 
+    [DefaultValue(null)]
+    [JsonProperty(nameof(Details))]
+    [ExcludeEmpty]
     public IList<EventDetail> Details { get; set; } = null!;
 
     [DefaultValue("")]
+    [JsonProperty(nameof(CorrelationId))]
     public string CorrelationId { get; set; } = "";
 
 }
