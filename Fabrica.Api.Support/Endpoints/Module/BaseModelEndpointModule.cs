@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Routing;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Fabrica.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 
 namespace Fabrica.Api.Support.Endpoints.Module;
@@ -53,8 +54,7 @@ public abstract class BaseModelEndpointModule<TCriteria,TExplorer,TDelta,TEntity
 
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("By UID")
-            .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404);
 
@@ -138,8 +138,7 @@ public abstract class BaseModelEndpointModule<TExplorer, TDelta, TEntity> : Base
 
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("By UID")
-            .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404);
 
@@ -223,8 +222,7 @@ public abstract class BaseModelEndpointModule<TExplorer,TEntity> : BasePersisten
 
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("By UID")
-            .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404);
 
@@ -308,8 +306,7 @@ public abstract class BaseModelEndpointModule<TEntity> : BasePersistenceEndpoint
 
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("By UID")
-            .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404);
 
