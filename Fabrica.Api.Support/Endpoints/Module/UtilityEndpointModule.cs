@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
-public abstract class BaseUtilityEndpointModule : BaseEndpointModule
+public abstract class UtilityEndpointModule : BaseEndpointModule
 {
 
-    protected BaseUtilityEndpointModule()
+    protected UtilityEndpointModule()
     {
 
     }
 
-    protected BaseUtilityEndpointModule(string route) : base(route)
+    protected UtilityEndpointModule(string route) : base(route)
     {
 
     }

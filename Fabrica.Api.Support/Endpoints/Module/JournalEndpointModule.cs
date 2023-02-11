@@ -12,11 +12,11 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
-public abstract class BaseJournalEndpointModule<TEntity> : BasePersistenceEndpointModule where TEntity : class, IMutableModel
+public abstract class JournalEndpointModule<TEntity> : BasePersistenceEndpointModule where TEntity : class, IMutableModel
 {
 
 
-    protected BaseJournalEndpointModule()
+    protected JournalEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -31,7 +31,7 @@ public abstract class BaseJournalEndpointModule<TEntity> : BasePersistenceEndpoi
 
     }
 
-    protected BaseJournalEndpointModule(string route) : base(route)
+    protected JournalEndpointModule(string route) : base(route)
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");

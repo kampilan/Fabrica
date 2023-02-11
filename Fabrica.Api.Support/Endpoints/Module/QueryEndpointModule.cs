@@ -13,10 +13,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
-public abstract class BaseQueryEndpointModule<TCriteria, TExplorer, TEntity> : BasePersistenceEndpointModule where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
+public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BasePersistenceEndpointModule where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
 {
 
-    protected BaseQueryEndpointModule()
+    protected QueryEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -30,7 +30,7 @@ public abstract class BaseQueryEndpointModule<TCriteria, TExplorer, TEntity> : B
 
     }
 
-    protected BaseQueryEndpointModule(string route) : base(route)
+    protected QueryEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
@@ -52,10 +52,10 @@ public abstract class BaseQueryEndpointModule<TCriteria, TExplorer, TEntity> : B
 
 }
 
-public abstract class BaseQueryEndpointModule<TExplorer, TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
+public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
 {
 
-    protected BaseQueryEndpointModule()
+    protected QueryEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -70,7 +70,7 @@ public abstract class BaseQueryEndpointModule<TExplorer, TEntity> : BasePersiste
 
     }
 
-    protected BaseQueryEndpointModule(string route) : base(route)
+    protected QueryEndpointModule(string route) : base(route)
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");

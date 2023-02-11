@@ -13,11 +13,11 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Fabrica.Api.Support.Endpoints.Module;
 
 
-public abstract class BaseDeltaEndpointModule<TEntity> : BasePersistenceEndpointModule where TEntity : class, IModel
+public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModule where TEntity : class, IModel
 {
 
 
-    protected BaseDeltaEndpointModule()
+    protected DeltaEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -32,7 +32,7 @@ public abstract class BaseDeltaEndpointModule<TEntity> : BasePersistenceEndpoint
 
     }
 
-    protected BaseDeltaEndpointModule(string route) : base(route)
+    protected DeltaEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
@@ -67,11 +67,11 @@ public abstract class BaseDeltaEndpointModule<TEntity> : BasePersistenceEndpoint
 }
 
 
-public abstract class BaseDeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModule where TDelta : BaseDelta where TEntity : class, IModel
+public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModule where TDelta : BaseDelta where TEntity : class, IModel
 {
 
 
-    protected BaseDeltaEndpointModule()
+    protected DeltaEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -87,7 +87,7 @@ public abstract class BaseDeltaEndpointModule<TDelta, TEntity> : BasePersistence
     }
 
 
-    protected BaseDeltaEndpointModule(string route) : base(route)
+    protected DeltaEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
@@ -100,25 +100,21 @@ public abstract class BaseDeltaEndpointModule<TDelta, TEntity> : BasePersistence
     {
 
         app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithSummary("Create")
-            .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
+            .WithMetadata( new SwaggerOperationAttribute{Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO" })
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithSummary("Update")
-            .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
+            .WithMetadata(new SwaggerOperationAttribute { Summary = "Update", Description = $"Update {typeof(TEntity).Name} from delta RTO" })
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
             .Produces<ErrorResponseModel>(422);
 
 
         app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithSummary("Delete")
-            .WithDescription($"Delete {typeof(TEntity).Name} using UID")
+            .WithMetadata(new SwaggerOperationAttribute { Summary = "Delete", Description = $"Delete {typeof(TEntity).Name} using UID" })
             .Produces(200)
             .Produces<ErrorResponseModel>(404);
-
 
     }
 

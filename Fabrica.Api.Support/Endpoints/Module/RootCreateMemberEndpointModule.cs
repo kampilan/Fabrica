@@ -12,11 +12,11 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints.Module;
 
-public abstract class BaseCreateMemberEndpointModule<TParent,TEntity>: BasePersistenceEndpointModule where TParent : class, IModel where TEntity : class, IAggregateModel
+public abstract class RootCreateMemberEndpointModule<TParent,TEntity>: BasePersistenceEndpointModule where TParent : class, IModel where TEntity : class, IAggregateModel
 {
 
 
-    protected BaseCreateMemberEndpointModule()
+    protected RootCreateMemberEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -34,7 +34,7 @@ public abstract class BaseCreateMemberEndpointModule<TParent,TEntity>: BasePersi
 
     }
 
-    protected BaseCreateMemberEndpointModule(string route) : base(route)
+    protected RootCreateMemberEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
@@ -61,11 +61,11 @@ public abstract class BaseCreateMemberEndpointModule<TParent,TEntity>: BasePersi
 }
 
 
-public abstract class BaseCreateMemberEndpointModule<TParent,TDelta,TEntity> : BasePersistenceEndpointModule where TParent : class, IModel where TDelta: BaseDelta where TEntity : class, IAggregateModel
+public abstract class RootCreateMemberEndpointModule<TParent,TDelta,TEntity> : BasePersistenceEndpointModule where TParent : class, IModel where TDelta: BaseDelta where TEntity : class, IAggregateModel
 {
 
 
-    protected BaseCreateMemberEndpointModule()
+    protected RootCreateMemberEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -83,7 +83,7 @@ public abstract class BaseCreateMemberEndpointModule<TParent,TDelta,TEntity> : B
 
     }
 
-    protected BaseCreateMemberEndpointModule(string route) : base(route)
+    protected RootCreateMemberEndpointModule(string route) : base(route)
     {
 
         IncludeInOpenApi();
