@@ -1,8 +1,5 @@
-﻿using System.Net;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Text;
-using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;

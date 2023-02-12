@@ -24,8 +24,11 @@ public abstract class BaseEndpointModule : AbstractEndpointModule
     protected BaseEndpointModule()
     {
 
-        if (GetType().GetCustomAttribute<ModuleRouteAttribute>() is { } attr)
-            BasePath = attr.Path;
+        if( GetType().GetCustomAttribute<ModuleRouteAttribute>() is { } mra )
+            BasePath = mra.Path;
+
+        if( GetType().GetCustomAttribute<ModulePolicyAttribute>() is { } mpa )
+            RequireAuthorization(mpa.PolicyNames.ToArray());
 
     }
 
@@ -34,6 +37,9 @@ public abstract class BaseEndpointModule : AbstractEndpointModule
     {
 
         BasePath = route;
+
+        if (GetType().GetCustomAttribute<ModulePolicyAttribute>() is { } mpa)
+            RequireAuthorization(mpa.PolicyNames.ToArray());
 
     }
 
