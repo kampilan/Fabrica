@@ -230,6 +230,7 @@ public class ProblemMonitorMiddleware
                 Title         = "Error encountered",
                 StatusCode    = statusCode.ToString(),
                 Detail        = bex.Explanation,
+                Instance      = instance,
                 CorrelationId = Correlation.Uid,
                 Segments      = bex.Details
             };
@@ -252,6 +253,7 @@ public class ProblemMonitorMiddleware
             Title         = "Internal Error encountered",
             StatusCode    = statusCode.ToString(),
             Detail        = "An unhandled exception was encountered. Examine logs for details",
+            Instance      = instance,
             CorrelationId = Correlation.Uid
         };
 
