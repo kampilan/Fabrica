@@ -178,7 +178,7 @@ public class ProblemMonitorMiddleware
             {
                 Type          = "BadJsonRequest",
                 Title         = "Invalid JSON in Request",
-                StatusCode    = statusCode.ToString(),
+                StatusCode    = statusCode,
                 Detail        = $"Bad JSON in request near {je.Path} Line {je.LineNumber} Column {je.LinePosition}",
                 Instance      = instance,
                 CorrelationId = Correlation.Uid,
@@ -201,7 +201,7 @@ public class ProblemMonitorMiddleware
             {
                 Type          = "ValidationError",
                 Title         = "Validation errors occurred",
-                StatusCode    = statusCode.ToString(),
+                StatusCode    = statusCode,
                 Detail        = $"Validation resulted in {ve.Details.Count} error(s).",
                 Instance      = instance,
                 CorrelationId = Correlation.Uid,
@@ -228,7 +228,7 @@ public class ProblemMonitorMiddleware
             {
                 Type          = bex.ErrorCode,
                 Title         = "Error encountered",
-                StatusCode    = statusCode.ToString(),
+                StatusCode    = statusCode,
                 Detail        = bex.Explanation,
                 Instance      = instance,
                 CorrelationId = Correlation.Uid,
@@ -251,7 +251,7 @@ public class ProblemMonitorMiddleware
         {
             Type          = "InternalError",
             Title         = "Internal Error encountered",
-            StatusCode    = statusCode.ToString(),
+            StatusCode    = statusCode,
             Detail        = "An unhandled exception was encountered. Examine logs for details",
             Instance      = instance,
             CorrelationId = Correlation.Uid
@@ -280,9 +280,9 @@ public class ProblemDetailModel
     [JsonProperty(nameof(Title))]
     public string Title { get; set; } = "";
 
-    [DefaultValue("")]
+    [DefaultValue(0)]
     [JsonProperty(nameof(StatusCode))]
-    public string StatusCode { get; set; } = "";
+    public int StatusCode { get; set; }
 
     [DefaultValue("")]
     [JsonProperty(nameof(Detail))]
