@@ -49,6 +49,7 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule where TRe
 
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+        // ReSharper disable once MemberCanBePrivate.Local
         [FromBody]
         public TRequest RpcRequest { get; set; } = null!;
 
@@ -106,8 +107,9 @@ public abstract class RpcEndpointModule<TRequest,TResponse>: BaseEndpointModule 
 
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+        // ReSharper disable once MemberCanBePrivate.Local
         [FromBody] 
-        private TRequest RpcRequest { get; set; } = null!;
+        public TRequest RpcRequest { get; set; } = null!;
 
 
         protected override Task<TRequest> BuildRequest()
