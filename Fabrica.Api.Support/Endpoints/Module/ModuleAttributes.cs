@@ -37,7 +37,6 @@ public class ModuleAdminPolicyAttribute : ModulePolicyAttribute
 }
 
 
-
 [AttributeUsage(AttributeTargets.Class)]
 public class ModuleRouteAttribute : Attribute
 {
