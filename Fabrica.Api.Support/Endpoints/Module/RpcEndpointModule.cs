@@ -17,7 +17,7 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule where TRe
 {
 
 
-    protected RpcEndpointModule(string route, string summary, string description) : base()
+    protected RpcEndpointModule(string route, string summary, string description)
     {
 
         Route = route;
@@ -50,7 +50,7 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule where TRe
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         [FromBody]
-        private TRequest RpcRequest { get; set; } = null!;
+        public TRequest RpcRequest { get; set; } = null!;
 
 
         protected override Task<TRequest> BuildRequest()
