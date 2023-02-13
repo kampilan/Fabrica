@@ -49,7 +49,7 @@ public class ProblemMonitorMiddleware
                 return;
 
 
-            var instance = httpContext.Request.Path.ToString();
+            var instance = $"{httpContext.Request.Method.ToUpper()} {httpContext.Request.Path}";
             var statusCode = MapExceptionToStatus(cause);
 
             var error = BuildResponseModel(instance, statusCode, cause);
