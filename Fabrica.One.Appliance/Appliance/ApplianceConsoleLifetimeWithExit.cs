@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Fabrica.Watch;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace Fabrica.One.Appliance;
@@ -12,6 +13,13 @@ public class ApplianceConsoleLifetimeWithExit : ApplianceConsoleLifetime
 
     protected override void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
     {
+
+        using var logger = this.EnterMethod();
+
+        // *****************************************************************
+        logger.Debug("Attempting to exit appliance after respecting ctrl-c");
+
         e.Cancel = false;
+
     }
 }

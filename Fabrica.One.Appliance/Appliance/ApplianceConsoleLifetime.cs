@@ -12,11 +12,11 @@ namespace Fabrica.One.Appliance;
 public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
 {
 
-    private readonly ManualResetEvent _shutdownBlock = new (false);
+    private readonly ManualResetEvent _shutdownBlock = new(false);
     private CancellationTokenRegistration _applicationStartedRegistration;
     private CancellationTokenRegistration _applicationStoppingRegistration;
 
-    public ApplianceConsoleLifetime( IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions )
+    public ApplianceConsoleLifetime(IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions)
     {
 
         Options = options.Value ?? throw new ArgumentNullException(nameof(options));
@@ -66,41 +66,20 @@ public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
     private void OnApplicationStarted()
     {
 
-        var logger = GetLogger();
+        using var logger = this.EnterMethod();
 
-        try
-        {
+        logger.Info("Application started. Press Ctrl+C to shut down.");
+        logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
+        logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
 
-            logger.EnterMethod();
-
-            logger.Info("Application started. Press Ctrl+C to shut down.");
-            logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
-            logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
-            
     }
 
     private void OnApplicationStopping()
     {
-        var logger = GetLogger();
 
-        try
-        {
+        using var logger = this.EnterMethod();
 
-            logger.EnterMethod();
-
-            logger.Info("Application is shutting down...");
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
+        logger.Info("Application is shutting down...");
 
     }
 
@@ -108,34 +87,29 @@ public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
     private void OnProcessExit(object? sender, EventArgs e)
     {
 
-        var logger = GetLogger();
+        using var logger = this.EnterMethod();
 
-        try
+
+        ApplicationLifetime.StopApplication();
+        if (!_shutdownBlock.WaitOne(HostOptions.ShutdownTimeout))
         {
-
-            logger.EnterMethod();
-
-
-            ApplicationLifetime.StopApplication();
-            if (!_shutdownBlock.WaitOne(HostOptions.ShutdownTimeout))
-            {
-                logger.Info("Waiting for the host to be disposed. Ensure all 'IHost' instances are wrapped in 'using' blocks.");
-            }
-            _shutdownBlock.WaitOne();
-            System.Environment.ExitCode = 0;
-
+            logger.Info("Waiting for the host to be disposed. Ensure all 'IHost' instances are wrapped in 'using' blocks.");
         }
-        finally
-        {
-            logger.LeaveMethod();
-        }
+        _shutdownBlock.WaitOne();
+        System.Environment.ExitCode = 0;
 
 
     }
 
     protected virtual void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
     {
+
+        using var logger = this.EnterMethod();
+
+        // *****************************************************************
+        logger.Debug("Attempting to resume appliance after ignoring ctrl-c");
         e.Cancel = true;
+
     }
 
 

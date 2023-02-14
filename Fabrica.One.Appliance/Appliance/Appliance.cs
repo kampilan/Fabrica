@@ -13,7 +13,7 @@ namespace Fabrica.One.Appliance;
 public static class Appliance
 {
 
-    public static async Task<IAppliance> Bootstrap<TBootstrap>(string localConfigFile = null!) where TBootstrap : IBootstrap
+    public static async Task<IAppliance> Bootstrap<TBootstrap>(string localConfigFile = null! ) where TBootstrap : IBootstrap
     {
 
         var app = await Bootstrap<TBootstrap, InitService>(localConfigFile);
@@ -22,7 +22,7 @@ public static class Appliance
 
     }    
 
-    public static async Task<IAppliance> Bootstrap<TBootstrap,TService>( string localConfigFile=null! ) where TBootstrap : IBootstrap where TService: class, IHostedService
+    public static async Task<IAppliance> Bootstrap<TBootstrap,TService>( string localConfigFile=null!) where TBootstrap : IBootstrap where TService: class, IHostedService
     {
 
         IAppliance app;
@@ -53,6 +53,7 @@ public static class Appliance
             var bootstrap = configuration.Get<TBootstrap>();
             if (bootstrap is null)
                 throw new InvalidOperationException("Could not build Bootstrap from Configuration binding. Verify configuration files exist.");
+
 
             bootstrap.Configuration = configuration;
 
