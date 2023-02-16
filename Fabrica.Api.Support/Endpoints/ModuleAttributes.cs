@@ -1,10 +1,10 @@
-﻿namespace Fabrica.Api.Support.Endpoints.Module;
+﻿namespace Fabrica.Api.Support.Endpoints;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ModulePolicyAttribute: Attribute
+public class ModulePolicyAttribute : Attribute
 {
 
-    public ModulePolicyAttribute(params string[] policyNames )
+    public ModulePolicyAttribute(params string[] policyNames)
     {
         _policyNames = new List<string>(policyNames);
     }
@@ -20,7 +20,7 @@ public class ModulePolicyAttribute: Attribute
 public class ModulePublicPolicyAttribute : ModulePolicyAttribute
 {
 
-    public ModulePublicPolicyAttribute(): base(ModuleConstants.PublicPolicyName)
+    public ModulePublicPolicyAttribute() : base(ModuleConstants.PublicPolicyName)
     {
     }
 

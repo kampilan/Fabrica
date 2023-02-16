@@ -1,4 +1,4 @@
-﻿namespace Fabrica.Api.Support.Endpoints.Module;
+﻿namespace Fabrica.Api.Support.Endpoints;
 
 public static class ModuleConstants
 {

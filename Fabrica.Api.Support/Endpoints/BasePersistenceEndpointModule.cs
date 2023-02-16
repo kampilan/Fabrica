@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
-public abstract class BasePersistenceEndpointModule : BaseEndpointModule
+public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> where T : BasePersistenceEndpointModule<T>
 {
 
     protected BasePersistenceEndpointModule()
@@ -29,7 +29,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     {
 
 
-        [FromQuery(Name="rql")]
+        [FromQuery(Name = "rql")]
         public string Rql { get; set; } = null!;
 
 
@@ -89,7 +89,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
 
             // *****************************************************************
             logger.Debug("Attempting to produce filters from additional RQL");
-            if( Criteria.Rql?.Any() ?? false )
+            if (Criteria.Rql?.Any() ?? false)
             {
                 request.Filters.AddRange(Criteria.Rql.Select(s =>
                 {
@@ -215,7 +215,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
 
 
 
-    protected class CreateHandler<TDelta,TEntity> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity> where TDelta : BaseDelta where TEntity : class, IModel
+    protected class CreateHandler<TDelta, TEntity> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity> where TDelta : BaseDelta where TEntity : class, IModel
     {
 
 
@@ -238,7 +238,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
 
     }
 
-    protected class CreateMemberHandler<TParent,TDelta, TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent,TEntity>, TEntity> where TParent: class, IModel where TDelta : BaseDelta where TEntity : class, IAggregateModel
+    protected class CreateMemberHandler<TParent, TDelta, TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity> where TParent : class, IModel where TDelta : BaseDelta where TEntity : class, IAggregateModel
     {
 
 
@@ -249,12 +249,12 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
         public TDelta Delta { get; set; } = null!;
 
 
-        protected override Task<CreateMemberEntityRequest<TParent,TEntity>> BuildRequest()
+        protected override Task<CreateMemberEntityRequest<TParent, TEntity>> BuildRequest()
         {
 
             using var logger = EnterMethod();
 
-            var request = new CreateMemberEntityRequest<TParent,TEntity>
+            var request = new CreateMemberEntityRequest<TParent, TEntity>
             {
                 ParentUid = Uid
             };
@@ -296,7 +296,7 @@ public abstract class BasePersistenceEndpointModule : BaseEndpointModule
     }
 
 
-    protected class CreateMemberHandler<TParent,TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent,TEntity>, TEntity> where TParent : class, IModel where TEntity : class, IAggregateModel
+    protected class CreateMemberHandler<TParent, TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity> where TParent : class, IModel where TEntity : class, IAggregateModel
     {
 
 

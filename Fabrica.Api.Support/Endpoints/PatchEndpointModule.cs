@@ -1,21 +1,22 @@
 ﻿
 // ReSharper disable UnusedMember.Global
 
+using System.Reflection;
 using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
 using Humanizer;
-using Microsoft.AspNetCore.Routing;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
-public abstract class RetrieveEndpointModule<TEntity>: BasePersistenceEndpointModule where TEntity : class, IModel
+public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModule<PatchEndpointModule<TEntity>> where TEntity : class, IModel
 {
 
-    protected RetrieveEndpointModule()
+
+    protected PatchEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -24,26 +25,25 @@ public abstract class RetrieveEndpointModule<TEntity>: BasePersistenceEndpointMo
 
         BasePath = $"{prefix}/{resource}";
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
-    protected RetrieveEndpointModule(string route) : base(route)
+    protected PatchEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
+
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
+        app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
+            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404);
+            .Produces<ErrorResponseModel>(422);
 
     }
 

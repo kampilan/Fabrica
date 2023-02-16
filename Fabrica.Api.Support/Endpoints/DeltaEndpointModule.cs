@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
 
-public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModule where TEntity : class, IModel
+public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModule<DeltaEndpointModule<TEntity>> where TEntity : class, IModel
 {
 
 
@@ -26,8 +26,6 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
 
         BasePath = $"{prefix}/{resource}";
 
-
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -35,7 +33,6 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
     protected DeltaEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -67,7 +64,7 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
 }
 
 
-public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModule where TDelta : BaseDelta where TEntity : class, IModel
+public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModule<DeltaEndpointModule<TDelta, TEntity>> where TDelta : BaseDelta where TEntity : class, IModel
 {
 
 
@@ -80,8 +77,6 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
 
         BasePath = $"{prefix}/{resource}";
 
-
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -90,7 +85,6 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
     protected DeltaEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -100,7 +94,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
     {
 
         app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata( new SwaggerOperationAttribute{Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO" })
+            .WithMetadata(new SwaggerOperationAttribute { Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO" })
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

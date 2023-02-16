@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
 
-public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule where TRequest : class, IRequest<Response>
+public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpointModule<TRequest>> where TRequest : class, IRequest<Response>
 {
 
 
@@ -71,15 +71,15 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule where TRe
 
 
 
-public abstract class RpcEndpointModule<TRequest,TResponse>: BaseEndpointModule where TRequest : class, IRequest<Response<TResponse>> where TResponse: class
+public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModule where TRequest : class, IRequest<Response<TResponse>> where TResponse : class
 {
 
 
-    protected RpcEndpointModule(string route, string summary, string description) : base()
+    protected RpcEndpointModule(string route, string summary, string description)
     {
 
-        Route       = route;
-        Summary     = summary;
+        Route = route;
+        Summary = summary;
         Description = description;
 
     }
@@ -90,10 +90,10 @@ public abstract class RpcEndpointModule<TRequest,TResponse>: BaseEndpointModule 
     private string Description { get; }
 
 
-    public override void AddRoutes( IEndpointRouteBuilder app )
+    public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        app.MapPost( Route, async ([AsParameters] RpcHandler handler) => await handler.Handle() )
+        app.MapPost(Route, async ([AsParameters] RpcHandler handler) => await handler.Handle())
             .WithMetadata(new SwaggerOperationAttribute { Summary = Summary, Description = Description })
             .Produces<TResponse>()
             .Produces<ErrorResponseModel>(422);
@@ -108,13 +108,13 @@ public abstract class RpcEndpointModule<TRequest,TResponse>: BaseEndpointModule 
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         // ReSharper disable once MemberCanBePrivate.Local
-        [FromBody] 
+        [FromBody]
         public TRequest RpcRequest { get; set; } = null!;
 
 
         protected override Task<TRequest> BuildRequest()
         {
-            
+
             using var logger = EnterMethod();
 
             return Task.FromResult(RpcRequest);

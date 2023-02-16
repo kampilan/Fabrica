@@ -13,10 +13,10 @@ using Fabrica.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
 
-public abstract class RootEndpointModule<TCriteria,TExplorer,TDelta,TEntity>: BasePersistenceEndpointModule where TCriteria: BaseCriteria where TExplorer: class, IExplorableModel where TDelta: BaseDelta where TEntity: class, IModel
+public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity>> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
 {
 
     protected RootEndpointModule()
@@ -28,8 +28,6 @@ public abstract class RootEndpointModule<TCriteria,TExplorer,TDelta,TEntity>: Ba
 
         BasePath = $"{prefix}/{resource}";
 
-
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -37,7 +35,6 @@ public abstract class RootEndpointModule<TCriteria,TExplorer,TDelta,TEntity>: Ba
     protected RootEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -94,7 +91,7 @@ public abstract class RootEndpointModule<TCriteria,TExplorer,TDelta,TEntity>: Ba
 }
 
 
-public abstract class RootEndpointModule<TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
+public abstract class RootEndpointModule<TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TExplorer, TDelta, TEntity>> where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
 {
 
     protected RootEndpointModule()
@@ -106,8 +103,6 @@ public abstract class RootEndpointModule<TExplorer, TDelta, TEntity> : BasePersi
 
         BasePath = $"{prefix}/{resource}";
 
-
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -115,7 +110,6 @@ public abstract class RootEndpointModule<TExplorer, TDelta, TEntity> : BasePersi
     protected RootEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -172,7 +166,7 @@ public abstract class RootEndpointModule<TExplorer, TDelta, TEntity> : BasePersi
 }
 
 
-public abstract class RootEndpointModule<TExplorer,TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TEntity : class, IModel
+public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TExplorer, TEntity>> where TExplorer : class, IExplorableModel where TEntity : class, IModel
 {
 
     protected RootEndpointModule()
@@ -184,8 +178,6 @@ public abstract class RootEndpointModule<TExplorer,TEntity> : BasePersistenceEnd
 
         BasePath = $"{prefix}/{resource}";
 
-
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -193,7 +185,6 @@ public abstract class RootEndpointModule<TExplorer,TEntity> : BasePersistenceEnd
     protected RootEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -250,7 +241,7 @@ public abstract class RootEndpointModule<TExplorer,TEntity> : BasePersistenceEnd
 }
 
 
-public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModule  where TEntity : class, IExplorableModel
+public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TEntity>> where TEntity : class, IExplorableModel
 {
 
     protected RootEndpointModule()
@@ -262,8 +253,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
 
         BasePath = $"{prefix}/{resource}";
 
-
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -271,7 +260,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
     protected RootEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }

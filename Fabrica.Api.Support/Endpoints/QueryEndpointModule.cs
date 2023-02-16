@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
-public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BasePersistenceEndpointModule where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
+public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BasePersistenceEndpointModule<QueryEndpointModule<TCriteria, TExplorer, TEntity>> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
 {
 
     protected QueryEndpointModule()
@@ -25,7 +25,6 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
 
         BasePath = $"{prefix}/{resource}";
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -33,7 +32,6 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
     protected QueryEndpointModule(string route) : base(route)
     {
 
-        IncludeInOpenApi();
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -52,7 +50,7 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
 
 }
 
-public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceEndpointModule where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
+public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceEndpointModule<QueryEndpointModule<TExplorer, TEntity>> where TExplorer : class, IExplorableModel where TEntity : class, IMutableModel
 {
 
     protected QueryEndpointModule()
@@ -66,7 +64,6 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
-        IncludeInOpenApi();
 
     }
 
@@ -75,7 +72,6 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
-        IncludeInOpenApi();
 
     }
 

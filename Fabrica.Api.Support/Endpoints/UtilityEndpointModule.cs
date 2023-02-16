@@ -7,9 +7,9 @@ using Fabrica.One;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Fabrica.Api.Support.Endpoints.Module;
+namespace Fabrica.Api.Support.Endpoints;
 
-public abstract class UtilityEndpointModule : BaseEndpointModule
+public abstract class UtilityEndpointModule : BaseEndpointModule<UtilityEndpointModule>
 {
 
     protected UtilityEndpointModule()
@@ -87,7 +87,7 @@ public abstract class UtilityEndpointModule : BaseEndpointModule
                 });
 
 
-            var result = EndpointResult.Create( response );
+            var result = EndpointResult.Create(response);
 
             return Task.FromResult(result);
 
