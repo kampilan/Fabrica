@@ -24,117 +24,107 @@ SOFTWARE.
  
 */
 
+using Fabrica.Api.Support.Endpoints.Module;
 
-namespace Fabrica.Api.Support.Endpoints;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Reflection;
-using Negotiation;
-using OpenApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
+namespace Fabrica.Api.Support.Endpoints;
+
 
 public static class EndpointExtensions
 {
+    
     /// <summary>
     /// Adds Carter to the specified <see cref="IApplicationBuilder"/>.
     /// </summary>
     /// <param name="builder">The <see cref="IApplicationBuilder"/> to configure.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
-    public static IEndpointRouteBuilder MapCarter(this IEndpointRouteBuilder builder)
+    public static IEndpointRouteBuilder MapEndpointModules(this IEndpointRouteBuilder builder)
     {
-        var loggerFactory = builder.ServiceProvider.GetRequiredService<ILoggerFactory>();
-        var logger = loggerFactory.CreateLogger(typeof(EndpointConfigurator));
 
-        var carterConfigurator = builder.ServiceProvider.GetRequiredService<EndpointConfigurator>();
-        carterConfigurator.LogDiscoveredCarterTypes(logger);
-
-        foreach (var carterModuleInterface in builder.ServiceProvider.GetServices<IEndpointModule>())
+        foreach (var moduleInterface in builder.ServiceProvider.GetServices<IEndpointModule>())
         {
-            if (carterModuleInterface is AbstractEndpointModule carterModule)
+
+            if (moduleInterface is AbstractEndpointModule endpointModule)
             {
-                var group = builder.MapGroup(carterModule.BasePath);
 
-                if (carterModule.hosts.Any())
+                var group = builder.MapGroup(endpointModule.BasePath);
+
+                if (endpointModule.hosts.Any())
                 {
-                    group = group.RequireHost(carterModule.hosts);
+                    group = group.RequireHost(endpointModule.hosts);
                 }
 
-                if (carterModule.requiresAuthorization)
+                if (endpointModule.requiresAuthorization)
                 {
-                    group = group.RequireAuthorization(carterModule.authorizationPolicyNames);
+                    group = group.RequireAuthorization(endpointModule.authorizationPolicyNames);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.corsPolicyName))
+                if (!string.IsNullOrWhiteSpace(endpointModule.corsPolicyName))
                 {
-                    group = group.RequireCors(carterModule.corsPolicyName);
+                    group = group.RequireCors(endpointModule.corsPolicyName);
                 }
 
-                if (carterModule.includeInOpenApi)
+                if (!string.IsNullOrWhiteSpace(endpointModule.openApiDescription))
                 {
-                    group.IncludeInOpenApi();
+                    group = group.WithDescription(endpointModule.openApiDescription);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.openApiDescription))
+                if (endpointModule.metaData.Any())
                 {
-                    group = group.WithDescription(carterModule.openApiDescription);
+                    group = group.WithMetadata(endpointModule.metaData);
                 }
 
-                if (carterModule.metaData.Any())
+                if (!string.IsNullOrWhiteSpace(endpointModule.openApiName))
                 {
-                    group = group.WithMetadata(carterModule.metaData);
+                    group = group.WithName(endpointModule.openApiName);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.openApiName))
+                if (!string.IsNullOrWhiteSpace(endpointModule.openApisummary))
                 {
-                    group = group.WithName(carterModule.openApiName);
+                    group = group.WithSummary(endpointModule.openApisummary);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.openApisummary))
+                if (!string.IsNullOrWhiteSpace(endpointModule.openApiDisplayName))
                 {
-                    group = group.WithSummary(carterModule.openApisummary);
+                    group = group.WithDisplayName(endpointModule.openApiDisplayName);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.openApiDisplayName))
+                if (!string.IsNullOrWhiteSpace(endpointModule.openApiGroupName))
                 {
-                    group = group.WithDisplayName(carterModule.openApiDisplayName);
+                    group = group.WithGroupName(endpointModule.openApiGroupName);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.openApiGroupName))
+                if (endpointModule.tags.Any())
                 {
-                    group = group.WithGroupName(carterModule.openApiGroupName);
+                    group = group.WithTags(endpointModule.tags);
                 }
 
-                if (carterModule.tags.Any())
+                if (!string.IsNullOrWhiteSpace(endpointModule.cacheOutputPolicyName))
                 {
-                    group = group.WithTags(carterModule.tags);
+                    group = group.CacheOutput(endpointModule.cacheOutputPolicyName);
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.cacheOutputPolicyName))
-                {
-                    group = group.CacheOutput(carterModule.cacheOutputPolicyName);
-                }
-
-                if (carterModule.disableRateLimiting)
+                if (endpointModule.disableRateLimiting)
                 {
                     group = group.DisableRateLimiting();
                 }
 
-                if (!string.IsNullOrWhiteSpace(carterModule.rateLimitingPolicyName))
+                if (!string.IsNullOrWhiteSpace(endpointModule.rateLimitingPolicyName))
                 {
-                    group = group.RequireRateLimiting(carterModule.rateLimitingPolicyName);
+                    group = group.RequireRateLimiting(endpointModule.rateLimitingPolicyName);
                 }
 
-                if (carterModule.Before != null)
+                if (endpointModule.Before != null)
                 {
                     group.AddEndpointFilter(async (context, next) =>
                     {
-                        var result = carterModule.Before.Invoke(context);
+                        var result = endpointModule.Before.Invoke(context);
                         if (result != null)
                         {
                             return result;
@@ -144,160 +134,50 @@ public static class EndpointExtensions
                     });
                 }
 
-                if (carterModule.After != null)
+                if (endpointModule.After != null)
                 {
                     group.AddEndpointFilter(async (context, next) =>
                     {
                         var result = await next(context);
-                        carterModule.After.Invoke(context);
+                        endpointModule.After.Invoke(context);
                         return result;
                     });
                 }
 
-                carterModule.AddRoutes(group);
+                endpointModule.AddRoutes(group);
             }
             else
             {
-                carterModuleInterface.AddRoutes(builder);
+                moduleInterface.AddRoutes(builder);
             }
         }
 
         return builder;
     }
 
-    /// <summary>
-    /// Adds Carter to the specified <see cref="IServiceCollection"/>.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add Carter to.</param>
-    /// <param name="assemblyCatalog">Optional <see cref="DependencyContextAssemblyCatalog"/> containing assemblies to add to the services collection. If not provided, the default catalog of assemblies is added, which includes Assembly.GetEntryAssembly.</param>
-    /// <param name="configurator">Optional <see cref="EndpointConfigurator"/> to enable registration of specific types within Carter</param>
-    public static IServiceCollection AddCarter(this IServiceCollection services, DependencyContextAssemblyCatalog assemblyCatalog = null, Action<EndpointConfigurator> configurator = null)
+    public static IServiceCollection AddEndpointModules(this IServiceCollection services, params Assembly[] sources )
     {
-        assemblyCatalog ??= new DependencyContextAssemblyCatalog();
 
-        var config = new EndpointConfigurator();
-        configurator?.Invoke(config);
+        var assemblies = new ReadOnlyCollection<Assembly>( sources );
 
-        services.WireupCarter(assemblyCatalog, config);
-
-        return services;
-    }
-
-    private static void WireupCarter(this IServiceCollection services, DependencyContextAssemblyCatalog assemblyCatalog, EndpointConfigurator endpointConfigurator )
-    {
-        var assemblies = assemblyCatalog.GetAssemblies();
-
-        var newModules = GetNewModules(endpointConfigurator, assemblies);
-
-        //var modules = GetModules(endpointConfigurator, assemblies);
-
-        var responseNegotiators = GetResponseNegotiators(endpointConfigurator, assemblies);
-
-        services.AddSingleton(endpointConfigurator);
+        var modules = assemblies.SelectMany(x => x.GetTypes()
+            .Where(t =>
+                !t.IsAbstract &&
+                typeof(IEndpointModule).IsAssignableFrom(t) &&
+                t != typeof(IEndpointModule) &&
+                t.IsPublic
+            ));
 
 
-        foreach (var newModule in newModules)
+        foreach (var newModule in modules)
         {
             services.AddSingleton(typeof(IEndpointModule), newModule);
         }
 
-        // foreach (var newModule in modules)
-        // {
-        //     services.AddSingleton(typeof(CarterModule), newModule);
-        // }
 
-        foreach (var negotiator in responseNegotiators)
-        {
-            services.AddSingleton(typeof(IResponseNegotiator), negotiator);
-        }
+        return services;
 
-        services.AddSingleton<IResponseNegotiator, DefaultJsonResponseNegotiator>();
     }
 
-    private static IEnumerable<Type> GetResponseNegotiators(EndpointConfigurator endpointConfigurator, IReadOnlyCollection<Assembly> assemblies)
-    {
-        IEnumerable<Type> responseNegotiators;
-        if (endpointConfigurator.ExcludeResponseNegotiators || endpointConfigurator.ResponseNegotiatorTypes.Any())
-        {
-            responseNegotiators = endpointConfigurator.ResponseNegotiatorTypes;
-        }
-        else
-        {
-            responseNegotiators = assemblies.SelectMany(x => x.GetTypes()
-                .Where(t =>
-                    !t.IsAbstract &&
-                    typeof(IResponseNegotiator).IsAssignableFrom(t) &&
-                    t != typeof(IResponseNegotiator) &&
-                    t != typeof(DefaultJsonResponseNegotiator)
-                ));
 
-            endpointConfigurator.ResponseNegotiatorTypes.AddRange(responseNegotiators);
-        }
-
-        return responseNegotiators;
-    }
-
-    private static IEnumerable<Type> GetNewModules(EndpointConfigurator endpointConfigurator, IReadOnlyCollection<Assembly> assemblies)
-    {
-        IEnumerable<Type> modules;
-        if (endpointConfigurator.ExcludeModules || endpointConfigurator.ModuleTypes.Any())
-        {
-            modules = endpointConfigurator.ModuleTypes;
-        }
-        else
-        {
-            modules = assemblies.SelectMany(x => x.GetTypes()
-                .Where(t =>
-                    !t.IsAbstract &&
-                    typeof(IEndpointModule).IsAssignableFrom(t) &&
-                    t != typeof(IEndpointModule) &&
-                    t.IsPublic
-                ));
-
-            endpointConfigurator.ModuleTypes.AddRange(modules);
-        }
-
-        return modules;
-    }
-
-    private static IEnumerable<Type> GetModules(EndpointConfigurator endpointConfigurator, IReadOnlyCollection<Assembly> assemblies)
-    {
-        // IEnumerable<Type> modules;
-        // if (endpointConfigurator.ExcludeModules || endpointConfigurator.ModuleTypes.Any())
-        // {
-        //     modules = endpointConfigurator.ModuleTypes;
-        // }
-        // else
-        //{
-        var modules = assemblies.SelectMany(x => x.GetTypes()
-            .Where(t =>
-                !t.IsAbstract &&
-                typeof(AbstractEndpointModule).IsAssignableFrom(t) &&
-                t != typeof(AbstractEndpointModule) &&
-                t.IsPublic
-            ));
-
-        //endpointConfigurator.ModuleTypes.AddRange(modules);
-        //}
-
-        return modules;
-    }
-
-    private class CompositeConventionBuilder : IEndpointConventionBuilder
-    {
-        private readonly List<IEndpointConventionBuilder> _builders;
-
-        public CompositeConventionBuilder(List<IEndpointConventionBuilder> builders)
-        {
-            _builders = builders;
-        }
-
-        public void Add(Action<EndpointBuilder> convention)
-        {
-            foreach (var builder in _builders)
-            {
-                builder.Add(convention);
-            }
-        }
-    }
 }

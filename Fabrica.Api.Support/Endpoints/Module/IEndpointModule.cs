@@ -24,7 +24,7 @@ SOFTWARE.
  
 */
 
-namespace Fabrica.Api.Support.Endpoints;
+namespace Fabrica.Api.Support.Endpoints.Module;
 
 using System;
 using Microsoft.AspNetCore.Builder;
