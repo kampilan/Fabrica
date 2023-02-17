@@ -37,55 +37,55 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
 {
 
 
-    public BaseEndpointModule<T> RequireAuthorization(params string[] policyNames)
+    public T RequireAuthorization(params string[] policyNames)
     {
         RequiresAuthorization = true;
         AuthorizationPolicyNames = policyNames;
-        return this;
+        return (T)this;
     }
 
 
 
-    public BaseEndpointModule<T> WithDescription(string description)
+    public T WithDescription(string description)
     {
         OpenApiDescription = description;
-        return this;
+        return (T)this;
     }
 
-    public BaseEndpointModule<T> WithName(string name)
+    public T WithName(string name)
     {
         OpenApiName = name;
-        return this;
+        return (T)this;
     }
 
-    public BaseEndpointModule<T> WithDisplayName(string displayName)
+    public T WithDisplayName(string displayName)
     {
         OpenApiDisplayName = displayName;
-        return this;
+        return (T)this;
     }
 
-    public BaseEndpointModule<T> WithGroupName(string groupName)
+    public T WithGroupName(string groupName)
     {
         OpenApiGroupName = groupName;
-        return this;
+        return (T)this;
     }
 
-    public BaseEndpointModule<T> WithSummary(string summary)
+    public T WithSummary(string summary)
     {
         OpenApiSummary = summary;
-        return this;
+        return (T)this;
     }
 
-    public BaseEndpointModule<T> WithMetadata(params object[] items)
+    public T WithMetadata(params object[] items)
     {
         MetaData = items;
-        return this;
+        return (T)this;
     }
 
-    public BaseEndpointModule<T> WithTags(params string[] tags)
+    public T WithTags(params string[] tags)
     {
         Tags = tags;
-        return this;
+        return (T)this;
     }
 
 
