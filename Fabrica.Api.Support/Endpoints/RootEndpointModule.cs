@@ -16,7 +16,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Fabrica.Api.Support.Endpoints;
 
 
-public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity>> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
+public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TCriteria,TExplorer,TDelta,TEntity>> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
 {
 
     protected RootEndpointModule()
@@ -91,7 +91,7 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
 }
 
 
-public abstract class RootEndpointModule<TExplorer, TDelta, TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TExplorer, TDelta, TEntity>> where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
+public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersistenceEndpointModule<RootEndpointModule<TExplorer,TDelta,TEntity>> where TExplorer : class, IExplorableModel where TDelta : BaseDelta where TEntity : class, IModel
 {
 
     protected RootEndpointModule()

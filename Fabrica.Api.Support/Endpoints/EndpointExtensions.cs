@@ -17,16 +17,9 @@ public static class EndpointExtensions
 
         var assemblies = new ReadOnlyCollection<Assembly>(sources);
 
-        var modules = assemblies.SelectMany(x => x.GetTypes()
-            .Where(t =>
-                !t.IsAbstract &&
-                typeof(IEndpointModule).IsAssignableFrom(t) &&
-                t != typeof(IEndpointModule) &&
-                t.IsPublic
-            ));
+        var modules = assemblies.SelectMany(x => x.GetTypes().Where(t => !t.IsAbstract && typeof(IEndpointModule).IsAssignableFrom(t) && t != typeof(IEndpointModule) && t.IsPublic));
 
-
-        foreach (var newModule in modules)
+        foreach( var newModule in modules )
         {
             services.AddSingleton(typeof(IEndpointModule), newModule);
         }
@@ -40,7 +33,7 @@ public static class EndpointExtensions
     public static IEndpointRouteBuilder MapEndpointModules(this IEndpointRouteBuilder builder)
     {
 
-        foreach (var moduleInterface in builder.ServiceProvider.GetServices<IEndpointModule>())
+        foreach( var moduleInterface in builder.ServiceProvider.GetServices<IEndpointModule>() )
         {
 
             if( moduleInterface is BaseEndpointModule endpointModule )
@@ -50,7 +43,6 @@ public static class EndpointExtensions
 
                 if( endpointModule.RequiresAuthorization )
                     group = group.RequireAuthorization(endpointModule.AuthorizationPolicyNames);
-
 
                 if( !string.IsNullOrWhiteSpace(endpointModule.OpenApiDescription) )
                     group = group.WithDescription(endpointModule.OpenApiDescription);

@@ -96,7 +96,7 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         var path = attr is not null ? attr.Resource : "";
 
         if (string.IsNullOrWhiteSpace(path))
-            path = typeof(T).Name.Pluralize().ToLowerInvariant();
+            path = typeof(TTarget).Name.Pluralize().ToLowerInvariant();
 
         return path;
 
