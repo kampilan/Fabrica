@@ -18,8 +18,8 @@ namespace Fabrica.Watch.Sink
         public string WatchEndpoint { get; set; } = "";
         public string Domain { get; set; } = "";
 
-        private IContainer Container { get; set; }
-        private IHttpClientFactory Factory { get; set; }
+        private IContainer Container { get; set; } = null!;
+        private IHttpClientFactory Factory { get; set; } = null!;
 
         private ConsoleEventSink DebugSink { get; } = new();
 
@@ -88,10 +88,10 @@ namespace Fabrica.Watch.Sink
 
                 var le = new LogEvent
                 {
-                    Category = GetType().FullName,
+                    Category = GetType().FullName??"",
                     Level = Level.Debug,
                     Title = cause.Message,
-                    Payload = cause.StackTrace
+                    Payload = cause.StackTrace??""
                 };
 
                 await DebugSink.Accept(le);

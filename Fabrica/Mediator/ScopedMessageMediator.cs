@@ -3,16 +3,38 @@ using Fabrica.Rules.Exceptions;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using MediatR;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Fabrica.Mediator;
 
 public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
 {
 
-    public ScopedMessageMediator(ICorrelation correlation, IRuleSet rules, ILifetimeScope root) : base(correlation)
+
+    protected class WrapperServiceProvider: IServiceProvider
     {
-        Rules = rules;
+
+        public WrapperServiceProvider(ILifetimeScope scope)
+        {
+            Scope = scope;
+        }
+        
+        private ILifetimeScope Scope { get; }
+        
+        public object? GetService(Type serviceType)
+        {
+            return Scope.ResolveOptional(serviceType);
+        }
+
+    }
+
+
+    public ScopedMessageMediator(ICorrelation correlation, IRuleSet rules, ILifetimeScope root ) : base(correlation)
+    {
+
+        Rules     = rules;
         RootScope = root;
+
     }
 
     private IRuleSet Rules { get; }
@@ -22,13 +44,10 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
     private void Evaluate(params object[] facts)
     {
 
-        var logger = GetLogger();
+        using var logger = EnterMethod();
 
         try
         {
-
-            logger.EnterMethod();
-
 
             var ec = Rules.GetEvaluationContext();
             ec.ThrowNoRulesException = false;
@@ -45,10 +64,7 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
         {
             throw new MediatorInvalidRequestException(cause.Result.Events);
         }
-        finally
-        {
-            logger.LeaveMethod();
-        }
+
 
     }
 
@@ -56,7 +72,8 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
     public async Task<TResponse> Send<TResponse>( IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
 
-        if (request == null) throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
+
 
         using var logger = EnterMethod();
 
@@ -79,9 +96,8 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
 
         // *****************************************************************
         logger.Debug("Attempting to build inner Mediator");
-        // ReSharper disable once AccessToDisposedClosure
-        object Factory(Type type) => scope.Resolve(type);
-        var mediator = new MediatR.Mediator(Factory);
+        var provider = new WrapperServiceProvider(scope);
+        var mediator = new MediatR.Mediator( provider );
 
 
 
@@ -101,7 +117,7 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
     }
 
 
-    public async Task<object> Send(IRequest request, CancellationToken cancellationToken = default)
+    public async Task Send(IRequest request, CancellationToken cancellationToken = default)
     {
 
         using var logger = EnterMethod();
@@ -126,21 +142,14 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
         // *****************************************************************
         logger.Debug("Attempting to build inner Mediator");
         // ReSharper disable once AccessToDisposedClosure
-        object Factory(Type type) => scope.Resolve(type);
-        var mediator = new MediatR.Mediator(Factory);
+        var provider = new WrapperServiceProvider(scope);
+        var mediator = new MediatR.Mediator(provider);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to send request through the mediator");
-        var response = await mediator.Send(request, cancellationToken);
-
-        logger.LogObject(nameof(response), response);
-
-
-
-        // *****************************************************************
-        return response;
+        await mediator.Send(request, cancellationToken);
 
 
     }
@@ -164,8 +173,16 @@ public class ScopedMessageMediator : CorrelatedObject, IMessageMediator
 
 
         // *****************************************************************
+        logger.Debug("Attempting to begin isolated scope");
+        await using var scope = RootScope.BeginLifetimeScope();
+
+
+
+        // *****************************************************************
         logger.Debug("Attempting to resolve IMediator");
-        var mediator = RootScope.Resolve<IMediator>();
+        var provider = new WrapperServiceProvider(scope);
+        var mediator = new MediatR.Mediator(provider);
+
 
 
 

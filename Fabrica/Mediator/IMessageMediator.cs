@@ -17,7 +17,7 @@ public interface IMessageMediator
     /// <param name="request">Request object</param>
     /// <param name="cancellationToken">Optional cancellation token</param>
     /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
-    Task<object> Send(IRequest request, CancellationToken cancellationToken = default);
+    Task Send(IRequest request, CancellationToken cancellationToken = default);
 
 
     /// <summary>

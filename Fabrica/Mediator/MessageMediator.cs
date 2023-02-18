@@ -6,30 +6,46 @@ using MediatR;
 
 namespace Fabrica.Mediator;
 
-public class MessageMediator: CorrelatedObject, IMessageMediator
+public class MessageMediator : CorrelatedObject, IMessageMediator
 {
 
 
-    public MessageMediator(ICorrelation correlation, IRuleSet rules, ILifetimeScope root): base(correlation)
+    protected class WrapperServiceProvider : IServiceProvider
     {
-        Rules = rules;
+
+        public WrapperServiceProvider(ILifetimeScope scope)
+        {
+            Scope = scope;
+        }
+
+        private ILifetimeScope Scope { get; }
+
+        public object? GetService(Type serviceType)
+        {
+            return Scope.ResolveOptional(serviceType);
+        }
+
+    }
+
+
+
+    public MessageMediator(ICorrelation correlation, IRuleSet rules, ILifetimeScope root ) : base(correlation)
+    {
+        Rules     = rules;
         RootScope = root;
     }
 
     private IRuleSet Rules { get; }
-
     private ILifetimeScope RootScope { get; }
+
 
     private void Evaluate(params object[] facts)
     {
 
-        var logger = GetLogger();
+        using var logger = EnterMethod();
 
         try
         {
-
-            logger.EnterMethod();
-
 
             var ec = Rules.GetEvaluationContext();
             ec.ThrowNoRulesException = false;
@@ -46,18 +62,14 @@ public class MessageMediator: CorrelatedObject, IMessageMediator
         {
             throw new MediatorInvalidRequestException(cause.Result.Events);
         }
-        finally
-        {
-            logger.LeaveMethod();
-        }
 
     }
 
 
-    public async Task<TResponse> Send<TResponse>( IRequest<TResponse> request, CancellationToken cancellationToken = default )
+    public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
 
-        if (request == null) throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
         using var logger = EnterMethod();
 
@@ -73,8 +85,9 @@ public class MessageMediator: CorrelatedObject, IMessageMediator
 
         // *****************************************************************
         logger.Debug("Attempting to build inner Mediator");
-        object Factory(Type type) => RootScope.Resolve(type);
-        var mediator = new MediatR.Mediator(Factory);
+        var provider = new WrapperServiceProvider(RootScope);
+        var mediator = new MediatR.Mediator(provider);
+
 
 
 
@@ -94,94 +107,72 @@ public class MessageMediator: CorrelatedObject, IMessageMediator
     }
 
 
-    public async Task<object> Send( IRequest request, CancellationToken cancellationToken = default )
+    public async Task Send(IRequest request, CancellationToken cancellationToken = default)
     {
 
-        var logger = GetLogger();
+        ArgumentNullException.ThrowIfNull(request);
 
-        try
-        {
+        using var logger = EnterMethod();
 
-            logger.EnterMethod();
 
-            logger.LogObject(nameof(request), request);
+        logger.LogObject(nameof(request), request);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to evaluate request");
-            Evaluate(request);
+        // *****************************************************************
+        logger.Debug("Attempting to evaluate request");
+        Evaluate(request);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to build inner Mediator");
-            object Factory(Type type) => RootScope.Resolve(type);
-            var mediator = new MediatR.Mediator(Factory);
+        // *****************************************************************
+        logger.Debug("Attempting to build inner Mediator");
+        var provider = new WrapperServiceProvider(RootScope);
+        var mediator = new MediatR.Mediator(provider);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to send request through the mediator");
-            var response = await mediator.Send(request, cancellationToken);
-
-            logger.LogObject(nameof(response), response);
-
-
-
-            // *****************************************************************
-            return response;
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
+        // *****************************************************************
+        logger.Debug("Attempting to send request through the mediator");
+        await mediator.Send(request, cancellationToken);
 
 
     }
 
 
-    public async Task Publish<TNotification>( TNotification notification, CancellationToken cancellationToken = default ) where TNotification : INotification
+    public async Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default) where TNotification : INotification
     {
 
 
-        var logger = GetLogger();
+        ArgumentNullException.ThrowIfNull(notification);
 
-        try
-        {
+        using var logger = EnterMethod();
 
-            logger.EnterMethod();
 
-            logger.LogObject(nameof(notification), notification);
+        logger.LogObject(nameof(notification), notification);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to evaluate request");
-            Evaluate(notification);
+        // *****************************************************************
+        logger.Debug("Attempting to evaluate request");
+        Evaluate(notification);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to resolve IMediator");
-            var mediator = RootScope.Resolve<IMediator>();
+        // *****************************************************************
+        logger.Debug("Attempting to resolve IMediator");
+        var provider = new WrapperServiceProvider(RootScope);
+        var mediator = new MediatR.Mediator(provider);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to send request through the mediator");
-            await mediator.Publish(notification, cancellationToken);
-
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
+        // *****************************************************************
+        logger.Debug("Attempting to send request through the mediator");
+        await mediator.Publish(notification, cancellationToken);
 
 
     }
 
 
 }
+
