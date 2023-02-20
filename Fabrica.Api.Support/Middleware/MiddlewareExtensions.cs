@@ -38,12 +38,6 @@ public static class MiddlewareExtensions
         return app;
     }
 
-    public static IApplicationBuilder UseProblemMonitor(this IApplicationBuilder app)
-    {
-        app.UseMiddleware<ProblemMonitorMiddleware>();
-        return app;
-    }
-
     public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder app)
     {
         app.UseMiddleware<RequestLoggingMiddleware>();

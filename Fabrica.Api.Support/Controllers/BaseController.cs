@@ -31,9 +31,11 @@ using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
+using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Fabrica.Api.Support.Controllers;
 
@@ -241,14 +243,20 @@ public abstract class BaseController: Controller
 
 
 
-
-
-
         // *****************************************************************
-        logger.Debug("Attempting to build ObjectResult");
-        var result = new ObjectResult(model)
+        logger.Debug("Attempting to build ContentResult");
+        var serializer = new JsonSerializerSettings()
         {
-            StatusCode = (int)status
+            ContractResolver = new ModelContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore
+        };
+        var json = JsonConvert.SerializeObject(model, Formatting.Indented, serializer);
+
+        var result = new ContentResult
+        {
+            StatusCode  = (int)status,
+            Content     = json,
+            ContentType = "application/problem+json"
         };
 
 
