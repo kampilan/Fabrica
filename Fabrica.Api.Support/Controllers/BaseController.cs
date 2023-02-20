@@ -27,6 +27,7 @@ SOFTWARE.
 using System.Net;
 using System.Runtime.CompilerServices;
 using Fabrica.Api.Support.ActionResult;
+using Fabrica.Api.Support.Middleware;
 using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
@@ -218,22 +219,28 @@ public abstract class BaseController: Controller
 
 
         // *****************************************************************
+        logger.Debug("Attempting to map error Kind to HttpStatusCode");
+        var status = MapErrorToStatus(error.Kind);
+
+        logger.Inspect(nameof(status), status);
+
+
+
+        // *****************************************************************
         logger.Debug("Attempting to build ErrorResponseModel");
-        var model = new ErrorResponseModel
+        var model = new ProblemDetailModel
         {
-            ErrorCode = error.ErrorCode,
-            Explanation = error.Explanation,
-            Details = new List<EventDetail>(error.Details),
+            Type          = error.ErrorCode,
+            Title         = "Error encountered",
+            Detail        = error.Explanation,
+            StatusCode    = (int)status,
+            Instance      = $"{Request.Path}",
+            Segments      = new List<EventDetail>(error.Details),
             CorrelationId = Correlation.Uid
         };
 
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to map error Kind to HttpStatusCode");
-        var status = MapErrorToStatus(error.Kind);
-
-        logger.Inspect(nameof(status), status);
 
 
 
