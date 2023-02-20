@@ -38,7 +38,7 @@ public class EndpointResult: IResult
 
         var serializer = JsonSerializer.Create(Settings);
 
-        using var writer = new StreamWriter(result.Output, Encoding.UTF8, leaveOpen: true);
+        using var writer = new StreamWriter(result.Output, leaveOpen: true);
         using var jwriter = new JsonTextWriter(writer);
 
         serializer.Serialize(jwriter, model);
@@ -64,7 +64,7 @@ public class EndpointResult: IResult
 
         if( response is {Ok: true, Value: not Stream} )
         {
-            using var writer = new StreamWriter( result.Output, Encoding.UTF8, leaveOpen: true );
+            using var writer = new StreamWriter( result.Output, leaveOpen: true );
             using var jwriter = new JsonTextWriter(writer);
 
             serializer.Serialize( jwriter, response.Value );
