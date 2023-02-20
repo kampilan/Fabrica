@@ -45,6 +45,6 @@ public class ModuleRouteAttribute : Attribute
     public string Resource { get; set; } = "";
     public string Member { get; set; } = "";
 
-    public string Path => $"{Prefix}/{Resource}";
+    public string Path => string.IsNullOrWhiteSpace(Resource) ? $"{Prefix}" : $"{Prefix}/{Resource}";
 
 }
