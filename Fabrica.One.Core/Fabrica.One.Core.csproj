@@ -14,12 +14,12 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JsonSchema.Net.Generation" Version="3.0.3" />
+		<PackageReference Include="JsonSchema.Net.Generation" Version="3.1.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Text.Json" Version="7.0.2" />
-		<PackageReference Include="YamlDotNet" Version="13.0.0" />
+		<PackageReference Include="YamlDotNet" Version="13.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

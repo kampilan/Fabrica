@@ -141,7 +141,7 @@ namespace Fabrica.One.Plan
 
                 // *****************************************************************
                 logger.Debug("Attempting to validate JSON against Schema");
-                var results = PlanSchema.Validate(root, new ValidationOptions{OutputFormat = OutputFormat.Detailed});
+                var results = PlanSchema.Evaluate(root, new EvaluationOptions{OutputFormat = OutputFormat.List});
 
                 logger.Inspect(nameof(results.IsValid), results.IsValid);
 
@@ -157,19 +157,19 @@ namespace Fabrica.One.Plan
 
                     var exp = new PredicateException("Invalid Mission Plan JSON encountered");
 
-                    var details = results.NestedResults.Select(e => new EventDetail
+                    var details = results.Details.Select(e => new EventDetail
                         {
                             Category = EventDetail.EventCategory.Violation,
                             Group = "Mission Plan JSON",
                             RuleName = "JSON Schema",
                             Source = e.SchemaLocation.ToString(),
-                            Explanation = $"{e.InstanceLocation} - {e.Message}"
+                            Explanation = $"{e.InstanceLocation} - {e.Errors}"
                         })
                         .ToList();
 
 
                     if (details.Count == 0)
-                        exp.WithErrorCode("InvalidMissionJson").WithExplanation($"{results.InstanceLocation} - {results.Message}");
+                        exp.WithErrorCode("InvalidMissionJson").WithExplanation($"{results.InstanceLocation} - {results.Details}");
                     else
                         exp.WithErrorCode("InvalidMissionJson").WithDetails(details);
 
