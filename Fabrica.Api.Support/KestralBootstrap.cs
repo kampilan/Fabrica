@@ -10,6 +10,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Process;
 using Fabrica.Watch;
 using Fabrica.Watch.Bridges.MicrosoftImpl;
+using Fabrica.Watch.Http;
 using Fabrica.Watch.Mongo;
 using Fabrica.Watch.Realtime;
 using Fabrica.Watch.Switching;

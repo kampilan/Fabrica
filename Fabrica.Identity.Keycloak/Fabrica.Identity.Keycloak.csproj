@@ -13,7 +13,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Keycloak.Net.Core" Version="1.0.20" />
+		<PackageReference Include="Keycloak.Net.Core" Version="1.0.21" />
 	</ItemGroup>
 
 	<ItemGroup>

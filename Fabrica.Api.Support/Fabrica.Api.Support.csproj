@@ -14,7 +14,7 @@
 	
   <ItemGroup>
     <PackageReference Include="jose-jwt" Version="4.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
   </ItemGroup>
 	
@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
     <ProjectReference Include="..\Fabrica.One.Appliance\Fabrica.One.Appliance.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
+    <ProjectReference Include="..\Fabrica.Watch.Http\Fabrica.Watch.Http.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />

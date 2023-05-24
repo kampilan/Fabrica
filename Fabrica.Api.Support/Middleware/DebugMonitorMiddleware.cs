@@ -23,7 +23,6 @@ SOFTWARE.
 */
 
 using Fabrica.Utilities.Container;
-using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
 
 namespace Fabrica.Api.Support.Middleware;
@@ -52,17 +51,18 @@ public class DebugMonitorMiddleware
 
             // *****************************************************************
             logger.Debug("Attempting to check for Fabrica-Watch-Debug header");
-            if (context.Request.Headers.ContainsKey("X-Fabrica-Watch-Debug"))
+            if (context.Request.Headers.TryGetValue("X-Fabrica-Watch-Debug", out var header))
             {
 
-                logger.Debug("Fabrica-Watch-Debug IS present");
-                var candidate = context.Request.Headers["X-Fabrica-Watch-Debug"];
+                var df = header.FirstOrDefault();
 
-                logger.Inspect(nameof(candidate), candidate);
+                logger.Debug("Fabrica-Watch-Debug IS present");
+
+                logger.Inspect(nameof(df), df);
 
 
                 logger.Debug("Attempting to check candidate is a valid int");
-                if (int.TryParse(candidate, out var debugFlag))
+                if (int.TryParse(df, out var debugFlag))
                     debug = debugFlag != 0;
                 else
                     logger.Debug("Not a valid value");

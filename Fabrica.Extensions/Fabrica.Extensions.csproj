@@ -20,7 +20,7 @@
 		<PackageReference Include="SmartFormat.NET" Version="3.2.1" />
 		<PackageReference Include="Sprache" Version="2.3.1" />
 		<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-		<PackageReference Include="YamlDotNet" Version="13.0.2" />
+		<PackageReference Include="YamlDotNet" Version="13.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

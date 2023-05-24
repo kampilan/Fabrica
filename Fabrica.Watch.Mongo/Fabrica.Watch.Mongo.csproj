@@ -14,10 +14,10 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="MongoDB.Driver" Version="2.19.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.19.1" />
 		<PackageReference Include="MongoDB.Libmongocrypt" version="1.7.0" ExcludeAssets="All" />
-		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.101.33" ExcludeAssets="All" />
-		<PackageReference Include="AWSSDK.Core" Version="3.7.106.5" ExcludeAssets="All" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.103.3" ExcludeAssets="All" />
+		<PackageReference Include="AWSSDK.Core" Version="3.7.106.41" ExcludeAssets="All" />
 	</ItemGroup>
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Fabrica.Watch.Sink;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -9,7 +10,7 @@ using Polly.Extensions.Http;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
-namespace Fabrica.Watch.Sink
+namespace Fabrica.Watch.Http.Sink
 {
 
     public class HttpEventSink: IEventSink
