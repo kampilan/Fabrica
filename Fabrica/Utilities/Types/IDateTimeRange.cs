@@ -7,6 +7,8 @@
 
         int Id { get; }
 
+        DateTimeRange RangeKind { get; }
+
         string Label { get; }
 
         DateTime Begin { get; }

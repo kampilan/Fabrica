@@ -226,5 +226,9 @@ public static class DateTimeHelpers
     }
 
 
+    public static IDateTimeRange From( DateTimeRange range )
+    {
+        return PastModels.SingleOrDefault(r => r.RangeKind == range) ?? FutureModels.Single(r => r.RangeKind == range);
+    }
 
 }
