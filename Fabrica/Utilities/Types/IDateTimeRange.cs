@@ -5,6 +5,8 @@
     public interface IDateTimeRange
     {
 
+        int Id { get; }
+
         string Label { get; }
 
         DateTime Begin { get; }

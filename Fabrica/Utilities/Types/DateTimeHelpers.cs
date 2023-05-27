@@ -6,51 +6,52 @@ public static class DateTimeHelpers
     static DateTimeHelpers()
     {
 
+        var id = 0;
         PastModels = new List<IDateTimeRange>
         {
-            new DateTimeRangeModel {Label = "Last 1 Minute",   RangeKind = DateTimeRange.Prev1Min},
-            new DateTimeRangeModel {Label = "Last 2 Minutes",  RangeKind = DateTimeRange.Prev2Min},
-            new DateTimeRangeModel {Label = "Last 5 Minutes",  RangeKind = DateTimeRange.Prev5Min},
-            new DateTimeRangeModel {Label = "Last 15 Minutes", RangeKind = DateTimeRange.Prev15Min},
-            new DateTimeRangeModel {Label = "Last 30 Minutes", RangeKind = DateTimeRange.Prev30Min},
-            new DateTimeRangeModel {Label = "Last 1 Hour",     RangeKind = DateTimeRange.Prev1Hour},
-            new DateTimeRangeModel {Label = "Last 2 Hours",    RangeKind = DateTimeRange.Prev2Hour},
-            new DateTimeRangeModel {Label = "Last 4 Hours",    RangeKind = DateTimeRange.Prev4Hour},
-            new DateTimeRangeModel {Label = "Last 8 Hours",    RangeKind = DateTimeRange.Prev8Hour},
-            new DateTimeRangeModel {Label = "Last 12 Hours",   RangeKind = DateTimeRange.Prev12Hour},
-            new DateTimeRangeModel {Label = "Last 24 Hours",   RangeKind = DateTimeRange.Prev24Hour},
-            new DateTimeRangeModel {Label = "Today",           RangeKind = DateTimeRange.Today},
-            new DateTimeRangeModel {Label = "Yesterday",       RangeKind = DateTimeRange.Yesterday},
-            new DateTimeRangeModel {Label = "This Week",       RangeKind = DateTimeRange.ThisWeek},
-            new DateTimeRangeModel {Label = "Last Week",       RangeKind = DateTimeRange.LastWeek},
-            new DateTimeRangeModel {Label = "This Month",      RangeKind = DateTimeRange.ThisMonth},
-            new DateTimeRangeModel {Label = "Last Month",      RangeKind = DateTimeRange.LastMonth},
-            new DateTimeRangeModel {Label = "This Year",       RangeKind = DateTimeRange.ThisYear},
-            new DateTimeRangeModel {Label = "Last Year",       RangeKind = DateTimeRange.LastYear}
+            new DateTimeRangeModel {Id=++id, Label = "Last 1 Minute",   RangeKind = DateTimeRange.Prev1Min},
+            new DateTimeRangeModel {Id=++id,Label = "Last 2 Minutes",  RangeKind = DateTimeRange.Prev2Min},
+            new DateTimeRangeModel {Id=++id,Label = "Last 5 Minutes",  RangeKind = DateTimeRange.Prev5Min},
+            new DateTimeRangeModel {Id=++id,Label = "Last 15 Minutes", RangeKind = DateTimeRange.Prev15Min},
+            new DateTimeRangeModel {Id=++id,Label = "Last 30 Minutes", RangeKind = DateTimeRange.Prev30Min},
+            new DateTimeRangeModel {Id=++id,Label = "Last 1 Hour",     RangeKind = DateTimeRange.Prev1Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Last 2 Hours",    RangeKind = DateTimeRange.Prev2Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Last 4 Hours",    RangeKind = DateTimeRange.Prev4Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Last 8 Hours",    RangeKind = DateTimeRange.Prev8Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Last 12 Hours",   RangeKind = DateTimeRange.Prev12Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Last 24 Hours",   RangeKind = DateTimeRange.Prev24Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Today",           RangeKind = DateTimeRange.Today},
+            new DateTimeRangeModel {Id=++id,Label = "Yesterday",       RangeKind = DateTimeRange.Yesterday},
+            new DateTimeRangeModel {Id=++id,Label = "This Week",       RangeKind = DateTimeRange.ThisWeek},
+            new DateTimeRangeModel {Id=++id,Label = "Last Week",       RangeKind = DateTimeRange.LastWeek},
+            new DateTimeRangeModel {Id=++id,Label = "This Month",      RangeKind = DateTimeRange.ThisMonth},
+            new DateTimeRangeModel {Id=++id,Label = "Last Month",      RangeKind = DateTimeRange.LastMonth},
+            new DateTimeRangeModel {Id=++id,Label = "This Year",       RangeKind = DateTimeRange.ThisYear},
+            new DateTimeRangeModel {Id=++id,Label = "Last Year",       RangeKind = DateTimeRange.LastYear}
         };
 
 
         FutureModels = new List<IDateTimeRange>
         {
-            new DateTimeRangeModel {Label = "Next 1 Minute",   RangeKind  = DateTimeRange.Next1Min},
-            new DateTimeRangeModel {Label = "Next 2 Minutes",  RangeKind = DateTimeRange.Next2Min},
-            new DateTimeRangeModel {Label = "Next 5 Minutes",  RangeKind = DateTimeRange.Next5Min},
-            new DateTimeRangeModel {Label = "Next 15 Minutes", RangeKind = DateTimeRange.Next15Min},
-            new DateTimeRangeModel {Label = "Next 30 Minutes", RangeKind = DateTimeRange.Next30Min},
-            new DateTimeRangeModel {Label = "Next 1 Hour",     RangeKind = DateTimeRange.Next1Hour},
-            new DateTimeRangeModel {Label = "Next 2 Hours",    RangeKind = DateTimeRange.Next2Hour},
-            new DateTimeRangeModel {Label = "Next 4 Hours",    RangeKind = DateTimeRange.Next4Hour},
-            new DateTimeRangeModel {Label = "Next 8 Hours",    RangeKind = DateTimeRange.Next8Hour},
-            new DateTimeRangeModel {Label = "Next 12 Hours",   RangeKind = DateTimeRange.Next12Hour},
-            new DateTimeRangeModel {Label = "Next 24 Hours",   RangeKind = DateTimeRange.Next24Hour},
-            new DateTimeRangeModel {Label = "Today",           RangeKind = DateTimeRange.Today},
-            new DateTimeRangeModel {Label = "Tomorrow",        RangeKind = DateTimeRange.Tommorrow},
-            new DateTimeRangeModel {Label = "This Week",       RangeKind = DateTimeRange.ThisWeek},
-            new DateTimeRangeModel {Label = "Next Week",       RangeKind = DateTimeRange.NextWeek},
-            new DateTimeRangeModel {Label = "This Month",      RangeKind = DateTimeRange.ThisMonth},
-            new DateTimeRangeModel {Label = "Next Month",      RangeKind = DateTimeRange.NextMonth},
-            new DateTimeRangeModel {Label = "This Year",       RangeKind = DateTimeRange.ThisYear},
-            new DateTimeRangeModel {Label = "Next Year",       RangeKind = DateTimeRange.NextYear}
+            new DateTimeRangeModel {Id=++id,Label = "Next 1 Minute",   RangeKind  = DateTimeRange.Next1Min},
+            new DateTimeRangeModel {Id=++id,Label = "Next 2 Minutes",  RangeKind = DateTimeRange.Next2Min},
+            new DateTimeRangeModel {Id=++id,Label = "Next 5 Minutes",  RangeKind = DateTimeRange.Next5Min},
+            new DateTimeRangeModel {Id=++id,Label = "Next 15 Minutes", RangeKind = DateTimeRange.Next15Min},
+            new DateTimeRangeModel {Id=++id,Label = "Next 30 Minutes", RangeKind = DateTimeRange.Next30Min},
+            new DateTimeRangeModel {Id=++id,Label = "Next 1 Hour",     RangeKind = DateTimeRange.Next1Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Next 2 Hours",    RangeKind = DateTimeRange.Next2Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Next 4 Hours",    RangeKind = DateTimeRange.Next4Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Next 8 Hours",    RangeKind = DateTimeRange.Next8Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Next 12 Hours",   RangeKind = DateTimeRange.Next12Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Next 24 Hours",   RangeKind = DateTimeRange.Next24Hour},
+            new DateTimeRangeModel {Id=++id,Label = "Today",           RangeKind = DateTimeRange.Today},
+            new DateTimeRangeModel {Id=++id,Label = "Tomorrow",        RangeKind = DateTimeRange.Tommorrow},
+            new DateTimeRangeModel {Id=++id,Label = "This Week",       RangeKind = DateTimeRange.ThisWeek},
+            new DateTimeRangeModel {Id=++id,Label = "Next Week",       RangeKind = DateTimeRange.NextWeek},
+            new DateTimeRangeModel {Id=++id,Label = "This Month",      RangeKind = DateTimeRange.ThisMonth},
+            new DateTimeRangeModel {Id=++id,Label = "Next Month",      RangeKind = DateTimeRange.NextMonth},
+            new DateTimeRangeModel {Id=++id,Label = "This Year",       RangeKind = DateTimeRange.ThisYear},
+            new DateTimeRangeModel {Id=++id,Label = "Next Year",       RangeKind = DateTimeRange.NextYear}
         };
 
 
