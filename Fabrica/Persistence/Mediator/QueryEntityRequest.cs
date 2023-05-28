@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
@@ -15,7 +13,7 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 {
 
 
-    public static QueryEntityRequest<TEntity> Where( [NotNull] ICriteria criteria, int limit=0 )
+    public static QueryEntityRequest<TEntity> Where( ICriteria criteria, int limit=0 )
     {
 
         var request = new QueryEntityRequest<TEntity>();
@@ -26,7 +24,7 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 
     }
 
-    public static QueryEntityRequest<TEntity> Where( [NotNull] IRqlFilter<TEntity> filter )
+    public static QueryEntityRequest<TEntity> Where( IRqlFilter<TEntity> filter )
     {
 
         var request = new QueryEntityRequest<TEntity>();
@@ -56,7 +54,15 @@ public class QueryEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<L
 
     }
 
-    public RqlFilterBuilder<TEntity>Where<TValue>([NotNull] Expression<Func<TEntity,TValue>> predicate)
+    public void All()
+    {
+
+        var builder = RqlFilterBuilder<TEntity>.All();
+        Filters.Add(builder);
+
+    }
+
+    public RqlFilterBuilder<TEntity>Where<TValue>( Expression<Func<TEntity,TValue>> predicate )
     {
 
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));
