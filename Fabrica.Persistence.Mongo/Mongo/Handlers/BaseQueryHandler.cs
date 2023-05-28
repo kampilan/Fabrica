@@ -12,7 +12,7 @@ namespace Fabrica.Persistence.Mongo.Handlers;
 
 // ReSharper disable once UnusedMember.Global
 
-public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse : class, IModel
+public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse : class, IModel
 {
 
 
@@ -27,9 +27,6 @@ public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHa
 
     protected IRuleSet Rules { get; }
     protected IMongoCollection<TResponse> Collection{ get; }
-
-
-    protected abstract Func<TDbContext, IQueryable<TResponse>> Many { get; }
 
 
     protected async Task<List<TResponse>> ProcessFilters( IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token)
