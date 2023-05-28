@@ -21,7 +21,7 @@ namespace Fabrica.Test.Models.Patch
 
 
         private long _id;
-        public override long Id
+        public long Id
         {
             get => _id;
             protected set => _id = value;

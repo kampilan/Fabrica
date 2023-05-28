@@ -26,126 +26,122 @@ using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
 using Newtonsoft.Json;
 
-namespace Fabrica.Work.Models
+namespace Fabrica.Work.Models;
+
+[JsonObject(MemberSerialization.OptIn)]
+[Model( Alias=nameof(WorkTopic) )]
+public partial class WorkTopic : BaseMutableModel<WorkTopic>, INotifyPropertyChanged
 {
 
-	[JsonObject(MemberSerialization.OptIn)]
-	[Model( Alias=nameof(WorkTopic) )]
-    public partial class WorkTopic : BaseMutableModel<WorkTopic>, INotifyPropertyChanged
+
+    public WorkTopic(): this(false)
     {
 
+    }
 
-        public WorkTopic(): this(false)
+    public WorkTopic( bool added )
+    {
+
+        SuspendTracking( m =>
         {
+        });
 
-        }
+        if( added )
+            Added();
 
-        public WorkTopic( bool added )
-        {
-
-			SuspendTracking( m =>
-			{
-			});
-
-            if( added )
-                Added();
-
-        }			
+    }			
 
 		
-        private long _id;
-        public override  long Id
-		{ 
-			get { return _id; } 
-			protected set { _id = value; } 
-		} 
+    private long _id;
+    public long Id
+    { 
+        get { return _id; } 
+        protected set { _id = value; } 
+    } 
 
 
 
-		[JsonProperty("Uid")]
-		private string _uid = Base62Converter.NewGuid();
-		[ModelMeta(Scope=PropertyScope.Immutable)]		
-        public override  string Uid
-		{ 
-			get { return _uid; } 
-			set { _uid = value; } 
-		} 
+    [JsonProperty("Uid")]
+    private string _uid = Base62Converter.NewGuid();
+    [ModelMeta(Scope=PropertyScope.Immutable)]		
+    public override  string Uid
+    { 
+        get { return _uid; } 
+        set { _uid = value; } 
+    } 
 
 
-		[JsonProperty("Environment")]
-		private string _environment = "";
+    [JsonProperty("Environment")]
+    private string _environment = "";
 		 		
-        public  string Environment 
-		{ 
-			get { return _environment; } 
-			set { _environment = value; } 
-		} 
+    public  string Environment 
+    { 
+        get { return _environment; } 
+        set { _environment = value; } 
+    } 
 
-		[JsonProperty("TenantUid")]
-		private string _tenantUid = "";
+    [JsonProperty("TenantUid")]
+    private string _tenantUid = "";
 		 		
-        public  string TenantUid 
-		{ 
-			get { return _tenantUid; } 
-			set { _tenantUid = value; } 
-		} 
+    public  string TenantUid 
+    { 
+        get { return _tenantUid; } 
+        set { _tenantUid = value; } 
+    } 
 
-		[JsonProperty("Topic")]
-		private string _topic = "";
+    [JsonProperty("Topic")]
+    private string _topic = "";
 		 		
-        public  string Topic 
-		{ 
-			get { return _topic; } 
-			set { _topic = value; } 
-		} 
+    public  string Topic 
+    { 
+        get { return _topic; } 
+        set { _topic = value; } 
+    } 
 
-		[JsonProperty("Description")]
-		private string _description = "";
+    [JsonProperty("Description")]
+    private string _description = "";
 		 		
-        public  string Description 
-		{ 
-			get { return _description; } 
-			set { _description = value; } 
-		} 
+    public  string Description 
+    { 
+        get { return _description; } 
+        set { _description = value; } 
+    } 
 
-		[JsonProperty("Synchronous")]
-		private bool _synchronous = false;
+    [JsonProperty("Synchronous")]
+    private bool _synchronous = false;
 		 		
-        public  bool Synchronous 
-		{ 
-			get { return _synchronous; } 
-			set { _synchronous = value; } 
-		} 
+    public  bool Synchronous 
+    { 
+        get { return _synchronous; } 
+        set { _synchronous = value; } 
+    } 
 
-		[JsonProperty("ClientName")]
-		private string _clientName = "";
+    [JsonProperty("ClientName")]
+    private string _clientName = "";
 		 		
-        public  string ClientName 
-		{ 
-			get { return _clientName; } 
-			set { _clientName = value; } 
-		} 
+    public  string ClientName 
+    { 
+        get { return _clientName; } 
+        set { _clientName = value; } 
+    } 
 
-		[JsonProperty("Path")]
-		private string _path = "";
+    [JsonProperty("Path")]
+    private string _path = "";
 		 		
-        public  string Path 
-		{ 
-			get { return _path; } 
-			set { _path = value; } 
-		} 
+    public  string Path 
+    { 
+        get { return _path; } 
+        set { _path = value; } 
+    } 
 
-		[JsonProperty("FullUrl")]
-		private string _fullUrl = "";
+    [JsonProperty("FullUrl")]
+    private string _fullUrl = "";
 		 		
-        public  string FullUrl 
-		{ 
-			get { return _fullUrl; } 
-			set { _fullUrl = value; } 
-		} 
+    public  string FullUrl 
+    { 
+        get { return _fullUrl; } 
+        set { _fullUrl = value; } 
+    } 
 
 
-	}		
-
-	
 }

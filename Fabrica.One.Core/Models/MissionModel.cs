@@ -21,7 +21,7 @@ namespace Fabrica.One.Models
 
         [JsonIgnore]
         [Editable(false)]
-        public override long Id { get; protected set; }
+        public long Id { get; protected set; }
 
         [JsonIgnore]
         [Editable(false)]

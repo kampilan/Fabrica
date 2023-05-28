@@ -43,7 +43,7 @@ namespace Fabrica.Models
 
 
         [ModelMeta(Scope = PropertyScope.Exclude)]
-        public override long Id { get; protected set; }
+        public long Id { get; protected set; } = default;
 
         [ModelMeta(Scope = PropertyScope.Immutable)]
         public override string Uid { get; set; } = Base62Converter.NewGuid();

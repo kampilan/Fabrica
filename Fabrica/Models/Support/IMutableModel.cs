@@ -1,48 +1,41 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Fabrica.Models.Patch.Builder;
-using JetBrains.Annotations;
 
-namespace Fabrica.Models.Support
+namespace Fabrica.Models.Support;
+
+public interface IMutableModel: IModel, IEditableObject
 {
 
 
-    public interface IMutableModel: IModel, IEditableObject
-    {
+    bool IsReadonly();
+    void Readonly();
 
 
-        bool IsReadonly();
-        void Readonly();
+    bool IsAdded();
+
+    void Added();
+
+    bool IsModified();
 
 
-        bool IsAdded();
+    bool IsRemoved();
 
-        void Added();
+    void Removed();
 
-        bool IsModified();
-
-
-        bool IsRemoved();
-
-        void Removed();
-
-        void Undo();
-        void Post();
+    void Undo();
+    void Post();
 
 
-        IDictionary<string, DeltaProperty> GetDelta();
+    IDictionary<string, DeltaProperty> GetDelta();
 
 
-        void NotifyCollectionChanged([NotNull] IAggregateCollection collection, [CanBeNull] IModel member = null);
+    void NotifyCollectionChanged( IAggregateCollection collection, IModel? member = null );
 
-        void OnCreate();
-        void OnModification();
+    void OnCreate();
+    void OnModification();
 
 
 
-
-
-    }
 
 
 }

@@ -23,7 +23,7 @@ namespace Fabrica.One.Models
         private long _id;
         [JsonIgnore]
         [Editable(false)]
-        public override long Id
+        public long Id
         {
             get => _id;
             protected set => _id = value;

@@ -6,7 +6,7 @@
     {
 
 
-        long Id { get; }
+//        long Id { get; }
 
         string Uid { get; set; }
 

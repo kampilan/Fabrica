@@ -1,37 +1,38 @@
 ﻿using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
-// ReSharper disable UnusedMember.Global
+namespace Fabrica.Persistence.Mongo.Handlers;
 
-namespace Fabrica.Persistence.Ef.Mediator.Handlers;
+// ReSharper disable once UnusedMember.Global
 
-public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse: class, IModel where TDbContext: ReplicaDbContext
+public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse : class, IModel
 {
 
 
-    protected BaseQueryHandler(ICorrelation correlation, IRuleSet rules, TDbContext context) : base(correlation)
+    protected BaseQueryHandler(ICorrelation correlation, IRuleSet rules, IMongoDbContext context ) : base(correlation)
     {
+
         Rules = rules;
-        Context = context;
+        Collection = context.GetCollection<TResponse>();
+
     }
 
 
     protected IRuleSet Rules { get; }
-    protected TDbContext Context { get; }
+    protected IMongoCollection<TResponse> Collection{ get; }
 
 
-    protected abstract Func<TDbContext,IQueryable<TResponse>> Many { get; }
+    protected abstract Func<TDbContext, IQueryable<TResponse>> Many { get; }
 
 
-    protected async Task<List<TResponse>> ProcessFilters( IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token )
+    protected async Task<List<TResponse>> ProcessFilters( IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token)
     {
 
         if (filters == null) throw new ArgumentNullException(nameof(filters));
@@ -58,16 +59,16 @@ public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHa
         // *****************************************************************
         logger.Debug("Attempting to process each given filter");
         var set = new HashSet<TResponse>();
-        foreach( var filter in filterList )
+        foreach (var filter in filterList)
         {
 
-            var queryable = Many(Context).Where(filter.ToExpression());
-
-            List<TResponse> result;
+            IFindFluent<TResponse, TResponse> cursor;
             if( filter.RowLimit > 0 )
-                result = await queryable.AsNoTracking().Take(filter.RowLimit).ToListAsync(cancellationToken: token);
+                cursor = Collection.Find(filter.ToExpression()).Limit(filter.RowLimit);
             else
-                result = await queryable.AsNoTracking().ToListAsync(cancellationToken: token);
+                cursor = Collection.Find(filter.ToExpression());
+
+            var result = await cursor.ToListAsync(token);
 
             set.UnionWith(result);
 
@@ -90,7 +91,7 @@ public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHa
     }
 
 
-    protected override async Task<List<TResponse>> Perform( CancellationToken cancellationToken = default )
+    protected override async Task<List<TResponse>> Perform(CancellationToken cancellationToken = default)
     {
 
         using var logger = EnterMethod();
