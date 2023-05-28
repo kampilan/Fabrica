@@ -40,10 +40,10 @@ public class MongoDbContext: IMongoDbContext
         {
 
             var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
-            if (attr is not null && string.IsNullOrWhiteSpace(attr.Alias))
-                name = attr.Alias.Pluralize();
+            if (attr is not null && !string.IsNullOrWhiteSpace(attr.Alias))
+                name = attr.Alias.Pluralize().ToLowerInvariant();
             else
-                name = typeof(TEntity).Name.Pluralize();
+                name = typeof(TEntity).Name.Pluralize().ToLowerInvariant();
 
         }
 
