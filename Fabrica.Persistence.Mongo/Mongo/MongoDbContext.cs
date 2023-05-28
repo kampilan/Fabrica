@@ -1,4 +1,8 @@
-﻿using Humanizer;
+﻿using System.Reflection;
+using Fabrica.Models.Support;
+using Fabrica.Utilities.Container;
+using Fabrica.Watch;
+using Humanizer;
 using MongoDB.Driver;
 
 namespace Fabrica.Persistence.Mongo;
@@ -14,7 +18,7 @@ public class MongoDbContext: IMongoDbContext
 {
 
 
-    public MongoDbContext(MongoClient client, IMongoDatabase database)
+    public MongoDbContext( MongoClient client, IMongoDatabase database )
     {
 
         Client   = client;
@@ -28,11 +32,32 @@ public class MongoDbContext: IMongoDbContext
     public IMongoCollection<TEntity> GetCollection<TEntity>( string name="" )
     {
 
-        if( string.IsNullOrWhiteSpace(name))
-            name = typeof(TEntity).Name.Pluralize();
+        using var logger = this.EnterMethod();
 
+        logger.Inspect(nameof(name), name);
+
+        if( string.IsNullOrWhiteSpace(name) )
+        {
+
+            var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
+            if (attr is not null && string.IsNullOrWhiteSpace(attr.Alias))
+                name = attr.Alias.Pluralize();
+            else
+                name = typeof(TEntity).Name.Pluralize();
+
+        }
+
+        logger.Inspect(nameof(name), name);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to get MongoDB Collection from Database");
         var collection = Database.GetCollection<TEntity>(name);
 
+
+
+        // *****************************************************************
         return collection;
 
     }
