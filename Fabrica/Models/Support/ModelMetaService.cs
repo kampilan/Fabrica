@@ -2,6 +2,7 @@
 using System.Reflection;
 using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using Humanizer;
 
 // ReSharper disable CollectionNeverUpdated.Local
@@ -139,6 +140,13 @@ public class ModelMetaService: IModelMetaService, IRequiresStart
         TypeMap     = new ReadOnlyDictionary<Type, ModelMeta>(tmap);
 
 
+        using var logger = this.EnterMethod();
+
+        logger.LogObject("AliasMap", AliasMap);
+        logger.LogObject("ResourceMap", ResourceMap);
+        logger.LogObject("TypeMap", TypeMap);
+
+
         return Task.CompletedTask;
 
     }
@@ -186,7 +194,7 @@ public class ModelMetaService: IModelMetaService, IRequiresStart
         if( TypeMap.TryGetValue(type, out var meta) )
             return meta;
 
-        var attr = (ModelAttribute)type.GetCustomAttribute(typeof(ModelAttribute));
+        var attr = type.GetCustomAttribute<ModelAttribute>();
 
         var aliasKey    = (attr == null || string.IsNullOrWhiteSpace(attr.Alias) ? type.Name : attr.Alias).ToLowerInvariant();
         var resourceKey = (attr == null || string.IsNullOrWhiteSpace(attr.Resource) ? type.Name.Pluralize() : attr.Resource).ToLowerInvariant();
