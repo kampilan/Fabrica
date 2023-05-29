@@ -115,7 +115,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
             return request;
         }
 
-        throw new InvalidOperationException($"Request type: ({obj.GetType().Name}) does not implment IDeleteEntityRequest");
+        throw new InvalidOperationException($"Request type: ({obj.GetType().Name}) does not implement IDeleteEntityRequest");
 
     }
 

@@ -34,17 +34,17 @@ public class BaseUpdateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
 
 
         // *****************************************************************
-        logger.Debug("Attempting to Find WatchDomain for update");
+        logger.DebugFormat("Attempting to Find {0} using Uid ({1}) for update", typeof(TResponse).FullName!, Request.Uid);
         var cursor = await Collection.FindAsync(e => e.Uid == Request.Uid, cancellationToken: cancellationToken);
         var entity = await cursor.SingleOrDefaultAsync(cancellationToken: cancellationToken);
 
         if (entity is null)
-            throw new NotFoundException($"Could not find {typeof(TResponse).FullName} for update using Uid = ({Request.Uid})");
+            throw new NotFoundException($"Could not find {typeof(TResponse).FullName}  using Uid = ({Request.Uid}) for update");
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to map Delta to WatchDomain");
+        logger.Debug("Attempting to map Delta to Entity");
         Mapper.Map(Request.Delta, entity);
 
         logger.LogObject(nameof(entity), entity);
@@ -52,11 +52,11 @@ public class BaseUpdateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
 
 
         // *****************************************************************
-        logger.Debug("Attempting to update WatchDomain");
+        logger.Debug("Attempting to update Entity");
 
         var options = new ReplaceOptions
         {
-            IsUpsert = true
+            IsUpsert = false
         };
 
         await Collection.ReplaceOneAsync( e => e.Uid == entity.Uid, entity, options, cancellationToken: cancellationToken );

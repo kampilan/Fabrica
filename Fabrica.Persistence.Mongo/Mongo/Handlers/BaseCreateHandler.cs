@@ -26,6 +26,21 @@ public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TRespo
     private IMongoCollection<TResponse> Collection { get; }
     private IMapper Mapper { get; }
 
+    protected virtual TResponse CreateEntity()
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.DebugFormat("Attempting to create new {0}", typeof(TResponse).FullName??"");
+        var entity = new TResponse();
+
+
+        // *****************************************************************
+        return entity;
+
+    }
 
     protected override async Task<TResponse> Perform(CancellationToken cancellationToken = default)
     {
@@ -35,8 +50,13 @@ public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TRespo
 
 
         // *****************************************************************
-        logger.Debug("Attempting to Create Entity and map Delta");
+        logger.Debug("Attempting to create new entity ");
         var entity = new TResponse();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to map Delta to to new enity");
         Mapper.Map( Request.Delta, entity );
 
         logger.LogObject(nameof(entity), entity);
@@ -44,14 +64,13 @@ public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TRespo
 
 
         // *****************************************************************
-        logger.Debug("Attempting to Insert Entity");
+        logger.Debug("Attempting to Insert Entity in collection");
         await Collection.InsertOneAsync( entity, cancellationToken: cancellationToken );
 
 
 
         // *****************************************************************
         return entity;
-
 
 
     }

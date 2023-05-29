@@ -13,16 +13,16 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.AppConfig" Version="3.7.102.61" />
-		<PackageReference Include="AWSSDK.AppConfigData" Version="3.7.101.61" />
-		<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.103.10" />
-		<PackageReference Include="AWSSDK.S3" Version="3.7.104.21" />
-		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.102.46" />
+		<PackageReference Include="AWSSDK.AppConfig" Version="3.7.102.63" />
+		<PackageReference Include="AWSSDK.AppConfigData" Version="3.7.101.63" />
+		<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.103.12" />
+		<PackageReference Include="AWSSDK.S3" Version="3.7.104.23" />
+		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.102.48" />
 		<PackageReference Include="AWSSDK.SecretsManager.Caching" Version="1.0.5" />
-		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.103.3" />
-		<PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.70" />
-		<PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.104.37" />
-		<PackageReference Include="AWSSDK.SQS" Version="3.7.102.9" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.103.5" />
+		<PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.72" />
+		<PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.104.39" />
+		<PackageReference Include="AWSSDK.SQS" Version="3.7.102.11" />
 	</ItemGroup>
 
 	<ItemGroup>

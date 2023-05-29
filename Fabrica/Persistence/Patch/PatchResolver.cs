@@ -82,7 +82,7 @@ public class PatchResolver : CorrelatedObject, IPatchResolver
             }
             else
             {
-                throw new InvalidOperationException( $"Encountered in valid Patch scenerio for Model ({patch.Model}) Uid ({patch.Uid}) Verb ({patch.Verb})");
+                throw new InvalidOperationException( $"Encountered in valid Patch scenario for Model ({patch.Model}) Uid ({patch.Uid}) Verb ({patch.Verb})");
             }
 
 

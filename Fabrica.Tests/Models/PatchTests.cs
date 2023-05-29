@@ -285,12 +285,7 @@ public class LocalMediatorRequestFactory: MediatorRequestFactory
             default:
                 return null;
         }
-        
-        
 
     }
-
-
-
 
 }

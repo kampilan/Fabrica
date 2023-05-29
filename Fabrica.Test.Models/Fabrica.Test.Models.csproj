@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
     <ProjectReference Include="..\Fabrica.Persistence.Ef\Fabrica.Persistence.Ef.csproj" />
+    <ProjectReference Include="..\Fabrica.Persistence.Mongo\Fabrica.Persistence.Mongo.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 

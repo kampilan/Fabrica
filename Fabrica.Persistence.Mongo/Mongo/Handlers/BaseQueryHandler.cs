@@ -1,7 +1,6 @@
 ﻿using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
-using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
@@ -27,12 +26,10 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
 
     protected IRuleSet Rules { get; }
     protected IMongoCollection<TResponse> Collection{ get; }
+    
 
-
-    protected async Task<List<TResponse>> ProcessFilters( IEnumerable<IRqlFilter<TResponse>> filters, CancellationToken token)
+    protected override async Task<List<TResponse>> Perform(CancellationToken cancellationToken = default)
     {
-
-        if (filters == null) throw new ArgumentNullException(nameof(filters));
 
         using var logger = EnterMethod();
 
@@ -40,7 +37,7 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
 
         // *****************************************************************
         logger.Debug("Attempting to evaluate filters");
-        var filterList = filters.ToList();
+        var filterList = Request.Filters.ToList();
 
         var ec = Rules.GetEvaluationContext();
         ec.ThrowNoRulesException = false;
@@ -60,14 +57,14 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
         {
 
             IFindFluent<TResponse, TResponse> cursor;
-            if( filter.RowLimit > 0 )
+            if (filter.RowLimit > 0)
                 cursor = Collection.Find(filter.ToExpression()).Limit(filter.RowLimit);
             else
                 cursor = Collection.Find(filter.ToExpression());
 
-            var result = await cursor.ToListAsync(token);
+            var list = await cursor.ToListAsync(cancellationToken);
 
-            set.UnionWith(result);
+            set.UnionWith(list);
 
         }
 
@@ -75,31 +72,10 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
 
         // *****************************************************************
         logger.Debug("Attempting to create list from union set");
-        var list = set.ToList();
-
-        logger.Inspect(nameof(list.Count), list.Count);
-
-
-
-        // *****************************************************************
-        return list;
-
-
-    }
-
-
-    protected override async Task<List<TResponse>> Perform(CancellationToken cancellationToken = default)
-    {
-
-        using var logger = EnterMethod();
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to process filters");
-        var result = await ProcessFilters(Request.Filters, cancellationToken);
+        var result = set.ToList();
 
         logger.Inspect(nameof(result.Count), result.Count);
+
 
 
 
