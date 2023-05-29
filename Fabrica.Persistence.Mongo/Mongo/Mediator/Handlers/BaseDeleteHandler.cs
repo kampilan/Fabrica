@@ -7,13 +7,13 @@ using MongoDB.Driver;
 
 // ReSharper disable UnusedMember.Global
 
-namespace Fabrica.Persistence.Mongo.Handlers;
+namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
-public class BaseDeleteHandler<TRequest,TModel> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>, IDeleteEntityRequest where TModel : class, IModel
+public class BaseDeleteHandler<TRequest, TModel> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>, IDeleteEntityRequest where TModel : class, IModel
 {
 
 
-    public BaseDeleteHandler(ICorrelation correlation, IMongoDbContext context ) : base(correlation)
+    public BaseDeleteHandler(ICorrelation correlation, IMongoDbContext context) : base(correlation)
     {
 
         Collection = context.GetCollection<TModel>();

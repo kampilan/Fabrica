@@ -2,7 +2,7 @@
 using Fabrica.Utilities.Container;
 using MediatR;
 
-namespace Fabrica.Persistence.Mongo.Handlers;
+namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
 
 public abstract class BaseHandler<TRequest, TResponse> : AbstractRequestHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>

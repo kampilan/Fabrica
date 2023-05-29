@@ -8,13 +8,13 @@ using MediatR;
 using MongoDB.Driver;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace Fabrica.Persistence.Mongo.Handlers;
+namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
 public class BaseUpdateHandler<TRequest, TResponse> : BaseHandler<TRequest, TResponse> where TRequest : class, IUpdateEntityRequest, IRequest<Response<TResponse>> where TResponse : class, IModel
 {
 
-    
-    public BaseUpdateHandler(ICorrelation correlation, IMongoDbContext context, IMapper mapper ) : base(correlation)
+
+    public BaseUpdateHandler(ICorrelation correlation, IMongoDbContext context, IMapper mapper) : base(correlation)
     {
 
         Collection = context.GetCollection<TResponse>();
@@ -59,7 +59,7 @@ public class BaseUpdateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
             IsUpsert = false
         };
 
-        await Collection.ReplaceOneAsync( e => e.Uid == entity.Uid, entity, options, cancellationToken: cancellationToken );
+        await Collection.ReplaceOneAsync(e => e.Uid == entity.Uid, entity, options, cancellationToken: cancellationToken);
 
 
 

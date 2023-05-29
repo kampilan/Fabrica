@@ -8,23 +8,29 @@ using MongoDB.Driver;
 
 // ReSharper disable UnusedMember.Global
 
-namespace Fabrica.Persistence.Mongo.Handlers;
+namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
 public abstract class BaseRetrieveHandler<TRequest, TResponse> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IRetrieveEntityRequest where TResponse : class, IModel
 {
 
 
-    protected BaseRetrieveHandler(ICorrelation correlation, IMongoDbContext context ) : base(correlation)
+    protected BaseRetrieveHandler(ICorrelation correlation, IMongoDbContext context) : base(correlation)
     {
 
+        Context    = context;
         Collection = context.GetCollection<TResponse>();
 
     }
 
+    protected IMongoDbContext Context { get;  }
+    private IMongoCollection<TResponse> Collection { get; }
 
-    protected IMongoCollection<TResponse> Collection { get; }
 
-    
+    protected virtual Task Populate( TResponse parent )
+    {
+        return Task.CompletedTask;
+    }
+
 
     protected override async Task<TResponse> Perform(CancellationToken cancellationToken = default)
     {
@@ -37,10 +43,16 @@ public abstract class BaseRetrieveHandler<TRequest, TResponse> : BaseHandler<TRe
         var cursor = await Collection.FindAsync(e => e.Uid == Request.Uid, cancellationToken: cancellationToken);
         var entity = await cursor.SingleOrDefaultAsync(cancellationToken);
 
-        if( entity is null )
+        if (entity is null)
             throw new NotFoundException($"Could not find {typeof(TResponse).Name} using Uid = ({Request.Uid})");
 
         logger.LogObject(nameof(entity), entity);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to fetch details");
+        await Populate(entity);
 
 
 

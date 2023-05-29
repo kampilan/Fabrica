@@ -12,7 +12,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.Mongo;
-using Fabrica.Persistence.Mongo.Handlers;
+using Fabrica.Persistence.Mongo.Mediator.Handlers;
 using Fabrica.Persistence.Patch;
 using Fabrica.Rules;
 using Fabrica.Test.Models;

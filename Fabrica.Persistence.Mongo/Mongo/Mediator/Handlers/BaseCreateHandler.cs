@@ -8,13 +8,13 @@ using MongoDB.Driver;
 
 // ReSharper disable UnusedMember.Global
 
-namespace Fabrica.Persistence.Mongo.Handlers;
+namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
-public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TResponse> where TRequest : class, ICreateEntityRequest, IRequest<Response<TResponse>> where TResponse : class, IModel, new ()
+public class BaseCreateHandler<TRequest, TResponse> : BaseHandler<TRequest, TResponse> where TRequest : class, ICreateEntityRequest, IRequest<Response<TResponse>> where TResponse : class, IModel, new()
 {
 
 
-    public BaseCreateHandler( ICorrelation correlation, IMongoDbContext context, IMapper mapper ) : base(correlation)
+    public BaseCreateHandler(ICorrelation correlation, IMongoDbContext context, IMapper mapper) : base(correlation)
     {
 
         Collection = context.GetCollection<TResponse>();
@@ -33,7 +33,7 @@ public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TRespo
 
 
         // *****************************************************************
-        logger.DebugFormat("Attempting to create new {0}", typeof(TResponse).FullName??"");
+        logger.DebugFormat("Attempting to create new {0}", typeof(TResponse).FullName ?? "");
         var entity = new TResponse();
 
 
@@ -57,7 +57,7 @@ public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TRespo
 
         // *****************************************************************
         logger.Debug("Attempting to map Delta to to new enity");
-        Mapper.Map( Request.Delta, entity );
+        Mapper.Map(Request.Delta, entity);
 
         logger.LogObject(nameof(entity), entity);
 
@@ -65,7 +65,7 @@ public class BaseCreateHandler<TRequest,TResponse>: BaseHandler<TRequest, TRespo
 
         // *****************************************************************
         logger.Debug("Attempting to Insert Entity in collection");
-        await Collection.InsertOneAsync( entity, cancellationToken: cancellationToken );
+        await Collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
 
 
 

@@ -7,7 +7,7 @@ using Fabrica.Utilities.Container;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Fabrica.Persistence.Mongo.Handlers;
+namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
 // ReSharper disable once UnusedMember.Global
 
@@ -15,7 +15,7 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
 {
 
 
-    protected BaseQueryHandler(ICorrelation correlation, IRuleSet rules, IMongoDbContext context ) : base(correlation)
+    protected BaseQueryHandler(ICorrelation correlation, IRuleSet rules, IMongoDbContext context) : base(correlation)
     {
 
         Rules = rules;
@@ -25,8 +25,8 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
 
 
     protected IRuleSet Rules { get; }
-    protected IMongoCollection<TResponse> Collection{ get; }
-    
+    protected IMongoCollection<TResponse> Collection { get; }
+
 
     protected override async Task<List<TResponse>> Perform(CancellationToken cancellationToken = default)
     {
