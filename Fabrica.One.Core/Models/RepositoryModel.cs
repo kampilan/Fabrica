@@ -8,7 +8,7 @@ namespace Fabrica.One.Models
     public class RepositoryModel: BaseReferenceModel
     {
 
-        public override long Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public override string Uid { get; set; } = Base62Converter.NewGuid();
 

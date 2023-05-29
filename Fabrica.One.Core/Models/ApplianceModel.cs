@@ -10,7 +10,7 @@ namespace Fabrica.One.Models
     {
 
         [JsonIgnore]
-        public override long Id { get; protected set; }
+        public long Id { get; protected set; }
 
         [JsonIgnore]
         public override string Uid { get; set; } = Base62Converter.NewGuid();
