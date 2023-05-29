@@ -57,6 +57,13 @@ public abstract class BaseRetrieveHandler<TRequest, TResponse> : BaseHandler<TRe
 
 
         // *****************************************************************
+        logger.Debug("Attempting to post the entity");
+        if (entity is IMutableModel mu)
+            mu.Post();
+
+
+
+        // *****************************************************************
         return entity;
 
     }
