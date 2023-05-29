@@ -1,37 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using Fabrica.Exceptions;
-using Fabrica.Mediator;
+﻿using Fabrica.Exceptions;
 using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
-using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 
 namespace Fabrica.Persistence.Patch;
 
-public class PatchResolver : CorrelatedObject, IPatchResolver
+public class PatchResolver: IPatchResolver
 {
 
 
-    public PatchResolver(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, IMediatorRequestFactory factory) : base(correlation)
+    public PatchResolver( IModelMetaService meta, IMediatorRequestFactory factory)
     {
 
-        Meta        = meta;
-        TheMediator = mediator;
-        Factory     = factory;
+        Meta    = meta;
+        Factory = factory;
 
     }
 
 
     private IModelMetaService Meta { get; }
-    private IMessageMediator TheMediator { get; }
     private IMediatorRequestFactory Factory { get; }
 
 
     public IEnumerable<PatchRequest> Resolve( PatchSet patchSet )
     {
 
-        using var logger = EnterMethod();
+        using var logger = this.EnterMethod();
 
         var requests = new List<PatchRequest>();
 
@@ -84,7 +79,6 @@ public class PatchResolver : CorrelatedObject, IPatchResolver
             {
                 throw new InvalidOperationException( $"Encountered in valid Patch scenario for Model ({patch.Model}) Uid ({patch.Uid}) Verb ({patch.Verb})");
             }
-
 
         }
 

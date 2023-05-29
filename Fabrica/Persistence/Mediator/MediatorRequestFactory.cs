@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Fabrica.Utilities.Container;
+﻿using Fabrica.Watch;
 using JetBrains.Annotations;
 
 namespace Fabrica.Persistence.Mediator;
 
-public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
+public class MediatorRequestFactory : IMediatorRequestFactory
 {
 
 
-    public MediatorRequestFactory(ICorrelation correlation) : base(correlation)
+    public MediatorRequestFactory()
     {
     }
 
@@ -31,7 +29,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
         if (delta == null) throw new ArgumentNullException(nameof(delta));
         if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
 
-        using var logger = EnterMethod();
+        using var logger = this.EnterMethod();
 
         var obj = _makeRequest(typeof(CreateEntityRequest<>), entity);
         if (obj is ICreateEntityRequest request)
@@ -55,7 +53,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
         if (string.IsNullOrWhiteSpace(parentUid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(parentUid));
         if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
 
-        using var logger = EnterMethod();
+        using var logger = this.EnterMethod();
 
 
         var obj = _makeRequest(typeof(CreateMemberEntityRequest<,>), parent, member);
@@ -81,7 +79,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
         if (delta == null) throw new ArgumentNullException(nameof(delta));
         if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
 
-        using var logger = EnterMethod();
+        using var logger = this.EnterMethod();
 
         var obj = _makeRequest(typeof(UpdateEntityRequest<>), entity);
         if (obj is IUpdateEntityRequest request)
@@ -105,7 +103,7 @@ public class MediatorRequestFactory : CorrelatedObject, IMediatorRequestFactory
 
         if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(uid));
 
-        using var logger = EnterMethod();
+        using var logger = this.EnterMethod();
 
 
         var obj = _makeRequest(typeof(DeleteEntityRequest<>), entity);

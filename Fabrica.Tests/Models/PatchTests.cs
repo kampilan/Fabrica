@@ -232,33 +232,7 @@ public class TheModule : Module
 
         builder.UseMediator(typeof(IAssemblyFinder).Assembly);
 
-
-        builder.Register(c =>
-            {
-                var corr = c.Resolve<ICorrelation>();
-                var comp = new MediatorRequestFactory( corr );
-                return comp;
-            })
-            .As<IMediatorRequestFactory>()
-            .SingleInstance();
-
-        builder.Register(c =>
-            {
-
-                var corr = c.Resolve<ICorrelation>();
-                var meta = c.Resolve<IModelMetaService>();
-                var mediator = c.Resolve<IMessageMediator>();
-                var factory = c.Resolve<IMediatorRequestFactory>();
-
-                var comp = new PatchResolver(corr, meta, mediator, factory);
-                return comp;
-
-
-
-            })
-            .AsSelf()
-            .As<IPatchResolver>()
-            .InstancePerLifetimeScope();
+        builder.UsePatchResolver();
 
     }
 
@@ -269,7 +243,7 @@ public class TheModule : Module
 public class LocalMediatorRequestFactory: MediatorRequestFactory
 {
 
-    public LocalMediatorRequestFactory(ICorrelation correlation) : base(correlation)
+    public LocalMediatorRequestFactory()
     {
     }
 

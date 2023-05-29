@@ -333,38 +333,8 @@ public class TheMongoPersistenceModule : Module
 
         builder.UseModelMeta().AddModelMetaSource(GetType().Assembly, typeof(IAssemblyFinder).Assembly);
 
-
-        builder.Register(c =>
-            {
-
-                var corr = c.Resolve<ICorrelation>();
-                var meta = c.Resolve<IModelMetaService>();
-                var mediator = c.Resolve<IMessageMediator>();
-                var factory = c.Resolve<IMediatorRequestFactory>();
-
-                var comp = new PatchResolver(corr, meta, mediator, factory);
-                return comp;
-
-
-            })
-            .AsSelf()
-            .As<IPatchResolver>()
-            .InstancePerLifetimeScope();
-
-
-        builder.Register(c =>
-            {
-
-                var corr = c.Resolve<ICorrelation>();
-                var comp = new MediatorRequestFactory(corr);
-
-                return comp;
-
-            })
-            .As<IMediatorRequestFactory>()
-            .SingleInstance();
-
         builder.UseMediator(GetType().Assembly);
+        builder.UsePatchResolver();
 
     }
 
