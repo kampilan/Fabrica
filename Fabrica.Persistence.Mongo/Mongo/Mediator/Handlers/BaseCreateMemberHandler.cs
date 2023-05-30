@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Amazon.Runtime.Internal;
+using Amazon.Runtime;
+using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
@@ -10,20 +12,21 @@ using MongoDB.Driver;
 // ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
-
-public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild>: BaseCreateHandler<TRequest,TChild> where TRequest : class, ICreateMemberEntityRequest, ICreateEntityRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new()
+public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild> : BaseHandler<TRequest, TChild> where TRequest : class, ICreateMemberEntityRequest, IRequest<Response<TChild>> where TParent: class, IModel where TChild : class, IModel, new()
 {
-    
-    protected BaseCreateMemberHandler(ICorrelation correlation, IMongoDbContext context, IMapper mapper) : base(correlation, context, mapper)
-    {
 
-        Collection = context.GetCollection<TParent>();
+    protected BaseCreateMemberHandler(ICorrelation correlation, IMongoDbContext context, IMapper mapper) : base(correlation)
+    {
+    
+        ParentCollection = context.GetCollection<TParent>();
+        ChildCollection = context.GetCollection<TChild>();
+        Mapper = mapper;
 
     }
 
-
-    private IMongoCollection<TParent> Collection { get; }
-
+    private IMongoCollection<TParent> ParentCollection { get; }
+    private IMongoCollection<TChild> ChildCollection { get; }
+    private IMapper Mapper { get; }
     protected abstract Action<TParent, TChild> Attach { get; }
 
 
@@ -37,7 +40,7 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild>: BaseCr
         // *****************************************************************
         logger.Debug("Attempting to fetch parent using ParentUid");
 
-        var cursor = await Collection.FindAsync(p => p.Uid == Request.ParentUid, cancellationToken: cancellationToken);
+        var cursor = await ParentCollection.FindAsync(p => p.Uid == Request.ParentUid, cancellationToken: cancellationToken);
         var parent = await cursor.SingleOrDefaultAsync(cancellationToken: cancellationToken);
         if (parent is null)
             throw new NotFoundException($"Could not find Parent ({typeof(TParent).Name}) using ParentUid = ({Request.ParentUid}) for Child ({typeof(TChild)})");
@@ -47,14 +50,29 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild>: BaseCr
 
 
         // *****************************************************************
-        logger.Debug("Attempting to call base Perform");
-        var child = await base.Perform(cancellationToken);
+        logger.Debug("Attempting to create new entity ");
+        var child = new TChild();
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to Attach Child to Parent");
         Attach(parent, child);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to map Delta to to new enity");
+        Mapper.Map(Request.Delta, child);
+
+        logger.LogObject(nameof(child), child);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to Insert Entity in collection");
+        await ChildCollection.InsertOneAsync(child, cancellationToken: cancellationToken);
+
 
 
         // *****************************************************************
