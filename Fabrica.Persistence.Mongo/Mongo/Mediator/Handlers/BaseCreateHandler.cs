@@ -36,6 +36,9 @@ public class BaseCreateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
         logger.DebugFormat("Attempting to create new {0}", typeof(TResponse).FullName ?? "");
         var entity = new TResponse();
 
+        if (!string.IsNullOrWhiteSpace(Request.Uid))
+            entity.Uid = Request.Uid;
+
 
         // *****************************************************************
         return entity;
@@ -56,7 +59,7 @@ public class BaseCreateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
 
 
         // *****************************************************************
-        logger.Debug("Attempting to map Delta to to new enity");
+        logger.Debug("Attempting to map Delta to to new entity");
         Mapper.Map(Request.Delta, entity);
 
         logger.LogObject(nameof(entity), entity);

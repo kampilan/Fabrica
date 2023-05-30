@@ -8,6 +8,7 @@ using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 using MediatR;
 using MongoDB.Driver;
+using SharpCompress.Common;
 
 // ReSharper disable UnusedMember.Global
 
@@ -53,6 +54,8 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild> : BaseH
         logger.Debug("Attempting to create new entity ");
         var child = new TChild();
 
+        if (!string.IsNullOrWhiteSpace(Request.Uid))
+            child.Uid = Request.Uid;
 
 
         // *****************************************************************
@@ -62,7 +65,7 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild> : BaseH
 
 
         // *****************************************************************
-        logger.Debug("Attempting to map Delta to to new enity");
+        logger.Debug("Attempting to map Delta to to new entity");
         Mapper.Map(Request.Delta, child);
 
         logger.LogObject(nameof(child), child);
