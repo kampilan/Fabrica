@@ -110,32 +110,22 @@ namespace Fabrica.Models.Support
         protected override void RemoveItem( int index )
         {
 
-            using var logger = this.EnterMethod();
 
-            logger.Inspect(nameof(index), index);
-
-            logger.LogObject(nameof(Guard), Guard);
 
             var item = this[index];
             if (item == null || !Guard.Remove(item))
                 return;
 
-            logger.LogObject("item: pre-cleanup", item);
 
             item.SetParent(null);
             item.PropertyChanged -= OnMemberPropertyChanged;
 
-            logger.LogObject("item: post-cleanup", item);
 
             if ( !item.IsAdded() )
             {
                 item.Removed();
-                logger.LogObject("item: post-removed", item);
 
                 RemovedList.Add(item);
-
-                logger.LogObject("item: post-add-to-removed", item);
-
             }
 
             base.RemoveItem(index);
