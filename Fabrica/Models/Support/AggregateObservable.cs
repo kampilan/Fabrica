@@ -120,16 +120,22 @@ namespace Fabrica.Models.Support
             if (item == null || !Guard.Remove(item))
                 return;
 
-            logger.LogObject(nameof(item), item);
+            logger.LogObject("item: pre-cleanup", item);
 
             item.SetParent(null);
             item.PropertyChanged -= OnMemberPropertyChanged;
 
+            logger.LogObject("item: post-cleanup", item);
+
             if ( !item.IsAdded() )
             {
                 item.Removed();
+                logger.LogObject("item: post-removed", item);
+
                 RemovedList.Add(item);
-                logger.LogObject(nameof(RemovedList), RemovedList);
+
+                logger.LogObject("item: post-add-to-removed", item);
+
             }
 
             base.RemoveItem(index);
