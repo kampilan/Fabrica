@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Fabrica.Watch;
 
 namespace Fabrica.Models.Support
 {
@@ -109,9 +110,17 @@ namespace Fabrica.Models.Support
         protected override void RemoveItem( int index )
         {
 
+            using var logger = this.EnterMethod();
+
+            logger.Inspect(nameof(index), index);
+
+            logger.LogObject(nameof(Guard), Guard);
+
             var item = this[index];
             if (item == null || !Guard.Remove(item))
                 return;
+
+            logger.LogObject(nameof(item), item);
 
             item.SetParent(null);
             item.PropertyChanged -= OnMemberPropertyChanged;
@@ -120,6 +129,7 @@ namespace Fabrica.Models.Support
             {
                 item.Removed();
                 RemovedList.Add(item);
+                logger.LogObject(nameof(RemovedList), RemovedList);
             }
 
             base.RemoveItem(index);
