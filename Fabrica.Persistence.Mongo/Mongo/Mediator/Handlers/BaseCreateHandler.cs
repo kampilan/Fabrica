@@ -36,9 +36,6 @@ public class BaseCreateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
         logger.DebugFormat("Attempting to create new {0}", typeof(TResponse).FullName ?? "");
         var entity = new TResponse();
 
-        if (!string.IsNullOrWhiteSpace(Request.Uid))
-            entity.Uid = Request.Uid;
-
 
         // *****************************************************************
         return entity;
@@ -54,7 +51,10 @@ public class BaseCreateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
 
         // *****************************************************************
         logger.Debug("Attempting to create new entity ");
-        var entity = new TResponse();
+        var entity = CreateEntity();
+
+        if (!string.IsNullOrWhiteSpace(Request.Uid))
+            entity.Uid = Request.Uid;
 
 
 

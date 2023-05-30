@@ -31,6 +31,23 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild> : BaseH
     protected abstract Action<TParent, TChild> Attach { get; }
 
 
+    protected virtual TChild CreateEntity()
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.DebugFormat("Attempting to create new {0}", typeof(TChild).FullName ?? "");
+        var entity = new TChild();
+
+
+        // *****************************************************************
+        return entity;
+
+    }
+
+
     protected override async Task<TChild> Perform(CancellationToken cancellationToken = default)
     {
 
@@ -52,9 +69,9 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild> : BaseH
 
         // *****************************************************************
         logger.Debug("Attempting to create new entity ");
-        var child = new TChild();
+        var child = CreateEntity();
 
-        if (!string.IsNullOrWhiteSpace(Request.Uid))
+        if( !string.IsNullOrWhiteSpace(Request.Uid) )
             child.Uid = Request.Uid;
 
 
