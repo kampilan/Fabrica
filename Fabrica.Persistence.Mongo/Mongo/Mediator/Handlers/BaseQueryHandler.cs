@@ -1,6 +1,7 @@
 ﻿using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
+using Fabrica.Persistence.Mongo.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
@@ -56,11 +57,13 @@ public abstract class BaseQueryHandler<TRequest, TResponse> : BaseHandler<TReque
         foreach (var filter in filterList)
         {
 
+            var mf = MongoRqlSerializer.BuildFilter(filter);
+
             IFindFluent<TResponse, TResponse> cursor;
-            if (filter.RowLimit > 0)
-                cursor = Collection.Find(filter.ToExpression()).Limit(filter.RowLimit);
+            if( filter.RowLimit > 0 )
+                cursor = Collection.Find(mf).Limit(filter.RowLimit);
             else
-                cursor = Collection.Find(filter.ToExpression());
+                cursor = Collection.Find(mf);
 
             var list = await cursor.ToListAsync(cancellationToken);
 
