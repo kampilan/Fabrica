@@ -8,7 +8,6 @@ using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Bogus;
 using Fabrica.Mediator;
 using Fabrica.Models;
-using Fabrica.Models.Support;
 using Fabrica.Persistence;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.Mongo;

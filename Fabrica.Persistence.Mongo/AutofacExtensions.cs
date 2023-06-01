@@ -1,5 +1,8 @@
 ﻿using Autofac;
+using Fabrica.Models.Support;
 using Fabrica.Persistence.Mongo;
+using Fabrica.Persistence.Mongo.Conventions;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 // ReSharper disable UnusedMember.Global
@@ -10,8 +13,21 @@ public static class AutofacExtensions
 {
 
 
-    public static ContainerBuilder UseMongoDb( this ContainerBuilder builder, string url, string database )
+    public static ContainerBuilder UseMongoDb( this ContainerBuilder builder, string url, string database, bool registerConventions=true )
     {
+
+
+        if( registerConventions )
+        {
+            var pack = new ConventionPack
+            {
+                new ResetClassMapConvention(),
+                new PrivateFieldMappingConvention()
+            };
+
+            ConventionRegistry.Register("Fabrica.ClassMapping", pack, t => t.IsAssignableTo(typeof(IModel)) && !t.IsAbstract);
+
+        }
 
         builder.Register(c =>
             {
