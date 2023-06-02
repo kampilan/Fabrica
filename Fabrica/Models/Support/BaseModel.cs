@@ -5,8 +5,6 @@ namespace Fabrica.Models.Support;
 public abstract class BaseModel<TImp> : IModel where TImp : BaseModel<TImp>
 {
 
-    //public abstract long Id { get; protected set; }
-
     private string _uid = Base62Converter.NewGuid();
     public virtual string Uid
     {

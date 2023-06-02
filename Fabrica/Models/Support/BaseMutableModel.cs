@@ -88,7 +88,7 @@ namespace Fabrica.Models.Support
 
         public bool IsModified()
         {
-            return Delta.Count > 0 || IsAdded() || IsRemoved();
+            return Delta.Count > 0 || IsRemoved();
         }
 
 
