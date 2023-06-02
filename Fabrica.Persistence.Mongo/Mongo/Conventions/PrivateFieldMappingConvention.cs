@@ -28,7 +28,7 @@ public class PrivateFieldMappingConvention: ConventionBase, IClassMapConvention
         var flags  = BindingFlags.NonPublic | BindingFlags.Instance;
         var fields = type.GetFields(flags);
 
-        foreach( var field in fields.Where(f=>!f.IsPublic && f.Name.StartsWith("_")) )
+        foreach( var field in fields.Where(f=>!f.IsPublic && f.Name.StartsWith("_") && !f.FieldType.IsAssignableTo(typeof(IAggregateCollection)) && !f.FieldType.IsAssignableTo(typeof(IReferenceModel)) ) )
         {
 
             var propName = field.Name.Substring(1).Pascalize();
