@@ -6,7 +6,7 @@ public abstract class BaseReferenceModel: IReferenceModel
 {
 
 
-    public abstract string Uid { get; set; }
+    public virtual string Uid { get; set; } = "";
 
 
     private Type GetUnproxiedType()
