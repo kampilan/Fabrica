@@ -94,7 +94,9 @@ public static class DateTimeHelpers
     public static (DateTime begin, DateTime end) CalculateRange( DateTimeRange range, DateTime origin = default )
     {
 
-        origin = origin == default ? DateTime.Now : origin;
+        var now = origin == default ? DateTime.Now : origin;
+
+        origin = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, 0);
 
         var begin = origin;
         var end = origin;
