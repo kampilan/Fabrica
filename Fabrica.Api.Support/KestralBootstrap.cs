@@ -4,6 +4,8 @@
 using System.Drawing;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Fabrica.Api.Support.Handlers;
+using Fabrica.Container;
 using Fabrica.One;
 using Fabrica.One.Appliance;
 using Fabrica.Utilities.Container;
@@ -15,6 +17,7 @@ using Fabrica.Watch.Mongo;
 using Fabrica.Watch.Realtime;
 using Fabrica.Watch.Switching;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -165,10 +168,9 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
         builder.Services.AddHostedService<TService>();
 
 
-
         // *****************************************************************
         logger.Debug("Attempting to configure Autofac container");
-        builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(cb =>
+        builder.Host.UseServiceProviderFactory(new FabricaServiceProviderFactory(cb =>
         {
 
             cb.RegisterInstance(Configuration)
@@ -224,6 +226,26 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
             cb.RegisterInstance(mission)
                 .As<IMissionContext>()
                 .SingleInstance();
+
+
+            cb.RegisterType<CircuitBootstrap>()
+                .As<CircuitHandler>()
+                .InstancePerLifetimeScope();
+
+
+            cb.Register(c =>
+                {
+
+                    var scope = c.Resolve<ILifetimeScope>();
+                    var comp = new FabricaServiceScopeFactory(scope, ConfigureScopedContainer);
+
+                    return comp;
+
+                })
+                .AsSelf()
+                .As<IServiceScopeFactory>()
+                .SingleInstance()
+                .AutoActivate();
 
 
             using var inner = GetLogger();
@@ -320,6 +342,17 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
         logger.Info("Base ConfigureContainer adds no services");
 
     }
+
+    public virtual void ConfigureScopedContainer(ContainerBuilder builder)
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Info("Base ConfigureScopedContainer adds no services");
+
+    }
+
+
 
     public virtual void ConfigureWebApp(WebApplication app)
     {

@@ -27,5 +27,9 @@
 	  <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Container\" />
+	</ItemGroup>
+
 
 </Project>
