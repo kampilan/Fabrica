@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Fabrica.Watch;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable UnusedMember.Global
@@ -21,9 +20,6 @@ public class FabricaServiceScopeFactory: IServiceScopeFactory
 
     public IServiceScope CreateScope()
     {
-
-        using var logger = this.EnterMethod();
-
 
         var scope = RootScope.BeginLifetimeScope(ScopeBuilder);
 
