@@ -2,7 +2,7 @@
 
 namespace Fabrica.Api.Support.Identity.Gateway;
 
-public class TokenAuthenticationSchemeOptions : AuthenticationSchemeOptions
+public class GatewayTokenAuthenticationSchemeOptions : AuthenticationSchemeOptions
 {
 
 }

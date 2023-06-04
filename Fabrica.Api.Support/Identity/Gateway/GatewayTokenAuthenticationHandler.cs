@@ -18,8 +18,24 @@ public static class ServiceCollectionExtensions
 {
 
 
-    public static IServiceCollection AddGatewayTokenAuthentication(this IServiceCollection services)
+    public static IServiceCollection AddGatewayTokenAuthentication(this IServiceCollection services, string tokenSigningKey )
     {
+
+        services.AddSingleton<IGatewayTokenEncoder>(c =>
+        {
+
+            byte[] key = null!;
+            if (!string.IsNullOrWhiteSpace(tokenSigningKey))
+                key = Convert.FromBase64String(tokenSigningKey);
+
+            var comp = new GatewayTokenJwtEncoder
+            {
+                TokenSigningKey = key
+            };
+
+            return comp;
+
+        });
 
         services.AddAuthentication(op =>
             {
@@ -39,7 +55,7 @@ public static class AuthenticationBuilderExtensions
     public static AuthenticationBuilder AddGatewayToken( this AuthenticationBuilder builder )
     {
 
-        builder.AddScheme<TokenAuthenticationSchemeOptions, GatewayTokenAuthenticationHandler>( TokenConstants.Scheme, _ => { } );
+        builder.AddScheme<GatewayTokenAuthenticationSchemeOptions, GatewayTokenAuthenticationHandler>( TokenConstants.Scheme, _ => { } );
 
         return builder;
 
@@ -48,11 +64,11 @@ public static class AuthenticationBuilderExtensions
 }
 
 
-public class GatewayTokenAuthenticationHandler : AuthenticationHandler<TokenAuthenticationSchemeOptions>
+public class GatewayTokenAuthenticationHandler : AuthenticationHandler<GatewayTokenAuthenticationSchemeOptions>
 {
 
 
-    public GatewayTokenAuthenticationHandler( ICorrelation correlation, IGatewayTokenEncoder jwtEncoder, IOptionsMonitor<TokenAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock )
+    public GatewayTokenAuthenticationHandler( ICorrelation correlation, IGatewayTokenEncoder jwtEncoder, IOptionsMonitor<GatewayTokenAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock )
     {
 
         Correlation = correlation;
