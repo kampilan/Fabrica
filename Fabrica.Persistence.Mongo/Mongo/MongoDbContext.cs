@@ -17,6 +17,11 @@ public interface IMongoDbContext
 public class MongoDbContext: IMongoDbContext
 {
 
+    public MongoDbContext(string connection, string database)
+    {
+        Client = new MongoClient(connection);
+        Database = Client.GetDatabase(database);
+    }
 
     public MongoDbContext( MongoClient client, IMongoDatabase database )
     {

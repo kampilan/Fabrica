@@ -7,9 +7,9 @@ using Fabrica.Identity;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
 
-namespace Fabrica.Api.Support.Identity.Proxy;
+namespace Fabrica.Api.Support.Identity.Gateway;
 
-public class ClaimTokenPayloadBuilder: IProxyTokenPayloadBuilder
+public class ClaimTokenPayloadBuilder: IGatewayTokenPayloadBuilder
 {
 
     public ClaimTokenPayloadBuilder()

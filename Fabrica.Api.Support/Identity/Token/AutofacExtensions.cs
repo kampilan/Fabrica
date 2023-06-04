@@ -10,7 +10,7 @@ public static  class AutofacExtensions
 {
 
 
-    public static ContainerBuilder AddProxyTokenEncoder( this ContainerBuilder builder,  string tokenSigningKey )
+    public static ContainerBuilder AddGatewayTokenEncoder( this ContainerBuilder builder,  string tokenSigningKey )
     {
 
         builder.Register(c =>
@@ -20,7 +20,7 @@ public static  class AutofacExtensions
                 if (!string.IsNullOrWhiteSpace(tokenSigningKey))
                     key = Convert.FromBase64String(tokenSigningKey);
 
-                var comp = new ProxyTokenJwtEncoder
+                var comp = new GatewayTokenJwtEncoder
                 {
                     TokenSigningKey = key
                 };
@@ -28,7 +28,7 @@ public static  class AutofacExtensions
                 return comp;
 
             })
-            .As<IProxyTokenEncoder>()
+            .As<IGatewayTokenEncoder>()
             .SingleInstance();
 
 
@@ -36,14 +36,14 @@ public static  class AutofacExtensions
 
     }
 
-    public static ContainerBuilder AddProxyAccessTokenSource(this ContainerBuilder builder, IClaimSet claims )
+    public static ContainerBuilder AddGatewayAccessTokenSource(this ContainerBuilder builder, IClaimSet claims )
     {
 
         builder.Register(c =>
             {
 
-                var encoder = c.Resolve<IProxyTokenEncoder>();
-                var comp = new ProxyAccessTokenSource(encoder, claims);
+                var encoder = c.Resolve<IGatewayTokenEncoder>();
+                var comp = new GatewayAccessTokenSource(encoder, claims);
                 
                 return comp;
 

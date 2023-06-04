@@ -6,7 +6,7 @@ using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Fabrica.Api.Support.Identity.Proxy;
+namespace Fabrica.Api.Support.Identity.Gateway;
 
 public class TokenAuthorizationFilter : IAuthorizationFilter
 {

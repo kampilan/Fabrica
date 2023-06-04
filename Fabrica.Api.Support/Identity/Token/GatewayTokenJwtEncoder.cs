@@ -5,7 +5,7 @@ using Jose;
 
 namespace Fabrica.Api.Support.Identity.Token;
 
-public class ProxyTokenJwtEncoder: IProxyTokenEncoder
+public class GatewayTokenJwtEncoder: IGatewayTokenEncoder
 {
 
 

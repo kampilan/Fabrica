@@ -4,32 +4,30 @@
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Identity;
 using Fabrica.Utilities.Container;
-using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
+namespace Fabrica.Api.Support.Identity.Gateway;
 
-namespace Fabrica.Api.Support.Identity.Proxy;
-
-public class ProxyTokenBuilderMiddleware
+public class GatewayTokenBuilderMiddleware
 {
 
 
-    public ProxyTokenBuilderMiddleware( RequestDelegate next )
+    public GatewayTokenBuilderMiddleware( RequestDelegate next )
     {
         Next = next;
     }
 
     private RequestDelegate Next { get; }
 
-    public async Task Invoke(HttpContext context, ICorrelation correlation, IProxyTokenPayloadBuilder builder, IProxyTokenEncoder encoder )
+    public async Task Invoke(HttpContext context, ICorrelation correlation, IGatewayTokenPayloadBuilder builder, IGatewayTokenEncoder encoder )
     {
 
-        using var logger = correlation.EnterMethod<ProxyTokenBuilderMiddleware>();
+        using var logger = correlation.EnterMethod<GatewayTokenBuilderMiddleware>();
 
 
         // *****************************************************************
-        logger.Debug("Attempting to remove existing proxy token header");
+        logger.Debug("Attempting to remove existing gateway token header");
         if( context.Request.Headers.ContainsKey(TokenConstants.HeaderName) )
             context.Request.Headers.Remove(TokenConstants.HeaderName);
 
@@ -82,7 +80,7 @@ public class ProxyTokenBuilderMiddleware
 
 
         // *****************************************************************
-        logger.Debug("Attempting to add x-fabrica-proxy-token header");
+        logger.Debug("Attempting to add X-Gateway-Identity-Token header");
 
         context.Request.Headers[TokenConstants.HeaderName] = new StringValues(token);
 

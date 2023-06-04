@@ -3,17 +3,17 @@ using Fabrica.Watch;
 
 namespace Fabrica.Api.Support.Identity.Token;
 
-public class ProxyAccessTokenSource: IAccessTokenSource
+public class GatewayAccessTokenSource: IAccessTokenSource
 {
 
-    public ProxyAccessTokenSource(IProxyTokenEncoder encoder, IClaimSet claims)
+    public GatewayAccessTokenSource(IGatewayTokenEncoder encoder, IClaimSet claims)
     {
         Encoder = encoder;
         Claims  = claims;
 
     }
     
-    private IProxyTokenEncoder Encoder { get; }
+    private IGatewayTokenEncoder Encoder { get; }
     private IClaimSet Claims { get; }
 
     public string Name { get; set; } = "";

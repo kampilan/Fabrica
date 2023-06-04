@@ -12,20 +12,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Fabrica.Api.Support.Identity.Proxy;
+namespace Fabrica.Api.Support.Identity.Gateway;
 
 public static class ServiceCollectionExtensions
 {
 
 
-    public static IServiceCollection AddProxyTokenAuthentication(this IServiceCollection services)
+    public static IServiceCollection AddGatewayTokenAuthentication(this IServiceCollection services)
     {
 
         services.AddAuthentication(op =>
             {
                 op.DefaultScheme = TokenConstants.Scheme;
             })
-            .AddProxyToken();
+            .AddGatewayToken();
 
         return services;
 
@@ -36,10 +36,10 @@ public static class ServiceCollectionExtensions
 public static class AuthenticationBuilderExtensions
 {
 
-    public static AuthenticationBuilder AddProxyToken( this AuthenticationBuilder builder )
+    public static AuthenticationBuilder AddGatewayToken( this AuthenticationBuilder builder )
     {
 
-        builder.AddScheme<TokenAuthenticationSchemeOptions, TokenAuthenticationHandler>( TokenConstants.Scheme, _ => { } );
+        builder.AddScheme<TokenAuthenticationSchemeOptions, GatewayTokenAuthenticationHandler>( TokenConstants.Scheme, _ => { } );
 
         return builder;
 
@@ -48,11 +48,11 @@ public static class AuthenticationBuilderExtensions
 }
 
 
-public class TokenAuthenticationHandler : AuthenticationHandler<TokenAuthenticationSchemeOptions>
+public class GatewayTokenAuthenticationHandler : AuthenticationHandler<TokenAuthenticationSchemeOptions>
 {
 
 
-    public TokenAuthenticationHandler( ICorrelation correlation, IProxyTokenEncoder jwtEncoder, IOptionsMonitor<TokenAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock )
+    public GatewayTokenAuthenticationHandler( ICorrelation correlation, IGatewayTokenEncoder jwtEncoder, IOptionsMonitor<TokenAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock )
     {
 
         Correlation = correlation;
@@ -61,7 +61,7 @@ public class TokenAuthenticationHandler : AuthenticationHandler<TokenAuthenticat
     }
 
     private ICorrelation Correlation { get; }
-    private IProxyTokenEncoder JwtEncoder { get; }
+    private IGatewayTokenEncoder JwtEncoder { get; }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

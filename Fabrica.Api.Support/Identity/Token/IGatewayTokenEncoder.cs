@@ -2,7 +2,7 @@
 
 namespace Fabrica.Api.Support.Identity.Token;
 
-public interface IProxyTokenEncoder
+public interface IGatewayTokenEncoder
 {
 
     string Encode( IClaimSet claims );

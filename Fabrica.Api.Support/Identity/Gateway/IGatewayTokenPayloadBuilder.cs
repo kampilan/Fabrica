@@ -1,11 +1,11 @@
 ﻿using Fabrica.Identity;
 using Microsoft.AspNetCore.Http;
 
-namespace Fabrica.Api.Support.Identity.Proxy
+namespace Fabrica.Api.Support.Identity.Gateway
 {
 
 
-    public interface IProxyTokenPayloadBuilder
+    public interface IGatewayTokenPayloadBuilder
     {
 
         IClaimSet Build( HttpContext context );
