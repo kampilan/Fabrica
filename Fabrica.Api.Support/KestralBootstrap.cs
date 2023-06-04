@@ -58,7 +58,7 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
 
     public bool RequiresAuthentication { get; set; } = true;
-    public string TokenSigningKey { get; set; } = "";
+    public string GatewayTokenSigningKey { get; set; } = "";
 
 
     public IConfiguration Configuration { get; set; } = null!;
