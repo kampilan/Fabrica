@@ -381,4 +381,9 @@ public class WebAppliance : IAppliance
         App.Run();
     }
 
+    public async Task RunAsync()
+    {
+        await App.RunAsync();
+    }
+
 }
