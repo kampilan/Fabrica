@@ -17,6 +17,20 @@ public class ApplianceConsoleLifetimeWithExit : ApplianceConsoleLifetime
 
     private ISignalController Controller { get; }
 
+
+    protected override void OnApplicationStarted()
+    {
+
+        using var logger = this.EnterMethod();
+
+        Console.Out.WriteLine( "Appliance started. Press Ctrl+C to shut down." );
+        
+        logger.Info("Appliance started. Press Ctrl+C to shut down.");
+        logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
+        logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
+
+    }
+
     protected override void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
     {
 

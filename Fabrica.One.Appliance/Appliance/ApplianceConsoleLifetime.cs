@@ -29,7 +29,7 @@ public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
 
     private ConsoleLifetimeOptions Options { get; }
 
-    private IHostEnvironment Environment { get; }
+    protected IHostEnvironment Environment { get; }
 
     protected IHostApplicationLifetime ApplicationLifetime { get; }
 
@@ -63,12 +63,12 @@ public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
 
     }
 
-    private void OnApplicationStarted()
+    protected virtual void OnApplicationStarted()
     {
 
         using var logger = this.EnterMethod();
 
-        logger.Info("Application started. Press Ctrl+C to shut down.");
+        logger.Info("Application started.");
         logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
         logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
 
