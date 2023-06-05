@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Fabrica.Api.Support.Identity.Gateway;
 
-public class ClaimTokenPayloadBuilder: IGatewayTokenPayloadBuilder
+public class ClaimGatewayTokenPayloadBuilder: IGatewayTokenPayloadBuilder
 {
 
-    public ClaimTokenPayloadBuilder()
+    public ClaimGatewayTokenPayloadBuilder()
     {
 
         var mappings = new Dictionary<string, string>
@@ -32,7 +32,7 @@ public class ClaimTokenPayloadBuilder: IGatewayTokenPayloadBuilder
 
     }
 
-    public ClaimTokenPayloadBuilder( IEnumerable<KeyValuePair<string, string>> mappings )
+    public ClaimGatewayTokenPayloadBuilder( IEnumerable<KeyValuePair<string, string>> mappings )
     {
 
         ClaimMap = new ReadOnlyDictionary<string,string>( new Dictionary<string,string>( mappings ) );
