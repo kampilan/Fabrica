@@ -166,7 +166,7 @@ namespace Fabrica.Utilities.Process
 
             while( true )
             {
-
+/*
                 if( !StartedEvent.WaitOne(0) && CheckSignal(SignalTypes.Started) )
                     StartedEvent.Set();
 
@@ -175,7 +175,7 @@ namespace Fabrica.Utilities.Process
                     StoppedEvent.Set();
                     break;
                 }
-
+*/
                 if (EndWatchEvent.WaitOne(TimeSpan.FromMilliseconds(500)))
                     break;
 

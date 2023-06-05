@@ -31,7 +31,7 @@ public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
 
     private IHostEnvironment Environment { get; }
 
-    private IHostApplicationLifetime ApplicationLifetime { get; }
+    protected IHostApplicationLifetime ApplicationLifetime { get; }
 
     private HostOptions HostOptions { get; }
 
