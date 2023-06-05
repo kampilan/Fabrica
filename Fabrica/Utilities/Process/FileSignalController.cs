@@ -166,7 +166,7 @@ namespace Fabrica.Utilities.Process
 
             while( true )
             {
-/*
+
                 if( !StartedEvent.WaitOne(0) && CheckSignal(SignalTypes.Started) )
                     StartedEvent.Set();
 
@@ -175,7 +175,7 @@ namespace Fabrica.Utilities.Process
                     StoppedEvent.Set();
                     break;
                 }
-*/
+
                 if (EndWatchEvent.WaitOne(TimeSpan.FromMilliseconds(500)))
                     break;
 
@@ -241,7 +241,7 @@ namespace Fabrica.Utilities.Process
         public Task Start()
         {
             if (Owner == OwnerType.Host)
-                Task.Run(WatchHost);
+                Task.Run(WatchAppliance);
             else
                 Task.Run(WatchAppliance);
 

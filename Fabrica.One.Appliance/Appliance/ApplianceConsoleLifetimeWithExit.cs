@@ -1,4 +1,5 @@
-﻿using Fabrica.Watch;
+﻿using Fabrica.Utilities.Process;
+using Fabrica.Watch;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -7,9 +8,14 @@ namespace Fabrica.One.Appliance;
 public class ApplianceConsoleLifetimeWithExit : ApplianceConsoleLifetime
 {
  
-    public ApplianceConsoleLifetimeWithExit(IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions) : base(options, environment, applicationLifetime, hostOptions)
+    public ApplianceConsoleLifetimeWithExit( ISignalController controller, IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions) : base(options, environment, applicationLifetime, hostOptions)
     {
+
+        Controller = controller;
+
     }
+
+    private ISignalController Controller { get; }
 
     protected override void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
     {
@@ -20,7 +26,8 @@ public class ApplianceConsoleLifetimeWithExit : ApplianceConsoleLifetime
         logger.Debug("Attempting to exit appliance after respecting ctrl-c");
 
         e.Cancel = false;
-        ApplicationLifetime.StopApplication();
+
+        Controller.RequestStop();
 
     }
 }
