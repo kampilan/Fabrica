@@ -25,9 +25,10 @@ public class ApplianceConsoleLifetimeWithExit : ApplianceConsoleLifetime
         // *****************************************************************
         logger.Debug("Attempting to exit appliance after respecting ctrl-c");
 
-        e.Cancel = false;
-
         Controller.RequestStop();
 
+        e.Cancel = true;
+
     }
+
 }
