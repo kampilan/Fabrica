@@ -54,24 +54,24 @@ public interface ILogger: IDisposable
     void Trace( Func<string> expression );
     void Trace( Exception ex, object? message = null);
 
-    void TraceFormat( string template, params object[] args);
-    void TraceFormat( Exception ex, string template, params object[] args);
+    void TraceFormat( string template, params object?[] args);
+    void TraceFormat( Exception ex, string template, params object?[] args);
 
 
     void Debug( object? message );
     void Debug( Func<string> expression);
     void Debug( Exception ex, object? message = null);
 
-    void DebugFormat( string template, params object[] args );
-    void DebugFormat( Exception ex, string template, params object[] args );
+    void DebugFormat( string template, params object?[] args );
+    void DebugFormat( Exception ex, string template, params object?[] args );
 
 
     void Info( object? message);
     void Info( Func<string> expression);
     void Info( Exception ex, object? message = null );
 
-    void InfoFormat( string template, params object[] args);
-    void InfoFormat( Exception ex, string template, params object[] args );
+    void InfoFormat( string template, params object?[] args);
+    void InfoFormat( Exception ex, string template, params object?[] args );
 
 
     void Warning( object? message );
@@ -79,8 +79,8 @@ public interface ILogger: IDisposable
     void Warning( Exception ex, object? message = null);
     void WarningWithContext( Exception ex, object context, object? message = null);
 
-    void WarningFormat( string template, params object[] args);
-    void WarningFormat( Exception ex, string template, params object[] args );
+    void WarningFormat( string template, params object?[] args);
+    void WarningFormat( Exception ex, string template, params object?[] args );
 
 
     void Error( object? message );
@@ -88,8 +88,8 @@ public interface ILogger: IDisposable
     void Error(  Exception ex, object? message = null);
     void ErrorWithContext( Exception ex, object context, object? message = null);
 
-    void ErrorFormat( string template, params object[] args);
-    void ErrorFormat( Exception ex, string template, params object[] args);
+    void ErrorFormat( string template, params object?[] args);
+    void ErrorFormat( Exception ex, string template, params object?[] args);
 
 
     void EnterMethod( [CallerMemberName] string name = "" );
