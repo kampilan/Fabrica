@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Fabrica.Identity;
 
@@ -11,7 +11,7 @@ public static class ClaimsIdentityExtensions
     {
 
         var payload = ci.ToPayload();
-        var json = JsonConvert.SerializeObject(payload);
+        var json = JsonSerializer.Serialize(ci);
 
         return json;
 
@@ -20,7 +20,7 @@ public static class ClaimsIdentityExtensions
 
     public static void Populate( this ClaimsIdentity ci, string json )
     {
-        var payload = JsonConvert.DeserializeObject<ClaimSetModel>(json);
+        var payload = JsonSerializer.Deserialize<ClaimSetModel>(json);
         ci.Populate( payload );
 
     }
@@ -29,15 +29,26 @@ public static class ClaimsIdentityExtensions
     public static void Populate( this ClaimsIdentity ci, IClaimSet claimSet )
     {
 
+
         CheckClaim( FabricaClaims.FlowClaim, claimSet.AuthenticationFlow );
+        CheckClaim( FabricaClaims.TypeClaim, claimSet.AuthenticationType );
+
         CheckClaim( FabricaClaims.TenantClaim, claimSet.Tenant );
-        CheckClaim( ClaimTypes.NameIdentifier, claimSet.Subject );
-        CheckClaim( ClaimTypes.Name, claimSet.Name );
+
+        CheckClaim( FabricaClaims.SubjectClaim, claimSet.Subject );
+        CheckClaim( FabricaClaims.AltSubjectClaim, claimSet.AltSubject );
+
+        CheckClaim( FabricaClaims.UserNameClaim, claimSet.UserName );
+
+        CheckClaim( FabricaClaims.GivenNameClaim, claimSet.GivenName );
+        CheckClaim( FabricaClaims.FamilyNameClaim, claimSet.FamilyName );
+        CheckClaim( FabricaClaims.NameClaim, claimSet.Name );
+
+        CheckClaim( FabricaClaims.EmailClaim, claimSet.Email );
         CheckClaim( FabricaClaims.PictureClaim, claimSet.Picture );
-        CheckClaim( ClaimTypes.Email, claimSet.Email );
 
         foreach (var role in claimSet.Roles)
-            CheckClaim(ClaimTypes.Role, role);
+            CheckClaim(FabricaClaims.RoleClaim, role);
 
         void CheckClaim(string type, string? value)
         {
@@ -53,10 +64,17 @@ public static class ClaimsIdentityExtensions
 
         var payload = new ClaimSetModel
         {
-            Tenant  = ci.GetTenant(),
-            Subject = ci.GetSubject(),
-            Name    = ci.GetName(),
-            Picture = ci.GetPictureUrl()
+            AuthenticationType = ci.GetAuthType(),
+            AuthenticationFlow = ci.GetAuthFlow(),
+            Tenant             = ci.GetTenant(),
+            Subject            = ci.GetSubject(),
+            AltSubject         = ci.GetAltSubject(),
+            UserName           = ci.GetUserName(),
+            GivenName          = ci.GetGivenName(),
+            FamilyName         = ci.GetFamilyName(),
+            Name               = ci.GetName(),
+            Email              = ci.GetEmail(),
+            Picture            = ci.GetPictureUrl()
         };
 
         payload.Roles.AddRange( ci.GetRoles() );
@@ -66,7 +84,14 @@ public static class ClaimsIdentityExtensions
     }
 
 
-    public static string GetFlow(this ClaimsIdentity ci, string missing = "")
+    public static string GetAuthType(this ClaimsIdentity ci, string missing = "")
+    {
+        var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.TypeClaim);
+        return claim?.Value ?? missing;
+    }
+
+
+    public static string GetAuthFlow(this ClaimsIdentity ci, string missing = "")
     {
         var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.FlowClaim);
         return claim?.Value ?? missing;
@@ -82,6 +107,30 @@ public static class ClaimsIdentityExtensions
     public static string GetSubject( this ClaimsIdentity ci, string missing = "")
     {
         var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.SubjectClaim );
+        return claim?.Value ?? missing;
+    }
+
+    public static string GetAltSubject(this ClaimsIdentity ci, string missing = "")
+    {
+        var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.AltSubjectClaim);
+        return claim?.Value ?? missing;
+    }
+
+    public static string GetUserName(this ClaimsIdentity ci, string missing = "")
+    {
+        var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.UserNameClaim);
+        return claim?.Value ?? missing;
+    }
+
+    public static string GetGivenName(this ClaimsIdentity ci, string missing = "")
+    {
+        var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.GivenNameClaim);
+        return claim?.Value ?? missing;
+    }
+
+    public static string GetFamilyName(this ClaimsIdentity ci, string missing = "")
+    {
+        var claim = ci.Claims.FirstOrDefault(c => c.Type == FabricaClaims.FamilyNameClaim);
         return claim?.Value ?? missing;
     }
 

@@ -15,6 +15,14 @@ public interface IClaimSet
 
     string? Subject { get; }
 
+    string? AltSubject { get; }
+
+    string? UserName { get; }
+
+    string? GivenName { get; }
+
+    string? FamilyName { get; }
+
     string? Name { get; }
 
     string? Email { get; }

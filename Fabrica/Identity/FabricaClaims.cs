@@ -1,22 +1,27 @@
-﻿using System.Security.Claims;
-
+﻿
 namespace Fabrica.Identity;
 
 public static class FabricaClaims
 {
         
-    public static string Scheme => "Fabrica.ProxyToken";
-    public static string Policy => "Fabrica.ProxyToken";
+    public const string FlowClaim = "Flow";
+    public const string TypeClaim = "Type";
 
-    public static string TenantClaim  = "https://fabrica.com/claims/tenant";
-    public static string SubjectClaim = ClaimTypes.NameIdentifier;
-    public static string NameClaim    = ClaimTypes.Name;
-    public static string EmailClaim   = ClaimTypes.Email;
+    public const string TenantClaim  = "Tenant";
 
-    public static string PictureClaim = "picture";
+    public const string SubjectClaim = "Subject";
+    public const string AltSubjectClaim = "AltSubject";
 
-    public static string FlowClaim = "flow";
+    public const string UserNameClaim     = "UserName";
 
+    public const string GivenNameClaim  = "GivenName";
+    public const string FamilyNameClaim = "FamilyName";
+    public const string NameClaim       = "Name";
 
+    public const string EmailClaim = "Email";
+
+    public const string PictureClaim = "Picture";
+
+    public const string RoleClaim = "Role";
 
 }

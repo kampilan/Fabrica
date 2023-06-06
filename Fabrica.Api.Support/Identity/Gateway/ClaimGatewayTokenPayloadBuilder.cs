@@ -15,41 +15,67 @@ public class ClaimGatewayTokenPayloadBuilder: IGatewayTokenPayloadBuilder
     public ClaimGatewayTokenPayloadBuilder()
     {
 
-        var mappings = new Dictionary<string, string>
-        {
-            ["flow"]                    = nameof(ClaimSetModel.AuthenticationFlow),
-            ["tenant"]                  = nameof(ClaimSetModel.Tenant),
-            [ClaimTypes.NameIdentifier] = nameof(ClaimSetModel.Subject),
-            [ClaimTypes.Role]           = nameof(ClaimSetModel.Roles),
-            [ClaimTypes.Name]           = nameof(ClaimSetModel.Name),
-            ["name"]                    = nameof(ClaimSetModel.Name),
-            ["picture"]                 = nameof(ClaimSetModel.Picture),
-            [ClaimTypes.Email]          = nameof(ClaimSetModel.Email),
-            ["email"]                   = nameof(ClaimSetModel.Email)
-        };
-
-        ClaimMap = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(mappings));
+        ClaimMap = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(CreateStdMappings()));
 
     }
 
     public ClaimGatewayTokenPayloadBuilder( IEnumerable<KeyValuePair<string, string>> mappings )
     {
 
-        ClaimMap = new ReadOnlyDictionary<string,string>( new Dictionary<string,string>( mappings ) );
+        var std = CreateStdMappings();
+        foreach (var pair in mappings)
+            std[pair.Key] = pair.Value;
+        
+        ClaimMap = new ReadOnlyDictionary<string,string>( new Dictionary<string,string>( std ) );
 
     }
 
     private IReadOnlyDictionary<string,string> ClaimMap { get; }
 
+    private Dictionary<string, string> CreateStdMappings()
+    {
 
-    public IClaimSet Build( HttpContext context )
+        var mappings = new Dictionary<string, string>
+        {
+
+            [FabricaClaims.FlowClaim]       = FabricaClaims.FlowClaim,
+            [FabricaClaims.TenantClaim]     = FabricaClaims.TenantClaim,
+            [FabricaClaims.SubjectClaim]    = FabricaClaims.SubjectClaim,
+            [FabricaClaims.AltSubjectClaim] = FabricaClaims.AltSubjectClaim,
+            [FabricaClaims.UserNameClaim]   = FabricaClaims.UserNameClaim,
+            [FabricaClaims.GivenNameClaim]  = FabricaClaims.GivenNameClaim,
+            [FabricaClaims.FamilyNameClaim] = FabricaClaims.FamilyNameClaim,
+            [FabricaClaims.NameClaim]       = FabricaClaims.NameClaim,
+            [FabricaClaims.PictureClaim]    = FabricaClaims.PictureClaim,
+            [FabricaClaims.EmailClaim]      = FabricaClaims.EmailClaim,
+            [FabricaClaims.RoleClaim]       = FabricaClaims.RoleClaim,
+
+        };
+
+        return mappings;
+
+    }
+
+
+    public IClaimSet Build(HttpContext context)
+    {
+
+        using var logger = this.EnterMethod();
+
+        var set = Build(context.User.Claims);
+
+        return set;
+
+    }
+
+    public IClaimSet Build( IEnumerable<Claim> claims )
     {
 
         using var logger = this.EnterMethod();
 
         var payload = new ClaimSetModel();
 
-        foreach (var claim in context.User.Claims)
+        foreach (var claim in claims)
         {
 
             logger.Inspect(nameof(claim.Type), claim.Type);
@@ -62,27 +88,40 @@ public class ClaimGatewayTokenPayloadBuilder: IGatewayTokenPayloadBuilder
 
                 switch( mapped )
                 {
-                    case nameof(ClaimSetModel.AuthenticationFlow):
+                    case FabricaClaims.FlowClaim:
                         payload.AuthenticationFlow = claim.Value;
                         break;
-                    case nameof(ClaimSetModel.Tenant):
+                    case FabricaClaims.TenantClaim:
                         payload.Tenant = claim.Value;
                         break;
-                    case nameof(ClaimSetModel.Subject):
+                    case FabricaClaims.SubjectClaim:
                         payload.Subject = claim.Value;
                         break;
-                    case nameof(ClaimSetModel.Roles):
-                        payload.Roles.Add( claim.Value );
+                    case FabricaClaims.AltSubjectClaim:
+                        payload.AltSubject = claim.Value;
                         break;
-                    case nameof(ClaimSetModel.Name):
+                    case FabricaClaims.UserNameClaim:
+                        payload.UserName = claim.Value;
+                        break;
+                    case FabricaClaims.GivenNameClaim:
+                        payload.GivenName = claim.Value;
+                        break;
+                    case FabricaClaims.FamilyNameClaim:
+                        payload.FamilyName = claim.Value;
+                        break;
+                    case FabricaClaims.NameClaim:
                         payload.Name = claim.Value;
                         break;
-                    case nameof(ClaimSetModel.Picture):
+                    case FabricaClaims.PictureClaim:
                         payload.Picture = claim.Value;
                         break;
-                    case nameof(ClaimSetModel.Email):
+                    case FabricaClaims.EmailClaim:
                         payload.Email = claim.Value;
                         break;
+                    case nameof(ClaimSetModel.Roles):
+                        payload.Roles.Add(claim.Value);
+                        break;
+
                 }
 
             }

@@ -32,6 +32,22 @@ public class ClaimSetModel: IClaimSet
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Subject { get; set; }
 
+    [JsonPropertyName("alt")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? AltSubject { get; set; }
+
+    [JsonPropertyName("usr")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? UserName { get; set; }
+
+    [JsonPropertyName("giv")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? GivenName { get; set; }
+
+    [JsonPropertyName("fam")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? FamilyName { get; set; }
+
     [JsonPropertyName("nam")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Name { get; set; }
