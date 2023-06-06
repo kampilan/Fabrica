@@ -155,7 +155,7 @@ public static class ClaimsIdentityExtensions
 
     public static IEnumerable<string> GetRoles(this ClaimsIdentity ci)
     {
-        var roles = ci.Claims.Where(c => c.Type == ClaimTypes.Role);
+        var roles = ci.Claims.Where(c => c.Type == FabricaClaims.RoleClaim);
         return roles.Select(c => c.Value);
     }
 

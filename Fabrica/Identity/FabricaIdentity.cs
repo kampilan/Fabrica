@@ -9,6 +9,7 @@ public class FabricaIdentity: ClaimsIdentity
     public FabricaIdentity( IClaimSet claimSet ): base(claimSet.AuthenticationType)
     {
 
+        CheckClaim(FabricaClaims.TypeClaim,       claimSet.AuthenticationType);
         CheckClaim(FabricaClaims.FlowClaim,       claimSet.AuthenticationFlow);
         CheckClaim(FabricaClaims.TenantClaim,     claimSet.Tenant);
         CheckClaim(FabricaClaims.SubjectClaim,    claimSet.Subject);
