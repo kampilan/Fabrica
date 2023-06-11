@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Fabrica</RootNamespace>
+    <Title>fabrica.Search</Title>
+    <Authors>Pond Hawk Technologies Inc.</Authors>
+    <Company>Pond Hawk Technologies Inc.</Company>
+    <Product>Fabrica.Search</Product>
+    <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Search\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lifti.Core" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
+    <ProjectReference Include="..\Fabrica.Watch\Fabrica.Watch.csproj" />
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
+
+</Project>
