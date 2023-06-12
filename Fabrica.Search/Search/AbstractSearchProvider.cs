@@ -1,4 +1,5 @@
-﻿using Fabrica.Utilities.Container;
+﻿using Fabrica.Utilities.Cache;
+using Fabrica.Utilities.Container;
 using Lifti;
 using Lifti.Serialization.Binary;
 
@@ -34,12 +35,14 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
 
     protected AbstractSearchProvider( ICorrelation correlation, ISearchIndexState<TIndex> state ): base(correlation)
     {
-        State    = state;
+
+        State = state;
+
     }
 
+    public TimeSpan AutoFreshInterval { get; set; } = TimeSpan.MaxValue;
 
     protected ISearchIndexState<TIndex> State { get; }
-
 
     protected abstract Task<IEnumerable<TDocument>> GetInputs();
 
@@ -72,6 +75,30 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
 
         await State.SetState(ms.ToArray());
 
+        CurrentIndex.MustRenew();
+
+    }
+
+    private ConcurrentResource<FullTextIndex<InputKey>> CurrentIndex { get; set; } = null!;
+
+    public async Task Initialize()
+    {
+
+        using var logger = EnterMethod();
+
+        CurrentIndex = new ConcurrentResource<FullTextIndex<InputKey>>(async () =>
+        {
+            var index = await GetIndex();
+
+            var rn = new RenewedResource<FullTextIndex<InputKey>> { Value = index, TimeToRenew = AutoFreshInterval };
+
+            return rn;
+
+        });
+
+
+        await BuildIndex();
+        await CurrentIndex.Initialize();
 
     }
 
@@ -114,6 +141,7 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
     }
 
 
+
     public async Task<IEnumerable<ResultDocument>> Search(string query)
     {
 
@@ -126,7 +154,7 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
 
         // *****************************************************************
         logger.Debug("Attempting to get Index");
-        var index = await GetIndex();
+        var index = await CurrentIndex.GetResource();
 
 
 

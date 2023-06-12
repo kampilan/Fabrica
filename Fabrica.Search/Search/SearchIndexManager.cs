@@ -121,8 +121,6 @@ public class SearchIndexManager<TIndex>: ISearchIndexState<TIndex>, ISearchIndex
 
         Task.Run(Run);
 
-        RequestBuild();
-
         return Task.CompletedTask;
 
     }
@@ -149,6 +147,11 @@ public class SearchIndexManager<TIndex>: ISearchIndexState<TIndex>, ISearchIndex
 
         // *****************************************************************
         using var loggerEn = this.GetLogger();
+
+        loggerEn.Debug("Attempting to Initialize provider");
+
+        await _init();
+
         loggerEn.Debug("Enter Run");
         loggerEn.Dispose();
 
@@ -187,6 +190,18 @@ public class SearchIndexManager<TIndex>: ISearchIndexState<TIndex>, ISearchIndex
 
         Stopped.Set();
 
+
+    }
+
+
+    private async Task _init()
+    {
+
+        await using var scope = RootScope.BeginLifetimeScope();
+
+        var provider = scope.Resolve<ISearchProvider<TIndex>>();
+
+        await provider.Initialize();
 
     }
 
