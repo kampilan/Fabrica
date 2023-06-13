@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
 
         services.AddAuthentication(op =>
             {
-                op.DefaultScheme = TokenConstants.Scheme;
+                op.DefaultScheme = IdentityConstants.Scheme;
             })
             .AddGatewayToken();
 
@@ -55,7 +55,7 @@ public static class AuthenticationBuilderExtensions
     public static AuthenticationBuilder AddGatewayToken( this AuthenticationBuilder builder )
     {
 
-        builder.AddScheme<GatewayTokenAuthenticationSchemeOptions, GatewayTokenAuthenticationHandler>( TokenConstants.Scheme, _ => { } );
+        builder.AddScheme<GatewayTokenAuthenticationSchemeOptions, GatewayTokenAuthenticationHandler>( IdentityConstants.Scheme, _ => { } );
 
         return builder;
 
@@ -85,7 +85,7 @@ public class GatewayTokenAuthenticationHandler : AuthenticationHandler<GatewayTo
         using var logger = Correlation.EnterMethod();
 
 
-        var token = Context.Request.Headers[TokenConstants.HeaderName].FirstOrDefault();
+        var token = Context.Request.Headers[IdentityConstants.TokenHeaderName].FirstOrDefault();
         if( string.IsNullOrWhiteSpace(token) )
         {
             logger.Debug("Header not present. Attempting to build skip result");
@@ -98,7 +98,7 @@ public class GatewayTokenAuthenticationHandler : AuthenticationHandler<GatewayTo
         IClaimSet claims;
         try
         {
-            claims = JwtEncoder.Decode( TokenConstants.Scheme, token );
+            claims = JwtEncoder.Decode( IdentityConstants.Scheme, token );
         }
         catch (Exception cause)
         {
@@ -123,7 +123,7 @@ public class GatewayTokenAuthenticationHandler : AuthenticationHandler<GatewayTo
 
         // *****************************************************************
         logger.Debug("Attempting to build ticket and success result");
-        var ticket = new AuthenticationTicket( cp, new AuthenticationProperties(), TokenConstants.Scheme );
+        var ticket = new AuthenticationTicket( cp, new AuthenticationProperties(), IdentityConstants.Scheme );
         var result = AuthenticateResult.Success(ticket);
 
 

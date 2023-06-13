@@ -28,8 +28,8 @@ public class GatewayTokenBuilderMiddleware
 
         // *****************************************************************
         logger.Debug("Attempting to remove existing gateway token header");
-        if( context.Request.Headers.ContainsKey(TokenConstants.HeaderName) )
-            context.Request.Headers.Remove(TokenConstants.HeaderName);
+        if( context.Request.Headers.ContainsKey(IdentityConstants.TokenHeaderName) )
+            context.Request.Headers.Remove(IdentityConstants.TokenHeaderName);
 
 
         // *****************************************************************
@@ -82,7 +82,7 @@ public class GatewayTokenBuilderMiddleware
         // *****************************************************************
         logger.Debug("Attempting to add X-Gateway-Identity-Token header");
 
-        context.Request.Headers[TokenConstants.HeaderName] = new StringValues(token);
+        context.Request.Headers[IdentityConstants.TokenHeaderName] = new StringValues(token);
 
         await Next(context);
 
