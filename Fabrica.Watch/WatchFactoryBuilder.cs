@@ -48,9 +48,9 @@ public class WatchFactoryBuilder
 
     private bool Quiet { get; set; }
 
-    public WatchFactoryBuilder WithQuiet( bool quiet )
+    public WatchFactoryBuilder UseQuiet()
     {
-        Quiet = quiet;
+        Quiet = true;
         return this;
     }
 
