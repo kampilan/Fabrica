@@ -1,15 +1,19 @@
-﻿using System.Net;
+﻿using Amazon.S3.Model;
 using Amazon.S3;
-using Amazon.S3.Model;
-using Autofac;
-using Fabrica.Watch;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using Fabrica.Utilities.Container;
+
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Search;
 
-public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where TIndex: class
+public abstract class AbstractClusterSearchProvider<TDocument, TIndex>: AbstractSearchProvider<TDocument, TIndex> where TDocument : class where TIndex : class
 {
 
-    public ClusterSearchIndexManager(ILifetimeScope scope, IAmazonS3 client) : base(scope)
+
+    protected AbstractClusterSearchProvider(ICorrelation correlation, IAmazonS3 client) : base(correlation)
     {
         Client = client;
     }
@@ -23,17 +27,28 @@ public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where
     private string _lastChecksum = string.Empty;
 
 
-    protected override async Task Load()
+    public TimeSpan CheckInterval { get; set; } = TimeSpan.FromSeconds(10);
+    private DateTime _lastCheck = DateTime.MinValue;
+
+    protected sealed override async Task<bool> Load()
     {
 
-        using var logger = this.EnterMethod();
+
+        using var logger = EnterMethod();
 
         logger.Inspect(nameof(BucketName), BucketName);
         logger.Inspect(nameof(IndexKey), IndexKey);
         logger.Inspect(nameof(_lastChecksum), _lastChecksum);
 
-        if (string.IsNullOrWhiteSpace(BucketName) && string.IsNullOrWhiteSpace(IndexKey))
-            return;
+
+        if( string.IsNullOrWhiteSpace(BucketName) && string.IsNullOrWhiteSpace(IndexKey) )
+            return false;
+
+
+        if( DateTime.Now < _lastCheck + CheckInterval )
+            return false;
+
+        _lastCheck = DateTime.Now;
 
 
         try
@@ -45,7 +60,8 @@ public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where
             var metaReq = new GetObjectMetadataRequest
             {
                 BucketName = BucketName,
-                Key = IndexKey
+                Key        = IndexKey,
+                ChecksumMode = ChecksumMode.ENABLED
             };
 
             var metaRes = await Client.GetObjectMetadataAsync(metaReq);
@@ -53,7 +69,7 @@ public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where
             logger.Inspect(nameof(metaRes.HttpStatusCode), metaRes.HttpStatusCode);
 
             if (metaRes.HttpStatusCode != HttpStatusCode.OK)
-                return;
+                return false;
 
 
 
@@ -67,19 +83,19 @@ public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where
 
 
             if( result.Matched )
-                return;
+                return false;
 
 
 
         }
         catch (AmazonS3Exception)
         {
-            return;
+            return false;
         }
         catch (Exception cause)
         {
             logger.Error(cause, "GetObjectMeta failed");
-            return;
+            return false;
         }
 
 
@@ -92,41 +108,46 @@ public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where
 
             var getReq = new GetObjectRequest
             {
-                BucketName = BucketName,
-                Key        = IndexKey
+                BucketName   = BucketName,
+                Key          = IndexKey,
+                ChecksumMode = ChecksumMode.ENABLED
             };
 
             var getRes = await Client.GetObjectAsync(getReq);
 
-            if (getRes.HttpStatusCode != HttpStatusCode.OK)
-                return;
+            if( getRes.HttpStatusCode != HttpStatusCode.OK )
+                return false;
 
 
-            using var ms = new MemoryStream();
-            await getRes.ResponseStream.CopyToAsync(ms);
-            ms.Seek(0, SeekOrigin.Begin);
+            using var stream = new MemoryStream();
+            await getRes.ResponseStream.CopyToAsync(stream);
+            stream.Seek( 0, SeekOrigin.Begin );
+
+
 
             // *****************************************************************
-            logger.Debug("Attempting to update source");
-            UpdateSource(ms.ToArray());
+            logger.Debug("Attempting to update index");
+            await UpdateIndex(stream);
 
             _lastChecksum = getRes.ChecksumSHA1;
 
+            return true;
 
         }
         catch (Exception cause)
         {
             logger.Error(cause, "GetObject failed");
+            return false;
         }
 
 
     }
 
 
-    protected override async Task Save( Memory<byte> source )
+    protected override async Task Save( MemoryStream stream )
     {
 
-        using var logger = this.EnterMethod();
+        using var logger = EnterMethod();
 
 
         if (string.IsNullOrWhiteSpace(BucketName) || string.IsNullOrWhiteSpace(IndexKey))
@@ -135,16 +156,22 @@ public class ClusterSearchIndexManager<TIndex>: SearchIndexManager<TIndex> where
         try
         {
 
-            using var stream = new MemoryStream(source.ToArray(), false);
+            // *****************************************************************
+            logger.Debug("Attempting to calc SHA1");
+            var sha1 = SHA1.HashData(stream.ToArray());
+            var sha1Str = Convert.ToBase64String(sha1);
+
+
 
             // *****************************************************************
             logger.Debug("Attempting to build S3 put request and copy source stream to request input stream");
 
             var objReq = new PutObjectRequest
             {
-                BucketName = BucketName,
-                Key = IndexKey,
-                InputStream = stream
+                BucketName   = BucketName,
+                Key          = IndexKey,
+                ChecksumSHA1 = sha1Str,
+                InputStream  = stream
             };
 
 

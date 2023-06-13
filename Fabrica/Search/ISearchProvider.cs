@@ -4,10 +4,9 @@
 public interface ISearchProvider<TIndex> where TIndex: class
 {
 
-    Task Initialize();
+    void RequestRebuild();
 
     Task<IEnumerable<ResultDocument>> Search(string query);
 
-    Task BuildIndex();
-
 }
+

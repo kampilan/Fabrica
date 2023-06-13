@@ -1,15 +1,13 @@
-﻿using Fabrica.Utilities.Cache;
-using Fabrica.Utilities.Container;
+﻿using Fabrica.Utilities.Container;
 using Lifti;
 using Lifti.Serialization.Binary;
+using System.Collections.Concurrent;
 
 namespace Fabrica.Search;
 
 // ReSharper disable once UnusedTypeParameter
-public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject, ISearchProvider<TIndex> where TDocument : class where TIndex: class
+public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject, ISearchProvider<TIndex>, IRequiresStart, IDisposable where TDocument : class where TIndex: class
 {
-
-
 
     private class InputKeySerializer : IKeySerializer<InputKey>
     {
@@ -32,28 +30,60 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
 
     }
 
-
-    protected AbstractSearchProvider( ICorrelation correlation, ISearchIndexState<TIndex> state ): base(correlation)
+    protected AbstractSearchProvider( ICorrelation correlation): base(correlation)
     {
-
-        State = state;
-
     }
-
-    public TimeSpan AutoFreshInterval { get; set; } = TimeSpan.MaxValue;
-
-    protected ISearchIndexState<TIndex> State { get; }
 
     protected abstract Task<IEnumerable<TDocument>> GetInputs();
 
     protected abstract FullTextIndex<InputKey> CreateIndexDefinition();
 
-    public async Task BuildIndex()
+
+    private readonly ReaderWriterLockSlim _lock = new ();
+    private FullTextIndex<InputKey>? _currentIndex;
+    protected FullTextIndex<InputKey>? CurrentIndex
+    {
+
+        get => _currentIndex;
+        set
+        {
+
+            try
+            {
+
+                _lock.EnterWriteLock();
+
+                _currentIndex?.Dispose();
+                _currentIndex = value;
+
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+
+        }
+
+    }
+
+
+    protected virtual Task<bool> Load()
+    {
+        return Task.FromResult(false);
+    }
+
+    protected virtual Task Save( MemoryStream stream )
+    {
+        return Task.CompletedTask;
+    }
+
+
+    protected async Task BuildIndex()
     {
 
         using var logger = EnterMethod();
 
-
+        
 
         // *****************************************************************
         logger.Debug("Attempting to create Index definition");
@@ -68,79 +98,45 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
         await index.AddRangeAsync(inputs);
 
 
-        using var ms = new MemoryStream();
 
-        var serializer = new BinarySerializer<InputKey>(new InputKeySerializer());
-        await serializer.SerializeAsync(index, ms, false);
+        // *****************************************************************
+        logger.Debug("Attempting to serialize new index");
+        using var stream = new MemoryStream();
+        var serializer = new BinarySerializer<InputKey>( new InputKeySerializer() );
+        await serializer.SerializeAsync(index, stream, false);
 
-        await State.SetState(ms.ToArray());
-
-        CurrentIndex.MustRenew();
-
-    }
-
-    private ConcurrentResource<FullTextIndex<InputKey>> CurrentIndex { get; set; } = null!;
-
-    public async Task Initialize()
-    {
-
-        using var logger = EnterMethod();
-
-        CurrentIndex = new ConcurrentResource<FullTextIndex<InputKey>>(async () =>
-        {
-            var index = await GetIndex();
-
-            var rn = new RenewedResource<FullTextIndex<InputKey>> { Value = index, TimeToRenew = AutoFreshInterval };
-
-            return rn;
-
-        });
-
-
-        await BuildIndex();
-        await CurrentIndex.Initialize();
-
-    }
-
-
-    protected async Task<FullTextIndex<InputKey>> GetIndex()
-    {
-
-        using var logger = EnterMethod();
+        stream.Seek( 0, SeekOrigin.Begin );
+        await Save(stream);
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to create Index def");
+        logger.Debug("Attempting to set CurrentIndex to new index");
+        CurrentIndex = index;
+
+
+    }
+
+    protected async Task UpdateIndex( MemoryStream stream )
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to create Index definition");
         var index = CreateIndexDefinition();
 
 
-
         // *****************************************************************
-        logger.Debug("Attempting to check state");
-        await State.CheckState();
+        logger.Debug("Attempting to deserialize updated index");
+        stream.Seek(0, SeekOrigin.Begin);
+        var serializer = new BinarySerializer<InputKey>(new InputKeySerializer());
+        await serializer.DeserializeAsync(index, stream, false );
 
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to read State");
-        await State.ReadState(async m =>
-        {
-            using var ms = new MemoryStream(m.ToArray());
-            var serializer = new BinarySerializer<InputKey>(new InputKeySerializer());
-            await serializer.DeserializeAsync(index, ms);
-
-        });
-
-
-
-        // *****************************************************************
-        return index;
-
+        CurrentIndex = index;
 
     }
-
-
 
     public async Task<IEnumerable<ResultDocument>> Search(string query)
     {
@@ -153,25 +149,142 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
 
 
         // *****************************************************************
-        logger.Debug("Attempting to get Index");
-        var index = await CurrentIndex.GetResource();
+        logger.Debug("Attempting to check for new index");
+        var found = await Load();
+        if (!found && CurrentIndex is null)
+            await BuildIndex();
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to search");
-        var results = index.Search(query);
+        logger.Inspect(nameof(CurrentIndex), CurrentIndex is not null );
+
+        ISearchResults<InputKey>? results;
+        try
+        {
+
+            _lock.EnterReadLock();
+
+            results = CurrentIndex?.Search(query);
+
+        }
+        finally
+        {
+            _lock.ExitReadLock();
+        }
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to sort by score descending and transform");
-        var docs = results.OrderByDescending(r => r.Score).Select(r => ResultDocument.Build(r.Key, r.Score)).ToList();
+
+        var docs = new List<ResultDocument>();
+        if( results is not null )
+            docs = results.OrderByDescending(r => r.Score).Select(r => ResultDocument.Build(r.Key, r.Score)).ToList();
 
 
 
         // *****************************************************************
         return docs;
+
+
+    }
+
+
+
+    private class BuildRequest
+    {
+    }
+
+
+    public void RequestRebuild()
+    {
+
+        Requests.Enqueue(new BuildRequest());
+
+    }
+
+
+    private ConcurrentQueue<BuildRequest> Requests { get; } = new();
+    private ManualResetEvent MustStop { get; } = new(false);
+    private ManualResetEvent Stopped { get; } = new(false);
+
+    public Task Start()
+    {
+
+        using var logger = EnterMethod();
+
+        Task.Run(Run);
+
+        return Task.CompletedTask;
+
+    }
+
+
+    public void Dispose()
+    {
+
+        using var logger = this.EnterMethod();
+
+
+        MustStop.Set();
+        Stopped.WaitOne(5000);
+
+        MustStop.Dispose();
+        Stopped.Dispose();
+
+    }
+
+
+    private async Task Run()
+    {
+
+
+        // *****************************************************************
+        using var loggerEn = this.GetLogger();
+
+        loggerEn.Debug("Attempting to Initialize provider");
+
+        await BuildIndex();
+
+        loggerEn.Debug("Enter Run");
+        loggerEn.Dispose();
+
+
+        while (!MustStop.WaitOne(TimeSpan.FromMilliseconds(1000)))
+        {
+
+            if( Requests.TryDequeue(out _) )
+            {
+
+                try
+                {
+
+                    await BuildIndex();
+
+                }
+                catch (Exception cause)
+                {
+                    using var loggerEr = this.GetLogger();
+                    loggerEr.Error(cause, "BuildIndex failed.");
+                    loggerEr.Dispose();
+                }
+
+                Requests.Clear();
+
+            }
+
+        }
+
+
+        // *****************************************************************
+        using var loggerEx = this.GetLogger();
+        loggerEx.Debug("Exit Run");
+        loggerEx.Dispose();
+
+
+        Stopped.Set();
 
 
     }
