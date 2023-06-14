@@ -15,9 +15,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="MongoDB.Driver" Version="2.19.2" />
-		<PackageReference Include="MongoDB.Libmongocrypt" version="1.7.0" ExcludeAssets="All" />
-		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.103.5" ExcludeAssets="All" />
-		<PackageReference Include="AWSSDK.Core" Version="3.7.106.43" ExcludeAssets="All" />
+		<PackageReference Include="MongoDB.Libmongocrypt" version="1.8.0" ExcludeAssets="All" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.103.14" ExcludeAssets="All" />
+		<PackageReference Include="AWSSDK.Core" Version="3.7.107.6" ExcludeAssets="All" />
 	</ItemGroup>
 
 
