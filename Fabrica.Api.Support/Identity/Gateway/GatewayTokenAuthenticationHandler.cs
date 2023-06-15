@@ -96,9 +96,15 @@ public class GatewayTokenAuthenticationHandler : AuthenticationHandler<GatewayTo
 
 
         IClaimSet claims;
+        // *****************************************************************
+        logger.Debug("Attempting to decode gateway token");
         try
         {
+
             claims = JwtEncoder.Decode( IdentityConstants.Scheme, token );
+
+            logger.LogObject(nameof(claims), claims);
+
         }
         catch (Exception cause)
         {
