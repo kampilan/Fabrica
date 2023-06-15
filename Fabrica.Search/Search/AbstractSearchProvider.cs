@@ -181,7 +181,11 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
 
         var docs = new List<ResultDocument>();
         if( results is not null )
-            docs = results.OrderByDescending(r => r.Score).Select(r => ResultDocument.Build(r.Key, r.Score)).ToList();
+            docs = results.OrderByDescending(r => r.Score).Select(r =>
+            {
+                var explanation = string.Join( ", ", r.FieldMatches.Select( m => $"{m.FoundIn}: {m.Score:F2}" ) );
+                return ResultDocument.Build( r.Key, explanation, r.Score );
+            }).ToList();
 
 
 

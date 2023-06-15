@@ -4,14 +4,15 @@ public class ResultDocument
 {
 
 
-    public static ResultDocument Build(InputKey key, double score)
+    public static ResultDocument Build(InputKey key, string explanation, double score )
     {
 
         var result = new ResultDocument
         {
-            Entity = key.Entity,
-            Id = key.Id,
-            Score = score
+            Entity      = key.Entity,
+            Id          = key.Id,
+            Explanation = explanation,
+            Score       = score
         };
 
         return result;
@@ -20,6 +21,8 @@ public class ResultDocument
 
     public string Entity { get; set; } = "";
     public long Id { get; set; }
+
+    public string Explanation { get; set; } = "";
 
     public double Score { get; set; }
 
