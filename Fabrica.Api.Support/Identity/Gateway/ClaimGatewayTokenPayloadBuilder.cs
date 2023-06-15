@@ -73,9 +73,11 @@ public class ClaimGatewayTokenPayloadBuilder: IGatewayTokenPayloadBuilder
 
         using var logger = this.EnterMethod();
 
+        logger.LogObject(nameof(ClaimMap), ClaimMap);
+
         var payload = new ClaimSetModel();
 
-        foreach (var claim in claims)
+        foreach( var claim in claims )
         {
 
             logger.Inspect(nameof(claim.Type), claim.Type);
