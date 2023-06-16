@@ -56,24 +56,44 @@ public class RequestLoggingMiddleware
         
 
 
+        // ****************************************************************************************
         var diagLogger = correlation.GetLogger("Fabrica.Diagnostics.Http");
-        var builder = new StringBuilder();
-
-        if ( diagLogger.IsDebugEnabled )
-            await BuildRequest(context, correlation, builder, diagLogger.IsTraceEnabled );
-
-        await Next(context);
 
         if( diagLogger.IsDebugEnabled )
-            BuildResponse( context, builder);
-
-
-        if( builder.Length > 0 )
         {
-            var le = diagLogger.CreateEvent(Level.Debug, "HTTP Request/Response", PayloadType.Text, builder.ToString());
-            diagLogger.LogEvent(le);
+
+            var builder = new StringBuilder();
+            await BuildRequest(context, correlation, builder, diagLogger.IsTraceEnabled);
+
+            if( builder.Length > 0 )
+            {
+                var le = diagLogger.CreateEvent(Level.Debug, "HTTP Request", PayloadType.Text, builder.ToString());
+                diagLogger.LogEvent(le);
+            }
+
         }
 
+
+
+        // ****************************************************************************************
+        await Next(context);
+
+
+
+        // ****************************************************************************************
+        if ( diagLogger.IsDebugEnabled )
+        {
+
+            var builder = new StringBuilder();
+            BuildResponse(context, builder);
+
+            if( builder.Length > 0 )
+            {
+                var le = diagLogger.CreateEvent(Level.Debug, "HTTP /Response", PayloadType.Text, builder.ToString());
+                diagLogger.LogEvent(le);
+            }
+
+        }
 
 
     }
