@@ -179,11 +179,19 @@ public abstract class AbstractSearchProvider<TDocument,TIndex>: CorrelatedObject
         // *****************************************************************
         logger.Debug("Attempting to sort by score descending and transform");
 
+        static int Calc(double total, double field)
+        {
+            var p = (field / total) * 100;
+            var res = Convert.ToInt32(Math.Round(p, MidpointRounding.AwayFromZero));
+            return res;
+        }
+
         var docs = new List<ResultDocument>();
         if( results is not null )
             docs = results.OrderByDescending(r => r.Score).Select(r =>
             {
-                var explanation = string.Join( ", ", r.FieldMatches.Select( m => $"{m.FoundIn}: {m.Score:F2}" ) );
+                var total = r.Score;
+                var explanation = string.Join( ", ", r.FieldMatches.Select( m => $"{m.FoundIn}: {Calc(total, m.Score)}%" ) );
                 return ResultDocument.Build( r.Key, explanation, r.Score );
             }).ToList();
 
