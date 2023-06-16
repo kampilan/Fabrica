@@ -31,7 +31,12 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
     public bool AllowManualExit { get; set; } = false;
 
+
+    public bool QuietLogging { get; set; } = false;
+
     public bool RealtimeLogging { get; set; } = false;
+    public List<LocalSwitchConfig> RealtimeSwitches { get; set; } = new();
+
     public bool RelayLogging { get; set; } = false;
 
 
@@ -73,42 +78,40 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
         var maker = WatchFactoryBuilder.Create();
 
-        if (RealtimeLogging || string.IsNullOrWhiteSpace(WatchDomainName) || string.IsNullOrWhiteSpace(WatchEventStoreUri))
-            maker.UseRealtime(Level.Debug, Color.LightPink);
-        else if (RelayLogging || string.IsNullOrWhiteSpace(WatchDomainName) || string.IsNullOrWhiteSpace(WatchEventStoreUri))
-            maker.UseRelaySink();
-        else
-            maker.UseMongo(WatchEventStoreUri, WatchDomainName);
 
-        maker.Build();
+        if( QuietLogging )
+            maker.UseQuiet();
+        else if( RealtimeLogging )
+        {
 
-    }
-
-    protected void ConfigureDebugWatch(Action<SwitchSource>? switchBuilder = null)
-    {
-
-        var maker = WatchFactoryBuilder.Create();
-
-        if (RealtimeLogging)
             maker.UseRealtime();
-        else if (RelayLogging)
-            maker.UseRelaySink();
 
+            var source = maker.UseLocalSwitchSource().WhenNotMatched(Level.Warning, Color.LightPink);
+            foreach (var sw in RealtimeSwitches)
+            {
 
-        if (switchBuilder is not null)
-        {
-            var switches = maker.UseLocalSwitchSource();
-            switchBuilder(switches);
+                var level = Level.Debug;
+                if (Enum.TryParse(typeof(Level), sw.Level, out var o) && o is Level sl)
+                    level = sl;
+
+                var color = Color.LightGreen;
+                if (!string.IsNullOrWhiteSpace(sw.Color))
+                    color = Color.FromName(sw.Color);
+
+                source.WhenMatched(sw.Pattern, "", level, color);
+
+            }
+
         }
+        else if (!string.IsNullOrWhiteSpace(WatchDomainName) && string.IsNullOrWhiteSpace(WatchEventStoreUri))
+            maker.UseMongo(WatchEventStoreUri, WatchDomainName);
         else
-        {
-            maker.UseLocalSwitchSource()
-                .WhenNotMatched(Level.Debug, Color.Azure);
-        }
+            maker.UseQuiet();
 
         maker.Build();
 
     }
+
 
     public async Task<IAppliance> Boot<TService>() where TService : class, IHostedService
     {
@@ -385,5 +388,14 @@ public class WebAppliance : IAppliance
     {
         await App.RunAsync();
     }
+
+}
+
+
+public class LocalSwitchConfig
+{
+    public string Pattern { get; set; } = "";
+    public string Level { get; set; } = "";
+    public string Color { get; set; } = "";
 
 }
