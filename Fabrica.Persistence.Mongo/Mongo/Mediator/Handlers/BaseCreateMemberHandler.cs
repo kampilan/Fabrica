@@ -1,6 +1,4 @@
-﻿using Amazon.Runtime.Internal;
-using Amazon.Runtime;
-using AutoMapper;
+﻿using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
@@ -8,7 +6,6 @@ using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 using MediatR;
 using MongoDB.Driver;
-using SharpCompress.Common;
 
 // ReSharper disable UnusedMember.Global
 

@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Watch.Http", "Fabri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence.Mongo", "Fabrica.Persistence.Mongo\Fabrica.Persistence.Mongo.csproj", "{4EC4E549-F130-4FDF-844B-76880F625285}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabrica.Search", "Fabrica.Search\Fabrica.Search.csproj", "{4652A2E2-7507-4130-8C21-42A97A5E5897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Search", "Fabrica.Search\Fabrica.Search.csproj", "{4652A2E2-7507-4130-8C21-42A97A5E5897}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Fabrica.Mongo.Driver" Version="2.19.2" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
     <PackageReference Include="PropertyChanged.SourceGenerator" Version="1.0.8">
       <PrivateAssets>all</PrivateAssets>
