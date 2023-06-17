@@ -22,9 +22,6 @@
     <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
     <ProjectReference Include="..\Fabrica.One.Appliance\Fabrica.One.Appliance.csproj" />
     <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
-    <ProjectReference Include="..\Fabrica.Watch.Http\Fabrica.Watch.Http.csproj" />
-    <ProjectReference Include="..\Fabrica.Watch.Mongo\Fabrica.Watch.Mongo.csproj" />
-    <ProjectReference Include="..\Fabrica.Watch.Realtime\Fabrica.Watch.Realtime.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
   </ItemGroup>
 	

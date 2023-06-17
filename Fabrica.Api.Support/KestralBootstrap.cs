@@ -1,9 +1,7 @@
 ﻿
 // ReSharper disable UnusedMember.Global
 
-using System.Drawing;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Fabrica.Api.Support.Handlers;
 using Fabrica.Container;
 using Fabrica.One;
@@ -12,10 +10,6 @@ using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Process;
 using Fabrica.Watch;
 using Fabrica.Watch.Bridges.MicrosoftImpl;
-using Fabrica.Watch.Http;
-using Fabrica.Watch.Mongo;
-using Fabrica.Watch.Realtime;
-using Fabrica.Watch.Switching;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting;
@@ -78,35 +72,7 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
         var maker = WatchFactoryBuilder.Create();
 
-
-        if( QuietLogging )
-            maker.UseQuiet();
-        else if( RealtimeLogging )
-        {
-
-            maker.UseRealtime();
-
-            var source = maker.UseLocalSwitchSource().WhenNotMatched(Level.Warning, Color.LightPink);
-            foreach (var sw in RealtimeSwitches)
-            {
-
-                var level = Level.Debug;
-                if (Enum.TryParse(typeof(Level), sw.Level, out var o) && o is Level sl)
-                    level = sl;
-
-                var color = Color.LightGreen;
-                if (!string.IsNullOrWhiteSpace(sw.Color))
-                    color = Color.FromName(sw.Color);
-
-                source.WhenMatched(sw.Pattern, "", level, color);
-
-            }
-
-        }
-        else if( !string.IsNullOrWhiteSpace(WatchDomainName) && !string.IsNullOrWhiteSpace(WatchEventStoreUri) )
-            maker.UseMongo(WatchEventStoreUri, WatchDomainName);
-        else
-            maker.UseQuiet();
+        maker.UseQuiet();
 
         maker.Build();
 
