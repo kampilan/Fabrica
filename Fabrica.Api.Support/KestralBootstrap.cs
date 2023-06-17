@@ -103,7 +103,7 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
             }
 
         }
-        else if (!string.IsNullOrWhiteSpace(WatchDomainName) && string.IsNullOrWhiteSpace(WatchEventStoreUri))
+        else if( !string.IsNullOrWhiteSpace(WatchDomainName) && !string.IsNullOrWhiteSpace(WatchEventStoreUri) )
             maker.UseMongo(WatchEventStoreUri, WatchDomainName);
         else
             maker.UseQuiet();
