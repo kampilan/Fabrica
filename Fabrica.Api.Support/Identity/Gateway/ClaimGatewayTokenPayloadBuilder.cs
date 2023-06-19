@@ -2,6 +2,7 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Collections.ObjectModel;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Fabrica.Identity;
 using Fabrica.Watch;
@@ -38,17 +39,17 @@ public class ClaimGatewayTokenPayloadBuilder: IGatewayTokenPayloadBuilder
         var mappings = new Dictionary<string, string>
         {
 
-            [FabricaClaims.FlowClaim]       = FabricaClaims.FlowClaim,
-            [FabricaClaims.TenantClaim]     = FabricaClaims.TenantClaim,
-            [FabricaClaims.SubjectClaim]    = FabricaClaims.SubjectClaim,
-            [FabricaClaims.AltSubjectClaim] = FabricaClaims.AltSubjectClaim,
-            [FabricaClaims.UserNameClaim]   = FabricaClaims.UserNameClaim,
-            [FabricaClaims.GivenNameClaim]  = FabricaClaims.GivenNameClaim,
-            [FabricaClaims.FamilyNameClaim] = FabricaClaims.FamilyNameClaim,
-            [FabricaClaims.NameClaim]       = FabricaClaims.NameClaim,
-            [FabricaClaims.PictureClaim]    = FabricaClaims.PictureClaim,
-            [FabricaClaims.EmailClaim]      = FabricaClaims.EmailClaim,
-            [FabricaClaims.RoleClaim]       = FabricaClaims.RoleClaim,
+            [FabricaClaims.FlowClaim]            = FabricaClaims.FlowClaim,
+            [FabricaClaims.TenantClaim]          = FabricaClaims.TenantClaim,
+            [JwtRegisteredClaimNames.Sub]        = FabricaClaims.SubjectClaim,
+            [FabricaClaims.AltSubjectClaim]      = FabricaClaims.AltSubjectClaim,
+            ["preferred_username"]               = FabricaClaims.UserNameClaim,
+            [JwtRegisteredClaimNames.GivenName]  = FabricaClaims.GivenNameClaim,
+            [JwtRegisteredClaimNames.FamilyName] = FabricaClaims.FamilyNameClaim,
+            [JwtRegisteredClaimNames.Name]       = FabricaClaims.NameClaim,
+            ["picture-url"]                      = FabricaClaims.PictureClaim,
+            [JwtRegisteredClaimNames.Email]      = FabricaClaims.EmailClaim,
+            ["role"]                             = FabricaClaims.RoleClaim,
 
         };
 

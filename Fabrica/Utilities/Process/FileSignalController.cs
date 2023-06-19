@@ -12,12 +12,9 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
     public FileSignalController( OwnerType owner, string path="" )
     {
 
-        var logger = this.GetLogger();
+        using var logger = this.EnterMethod();
 
-        try
-        {
 
-            logger.EnterMethod();
 
             logger.Inspect(nameof(owner), owner);
             logger.Inspect(nameof(path), path);
@@ -48,12 +45,6 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
 
             EndWatchEvent = new ManualResetEvent(false);
 
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
             
     }
 
@@ -80,12 +71,8 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
     protected virtual void CreateSignal( SignalTypes type )
     {
 
-        var logger = this.GetLogger();
+        using var logger = this.EnterMethod();
 
-        try
-        {
-
-            logger.EnterMethod();
 
             logger.Inspect(nameof(type), type);
 
@@ -115,12 +102,6 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
                     writer.WriteLine("ok");
                 }
             }
-
-        }
-        finally
-        {
-            logger.LeaveMethod();
-        }
 
 
     }
@@ -202,7 +183,7 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
     {
 
 
-        string path = null;
+        string? path = null;
         switch (type)
         {
             case SignalTypes.Started:
@@ -216,7 +197,7 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
                 break;
         }
 
-        if (path == null)
+        if( path is null )
             return false;
 
         var exists = File.Exists(path);
