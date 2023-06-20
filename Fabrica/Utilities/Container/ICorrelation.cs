@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Drawing;
 using System.Security.Principal;
+using Fabrica.Watch;
 
 namespace Fabrica.Utilities.Container;
 
@@ -36,9 +38,6 @@ public interface ICorrelation
     string Tenant { get; }
 
     IPrincipal? Caller { get; }
-
-
-    bool Debug { get; }
 
 
 }

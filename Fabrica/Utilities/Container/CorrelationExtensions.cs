@@ -1,5 +1,7 @@
 ﻿// ReSharper disable UnusedMember.Global
 
+using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using Autofac;
@@ -61,12 +63,20 @@ public static class CorrelationExtensions
         // ******************************************************
         var request = new LoggerRequest
         {
-            Debug = correlation.Debug,
             Tenant = correlation.Tenant,
             Subject = correlation.Caller?.Identity?.Name ?? "",
             Category = category,
             CorrelationId = correlation.Uid
         };
+
+
+        if( correlation is Correlation {Debug: true} impl )
+        {
+            request.Debug = true;
+            request.Level = impl.Level;
+            request.Color = impl.Color;
+        }
+
 
         request.FilterKeys.Add(("Subject", correlation.Caller?.Identity?.Name ?? ""));
         request.FilterKeys.Add(("Tenant", correlation.Tenant));

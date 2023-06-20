@@ -22,21 +22,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Drawing;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
+using Humanizer.DateTimeHumanizeStrategy;
 using Microsoft.AspNetCore.Http;
 
 namespace Fabrica.Api.Support.Middleware;
 
-public class DebugMonitorMiddleware
+public class DiagnosticOptions
 {
 
-    public DebugMonitorMiddleware(RequestDelegate next)
+    public string HeaderName { get; set; } = "X-Diagnostics-Debug";
+    public Level Level { get; set; } = Level.Debug;
+    public Color Color { get; set; } = Color.PapayaWhip;
+
+}
+
+
+public class DiagnosticsMonitorMiddleware
+{
+
+    private static string DefaultHeaderName => "X-Diagnostics-Debug";
+
+
+    public DiagnosticsMonitorMiddleware(RequestDelegate next, DiagnosticOptions? options )
     {
+
         Next = next;
+
+        if (options is not null)
+            Options = options;
+
     }
         
     private RequestDelegate Next { get; }
-
+    private DiagnosticOptions Options { get; } = new();
 
     public Task Invoke( HttpContext context, ICorrelation correlation )
     {
@@ -51,12 +72,12 @@ public class DebugMonitorMiddleware
 
             // *****************************************************************
             logger.Debug("Attempting to check for Fabrica-Watch-Debug header");
-            if (context.Request.Headers.TryGetValue("X-Fabrica-Watch-Debug", out var header))
+            if (context.Request.Headers.TryGetValue(Options.HeaderName, out var header))
             {
 
                 var df = header.FirstOrDefault();
 
-                logger.Debug("Fabrica-Watch-Debug IS present");
+                logger.DebugFormat("{0} IS present", Options.HeaderName);
 
                 logger.Inspect(nameof(df), df);
 
@@ -70,7 +91,7 @@ public class DebugMonitorMiddleware
             }
             else
             {
-                logger.Debug("X-Fabrica-Watch-Debug IS NOT present");
+                logger.DebugFormat("{0} IS NOT present", Options.HeaderName);
             }
 
 

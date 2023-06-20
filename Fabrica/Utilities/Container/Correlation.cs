@@ -22,11 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Drawing;
 using System.Security.Claims;
 using System.Security.Principal;
 using Fabrica.Identity;
 using Fabrica.Utilities.Text;
 using Fabrica.Utilities.Types;
+using Fabrica.Watch;
 
 namespace Fabrica.Utilities.Container
 {
@@ -43,6 +45,9 @@ namespace Fabrica.Utilities.Container
         public IPrincipal Caller { get; set; } = new NullUser();
 
         public bool Debug { get; set; }
+
+        public Level Level { get; set; } = Level.Debug;
+        public Color Color { get; set; } = Color.PapayaWhip;
 
 
         public void PopulateCaller( IClaimSet claimSet )

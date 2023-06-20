@@ -206,7 +206,7 @@ public class WatchFactory : IWatchFactory
         var sw = Switches.GetDefaultSwitch();
 
         if (request.Debug)
-            sw = Switches.GetDebugSwitch();
+            sw = new Switch {Level = request.Level, Color = request.Color, Pattern = "", Tag = "Diagnostics"};
         else
         {
 

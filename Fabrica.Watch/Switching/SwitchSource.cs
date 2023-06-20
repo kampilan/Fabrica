@@ -79,7 +79,7 @@ public class SwitchSource : ISwitchSource
 
 
     public ISwitch DefaultSwitch { get; set; } = new Switch { Level = Level.Error, Color = Color.LightGray };
-    public ISwitch DebugSwitch { get; set; } = new Switch { Level = Level.Debug, Color = Color.LightSalmon };
+    public ISwitch DebugSwitch { get; set; } = new Switch { Level = Level.Debug, Color = Color.PapayaWhip };
 
 
     private readonly ReaderWriterLockSlim _switchLock = new ReaderWriterLockSlim();
