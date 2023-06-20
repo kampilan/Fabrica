@@ -43,7 +43,7 @@ public class DiagnosticsMonitorMiddleware
 {
 
 
-    public DiagnosticsMonitorMiddleware(RequestDelegate next, DiagnosticOptions? options )
+    public DiagnosticsMonitorMiddleware(RequestDelegate next, DiagnosticOptions? options=null )
     {
 
         Next = next;
