@@ -32,7 +32,7 @@ namespace Fabrica.Api.Support.Middleware;
 public class DiagnosticOptions
 {
 
-    public string HeaderName { get; set; } = "X-Diagnostics-Debug";
+    public string HeaderName { get; set; } = "X-Diagnostics-Probe";
     public Level Level { get; set; } = Level.Debug;
     public Color Color { get; set; } = Color.PapayaWhip;
 
@@ -41,8 +41,6 @@ public class DiagnosticOptions
 
 public class DiagnosticsMonitorMiddleware
 {
-
-    private static string DefaultHeaderName => "X-Diagnostics-Debug";
 
 
     public DiagnosticsMonitorMiddleware(RequestDelegate next, DiagnosticOptions? options )
