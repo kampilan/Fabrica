@@ -43,18 +43,17 @@ public class DiagnosticsMonitorMiddleware: IMiddleware
 {
 
 
-    public DiagnosticsMonitorMiddleware( ICorrelation correlation, DiagnosticOptions? options=null )
+    public DiagnosticsMonitorMiddleware( ICorrelation correlation )
     {
 
         Correlation = correlation;
 
-        if (options is not null)
-            Options = options;
+        Options = new DiagnosticOptions();
 
     }
         
     private ICorrelation Correlation { get; }
-    private DiagnosticOptions Options { get; } = new();
+    private DiagnosticOptions Options { get; }
 
     public Task InvokeAsync( HttpContext context, RequestDelegate next )
     {
