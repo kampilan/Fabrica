@@ -39,30 +39,30 @@ public class DiagnosticOptions
 }
 
 
-public class DiagnosticsMonitorMiddleware
+public class DiagnosticsMonitorMiddleware: IMiddleware
 {
 
 
-    public DiagnosticsMonitorMiddleware(RequestDelegate next, DiagnosticOptions? options=null )
+    public DiagnosticsMonitorMiddleware( ICorrelation correlation, DiagnosticOptions? options=null )
     {
 
-        Next = next;
+        Correlation = correlation;
 
         if (options is not null)
             Options = options;
 
     }
         
-    private RequestDelegate Next { get; }
+    private ICorrelation Correlation { get; }
     private DiagnosticOptions Options { get; } = new();
 
-    public Task Invoke( HttpContext context, ICorrelation correlation )
+    public Task InvokeAsync( HttpContext context, RequestDelegate next )
     {
             
         if (context == null) throw new ArgumentNullException(nameof(context));
-        if (correlation == null) throw new ArgumentNullException(nameof(correlation));
+        if (next == null) throw new ArgumentNullException(nameof(next));
 
-        using( var logger = correlation.GetLogger(this) )
+        using( var logger = Correlation.GetLogger(this) )
         {
 
             var debug = false;
@@ -91,7 +91,7 @@ public class DiagnosticsMonitorMiddleware
                 logger.DebugFormat("{0} IS NOT present", Options.HeaderName);
             }
 
-            if( correlation is Correlation impl && debug )
+            if( Correlation is Correlation impl && debug )
             {
                 impl.Debug = true;
                 impl.Level = Options.Level;
@@ -102,7 +102,7 @@ public class DiagnosticsMonitorMiddleware
         }
 
 
-        return Next(context);
+        return next(context);
 
 
     }
