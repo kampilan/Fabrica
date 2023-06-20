@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabrica.Api.Support.Middleware;
 
-public static class ServiceContainerExtensions
+public static class ServiceCollectionExtensions
 {
 
 

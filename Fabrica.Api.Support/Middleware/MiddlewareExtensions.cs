@@ -44,9 +44,9 @@ public static class MiddlewareExtensions
         return app;
     }
 
-    public static IApplicationBuilder UseDiagnosticsMonitor(this IApplicationBuilder app, DiagnosticOptions? options=null )
+    public static IApplicationBuilder UseDiagnosticsMonitor(this IApplicationBuilder app )
     {
-        app.UseMiddleware<DiagnosticsMonitorMiddleware>(options);
+        app.UseMiddleware<DiagnosticsMonitorMiddleware>();
         return app;
 
     }
