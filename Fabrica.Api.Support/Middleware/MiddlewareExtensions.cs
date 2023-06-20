@@ -44,9 +44,9 @@ public static class MiddlewareExtensions
         return app;
     }
 
-    public static IApplicationBuilder UseDebugMonitor(this IApplicationBuilder app, string header="X-Diagnostics-Debug")
+    public static IApplicationBuilder UseDebugMonitor(this IApplicationBuilder app, DiagnosticOptions? options )
     {
-        app.UseMiddleware<DiagnosticsMonitorMiddleware>(header);
+        app.UseMiddleware<DiagnosticsMonitorMiddleware>(options);
         return app;
     }
 
