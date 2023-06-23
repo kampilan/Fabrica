@@ -106,13 +106,13 @@ namespace Fabrica.Rules.Validators
 
         public static IValidator<TFact, string> IsGreaterThen<TFact>( this IValidator<TFact, string> validator, Func<TFact, string> extractor ) where TFact : class
         {
-            return validator.Is((f, v) => String.Compare(extractor(f), v, StringComparison.Ordinal) == -1);
+            return validator.Is((f, v) => string.Compare(extractor(f), v, StringComparison.Ordinal) == -1);
         }
 
 
         public static IValidator<TFact, string> IsEqualTo<TFact>( this IValidator<TFact, string> validator, string test ) where TFact : class
         {
-            return validator.Is( ( f, v ) => test.Equals( v ) );
+            return validator.Is( ( f, v ) => test.Equals(v) );
         }
 
         public static IValidator<TFact, string> IsEqualTo<TFact>( this IValidator<TFact, string> validator, Func<TFact, string> extractor) where TFact : class
@@ -134,12 +134,12 @@ namespace Fabrica.Rules.Validators
 
         public static IValidator<TFact, string> IsMatch<TFact>(  this IValidator<TFact, string> validator, string pattern ) where TFact : class
         {
-            return validator.Is( ( f, v ) => Regex.IsMatch( v, pattern ) );
+            return validator.Is( ( f, v ) => !string.IsNullOrWhiteSpace(v) && Regex.IsMatch( v, pattern ) );
         }
 
         public static IValidator<TFact, string> IsNotMatch<TFact>(  this IValidator<TFact, string> validator, string pattern ) where TFact : class
         {
-            return validator.IsNot( ( f, v ) => Regex.IsMatch( v, pattern ) );
+            return validator.IsNot( ( f, v ) => !string.IsNullOrWhiteSpace(v) && Regex.IsMatch( v, pattern ) );
         }
 
         public static IValidator<TFact, string> IsPhone<TFact>(  this IValidator<TFact, string> validator ) where TFact : class
