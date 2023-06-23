@@ -22,9 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
@@ -45,127 +42,127 @@ namespace Fabrica.Rules.Validators
 
         }
 
-        public static IValidator<TFact, object> Required<TFact>([NotNull] this IValidator<TFact, object> validator) where TFact : class
+        public static IValidator<TFact, object> Required<TFact>(this IValidator<TFact, object> validator) where TFact : class
         {
-            return validator.Is((f, v) => v != null );
+            return validator.Is((f, v) => v is not null );
         }
 
 
-        public static IValidator<TFact, string> Required<TFact>([NotNull] this IValidator<TFact, string> validator) where TFact : class
+        public static IValidator<TFact, string> Required<TFact>( this IValidator<TFact, string> validator) where TFact : class
         {
-            return validator.Is((f, v) => !(String.IsNullOrWhiteSpace(v)));
+            return validator.Is((f, v) => !(string.IsNullOrWhiteSpace(v)));
         }
 
 
-        public static IValidator<TFact, string> IsEmpty<TFact>( [NotNull] this IValidator<TFact, string> validator ) where TFact : class
+        public static IValidator<TFact, string> IsEmpty<TFact>( this IValidator<TFact, string> validator ) where TFact : class
         {
-            return validator.Is( ( f, v ) => String.IsNullOrWhiteSpace( v ) );
+            return validator.Is( ( f, v ) => string.IsNullOrWhiteSpace( v ) );
         }
 
-        public static IValidator<TFact, string> IsNotEmpty<TFact>( [NotNull] this IValidator<TFact, string> validator ) where TFact : class
+        public static IValidator<TFact, string> IsNotEmpty<TFact>( this IValidator<TFact, string> validator ) where TFact : class
         {
-            return validator.Is( ( f, v ) => !(String.IsNullOrWhiteSpace( v )) );
+            return validator.Is( ( f, v ) => !(string.IsNullOrWhiteSpace( v )) );
         }
 
-        public static IValidator<TFact, string> HasMinimumLength<TFact>( [NotNull] this IValidator<TFact, string> validator, int minimum ) where TFact : class
+        public static IValidator<TFact, string> HasMinimumLength<TFact>( this IValidator<TFact, string> validator, int minimum ) where TFact : class
         {
-            return validator.Is( ( f, v ) => v.Length >= minimum );
-        }
-
-
-        public static IValidator<TFact, string> HasMaximumLength<TFact>( [NotNull] this IValidator<TFact, string> validator, int maximum ) where TFact : class
-        {
-            return validator.Is( ( f, v ) => v.Length >= maximum );
+            return validator.Is( ( f, v ) => !string.IsNullOrWhiteSpace(v) && v.Length >= minimum );
         }
 
 
-        public static IValidator<TFact, string> IsIn<TFact>( [NotNull] this IValidator<TFact, string> validator, params string[] values ) where TFact : class
+        public static IValidator<TFact, string> HasMaximumLength<TFact>( this IValidator<TFact, string> validator, int maximum ) where TFact : class
+        {
+            return validator.Is( ( f, v ) => string.IsNullOrWhiteSpace(v) || v.Length >= maximum );
+        }
+
+
+        public static IValidator<TFact, string> IsIn<TFact>( this IValidator<TFact, string> validator, params string[] values ) where TFact : class
         {
             return validator.Is( ( f, v ) => values.Contains( v ) );
         }
 
 
-        public static IValidator<TFact, string> IsNotIn<TFact>( [NotNull] this IValidator<TFact, string> validator, params string[] values ) where TFact : class
+        public static IValidator<TFact, string> IsNotIn<TFact>( this IValidator<TFact, string> validator, params string[] values ) where TFact : class
         {
             return validator.Is( ( f, v ) => !(values.Contains( v )) );
         }
 
 
-        public static IValidator<TFact, string> IsLessThen<TFact>( [NotNull] this IValidator<TFact, string> validator, string test ) where TFact : class
+        public static IValidator<TFact, string> IsLessThen<TFact>(  this IValidator<TFact, string> validator, string test ) where TFact : class
         {
-            return validator.Is( ( f, v ) => String.Compare( test, v, StringComparison.Ordinal ) == 1 );
+            return validator.Is( ( f, v ) => string.Compare( test, v, StringComparison.Ordinal ) == 1 );
         }
 
-        public static IValidator<TFact, string> IsLessThen<TFact>([NotNull] this IValidator<TFact, string> validator, Func<TFact, string> extractor ) where TFact : class
+        public static IValidator<TFact, string> IsLessThen<TFact>( this IValidator<TFact, string> validator, Func<TFact, string> extractor ) where TFact : class
         {
-            return validator.Is((f, v) => String.Compare(extractor(f), v, StringComparison.Ordinal) == 1);
+            return validator.Is((f, v) => string.Compare(extractor(f), v, StringComparison.Ordinal) == 1);
         }
 
 
-        public static IValidator<TFact, string> IsGreaterThen<TFact>( [NotNull] this IValidator<TFact, string> validator, string test ) where TFact : class
+        public static IValidator<TFact, string> IsGreaterThen<TFact>(  this IValidator<TFact, string> validator, string test ) where TFact : class
         {
-            return validator.Is( ( f, v ) => String.Compare( test, v, StringComparison.Ordinal ) == -1 );
+            return validator.Is( ( f, v ) => string.Compare( test, v, StringComparison.Ordinal ) == -1 );
         }
 
-        public static IValidator<TFact, string> IsGreaterThen<TFact>([NotNull] this IValidator<TFact, string> validator, Func<TFact, string> extractor ) where TFact : class
+        public static IValidator<TFact, string> IsGreaterThen<TFact>( this IValidator<TFact, string> validator, Func<TFact, string> extractor ) where TFact : class
         {
             return validator.Is((f, v) => String.Compare(extractor(f), v, StringComparison.Ordinal) == -1);
         }
 
 
-        public static IValidator<TFact, string> IsEqualTo<TFact>( [NotNull] this IValidator<TFact, string> validator, string test ) where TFact : class
+        public static IValidator<TFact, string> IsEqualTo<TFact>( this IValidator<TFact, string> validator, string test ) where TFact : class
         {
             return validator.Is( ( f, v ) => test.Equals( v ) );
         }
 
-        public static IValidator<TFact, string> IsEqualTo<TFact>([NotNull] this IValidator<TFact, string> validator, Func<TFact, string> extractor) where TFact : class
+        public static IValidator<TFact, string> IsEqualTo<TFact>( this IValidator<TFact, string> validator, Func<TFact, string> extractor) where TFact : class
         {
             return validator.Is((f, v) => extractor(f).Equals(v) );
         }
 
 
-        public static IValidator<TFact, string> IsNotEqualTo<TFact>( [NotNull] this IValidator<TFact, string> validator, string test ) where TFact : class
+        public static IValidator<TFact, string> IsNotEqualTo<TFact>(  this IValidator<TFact, string> validator, string test ) where TFact : class
         {
             return validator.Is( ( f, v ) => !(test.Equals( v )) );
         }
 
-        public static IValidator<TFact, string> IsNotEqualTo<TFact>([NotNull] this IValidator<TFact, string> validator, Func<TFact,string> extractor ) where TFact : class
+        public static IValidator<TFact, string> IsNotEqualTo<TFact>( this IValidator<TFact, string> validator, Func<TFact,string> extractor ) where TFact : class
         {
             return validator.Is((f, v) => !(extractor(f).Equals(v)));
         }
 
 
-        public static IValidator<TFact, string> IsMatch<TFact>( [NotNull] this IValidator<TFact, string> validator, string pattern ) where TFact : class
+        public static IValidator<TFact, string> IsMatch<TFact>(  this IValidator<TFact, string> validator, string pattern ) where TFact : class
         {
             return validator.Is( ( f, v ) => Regex.IsMatch( v, pattern ) );
         }
 
-        public static IValidator<TFact, string> IsNotMatch<TFact>( [NotNull] this IValidator<TFact, string> validator, string pattern ) where TFact : class
+        public static IValidator<TFact, string> IsNotMatch<TFact>(  this IValidator<TFact, string> validator, string pattern ) where TFact : class
         {
             return validator.IsNot( ( f, v ) => Regex.IsMatch( v, pattern ) );
         }
 
-        public static IValidator<TFact, string> IsPhone<TFact>( [NotNull] this IValidator<TFact, string> validator ) where TFact : class
+        public static IValidator<TFact, string> IsPhone<TFact>(  this IValidator<TFact, string> validator ) where TFact : class
         {
-            return validator.Is((f, v) => String.IsNullOrWhiteSpace(v) || Regex.IsMatch(v, @"\(?(\d{3})\)?-?(\d{3})-(\d{4})"));
+            return validator.Is((f, v) => string.IsNullOrWhiteSpace(v) || Regex.IsMatch(v, @"\(?(\d{3})\)?-?(\d{3})-(\d{4})"));
         }
 
 
-        public static IValidator<TFact, string> IsEmail<TFact>([NotNull] this IValidator<TFact, string> validator) where TFact : class
+        public static IValidator<TFact, string> IsEmail<TFact>( this IValidator<TFact, string> validator) where TFact : class
         {
-            return validator.Is((f, v) => String.IsNullOrWhiteSpace(v) || Regex.IsMatch(v, @"^[a-zA-Z]+(([\'\,\.\- ][a-zA-Z ])?[a-zA-Z]*)*\s+&lt;(\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})&gt;$|^(\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})$"));
+            return validator.Is((f, v) => string.IsNullOrWhiteSpace(v) || Regex.IsMatch(v, @"^[a-zA-Z]+(([\'\,\.\- ][a-zA-Z ])?[a-zA-Z]*)*\s+&lt;(\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})&gt;$|^(\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})$"));
         }
 
 
-        public static IValidator<TFact, string> IsSsn<TFact>( [NotNull] this IValidator<TFact, string> validator ) where TFact : class
+        public static IValidator<TFact, string> IsSsn<TFact>( this IValidator<TFact, string> validator ) where TFact : class
         {
-            return validator.Is( ( f, v ) => String.IsNullOrWhiteSpace( v ) || Regex.IsMatch( v, @"^\d{3}-\d{2}-\d{4}$" ) );
+            return validator.Is( ( f, v ) => string.IsNullOrWhiteSpace( v ) || Regex.IsMatch( v, @"^\d{3}-\d{2}-\d{4}$" ) );
         }
 
 
-        public static IValidator<TFact, string> IsZip<TFact>( [NotNull] this IValidator<TFact, string> validator ) where TFact : class
+        public static IValidator<TFact, string> IsZip<TFact>(  this IValidator<TFact, string> validator ) where TFact : class
         {
-            return validator.Is((f, v) => String.IsNullOrWhiteSpace(v) || Regex.IsMatch(v, @"^[0-9]{5}(?:-[0-9]{4})?$"));
+            return validator.Is((f, v) => string.IsNullOrWhiteSpace(v) || Regex.IsMatch(v, @"^[0-9]{5}(?:-[0-9]{4})?$"));
         }
 
 
@@ -175,9 +172,9 @@ namespace Fabrica.Rules.Validators
 
 
         // ReSharper disable once InconsistentNaming
-        public static IValidator<TFact, string> IsUSState<TFact>([NotNull] this IValidator<TFact, string> validator) where TFact : class
+        public static IValidator<TFact, string> IsUSState<TFact>( this IValidator<TFact, string> validator) where TFact : class
         {
-            return validator.Is((f, v) => String.IsNullOrWhiteSpace(v) || _USStates.Contains(v));
+            return validator.Is((f, v) => string.IsNullOrWhiteSpace(v) || _USStates.Contains(v));
         }
 
 
@@ -186,9 +183,9 @@ namespace Fabrica.Rules.Validators
 
 
         // ReSharper disable once InconsistentNaming
-        public static IValidator<TFact, string> IsState<TFact>([NotNull] this IValidator<TFact, string> validator) where TFact : class
+        public static IValidator<TFact, string> IsState<TFact>( this IValidator<TFact, string> validator) where TFact : class
         {
-            return validator.Is((f, v) => String.IsNullOrWhiteSpace(v) || _states.Contains(v));
+            return validator.Is((f, v) => string.IsNullOrWhiteSpace(v) || _states.Contains(v));
         }
 
 
