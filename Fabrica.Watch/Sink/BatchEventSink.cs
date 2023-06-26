@@ -37,9 +37,9 @@ public class BatchEventSink: IEventSink
     private IEventSink TargetSink { get; }
 
 
-    private ConcurrentQueue<ILogEvent> Queue { get; } = new ConcurrentQueue<ILogEvent>();
-    private EventWaitHandle MustStop { get; } = new EventWaitHandle(false, EventResetMode.ManualReset);
-    private EventWaitHandle Stopped { get; } = new EventWaitHandle(false, EventResetMode.ManualReset);
+    private ConcurrentQueue<ILogEvent> Queue { get; } = new ();
+    private EventWaitHandle MustStop { get; } = new (false, EventResetMode.ManualReset);
+    private EventWaitHandle Stopped { get; } = new (false, EventResetMode.ManualReset);
 
 
     public int BatchSize { get; set; } = 10;

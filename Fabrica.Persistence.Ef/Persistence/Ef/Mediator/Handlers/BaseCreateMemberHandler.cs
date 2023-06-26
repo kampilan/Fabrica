@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
@@ -10,6 +6,7 @@ using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

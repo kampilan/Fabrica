@@ -554,7 +554,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
 
 
             // *****************************************************************
-            logger.DebugFormat("Attempting to find Application using name = ({0})", mission.AppConfigApplication);
+            logger.Debug("Attempting to find Application using name = ({0})", mission.AppConfigApplication);
 
             var appRes = await appConfigClient.ListApplicationsAsync(new ListApplicationsRequest());
             var app = appRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigApplication);
@@ -568,7 +568,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
 
 
             // *****************************************************************
-            logger.DebugFormat("Attempting to find Config AwsProfileName using name = ({0})", mission.AppConfigConfigProfile);
+            logger.Debug("Attempting to find Config AwsProfileName using name = ({0})", mission.AppConfigConfigProfile);
 
             var cfgRes = await appConfigClient.ListConfigurationProfilesAsync(new ListConfigurationProfilesRequest { ApplicationId = app.Id });
             var cfg = cfgRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigConfigProfile);
@@ -582,7 +582,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
 
 
             // *****************************************************************
-            logger.DebugFormat("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironment);
+            logger.Debug("Attempting to find Environment using name = ({0})", mission.AppConfigEnvironment);
 
             var envRes = await appConfigClient.ListEnvironmentsAsync(new ListEnvironmentsRequest { ApplicationId = app.Id });
             var env = envRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigEnvironment);
@@ -597,7 +597,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
 
 
             // *****************************************************************
-            logger.DebugFormat("Attempting to find Strategy using name = ({0})", mission.AppConfigStrategy);
+            logger.Debug("Attempting to find Strategy using name = ({0})", mission.AppConfigStrategy);
 
             var strRes = await appConfigClient.ListDeploymentStrategiesAsync(new ListDeploymentStrategiesRequest());
             var str = strRes.Items.SingleOrDefault(a => a.Name == mission.AppConfigStrategy);
@@ -963,7 +963,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
         }
 
         // *****************************************************************
-        logger.DebugFormat("Loaded {0} Mission(s)", Missions.Count);
+        logger.Debug("Loaded {0} Mission(s)", Missions.Count);
 
 
     }
@@ -1013,7 +1013,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
         }
 
         // *****************************************************************
-        logger.DebugFormat("Loaded {0} Build(s)", Builds.Count);
+        logger.Debug("Loaded {0} Build(s)", Builds.Count);
 
 
     }

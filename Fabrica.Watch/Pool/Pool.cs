@@ -26,15 +26,15 @@ using System.Collections.Concurrent;
 
 namespace Fabrica.Watch.Pool;
 
-public class Pool<TPooled> where TPooled : class
+public class Pool<TPooled>: IDisposable where TPooled : class
 {
 
 
     public Pool( Func<TPooled> factory, int maxSize=int.MaxValue )
     {
+
         Queue          = new ConcurrentQueue<TPooled>();
         AvailableEvent = new AutoResetEvent(false);
-        Lockable       = new object();
 
         Factory = factory ?? throw new ArgumentNullException(nameof(factory));
         MaxSize = maxSize;
@@ -49,18 +49,19 @@ public class Pool<TPooled> where TPooled : class
     private ConcurrentQueue<TPooled> Queue { get; }
 
     private AutoResetEvent AvailableEvent { get; }
-    private object Lockable { get; }
-        
 
-        
+
+    public int Count => Queue.Count;
+
+    public void Clear() => Queue.Clear();
 
     public TPooled Acquire( int waitDuration=int.MaxValue )
     {
 
-        TPooled item;
+        TPooled? item;
         do
         {
-            if( !(Queue.TryDequeue( out item )) && !(AvailableEvent.WaitOne( waitDuration )) )
+            if( !Queue.TryDequeue( out item ) && !AvailableEvent.WaitOne( waitDuration ) )
                 item = Factory();
         }
         while (null == item);
@@ -74,14 +75,21 @@ public class Pool<TPooled> where TPooled : class
 
         if (item == null) throw new ArgumentNullException(nameof(item));
 
-        lock( Lockable )
+        var size=0;
+        if( Interlocked.CompareExchange(ref size, Queue.Count, MaxSize) == 0 )
         {
-            if( Queue.Count < MaxSize )
-                Queue.Enqueue( item );
+            Queue.Enqueue( item );
+            AvailableEvent.Set();
         }
 
-        AvailableEvent.Set();
 
     }
 
+    public void Dispose()
+    {
+
+        AvailableEvent.Dispose();
+        Queue.Clear();
+
+    }
 }

@@ -2,6 +2,7 @@
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers;
@@ -64,7 +65,7 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
             logger.Debug("Attempting to add custom headers");
             foreach (var pair in request.CustomHeaders)
             {
-                logger.DebugFormat("{0} = ({1})", pair.Key, pair.Value);
+                logger.Debug("{0} = ({1})", pair.Key, pair.Value);
                 innerRequest.Headers.Add(pair.Key, pair.Value);
             }
 
@@ -174,7 +175,7 @@ public abstract class BaseHttpHandler<TRequest> : AbstractRequestHandler<TReques
             logger.Debug("Attempting to add custom headers");
             foreach (var pair in request.CustomHeaders)
             {
-                logger.DebugFormat("{0} = ({1})", pair.Key, pair.Value);
+                logger.Debug("{0} = ({1})", pair.Key, pair.Value);
                 innerRequest.Headers.Add(pair.Key, pair.Value);
             }
 

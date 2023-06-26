@@ -5,6 +5,7 @@ using System.Data;
 using AutoMapper;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using FileHelpers;
 using RepoDb;
 
@@ -253,7 +254,7 @@ public class EtlComponent: CorrelatedObject
 
                     if (results.Count >= batchSize)
                     {
-                        logger.DebugFormat("Attempting to persist batch of {0} to database", results.Count);
+                        logger.Debug("Attempting to persist batch of {0} to database", results.Count);
                         logger.Inspect(nameof(results.Count), results.Count);
                         await Persist();
                     }

@@ -71,6 +71,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence.Mongo",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Search", "Fabrica.Search\Fabrica.Search.csproj", "{4652A2E2-7507-4130-8C21-42A97A5E5897}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch.Mem.Tester", "Watch.Mem.Tester\Watch.Mem.Tester.csproj", "{CF018877-0D93-42DA-A2DD-09E7D44FB12F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{4652A2E2-7507-4130-8C21-42A97A5E5897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4652A2E2-7507-4130-8C21-42A97A5E5897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4652A2E2-7507-4130-8C21-42A97A5E5897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF018877-0D93-42DA-A2DD-09E7D44FB12F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF018877-0D93-42DA-A2DD-09E7D44FB12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF018877-0D93-42DA-A2DD-09E7D44FB12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF018877-0D93-42DA-A2DD-09E7D44FB12F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -220,6 +226,7 @@ Global
 		{B8BC4D04-9F11-4462-998C-006F38A33CB6} = {8EB66E27-2D5B-4C09-845B-F4D408B831CB}
 		{4EC4E549-F130-4FDF-844B-76880F625285} = {A5161544-8D49-43C6-93D7-FD8742626D25}
 		{4652A2E2-7507-4130-8C21-42A97A5E5897} = {A5161544-8D49-43C6-93D7-FD8742626D25}
+		{CF018877-0D93-42DA-A2DD-09E7D44FB12F} = {160E9850-FB57-4E68-B8D7-92F61E26F4D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {79FD2B26-A981-4ACD-A3A6-7B3084907A3B}

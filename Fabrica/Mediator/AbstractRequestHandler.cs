@@ -99,22 +99,22 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         }
         catch (NotFoundException cause)
         {
-            logger.DebugFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
         }
         catch (ViolationsExistException cause)
         {
-            logger.DebugFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
         }
         catch (RqlException cause)
         {
-            logger.DebugFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause).WithKind(ErrorKind.BadRequest).WithErrorCode("InvalidRQL");
         }
         catch (ExternalException cause)
         {
-            logger.ErrorFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Error(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
         }
         catch (Exception cause)
@@ -260,22 +260,22 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         }
         catch (NotFoundException cause)
         {
-            logger.DebugFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
         }
         catch (ViolationsExistException cause)
         {
-            logger.DebugFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
         }
         catch (RqlException cause)
         {
-            logger.DebugFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
+            logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause).WithKind(ErrorKind.BadRequest).WithErrorCode("InvalidRQL");
         }
         catch (ExternalException cause)
         {
-            logger.ErrorFormat(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName! );
+            logger.Error(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName! );
             return CreateFailureResponse().From(cause);
         }
         catch (Exception cause)

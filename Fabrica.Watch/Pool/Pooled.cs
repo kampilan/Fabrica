@@ -39,7 +39,7 @@ public class Pooled<TPooled>: IPooled<TPooled> where TPooled: class
     private Func<TPooled>   Acquire { get; }
     private Action<TPooled> Release { get; }
         
-    private TPooled _object;
+    private TPooled? _object;
 
     public TPooled Object => _object ??= Acquire();
 

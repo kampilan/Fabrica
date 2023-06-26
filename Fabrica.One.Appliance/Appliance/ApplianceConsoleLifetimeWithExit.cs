@@ -26,8 +26,8 @@ public class ApplianceConsoleLifetimeWithExit : ApplianceConsoleLifetime
         Console.Out.WriteLine( "Appliance started. Press Ctrl+C to shut down." );
         
         logger.Info("Appliance started. Press Ctrl+C to shut down.");
-        logger.InfoFormat("Hosting environment: {0}", Environment.EnvironmentName);
-        logger.InfoFormat("Content root path: {0}", Environment.ContentRootPath);
+        logger.Info("Hosting environment: {0}", Environment.EnvironmentName);
+        logger.Info("Content root path: {0}", Environment.ContentRootPath);
 
     }
 

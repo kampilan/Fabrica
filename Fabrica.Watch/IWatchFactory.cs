@@ -38,15 +38,16 @@ public interface IWatchFactory
     IEventSink Sink { get; }
 
 
-    IEventSink GetSink<T>() where T : class, IEventSink;
+    IEventSink? GetSink<T>() where T : class, IEventSink;
        
 
-    TType GetInfrastructure<TType>() where TType : class;
+    TType? GetInfrastructure<TType>() where TType : class;
     void AddInfrastructure( object item );
 
     void Start();
     void Stop();
 
+    int PooledCount { get; }
 
     ILogger GetLogger( string category, bool retroOn = true );
     ILogger GetLogger<T>( bool retroOn = true );

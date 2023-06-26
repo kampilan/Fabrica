@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using Newtonsoft.Json;
 
 namespace Fabrica.Mediator;
@@ -49,7 +50,7 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
         logger.Debug("Attempting to add custom headers");
         foreach (var pair in Request.CustomHeaders)
         {
-            logger.DebugFormat("{0} = ({1})", pair.Key, pair.Value);
+            logger.Debug("{0} = ({1})", pair.Key, pair.Value);
             innerRequest.Headers.Add(pair.Key, pair.Value);
         }
 

@@ -2,6 +2,7 @@
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers
 {
@@ -18,58 +19,43 @@ namespace Fabrica.Persistence.Http.Mediator.Handlers
         protected override async Task<TEntity> Perform(CancellationToken cancellationToken = default)
         {
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
+            using var logger = EnterMethod();
 
 
-                logger.Inspect("Entity Type", typeof(TEntity).FullName);
+            logger.Inspect("Entity Type", typeof(TEntity).FullName);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to get Meta for given explorer type");
-                var meta = Meta.GetMetaFromType(typeof(TEntity));
+            // *****************************************************************
+            logger.Debug("Attempting to get Meta for given explorer type");
+            var meta = Meta.GetMetaFromType(typeof(TEntity));
 
-                logger.LogObject(nameof(meta), meta);
-
-
-
-                // *****************************************************************
-                logger.Debug("Attempting to build request");
-                var request = HttpRequestBuilder.Get()
-                    .ForResource(meta.Resource)
-                    .WithIdentifier(Request.Uid);
+            logger.LogObject(nameof(meta), meta);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to send request");
-                var response = await Send(request, cancellationToken);
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = HttpRequestBuilder.Get()
+                .ForResource(meta.Resource)
+                .WithIdentifier(Request.Uid);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to build entity from body");
-                var entity = response.FromBody<TEntity>();
+            // *****************************************************************
+            logger.Debug("Attempting to send request");
+            var response = await Send(request, cancellationToken);
 
 
 
-                // *****************************************************************
-                return entity!;
+            // *****************************************************************
+            logger.Debug("Attempting to build entity from body");
+            var entity = response.FromBody<TEntity>();
 
 
 
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
+            // *****************************************************************
+            return entity!;
 
 
         }

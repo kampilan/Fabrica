@@ -2,6 +2,7 @@
 using Fabrica.Rules;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 
 namespace Fabrica.Mediator;

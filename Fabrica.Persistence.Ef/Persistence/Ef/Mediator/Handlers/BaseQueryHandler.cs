@@ -6,6 +6,7 @@ using Fabrica.Rql;
 using Fabrica.Rql.Serialization;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

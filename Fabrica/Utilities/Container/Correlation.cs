@@ -26,56 +26,51 @@ using System.Drawing;
 using System.Security.Claims;
 using System.Security.Principal;
 using Fabrica.Identity;
-using Fabrica.Utilities.Text;
-using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 
-namespace Fabrica.Utilities.Container
+// ReSharper disable UnusedMember.Global
+
+namespace Fabrica.Utilities.Container;
+
+public class Correlation: ICorrelation
 {
 
 
-    public class Correlation: ICorrelation
+    public string Uid { get; } = CorrelationGenerator.New();
+
+    public string Tenant { get; set; } = "";
+
+    public IPrincipal Caller { get; set; } = new NullUser();
+
+    public bool Debug { get; set; }
+
+    public Level Level { get; set; } = Level.Debug;
+    public Color Color { get; set; } = Color.PapayaWhip;
+
+
+    public void PopulateCaller( IClaimSet claimSet )
     {
 
+        var ci = new FabricaIdentity(claimSet);
 
-        public string Uid { get; } = Base62Converter.NewGuid();
-
-        public string Tenant { get; set; } = "";
-
-        public IPrincipal Caller { get; set; } = new NullUser();
-
-        public bool Debug { get; set; }
-
-        public Level Level { get; set; } = Level.Debug;
-        public Color Color { get; set; } = Color.PapayaWhip;
-
-
-        public void PopulateCaller( IClaimSet claimSet )
-        {
-
-            var ci = new FabricaIdentity(claimSet);
-
-            Caller = new ClaimsPrincipal(ci);
-
-        }
-
+        Caller = new ClaimsPrincipal(ci);
 
     }
 
-    public class NullUser : IPrincipal, IIdentity
+
+}
+
+public class NullUser : IPrincipal, IIdentity
+{
+
+    public bool IsInRole(string role)
     {
-
-        public bool IsInRole(string role)
-        {
-            return false;
-        }
-
-        public IIdentity Identity => this;
-        public string AuthenticationType => "None";
-        public bool IsAuthenticated => false;
-        public string Name => "";
-
+        return false;
     }
 
+    public IIdentity Identity => this;
+    public string AuthenticationType => "None";
+    public bool IsAuthenticated => false;
+    public string Name => "";
 
 }

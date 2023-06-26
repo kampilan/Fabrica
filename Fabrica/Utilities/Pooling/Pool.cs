@@ -22,9 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using System.Collections.Concurrent;
-using System.Threading;
 using JetBrains.Annotations;
 
 namespace Fabrica.Utilities.Pooling
@@ -58,14 +56,13 @@ namespace Fabrica.Utilities.Pooling
         
 
         
-        [NotNull]
         public TPooled Aquire( int waitDuration=int.MaxValue )
         {
 
             TPooled item;
             do
             {
-                if( !(Queue.TryDequeue( out item )) && !(AvailableEvent.WaitOne( waitDuration )) )
+                if( !Queue.TryDequeue( out item ) && !AvailableEvent.WaitOne( waitDuration ) )
                     item = Factory();
             }
             while (null == item);
@@ -74,7 +71,7 @@ namespace Fabrica.Utilities.Pooling
 
         }
 
-        public void Return([NotNull] TPooled item )
+        public void Return( TPooled item )
         {
 
             if (item == null) throw new ArgumentNullException(nameof(item));

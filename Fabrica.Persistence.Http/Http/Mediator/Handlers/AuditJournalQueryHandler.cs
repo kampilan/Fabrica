@@ -6,6 +6,7 @@ using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers;
 

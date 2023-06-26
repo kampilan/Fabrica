@@ -6,6 +6,7 @@ using Fabrica.Persistence.Patch;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
+using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;

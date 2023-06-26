@@ -1,4 +1,5 @@
 ﻿using Fabrica.Mediator;
+using Fabrica.Watch;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

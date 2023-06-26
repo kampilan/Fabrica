@@ -24,7 +24,7 @@ SOFTWARE.
 
 namespace Fabrica.Watch.Sink;
 
-public interface ILogEvent
+public interface ILogEvent: IDisposable
 {
 
     string Category { get; set; }
@@ -43,6 +43,17 @@ public interface ILogEvent
     DateTime Occurred { get; set; }
 
     PayloadType Type { get; set; }
-    string Payload { get; set; }
+    string? Payload { get; set; }
+
+
+    object? Object { get; set; }
+
+    Exception? Error { get; set; }
+    object? ErrorContext { get; set; }
+    IList<string>? Retro { get; set; }
+
+    string? Output { get; set; }
+
+
 
 }

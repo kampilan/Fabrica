@@ -4,6 +4,7 @@
 using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Identity;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 

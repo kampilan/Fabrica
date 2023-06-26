@@ -38,6 +38,8 @@ public static class WatchFactoryBuilderExtensions
     public static WatchFactoryBuilder UseMongo( this WatchFactoryBuilder builder, IWatchMongoModule module )
     {
 
+        builder.UseBatching();
+
         builder.UseMongoSink( module );
         builder.UseWatchSwitchSource( module );
 

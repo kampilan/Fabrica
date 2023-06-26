@@ -26,7 +26,6 @@ using System.Drawing;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Fabrica.Api.Support.Middleware;
 
@@ -74,7 +73,7 @@ public class DiagnosticsMonitorMiddleware: IMiddleware
 
                 var df = header.FirstOrDefault();
 
-                logger.DebugFormat("{0} IS present", Options.HeaderName);
+                logger.Debug("{0} IS present", Options.HeaderName);
 
                 logger.Inspect(nameof(df), df);
 
@@ -88,7 +87,7 @@ public class DiagnosticsMonitorMiddleware: IMiddleware
             }
             else
             {
-                logger.DebugFormat("{0} IS NOT present", Options.HeaderName);
+                logger.Debug("{0} IS NOT present", Options.HeaderName);
             }
 
 

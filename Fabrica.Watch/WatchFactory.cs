@@ -32,32 +32,33 @@ namespace Fabrica.Watch;
 public class WatchFactory : IWatchFactory
 {
 
+    private static readonly ILogger Silencer = new QuietLogger();
 
-    public WatchFactory( int initialPoolSize=1000 )
+
+    public WatchFactory( int initialPoolSize=50, int maxPoolSize=500 )
     {
 
-        Pool = new Pool<Logger>( ()=> new Logger((l) => Pool.Return(l)), initialPoolSize * 10);
-
-        for( var i=0; i<initialPoolSize; i++ )
-            Pool.Return( new Logger((l) => Pool.Return(l)) );
+        InitialPoolSize = initialPoolSize;
+        MaxPoolSize     = maxPoolSize;
 
     }
 
 
-    private Pool<Logger> Pool { get; }
 
+    private int InitialPoolSize { get; set; }
+    private int MaxPoolSize { get; set; }
+    private Pool<Logger> Pool { get; set; } = null!;
 
-    private static readonly ILogger Silencer = new QuietLogger();
 
     public bool Quiet { get; set; }
 
-    public ISwitchSource Switches { get; set; }
-    public IEventSink Sink { get; set; }
+    public ISwitchSource Switches { get; set; } = null!;
+    public IEventSink Sink { get; set; } = null!;
 
-    public IEventSink GetSink<T>() where T : class, IEventSink
+    public IEventSink? GetSink<T>() where T : class, IEventSink
     {
 
-        IEventSink snk = null;
+        IEventSink? snk = null;
         switch (Sink)
         {
             case CompositeSink cs:
@@ -72,11 +73,11 @@ public class WatchFactory : IWatchFactory
 
     }
 
-    private readonly ConcurrentBag<object> _infrastructure = new ConcurrentBag<object>();
-    public TType GetInfrastructure<TType>() where TType: class
+    private readonly ConcurrentBag<object> _infrastructure = new ();
+    public TType? GetInfrastructure<TType>() where TType: class
     {
         var item = _infrastructure.FirstOrDefault(i => i is TType);
-        return (TType)item;
+        return item as TType;
     }
 
     public void AddInfrastructure( object item )
@@ -93,11 +94,25 @@ public class WatchFactory : IWatchFactory
         Switches = switches ?? throw new ArgumentNullException(nameof(switches));
         Sink     = sink ?? throw new ArgumentNullException(nameof(sink));
 
+        if( Quiet )
+        {
+            InitialPoolSize = 0;
+            MaxPoolSize = 0;
+        }
+
+
     }
 
 
     public virtual void Start()
     {
+
+
+        Pool = new Pool<Logger>(() => new Logger(l => Pool.Return(l)), MaxPoolSize);
+
+        for (var i = 0; i < InitialPoolSize; i++)
+            Pool.Return(new Logger(Pool.Return));
+
 
         Switches.Start();
 
@@ -112,6 +127,7 @@ public class WatchFactory : IWatchFactory
         try
         {
             Switches.Stop();
+            Switches = null!;
         }
         catch
         {
@@ -121,11 +137,23 @@ public class WatchFactory : IWatchFactory
         try
         {
             Sink.Stop();
+            Sink = null!;
         }
         catch
         {
             //ignored
         }
+
+        try
+        {
+            Pool.Clear();
+            Pool = null!;
+        }
+        catch
+        {
+            // ignored
+        }
+
 
         try
         {
@@ -145,22 +173,36 @@ public class WatchFactory : IWatchFactory
 
     }
 
+    public int PooledCount => Pool.Count;
+
 
     public virtual ILogger GetLogger( string category, bool retroOn=true )
     {
 
+        // Overall Quiet
         if (Quiet)
             return Silencer;
 
 
-        var corrId = Guid.NewGuid().ToString();
-        var sw     = Switches.Lookup( category );
+        // Get Switch for given Category
+        var sw = Switches.Lookup( category );
 
 
+        // Return the silencer if switch level is quiet
+        if (sw.Level is Level.Quiet)
+            return Silencer;
+
+
+        // Acquire a new logger from the pool
         var logger = Pool.Acquire(0);
-            
-        logger.Config(Sink, retroOn, "", "", sw.Tag, category, corrId, sw.Level, sw.Color);
 
+
+
+        // Config the acquired logger
+        logger.Config(Sink, retroOn, "", "", sw.Tag, category, "", sw.Level, sw.Color);
+
+
+        // **************************************
         return logger;
 
     }
@@ -168,9 +210,6 @@ public class WatchFactory : IWatchFactory
 
     public virtual ILogger GetLogger<T>( bool retroOn = true )
     {
-
-        if (Quiet)
-            return Silencer;
 
         var category = typeof(T).FullName??"";
         var logger   = GetLogger( category, retroOn );
@@ -198,35 +237,31 @@ public class WatchFactory : IWatchFactory
 
         if (request == null) throw new ArgumentNullException(nameof(request));
 
+
+        // Overall Quiet
         if (Quiet)
             return Silencer;
 
 
-        // ************************************************************
-        var sw = Switches.GetDefaultSwitch();
-
-        if (request.Debug)
+        // Check for the special case of the diagnostic probe
+        ISwitch sw;
+        if ( request.Debug )
             sw = new Switch {Level = request.Level, Color = request.Color, Pattern = "", Tag = "Diagnostics"};
         else
-        {
-
-            var found = false;
-            foreach( var (key, target) in request.FilterKeys )
-            {
-                found = Switches.Lookup(key, target, request.Category, out sw);
-                if( found )
-                    break;
-            }
-
-            if( !found )
-                sw = Switches.Lookup( request.Category );
-
-        }
+            sw = Switches.Lookup( request.Category );
 
 
-        // ************************************************************
+
+        // Return the silencer if switch level is quiet
+        if ( sw.Level is Level.Quiet )
+            return Silencer;
+
+
+        // Acquire a new logger from the pool
         var logger = Pool.Acquire(0);
 
+
+        // Config the acquired logger
         logger.Config( Sink, retroOn, request.Tenant, request.Subject, sw.Tag, request.Category, request.CorrelationId, sw.Level, sw.Color );
 
 

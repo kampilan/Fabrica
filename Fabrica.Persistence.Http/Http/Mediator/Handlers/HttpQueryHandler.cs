@@ -3,6 +3,7 @@ using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers
 {
@@ -20,57 +21,47 @@ namespace Fabrica.Persistence.Http.Mediator.Handlers
         protected override async Task<List<TExplorer>> Perform(CancellationToken cancellationToken = default)
         {
 
-            var logger = GetLogger();
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                logger.Inspect("Explorer Type", typeof(TExplorer).FullName);
+            using var logger = this.EnterMethod();
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to get Meta for given explorer type");
-                var meta = Meta.GetMetaFromType(typeof(TExplorer));
-
-                logger.LogObject(nameof(meta), meta);
+            logger.Inspect("Explorer Type", typeof(TExplorer).FullName);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to build request");
-                var request = HttpRequestBuilder.Get()
-                    .ForResource(meta)
-                    .WithRql(Request.Filters);
+            // *****************************************************************
+            logger.Debug("Attempting to get Meta for given explorer type");
+            var meta = Meta.GetMetaFromType(typeof(TExplorer));
 
-                logger.Inspect(nameof(request), request);
+            logger.LogObject(nameof(meta), meta);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to send request");
-                var response = await Send(request, cancellationToken);
+            // *****************************************************************
+            logger.Debug("Attempting to build request");
+            var request = HttpRequestBuilder.Get()
+                .ForResource(meta)
+                .WithRql(Request.Filters);
+
+            logger.Inspect(nameof(request), request);
 
 
 
-                // *****************************************************************
-                logger.Debug("Attempting to build list from body");
-                var list = response.FromBodyToList<TExplorer>(new ModelExplorerContractResolver());
+            // *****************************************************************
+            logger.Debug("Attempting to send request");
+            var response = await Send(request, cancellationToken);
 
 
 
-                // *****************************************************************
-                return list!;
+            // *****************************************************************
+            logger.Debug("Attempting to build list from body");
+            var list = response.FromBodyToList<TExplorer>(new ModelExplorerContractResolver());
 
 
 
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            // *****************************************************************
+            return list!;
+
 
 
         }

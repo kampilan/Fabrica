@@ -119,7 +119,7 @@ namespace Fabrica.Persistence.Ef.Contexts
                     {
 
 
-                        logger.DebugFormat("Attempting to call lifecycle hooks on mutable entity for State {0}", entry.State);
+                        logger.Debug("Attempting to call lifecycle hooks on mutable entity for State {0}", entry.State);
 
                         if (entry.State == EntityState.Added)
                             mm.OnCreate();

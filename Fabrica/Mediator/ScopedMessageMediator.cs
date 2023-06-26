@@ -2,6 +2,7 @@
 using Fabrica.Rules.Exceptions;
 using Fabrica.Rules;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using static System.Formats.Asn1.AsnWriter;
 

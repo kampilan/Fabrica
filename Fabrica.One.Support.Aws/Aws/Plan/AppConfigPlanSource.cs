@@ -217,7 +217,7 @@ public class AppConfigPlanSource: AbstractPlanSource, IPlanSource, IRequiresStar
 
 
             // *****************************************************************
-            logger.InfoFormat("New version ({0}) acquired for Application: ({1}) Environment: ({2}) Configuration: ({3}).", ConfigurationToken, Application, Environment, Configuration);
+            logger.Info("New version ({0}) acquired for Application: ({1}) Environment: ({2}) Configuration: ({3}).", ConfigurationToken, Application, Environment, Configuration);
             return true;
 
 

@@ -33,9 +33,6 @@ public interface ISwitchSource
 
     ISwitch Lookup( string category );
 
-    bool Lookup( string filterType, string filterTarget, string category, out ISwitch found );
-
-
     IList<SwitchDef> CurrentSwitchDefs { get; }
     void Update( IEnumerable<SwitchDef> switchSource );
 

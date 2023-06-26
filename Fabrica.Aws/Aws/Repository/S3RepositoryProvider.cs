@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using Fabrica.Repository;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Repository;
+using Fabrica.Watch;
 
 namespace Fabrica.Aws.Repository;
 

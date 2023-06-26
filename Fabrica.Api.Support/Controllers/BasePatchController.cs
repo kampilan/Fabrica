@@ -6,6 +6,7 @@ using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Patch;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabrica.Api.Support.Controllers;

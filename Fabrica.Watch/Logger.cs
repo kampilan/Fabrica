@@ -23,12 +23,8 @@ SOFTWARE.
 */
 
 using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Xml;
 using Fabrica.Watch.Sink;
+using Fabrica.Watch.Utilities;
 
 namespace Fabrica.Watch;
 
@@ -48,7 +44,7 @@ public class Logger : ILogger
 
         if( !string.IsNullOrWhiteSpace(CurrentScope) )
         {
-            var le = CreateEvent(Level.Debug, CurrentScope);
+            var le = CreateEvent( Level.Debug, CurrentScope );
             le.Nesting = -1;
 
             CurrentScope = "";
@@ -79,166 +75,6 @@ public class Logger : ILogger
 
     }
 
-    internal IEventSink Sink { get; set; } = null!;
-
-    internal IList<string>? Retro { get; set; }
-
-    internal string Tenant { get; set; } = "";
-    internal string Subject { get; set; } = "";
-    internal string Tag { get; set; } = "";
-
-    internal string Category { get; set; } = "";
-    internal string CorrelationId { get; set; } = "";
-
-    internal Level Level { get; set; }
-    internal Color Color { get; set; }
-
-
-    public virtual  ILogEvent CreateEvent( Level level, object? title )
-    {
-
-        var le = new LogEvent
-        {
-            Tenant        = Tenant,
-            Subject       = Subject,
-            Tag           = Tag,
-            Category      = Category,
-            CorrelationId = CorrelationId,
-            Level         = level,
-            Color         = Color.ToArgb(),
-            Title         = title?.ToString() ?? "",
-            Occurred      = DateTime.UtcNow
-        };
-
-        return le;
-
-    }
-
-    public virtual ILogEvent CreateEvent( Level level, object? title, PayloadType type, string payload )
-    {
-
-        var le = new LogEvent
-        {
-            Tenant        = Tenant,
-            Subject       = Subject,
-            Tag           = Tag,
-            Category      = Category,
-            CorrelationId = CorrelationId,
-            Level         = level,
-            Color         = Color.ToArgb(),
-            Title         = title?.ToString() ?? "",
-            Occurred      = DateTime.UtcNow,
-            Type          = type
-        };
-
-        if( !string.IsNullOrWhiteSpace(payload) )
-        {
-            var buf = Encoding.ASCII.GetBytes(payload);
-            var base64 = Convert.ToBase64String(buf);
-            le.Payload = base64;
-        }
-
-        return le;
-
-    }
-
-
-    public virtual ILogEvent CreateEvent(Level level, object? title, object payload )
-    {
-
-        var le = new LogEvent
-        {
-            Tenant        = Tenant,
-            Subject       = Subject,
-            Tag           = Tag,
-            Category      = Category,
-            CorrelationId = CorrelationId,
-            Level         = level,
-            Color         = Color.ToArgb(),
-            Title         = title?.ToString() ?? "",
-            Occurred      = DateTime.UtcNow,
-            Type          = PayloadType.Json
-        };
-
-        var json = Watch.Sink.LogEvent.ToJson( payload );
-        if (!string.IsNullOrWhiteSpace(json))
-        {
-            var buf = Encoding.ASCII.GetBytes(json);
-            var base64 = Convert.ToBase64String(buf);
-            le.Payload = base64;
-        }
-
-        return le;
-
-    }
-
-
-    public virtual ILogEvent CreateEvent(Level level, object? title, Exception ex,  object? context )
-    {
-
-        var builder = new StringBuilder();
-        builder.AppendLine($"Message: {title}");
-        builder.AppendLine("");
-
-
-        if( Retro is {Count: > 0} )
-        {
-            builder.AppendLine("--- Retro --------------------------------------------");
-            foreach (var msg in Retro)
-                builder.AppendLine( msg );
-            builder.AppendLine();
-        }
-
-
-        if( context != null )
-        {
-            var json = Watch.Sink.LogEvent.ToJson(context);
-            builder.AppendLine("--- Context -----------------------------------------");
-            builder.AppendLine(json);
-            builder.AppendLine();
-        }
-
-
-        builder.AppendLine("--- Exception ---------------------------------------");
-        var inner = ex;
-        while( inner != null )
-        {
-
-            builder.AppendLine($" Exception: {inner.GetType().FullName} - {inner.Message}");
-
-            builder.AppendLine();
-            builder.AppendLine("--- Stack Trace --------------------------------------");
-            builder.AppendLine(inner.StackTrace);
-            builder.AppendLine("------------------------------------------------------");
-
-            inner = inner.InnerException;
-
-        }
-
-
-        var le = new LogEvent
-        {
-            Tenant        = Tenant,
-            Subject       = Subject,
-            Tag           = Tag,
-            Category      = Category,
-            CorrelationId = CorrelationId,
-            Level         = level,
-            Color         = Color.ToArgb(),
-            Title         = title?.ToString() ?? "",
-            Occurred      = DateTime.UtcNow,
-            Type          = PayloadType.Text
-        };
-
-        var buf    = Encoding.ASCII.GetBytes(builder.ToString());
-        var base64 = Convert.ToBase64String(buf);
-        le.Payload = base64;
-
-        return le;
-
-    }
-
-
 
     public virtual bool IsTraceEnabled => Level == Level.Trace;
 
@@ -250,537 +86,163 @@ public class Logger : ILogger
 
     public virtual bool IsErrorEnabled => Level <= Level.Error;
 
+
+
+    internal IEventSink Sink { get; set; } = null!;
+
+
+    public string Category { get; protected set; } = "";
+
+    internal string Tenant { get; set; } = "";
+    internal string Subject { get; set; } = "";
+    internal string Tag { get; set; } = "";
+
+    internal string CorrelationId { get; set; } = "";
+
+    internal Level Level { get; set; }
+    internal Color Color { get; set; }
+
+    internal IList<string>? Retro { get; set; }
+
+    public void AddToRetro(string message)
+    {
+        Retro?.Add(message);
+    }
+
+
+    public virtual ILogEvent CreateEvent( Level level, object? title )
+    {
+
+        if (string.IsNullOrWhiteSpace(CorrelationId))
+            CorrelationId = CorrelationGenerator.New();
+
+        var le = new LogEvent
+        {
+            Tenant        = Tenant,
+            Subject       = Subject,
+            Tag           = Tag,
+            Category      = Category,
+            CorrelationId = CorrelationId,
+            Level         = level,
+            Color         = Color.ToArgb(),
+            Title         = title?.ToString() ?? "",
+            Occurred      = DateTime.UtcNow,
+            Retro         = Retro
+        };
+
+        return le;
+
+    }
+
+    public virtual ILogEvent CreateEvent( Level level, object? title, PayloadType type, string? content )
+    {
+
+        if (string.IsNullOrWhiteSpace(CorrelationId))
+            CorrelationId = CorrelationGenerator.New();
+
+        var le = new LogEvent
+        {
+            Tenant        = Tenant,
+            Subject       = Subject,
+            Tag           = Tag,
+            Category      = Category,
+            CorrelationId = CorrelationId,
+            Level         = level,
+            Color         = Color.ToArgb(),
+            Title         = title?.ToString() ?? "",
+            Occurred      = DateTime.UtcNow,
+            Type          = PayloadType.None,
+            Retro         = Retro
+        };
+
+        if( string.IsNullOrWhiteSpace(content) )
+            return le;
+       
+        le.Type   = type;
+        le.Output = content;
+
+        return le;
+
+    }
+
+
+    public virtual ILogEvent CreateEvent(Level level, object? title, object? obj )
+    {
+
+        if (string.IsNullOrWhiteSpace(CorrelationId))
+            CorrelationId = CorrelationGenerator.New();
+
+        var le = new LogEvent
+        {
+            Tenant        = Tenant,
+            Subject       = Subject,
+            Tag           = Tag,
+            Category      = Category,
+            CorrelationId = CorrelationId,
+            Level         = level,
+            Color         = Color.ToArgb(),
+            Title         = title?.ToString() ?? "",
+            Occurred      = DateTime.UtcNow,
+            Type          = PayloadType.None,
+            Retro         = Retro
+        };
+
+        if (obj is null)
+            return le;
+
+        le.Object = obj;
+
+        return le;
+
+    }
+
+
+    public virtual ILogEvent CreateEvent(Level level, object? title, Exception ex,  object? context )
+    {
+
+        if( string.IsNullOrWhiteSpace(CorrelationId) )
+            CorrelationId = CorrelationGenerator.New();
+
+        var le = new LogEvent
+        {
+            Tenant        = Tenant,
+            Subject       = Subject,
+            Tag           = Tag,
+            Category      = Category,
+            CorrelationId = CorrelationId,
+            Level         = level,
+            Color         = Color.ToArgb(),
+            Title         = title?.ToString() ?? "",
+            Occurred      = DateTime.UtcNow,
+            Error         = ex,
+            ErrorContext  = context,
+            Retro         = Retro
+        };
+
+        return le;
+
+    }
+
+
     public virtual void LogEvent( ILogEvent logEvent )
     {
+        
         Sink.Accept( logEvent );
-    }
-
-    public virtual void Trace( object? message )
-    {
-
-        if (!IsTraceEnabled)
-            return;
-
-        var le = CreateEvent(Level.Trace, message );
-        LogEvent( le );
-
-    }
-
-    public virtual void Trace( Func<string> expression )
-    {
-
-        if (!IsTraceEnabled)
-            return;
-
-        Trace( expression() );
-
-    }
-
-    public virtual void Trace(Exception ex, object? message = null)
-    {
-
-        if (!IsTraceEnabled)
-            return;
-
-        var le = CreateEvent( Level.Trace, message, ex, null );
-
-        LogEvent(le);
-
-    }
-
-    public virtual void TraceFormat(string template, params object?[] args)
-    {
-
-        if (!IsTraceEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Trace( title );
-
-    }
-
-    public virtual void TraceFormat( Exception ex, string template, params object?[] args )
-    {
-
-        if (!IsTraceEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Trace( ex, title );
-
-    }
-
-
-
-    public virtual void Debug( object? message )
-    {
-
-        if (!IsDebugEnabled)
-        {
-            if( Retro != null && message != null )
-                Retro.Add( message.ToString() ?? string.Empty );
-            return;
-        }
-
-
-        var le = CreateEvent(Level.Debug, message);
-        LogEvent(le);
-
-    }
-
-    public virtual void Debug( Func<string> expression )
-    {
-
-        if (!IsDebugEnabled)
-        {
-            Retro?.Add(expression());
-            return;
-        }
-
-
-        Debug(expression());
-
-    }
-
-    public virtual void Debug( Exception ex, object? message = null )
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        var le = CreateEvent( Level.Debug, message, ex, null );
-
-        LogEvent(le);
-
-    }
-
-    public virtual void DebugFormat(string template, params object?[] args)
-    {
-
-        if (!IsDebugEnabled)
-        {
-            Retro?.Add(string.Format(template, args));
-            return;
-        }
-
-        var title = string.Format(template, args);
-
-        Debug(title);
-
-    }
-
-    public virtual void DebugFormat( Exception ex, string template, params object?[] args )
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Debug(ex, title);
-
-    }
-
-
-
-    public virtual void Info(object? message)
-    {
-
-        if (!IsInfoEnabled)
-            return;
-
-        var le = CreateEvent(Level.Info, message);
-        LogEvent(le);
-
-    }
-
-    public virtual void Info(Func<string> expression)
-    {
-
-        if (!IsInfoEnabled)
-            return;
-
-        Info(expression());
-
-    }
-
-    public virtual void Info(Exception ex, object? message = null)
-    {
-
-        if (!IsInfoEnabled)
-            return;
-
-        var le = CreateEvent(Level.Info, message, ex, null);
-
-        LogEvent(le);
-
-    }
-
-    public virtual void InfoFormat(string template, params object?[] args)
-    {
-
-        if (!IsInfoEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Info(title);
-
-    }
-
-    public virtual void InfoFormat(Exception ex, string template, params object?[] args)
-    {
-
-        if (!IsInfoEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Info(ex, title);
-
-    }
-
-
-
-    public virtual void Warning(object? message)
-    {
-
-        if (!IsWarningEnabled)
-            return;
-
-        var le = CreateEvent(Level.Warning, message);
-        LogEvent(le);
-
-    }
-
-    public virtual void Warning(Func<string> expression)
-    {
-
-        if (!IsWarningEnabled)
-            return;
-
-        var message = expression();
-
-        Warning( message );
-
-    }
-
-    public virtual void Warning( Exception ex, object? message = null )
-    {
-
-        if (!IsWarningEnabled)
-            return;
-
-        var le = CreateEvent(Level.Warning, message, ex, null);
-
-        LogEvent(le);
-
-    }
-
-    public virtual void WarningWithContext( Exception ex, object context, object? message = null )
-    {
-
-        if (!IsWarningEnabled)
-            return;
-
-        var le = CreateEvent( Level.Warning, message, ex, context );
-
-        LogEvent(le);
-
-
-    }
-
-    public virtual void WarningFormat(string template, params object?[] args)
-    {
-
-        if (!IsWarningEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Warning(title);
-
-    }
-
-    public virtual void WarningFormat(Exception ex, string template, params object?[] args)
-    {
-
-        if (!IsWarningEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Info(ex, title);
-
-    }
-
-
-
-    public virtual void Error( object? message )
-    {
-
-        if (!IsErrorEnabled)
-            return;
-
-        var le = CreateEvent(Level.Error, message);
-        LogEvent(le);
-
-    }
-
-    public virtual void Error( Func<string> expression )
-    {
-
-        if (!IsErrorEnabled)
-            return;
-
-        var message = expression();
-
-        Error(message);
-
-    }
-
-    public virtual void Error(Exception ex, object? message = null)
-    {
-
-        if (!IsErrorEnabled)
-            return;
-
-        var le = CreateEvent(Level.Error, message, ex, null);
-
-        LogEvent(le);
-
-    }
-
-    public virtual void ErrorWithContext(Exception ex, object context, object? message = null)
-    {
-
-        if (!IsErrorEnabled)
-            return;
-
-        var le = CreateEvent( Level.Error, message, ex, context );
-
-        LogEvent(le);
-
-    }
-
-    public virtual void ErrorFormat(string template, params object?[] args)
-    {
-
-        if (!IsErrorEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Error(title);
-
-    }
-
-    public virtual void ErrorFormat( Exception ex, string template, params object?[] args )
-    {
-
-        if (!IsErrorEnabled)
-            return;
-
-        var title = string.Format(template, args);
-
-        Error(ex, title);
 
     }
 
 
     private string CurrentScope { get; set; } = "";
-
-
-    public virtual void EnterMethod( [CallerMemberName] string name = "" )
+    public string GetCurrentScope() => CurrentScope;
+    public void SetCurrentScope(string name)
     {
-
-        if (!IsDebugEnabled)
-            return;
-
-        EnterScope( $"{Category}.{name}" );
-
-    }
-
-    public virtual void LeaveMethod( [CallerMemberName] string name = "" )
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        LeaveScope( $"{Category}.{name}" );
-
-    }
-
-    public virtual void EnterScope( string name )
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
         CurrentScope = name;
-
-        var le = CreateEvent(Level.Debug, name );
-        le.Nesting = 1;
-
-        LogEvent(le);
-
-    }
-
-    public virtual void LeaveScope( string name )
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        CurrentScope = "";
-
-        var le = CreateEvent(Level.Debug, name);
-        le.Nesting = -1;
-
-        LogEvent(le);
-
-        Dispose();
-
-    }
-
-    public virtual void Inspect(object name, object? value)
-    {
-
-        if (!IsDebugEnabled)
-        {
-            Retro?.Add( $"Variable: {name} = ({value})" );
-            return;
-        }
-
-        var le = CreateEvent(Level.Debug, $"Variable: {name} = ({value})");
-
-        LogEvent( le );
-
-    }
-
-
-    public virtual void LogSql(string title, string? sql)
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        var le = CreateEvent(Level.Debug, title, PayloadType.Sql, sql??"" );
-
-        LogEvent( le );
-
-    }
-
-    public virtual void LogXml( string title, string? xml, bool pretty = true )
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        if( pretty && (xml != null) && !string.IsNullOrWhiteSpace(xml) )
-            xml = MakeXmlPretty(xml);
-
-        var le = CreateEvent(Level.Debug, title, PayloadType.Xml, xml??"" );
-
-        LogEvent(le);
-
-    }
-
-    public virtual void LogJson(string title, string? json, bool pretty = true)
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        if (pretty && json != null && !string.IsNullOrWhiteSpace(json) )
-            json = MakeJsonPretty(json);
-
-        var le = CreateEvent(Level.Debug, title, PayloadType.Json, json ?? "");
-
-        LogEvent(le);
-
-    }
-
-    public void LogYaml(string title, string? yaml)
-    {
-
-        if (!IsDebugEnabled)
-            return;
-
-        var le = CreateEvent(Level.Debug, title, PayloadType.Yaml, yaml ?? "");
-
-        LogEvent(le);
-
-    }
-
-    public virtual void LogObject(string title, object? source)
-    {
-
-        if( !IsDebugEnabled )
-            return;
-
-        var le = CreateEvent( Level.Debug, title, source??new {} );
-        LogEvent(le);
-
     }
 
     public virtual IDisposable BeginScope<TState>(TState state)
     {
         throw new NotImplementedException();
     }
-
-
-    protected virtual string MakeXmlPretty(  string xml )
-    {
-
-        var pretty = xml;
-        try
-        {
-
-            var document = new XmlDocument();
-            document.LoadXml(xml);
-
-            using var writer = new StringWriter();
-            using var xw = new XmlTextWriter(writer);
-
-            xw.Formatting = Formatting.Indented;
-            document.Save(xw);
-            writer.Flush();
-            pretty = writer.ToString();
-
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return pretty;
-
-    }
-
-    protected virtual string MakeJsonPretty( string json )
-    {
-
-        if (string.IsNullOrWhiteSpace(json))
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(json));
-
-        var pretty = json;
-        try
-        {
-            var node = JsonNode.Parse(json);
-            pretty = node?.ToJsonString(new JsonSerializerOptions {WriteIndented = true})??json;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return pretty;
-
-    }
-
 
 
 

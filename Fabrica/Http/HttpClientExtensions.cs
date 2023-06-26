@@ -49,7 +49,7 @@ public static class HttpClientExtensions
                 logger.Debug("Attempting to add custom headers");
                 foreach (var pair in request.CustomHeaders)
                 {
-                    logger.DebugFormat("{0} = ({1})", pair.Key, pair.Value);
+                    logger.Debug("{0} = ({1})", pair.Key, pair.Value);
                     innerRequest.Headers.Add(pair.Key, pair.Value);
                 }
 

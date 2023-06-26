@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Net;
+using Fabrica.Watch;
 
 namespace Fabrica.Api.Support.Middleware;
 
@@ -152,7 +153,7 @@ public class ExceptionMonitorMiddleware
 
         }
 
-        logger.DebugFormat("Mapping Exception ({0}) to StatusCode {1}", exception.GetType().FullName ?? "", statusCode);
+        logger.Debug("Mapping Exception ({0}) to StatusCode {1}", exception.GetType().FullName ?? "", statusCode);
 
 
         return (int)statusCode;

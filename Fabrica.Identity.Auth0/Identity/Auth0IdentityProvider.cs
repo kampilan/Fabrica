@@ -4,6 +4,7 @@ using Auth0.ManagementApi.Models;
 using Fabrica.Exceptions;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
+using Fabrica.Watch;
 
 namespace Fabrica.Identity;
 

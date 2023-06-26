@@ -2,6 +2,7 @@
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using MongoDB.Driver;
 

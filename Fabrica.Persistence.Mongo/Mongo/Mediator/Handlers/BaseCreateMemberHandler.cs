@@ -4,6 +4,7 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using MongoDB.Driver;
 
@@ -35,7 +36,7 @@ public abstract class BaseCreateMemberHandler<TRequest, TParent, TChild> : BaseH
 
 
         // *****************************************************************
-        logger.DebugFormat("Attempting to create new {0}", typeof(TChild).FullName ?? "");
+        logger.Debug("Attempting to create new {0}", typeof(TChild).FullName ?? "");
         var entity = new TChild();
 
 

@@ -109,14 +109,14 @@ public class MongoEventSink: IEventSink
 
         Collection = database.GetCollection<BsonDocument>(domain.Collection);
 
-        var models = BuildIndexModels();
+        var models = EnsureIndexes();
         if( models.Count > 0 )
             Collection.Indexes.CreateMany(models);
 
     }
 
 
-    protected virtual List<CreateIndexModel<BsonDocument>> BuildIndexModels()
+    protected virtual List<CreateIndexModel<BsonDocument>> EnsureIndexes()
     {
 
         var list    = new List<CreateIndexModel<BsonDocument>>();

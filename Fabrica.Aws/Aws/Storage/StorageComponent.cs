@@ -27,6 +27,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Storage;
+using Fabrica.Watch;
 
 namespace Fabrica.Aws.Storage;
 

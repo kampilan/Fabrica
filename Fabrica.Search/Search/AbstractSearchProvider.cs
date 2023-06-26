@@ -2,6 +2,7 @@
 using Lifti;
 using Lifti.Serialization.Binary;
 using System.Collections.Concurrent;
+using Fabrica.Watch;
 
 namespace Fabrica.Search;
 

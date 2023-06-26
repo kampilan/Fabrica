@@ -26,7 +26,6 @@ SOFTWARE.
 // ReSharper disable UnusedMember.Global
 
 
-using System.Runtime.CompilerServices;
 using Fabrica.Watch.Sink;
 
 
@@ -35,12 +34,7 @@ namespace Fabrica.Watch;
 public interface ILogger: IDisposable
 {
 
-    ILogEvent CreateEvent(Level level, object? title);
-    ILogEvent CreateEvent(Level level, object? title, PayloadType type, string payload);
-    ILogEvent CreateEvent(Level level, object? title, object payload);
-    ILogEvent CreateEvent(Level level, object? title, Exception ex, object context);
-
-    void LogEvent(  ILogEvent logEvent );
+    string Category { get; }
 
 
     bool IsTraceEnabled { get; }
@@ -49,63 +43,18 @@ public interface ILogger: IDisposable
     bool IsWarningEnabled { get; }
     bool IsErrorEnabled { get; }
 
+    void AddToRetro(string message);
 
-    void Trace( object? message );
-    void Trace( Func<string> expression );
-    void Trace( Exception ex, object? message = null);
-
-    void TraceFormat( string template, params object?[] args);
-    void TraceFormat( Exception ex, string template, params object?[] args);
-
-
-    void Debug( object? message );
-    void Debug( Func<string> expression);
-    void Debug( Exception ex, object? message = null);
-
-    void DebugFormat( string template, params object?[] args );
-    void DebugFormat( Exception ex, string template, params object?[] args );
+    ILogEvent CreateEvent(Level level, object? title);
+    ILogEvent CreateEvent(Level level, object? title, PayloadType type, string? payload);
+    ILogEvent CreateEvent(Level level, object? title, object? payload);
+    ILogEvent CreateEvent( Level level, object? title, Exception ex, object? context );
 
 
-    void Info( object? message);
-    void Info( Func<string> expression);
-    void Info( Exception ex, object? message = null );
+    void LogEvent( ILogEvent logEvent );
 
-    void InfoFormat( string template, params object?[] args);
-    void InfoFormat( Exception ex, string template, params object?[] args );
-
-
-    void Warning( object? message );
-    void Warning( Func<string> expression );
-    void Warning( Exception ex, object? message = null);
-    void WarningWithContext( Exception ex, object context, object? message = null);
-
-    void WarningFormat( string template, params object?[] args);
-    void WarningFormat( Exception ex, string template, params object?[] args );
-
-
-    void Error( object? message );
-    void Error( Func<string> expression);
-    void Error(  Exception ex, object? message = null);
-    void ErrorWithContext( Exception ex, object context, object? message = null);
-
-    void ErrorFormat( string template, params object?[] args);
-    void ErrorFormat( Exception ex, string template, params object?[] args);
-
-
-    void EnterMethod( [CallerMemberName] string name = "" );
-    void LeaveMethod( [CallerMemberName] string name = "" );
-
-    void EnterScope( string name );
-    void LeaveScope( string name );
-
-    void Inspect(object name, object? value);
-
-    void LogSql( string title, string? sql );
-    void LogXml( string title, string? xml, bool pretty = true );
-    void LogJson( string title, string? json, bool pretty = true );
-    void LogYaml( string title, string? yaml );
-
-    void LogObject( string title, object? source );
+    string GetCurrentScope();
+    void SetCurrentScope(string name);
 
     IDisposable BeginScope<TState>( TState state );
 

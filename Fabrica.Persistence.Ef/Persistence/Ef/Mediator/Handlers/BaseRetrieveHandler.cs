@@ -4,6 +4,7 @@ using Fabrica.Models.Support;
 using Fabrica.Persistence.Ef.Contexts;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

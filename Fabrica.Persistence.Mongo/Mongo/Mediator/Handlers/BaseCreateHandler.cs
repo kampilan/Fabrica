@@ -3,6 +3,7 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using MongoDB.Driver;
 
@@ -33,7 +34,7 @@ public class BaseCreateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
 
 
         // *****************************************************************
-        logger.DebugFormat("Attempting to create new {0}", typeof(TResponse).FullName ?? "");
+        logger.Debug("Attempting to create new {0}", typeof(TResponse).FullName ?? "");
         var entity = new TResponse();
 
 

@@ -83,7 +83,7 @@ namespace Fabrica.Persistence.Connection
                 }
                 catch (Exception cause)
                 {
-                    logger.ErrorFormat(cause, "Could not create connection from factory {0}", Factory.GetType().FullName);
+                    logger.Error(cause, "Could not create connection from factory {0}", Factory.GetType().FullName);
                     throw;
                 }
 
@@ -114,7 +114,7 @@ namespace Fabrica.Persistence.Connection
                 }
                 catch (Exception cause)
                 {
-                    logger.ErrorFormat(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, ReplicaConnectionStr);
+                    logger.Error(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, ReplicaConnectionStr);
                     throw;
                 }
 
@@ -157,7 +157,7 @@ namespace Fabrica.Persistence.Connection
                 }
                 catch (Exception cause)
                 {
-                    logger.ErrorFormat(cause, "Could not create connection from driver {0}", Factory.GetType().FullName);
+                    logger.Error(cause, "Could not create connection from driver {0}", Factory.GetType().FullName);
                     throw;
                 }
 
@@ -190,7 +190,7 @@ namespace Fabrica.Persistence.Connection
                 }
                 catch (Exception cause)
                 {
-                    logger.ErrorFormat(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, OriginConnectionStr);
+                    logger.Error(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, OriginConnectionStr);
                     throw;
                 }
 

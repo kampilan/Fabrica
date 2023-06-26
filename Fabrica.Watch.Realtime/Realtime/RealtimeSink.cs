@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Text;
 using Fabrica.Watch.Sink;
 using Gurock.SmartInspect;
 
@@ -127,40 +126,43 @@ public class RealtimeSink: IEventSink
 
         MemoryStream data = null!;
         var viewerId  = ViewerId.Title;
-        if( !string.IsNullOrWhiteSpace(le.Payload) )
+        if( le.Type != PayloadType.None && !string.IsNullOrWhiteSpace(le.Payload) )
         {
-
-            var buf = Convert.FromBase64String(le.Payload);
-            var clear = Encoding.ASCII.GetString(buf);
 
             data = new MemoryStream();
             var writer = new StreamWriter(data);
-            writer.Write(clear);
+            writer.Write(le.Payload );
             writer.Flush();
             data.Seek(0, SeekOrigin.Begin);
 
             switch (le.Type)
             {
+
                 case PayloadType.Json:
                     entryType = LogEntryType.Source;
                     viewerId  = ViewerId.JavaScriptSource;
                     break;
+
                 case PayloadType.Sql:
                     entryType = LogEntryType.Source;
                     viewerId  = ViewerId.SqlSource;
                     break;
+
                 case PayloadType.Xml:
                     entryType = LogEntryType.Source;
                     viewerId  = ViewerId.XmlSource;
                     break;
+
                 case PayloadType.Text:
                     entryType = LogEntryType.Source;
                     viewerId  = ViewerId.Data;
                     break;
+
                 case PayloadType.Yaml:
                     entryType = LogEntryType.Source;
-                    viewerId = ViewerId.JavaScriptSource;
+                    viewerId  = ViewerId.JavaScriptSource;
                     break;
+
             }
 
         }

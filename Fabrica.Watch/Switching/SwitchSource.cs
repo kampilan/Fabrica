@@ -82,10 +82,9 @@ public class SwitchSource : ISwitchSource
     public ISwitch DebugSwitch { get; set; } = new Switch { Level = Level.Debug, Color = Color.PapayaWhip };
 
 
-    private readonly ReaderWriterLockSlim _switchLock = new ReaderWriterLockSlim();
+    private readonly ReaderWriterLockSlim _switchLock = new ();
 
     protected IReadOnlyCollection<string> Patterns { get; set; } = new ReadOnlyCollection<string>(new List<string>());
-    protected IReadOnlyCollection<string> Filters { get; set; } = new ReadOnlyCollection<string>(new List<string>());
 
     protected IDictionary<string, ISwitch> Switches { get; set; } = new ConcurrentDictionary<string, ISwitch>();
 
@@ -144,57 +143,6 @@ public class SwitchSource : ISwitchSource
 
 
 
-    public virtual bool Lookup( string filterType, string filterTarget, string category, out ISwitch found )
-    {
-
-
-        try
-        {
-
-
-            var composite =  _buildComposite( filterType, filterTarget, category );
-
-
-            _switchLock.EnterReadLock();
-
-
-
-            // ************************************************************************
-            if( Filters.Count == 0 )
-            {
-                found = DefaultSwitch;
-                return false;
-            }
-
-
-
-            // ************************************************************************
-            var lu1      = Filters.FirstOrDefault(composite.StartsWith)??"";
-            var lu1Found = Switches.TryGetValue( lu1, out var psw );
-
-            if( lu1Found )
-            {
-                found = psw;
-                return true;
-            }
-
-
-
-            // ************************************************************************
-            found = DefaultSwitch;
-            return false;
-
-
-        }
-        finally
-        {
-            _switchLock.ExitReadLock();
-        }
-
-
-    }
-
-
     public ISwitch GetDefaultSwitch()
     {
         return DefaultSwitch;
@@ -224,11 +172,9 @@ public class SwitchSource : ISwitchSource
 
         var switches = new ConcurrentDictionary<string, ISwitch>();
 
-
             
         // ***************************************************************
         var pKeys = new List<string>();
-        var fKeys = new List<string>();
         foreach( var def in switchSource.Where(s=>s.Level != Level.Quiet) )
         {
 
@@ -242,14 +188,7 @@ public class SwitchSource : ISwitchSource
 
 
             var key = def.Pattern;
-            if( string.IsNullOrWhiteSpace(def.FilterType) )
                 pKeys.Add(key);
-            else
-            {
-                key = _buildComposite( def.FilterType, def.FilterTarget, def.Pattern);
-                fKeys.Add( key );
-            }
-
 
             switches[key] = sw;
 
@@ -260,10 +199,6 @@ public class SwitchSource : ISwitchSource
         var pOrdered = pKeys.OrderBy(k => k.Length).Reverse().ToList();
         var patterns = new ReadOnlyCollection<string>(pOrdered);
 
-        var fOrdered = fKeys.OrderBy(k => k.Length).Reverse().ToList();
-        var filters  = new ReadOnlyCollection<string>(fOrdered);
-
-
 
         try
         {
@@ -271,8 +206,6 @@ public class SwitchSource : ISwitchSource
             _switchLock.EnterWriteLock();
 
             Patterns = patterns;
-            Filters  = filters;
-
             Switches = switches;
 
         }

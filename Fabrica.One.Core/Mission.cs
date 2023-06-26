@@ -429,21 +429,21 @@ public class Mission
         // *****************************************************************
         _clean(plan, RunResult);
 
-        logger.InfoFormat("Clean completed in {0} msec(s)", sw.ElapsedMilliseconds);
+        logger.Info("Clean completed in {0} msec(s)", sw.ElapsedMilliseconds);
 
 
 
         // *****************************************************************
         _deploy(plan, RunResult);
 
-        logger.InfoFormat("Deployment completed in {0} msec(s)", sw.ElapsedMilliseconds);
+        logger.Info("Deployment completed in {0} msec(s)", sw.ElapsedMilliseconds);
 
 
 
         // *****************************************************************
         _start(plan, RunResult);
 
-        logger.InfoFormat("Start completed in {0} msec(s)", sw.ElapsedMilliseconds);
+        logger.Info("Start completed in {0} msec(s)", sw.ElapsedMilliseconds);
 
 
 
@@ -459,7 +459,7 @@ public class Mission
                 sw.Stop();
                 using( var l = this.GetLogger() )
                 {
-                    l.InfoFormat("Empty Mission deployed and started in {0} msec(s)", sw.ElapsedMilliseconds);
+                    l.Info("Empty Mission deployed and started in {0} msec(s)", sw.ElapsedMilliseconds);
                 }
                 started = true;
             }
@@ -469,7 +469,7 @@ public class Mission
                 sw.Stop();
                 using (var l = this.GetLogger())
                 {
-                    l.InfoFormat("{0} appliances deployed and started in {1} msec(s)", Appliances.Count, sw.ElapsedMilliseconds);
+                    l.Info("{0} appliances deployed and started in {1} msec(s)", Appliances.Count, sw.ElapsedMilliseconds);
                 }
 
                 started = true;
@@ -481,7 +481,7 @@ public class Mission
 
                 using( var l = this.GetLogger() )
                 {
-                    l.ErrorFormat("Appliance: {0} has stopped unexpectedly, Restarting.", mgr.Unit.Alias);
+                    l.Error("Appliance: {0} has stopped unexpectedly, Restarting.", mgr.Unit.Alias);
 
                     Thread.Sleep(500);
                     mgr.Start();
@@ -656,12 +656,12 @@ public class Mission
 
 
             var ready = plan.Deployments.Count(u => u.HasInstalled);
-            logger.InfoFormat("{0} of {1} unit(s) successfully installed and are ready to start", ready, plan.Deployments.Count);
+            logger.Info("{0} of {1} unit(s) successfully installed and are ready to start", ready, plan.Deployments.Count);
 
             var notInstalled = plan.Deployments.Count(u => !u.HasInstalled);
-            logger.InfoFormat("There are {0} unit(s) that failed to install and are not ready to start", notInstalled);
+            logger.Info("There are {0} unit(s) that failed to install and are not ready to start", notInstalled);
 
-            logger.InfoFormat("This mission is running under AllAppliancesMustDeploy conditions? {0}", plan.AllAppliancesMustDeploy);
+            logger.Info("This mission is running under AllAppliancesMustDeploy conditions? {0}", plan.AllAppliancesMustDeploy);
 
             if (notInstalled > 0 && plan.AllAppliancesMustDeploy)
                 return;
@@ -695,7 +695,7 @@ public class Mission
                 // *****************************************************************
                 if (unit.WaitForStart)
                 {
-                    logger.DebugFormat("Attempting to wait for appliance ({0}) to start", unit.Alias);
+                    logger.Debug("Attempting to wait for appliance ({0}) to start", unit.Alias);
                     app.WaitForStart();
                 }
 

@@ -93,7 +93,7 @@ namespace Fabrica.Rules.Listeners
             if (!(Logger.IsDebugEnabled))
                 return;
 
-            Logger.DebugFormat( "Rule Fired ({0}). Modified fact? {1}", rule.Name, modified );
+            Logger.Debug( "Rule Fired ({0}). Modified fact? {1}", rule.Name, modified );
 
         }
 
@@ -137,7 +137,7 @@ namespace Fabrica.Rules.Listeners
             if (!(Logger.IsDebugEnabled))
                 return;
 
-            Logger.DebugFormat( template, markers );
+            Logger.Debug( template, markers );
 
         }
 
@@ -147,7 +147,7 @@ namespace Fabrica.Rules.Listeners
             if (!(Logger.IsWarningEnabled))
                 return;
             
-            Logger.WarningFormat( template, markers );
+            Logger.Warning( template, markers );
 
         }
 

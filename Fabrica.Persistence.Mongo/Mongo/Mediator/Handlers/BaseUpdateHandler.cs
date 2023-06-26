@@ -4,9 +4,9 @@ using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
+using Fabrica.Watch;
 using MediatR;
 using MongoDB.Driver;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Fabrica.Persistence.Mongo.Mediator.Handlers;
 
@@ -34,7 +34,7 @@ public class BaseUpdateHandler<TRequest, TResponse> : BaseHandler<TRequest, TRes
 
 
         // *****************************************************************
-        logger.DebugFormat("Attempting to Find {0} using Uid ({1}) for update", typeof(TResponse).FullName!, Request.Uid);
+        logger.Debug("Attempting to Find {0} using Uid ({1}) for update", typeof(TResponse).FullName!, Request.Uid);
         var cursor = await Collection.FindAsync(e => e.Uid == Request.Uid, cancellationToken: cancellationToken);
         var entity = await cursor.SingleOrDefaultAsync(cancellationToken: cancellationToken);
 

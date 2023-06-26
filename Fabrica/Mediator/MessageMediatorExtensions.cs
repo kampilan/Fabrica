@@ -27,7 +27,7 @@ public static class MessageMediatorExtensions
         foreach (var request in requests)
         {
 
-            logger.DebugFormat("Attempting to apply {0} patch for Model: ({1}) Uid: ({2})", request.Source.Verb, request.Source.Model, request.Source.Uid);
+            logger.Debug("Attempting to apply {0} patch for Model: ({1}) Uid: ({2})", request.Source.Verb, request.Source.Model, request.Source.Uid);
                 
             var response = await request.Apply(mediator);
             responses.Add(response);

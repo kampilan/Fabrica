@@ -36,7 +36,8 @@ public class WatchFactoryBuilder
         return new WatchFactoryBuilder();
     }
 
-    public int InitialPoolSize { get; set; } = 1000;
+    public int InitialPoolSize { get; set; } = 50;
+    public int MaxPoolSize { get; set; } = 500;
 
 
     public CompositeSink Sinks { get; } = new ();
@@ -67,7 +68,7 @@ public class WatchFactoryBuilder
 
         BatchSize = batchSize;
 
-        if ( pollingInterval != default(TimeSpan))
+        if ( pollingInterval != default)
             PollingInterval = pollingInterval;
 
         return this;
@@ -133,7 +134,7 @@ public class WatchFactoryBuilder
 
         var sink = _buildSink();
 
-        var factory = new WatchFactory(InitialPoolSize);
+        var factory = new WatchFactory(InitialPoolSize, MaxPoolSize);
 
         foreach (var i in Infrastructure)
             factory.AddInfrastructure(i);

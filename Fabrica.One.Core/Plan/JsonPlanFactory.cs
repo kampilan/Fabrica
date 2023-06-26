@@ -5,7 +5,6 @@ using Fabrica.Exceptions;
 using Fabrica.Utilities.Types;
 using Fabrica.Watch;
 using Fabrica.Watch.Sink;
-using JetBrains.Annotations;
 using Json.More;
 using Json.Schema;
 using Json.Schema.Generation;
@@ -208,7 +207,7 @@ public class JsonPlanFactory: IPlanFactory
         var rv = RepositoryRoot;
         if (!string.IsNullOrWhiteSpace(plan.RepositoryVersion))
         {
-            logger.DebugFormat("Using RepositoryVersion: ({0})", plan.RepositoryVersion);
+            logger.Debug("Using RepositoryVersion: ({0})", plan.RepositoryVersion);
             rv = Path.Combine(plan.RepositoryRoot, plan.RepositoryVersion);
         }
 
@@ -296,7 +295,7 @@ public class JsonPlanFactory: IPlanFactory
     }
 
 
-    public async Task Save([NotNull] IPlan plan, [NotNull] IPlanWriter writer )
+    public async Task Save( IPlan plan, IPlanWriter writer )
     {
 
         if (plan == null) throw new ArgumentNullException(nameof(plan));

@@ -27,41 +27,38 @@ SOFTWARE.
 
 using System.Drawing;
 
-namespace Fabrica.Watch.Realtime
+namespace Fabrica.Watch.Realtime;
+
+public static class RealtimeFactoryBuilderExtensions
 {
 
-    public static class RealtimeFactoryBuilderExtensions
+    public static WatchFactoryBuilder UseRealtime( this WatchFactoryBuilder builder )
     {
 
-        public static WatchFactoryBuilder UseRealtime( this WatchFactoryBuilder builder )
-        {
+        builder.UseBatching();
 
-            var sink = new RealtimeSink();
+        var sink = new RealtimeSink();
 
-            builder.Sinks.AddSink(sink);
+        builder.Sinks.AddSink(sink);
 
-            return builder;
-
-        }
-
-
-        public static WatchFactoryBuilder UseRealtime( this WatchFactoryBuilder builder, Level level, Color color )
-        {
-
-            builder.UseLocalSwitchSource()
-                .WhenNotMatched(level, color);
-
-            var sink = new RealtimeSink();
-
-            builder.Sinks.AddSink(sink);
-
-            return builder;
-
-        }
-
-
-
+        return builder;
 
     }
+
+
+    public static WatchFactoryBuilder UseRealtime( this WatchFactoryBuilder builder, Level level, Color color )
+    {
+
+        builder.UseLocalSwitchSource()
+            .WhenNotMatched(level, color);
+
+        var sink = new RealtimeSink();
+
+        builder.Sinks.AddSink(sink);
+
+        return builder;
+
+    }
+
 
 }
