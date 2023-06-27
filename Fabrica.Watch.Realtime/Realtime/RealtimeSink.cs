@@ -24,6 +24,7 @@ SOFTWARE.
 
 using Fabrica.Watch.Sink;
 using Gurock.SmartInspect;
+using System.Text;
 
 namespace Fabrica.Watch.Realtime;
 
@@ -129,9 +130,12 @@ public class RealtimeSink: IEventSink
         if( le.Type != PayloadType.None && !string.IsNullOrWhiteSpace(le.Payload) )
         {
 
+            var buf = Convert.FromBase64String(le.Payload);
+            var clear = Encoding.ASCII.GetString(buf);
+
             data = new MemoryStream();
             var writer = new StreamWriter(data);
-            writer.Write(le.Payload );
+            writer.Write(clear);
             writer.Flush();
             data.Seek(0, SeekOrigin.Begin);
 
