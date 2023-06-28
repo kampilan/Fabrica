@@ -127,10 +127,10 @@ public class RealtimeSink: IEventSink
 
         MemoryStream data = null!;
         var viewerId  = ViewerId.Title;
-        if( le.Type != PayloadType.None && !string.IsNullOrWhiteSpace(le.Payload) )
+        if( le.Type != PayloadType.None && !string.IsNullOrWhiteSpace(le.Base64) )
         {
 
-            var buf = Convert.FromBase64String(le.Payload);
+            var buf = Convert.FromBase64String(le.Base64);
             var clear = Encoding.ASCII.GetString(buf);
 
             data = new MemoryStream();

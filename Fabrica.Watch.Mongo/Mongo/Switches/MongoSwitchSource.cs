@@ -122,7 +122,7 @@ public class MongoSwitchSource: SwitchSource
                 Category = GetType().FullName!,
                 Level    = Level.Debug,
                 Title    = cause.Message,
-                Payload  = cause.StackTrace??""
+                Error    = cause
             };
 
             DebugSink.Accept( le );
@@ -181,7 +181,7 @@ public class MongoSwitchSource: SwitchSource
                 var color = Color.White;
                 try
                 {
-                    color = Color.FromName(se.Color);
+                    color = Color.FromName(se.Color ?? "White");
                 }
                 catch
                 {
@@ -191,10 +191,10 @@ public class MongoSwitchSource: SwitchSource
 
                 var sw = new SwitchDef
                 {
-                    Pattern      = se.Pattern,
-                    Tag          = se.Tag,
-                    FilterType   = se.FilterType,
-                    FilterTarget = se.FilterTarget,
+                    Pattern      = se.Pattern ?? "",
+                    Tag          = se.Tag ?? "",
+                    FilterType   = se.FilterType ?? "",
+                    FilterTarget = se.FilterTarget ?? "",
                     Level        = lv,
                     Color        = color
                 };
@@ -218,7 +218,7 @@ public class MongoSwitchSource: SwitchSource
                 Category = GetType().FullName!,
                 Level    = Level.Debug,
                 Title    = cause.Message,
-                Payload  = cause.StackTrace??""
+                Error    = cause
             };
 
             DebugSink.Accept( le );

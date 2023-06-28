@@ -167,7 +167,7 @@ public class MongoEventSink: IEventSink
                 Category = GetType().FullName!,
                 Level    = Level.Debug,
                 Title    = cause.Message,
-                Payload  = cause.StackTrace??""
+                Error    = cause
             };
 
             await DebugSink.Accept( le );
@@ -196,7 +196,7 @@ public class MongoEventSink: IEventSink
                 Category = GetType().FullName!,
                 Level    = Level.Debug,
                 Title    = cause.Message,
-                Payload  = cause.StackTrace??""
+                Error   =  cause
             };
 
             await DebugSink.Accept( le );
@@ -235,7 +235,7 @@ public class MongoEventSink: IEventSink
             Nesting       = logEvent.Nesting,
 
             Type          = (int)logEvent.Type,
-            Payload       = logEvent.Payload,
+            Payload       = logEvent.Base64,
                 
             Occurred      = logEvent.Occurred,
             TimeToLive    = (logEvent.Occurred + timeToLive),

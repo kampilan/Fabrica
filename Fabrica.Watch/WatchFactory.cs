@@ -38,10 +38,17 @@ public class WatchFactory : IWatchFactory
     public WatchFactory( int initialPoolSize=50, int maxPoolSize=500 )
     {
 
+        ForObject = new NewtonsoftWatchObjectSerializer();
+        ForException = new TextExceptionSerializer();
+
         InitialPoolSize = initialPoolSize;
         MaxPoolSize     = maxPoolSize;
 
     }
+
+
+    private IWatchObjectSerializer ForObject { get; set; }
+    private IWatchExceptionSerializer ForException { get; set; }
 
 
 
@@ -271,6 +278,35 @@ public class WatchFactory : IWatchFactory
 
     }
 
+
+    public void Enrich( ILogEvent logEvent )
+    {
+
+        if( !string.IsNullOrWhiteSpace(logEvent.Payload) )
+            return;
+
+        if( logEvent.Error is not null )
+        {
+            var (type, source) = ForException.Serialize(logEvent.Error, logEvent.ErrorContext, logEvent.Retro);
+            logEvent.Type = type;
+            logEvent.Payload = source;
+        }
+        else if( logEvent.Object is not null )
+        {
+            var (type, source) = ForObject.Serialize(logEvent.Object);
+            logEvent.Type = type;
+            logEvent.Payload = source;
+        }
+
+    }
+
+    public void Encode( ILogEvent logEvent )
+    {
+
+        if( !string.IsNullOrWhiteSpace(logEvent.Payload) && string.IsNullOrWhiteSpace(logEvent.Base64) )
+            logEvent.Base64 = WatchPayloadEncoder.Encode(logEvent.Payload);
+
+    }
 
 
 }

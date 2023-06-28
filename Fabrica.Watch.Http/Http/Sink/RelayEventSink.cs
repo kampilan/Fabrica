@@ -81,10 +81,10 @@ public class RelayEventSink : IEventSink
 
             var le = new LogEvent
             {
-                Category = GetType().FullName,
+                Category = GetType().FullName??"",
                 Level = Level.Debug,
                 Title = cause.Message,
-                Payload = cause.StackTrace
+                Error = cause
             };
 
             await DebugSink.Accept(le);

@@ -113,7 +113,7 @@ public class Logger : ILogger
     public virtual ILogEvent CreateEvent( Level level, object? title )
     {
 
-        if (string.IsNullOrWhiteSpace(CorrelationId))
+        if( string.IsNullOrWhiteSpace(CorrelationId) )
             CorrelationId = CorrelationGenerator.New();
 
         var le = new LogEvent
@@ -137,7 +137,7 @@ public class Logger : ILogger
     public virtual ILogEvent CreateEvent( Level level, object? title, PayloadType type, string? content )
     {
 
-        if (string.IsNullOrWhiteSpace(CorrelationId))
+        if( string.IsNullOrWhiteSpace(CorrelationId) )
             CorrelationId = CorrelationGenerator.New();
 
         var le = new LogEvent
@@ -159,7 +159,7 @@ public class Logger : ILogger
             return le;
        
         le.Type   = type;
-        le.Output = content;
+        le.Payload = content;
 
         return le;
 
@@ -169,7 +169,7 @@ public class Logger : ILogger
     public virtual ILogEvent CreateEvent(Level level, object? title, object? obj )
     {
 
-        if (string.IsNullOrWhiteSpace(CorrelationId))
+        if( string.IsNullOrWhiteSpace(CorrelationId) )
             CorrelationId = CorrelationGenerator.New();
 
         var le = new LogEvent
@@ -187,7 +187,7 @@ public class Logger : ILogger
             Retro         = Retro
         };
 
-        if (obj is null)
+        if( obj is null )
             return le;
 
         le.Object = obj;
@@ -226,7 +226,9 @@ public class Logger : ILogger
 
     public virtual void LogEvent( ILogEvent logEvent )
     {
-        
+
+        WatchFactoryLocator.Factory.Enrich(logEvent);
+
         Sink.Accept( logEvent );
 
     }

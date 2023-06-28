@@ -55,5 +55,7 @@ public interface IWatchFactory
 
     ILogger GetLogger( LoggerRequest request, bool retroOn = true );
 
+    void Enrich(ILogEvent logEvent);
+    void Encode(ILogEvent logEvent);
 
 }

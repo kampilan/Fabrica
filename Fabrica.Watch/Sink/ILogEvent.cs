@@ -43,8 +43,6 @@ public interface ILogEvent: IDisposable
     DateTime Occurred { get; set; }
 
     PayloadType Type { get; set; }
-    string? Payload { get; set; }
-
 
     object? Object { get; set; }
 
@@ -52,8 +50,8 @@ public interface ILogEvent: IDisposable
     object? ErrorContext { get; set; }
     IList<string>? Retro { get; set; }
 
-    string? Output { get; set; }
-
+    string? Payload { get; set; }
+    string? Base64 { get; set; }
 
 
 }

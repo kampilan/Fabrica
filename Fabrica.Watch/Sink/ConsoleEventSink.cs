@@ -22,84 +22,83 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Fabrica.Watch.Sink
+namespace Fabrica.Watch.Sink;
+
+public class ConsoleEventSink: IEventSink
 {
 
-    public class ConsoleEventSink: IEventSink
+
+    public virtual void Start()
     {
 
+    }
 
-        public virtual void Start()
-        {
-
-        }
-
-        public virtual void Stop()
-        {
-
-        }
-
-
-        public virtual Task Accept( ILogEvent logEvent )
-        {
-            _write( logEvent );
-            return Task.CompletedTask;
-        }
-
-
-        public virtual Task Accept( IEnumerable<ILogEvent> batch )
-        {
-
-            foreach ( var le in batch )
-                _write(le);
-
-            return Task.CompletedTask;
-
-        }
-
-
-        private void _write( ILogEvent le)
-        {
-
-            switch (le.Level)
-            {
-                case Level.Trace:
-                case Level.Debug:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    break;
-
-                case Level.Info:
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    break;
-
-                case Level.Warning:
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    break;
-
-                case Level.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-
-                case Level.Quiet:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-            }
-
-
-            Console.WriteLine("================================================================================");
-
-            var message = $"{le.Occurred:T} - {le.Level.ToString().ToUpper()} - {le.Category} - {le.Title}";
-            Console.Out.WriteLine(message);
-            if (le.Type != PayloadType.None)
-            {
-                Console.Out.WriteLine("--------------------------------------------------------------------------------");
-                Console.Out.WriteLine(le.Payload);
-            }
-            Console.ResetColor();
-
-        }
-
+    public virtual void Stop()
+    {
 
     }
+
+
+    public virtual Task Accept( ILogEvent logEvent )
+    {
+        _write( logEvent );
+        return Task.CompletedTask;
+    }
+
+
+    public virtual Task Accept( IEnumerable<ILogEvent> batch )
+    {
+
+        foreach ( var le in batch )
+            _write(le);
+
+        return Task.CompletedTask;
+
+    }
+
+
+    private void _write( ILogEvent le)
+    {
+
+        WatchFactoryLocator.Factory.Enrich(le);
+
+        switch (le.Level)
+        {
+            case Level.Trace:
+            case Level.Debug:
+                Console.ForegroundColor = ConsoleColor.Green;
+                break;
+
+            case Level.Info:
+                Console.ForegroundColor = ConsoleColor.Blue;
+                break;
+
+            case Level.Warning:
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                break;
+
+            case Level.Error:
+                Console.ForegroundColor = ConsoleColor.Red;
+                break;
+
+            case Level.Quiet:
+                Console.ForegroundColor = ConsoleColor.White;
+                break;
+        }
+
+
+        Console.WriteLine("================================================================================");
+
+        var message = $"{le.Occurred:T} - {le.Level.ToString().ToUpper()} - {le.Category} - {le.Title}";
+        Console.Out.WriteLine(message);
+        if (le.Type != PayloadType.None)
+        {
+            Console.Out.WriteLine("--------------------------------------------------------------------------------");
+            Console.Out.WriteLine(le.Payload);
+        }
+        Console.ResetColor();
+
+    }
+
 
 }

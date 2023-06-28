@@ -5,18 +5,6 @@ namespace Fabrica.Watch.Sink;
 public class CompositeSink: IEventSink
 {
 
-    static CompositeSink()
-    {
-
-        ForObject = new NewtonsoftWatchObjectSerializer();
-        ForException = new TextExceptionSerializer();
-
-    }
-
-    private static IWatchObjectSerializer ForObject { get; set; }
-    private static IWatchExceptionSerializer ForException { get; set; }
-
-
     private IList<IEventSink> Sinks { get; } = new List<IEventSink>();
 
     public IEnumerable<IEventSink> InnerSinks => Sinks;
@@ -58,7 +46,7 @@ public class CompositeSink: IEventSink
     public async Task Accept(ILogEvent logEvent)
     {
 
-        _enrich(logEvent);
+        WatchFactoryLocator.Factory.Encode(logEvent);
 
         foreach (var sink in Sinks)
             await sink.Accept( logEvent );
@@ -74,7 +62,7 @@ public class CompositeSink: IEventSink
             return;
 
         var list = batch.ToList();
-        list.ForEach(_enrich);
+        list.ForEach(WatchFactoryLocator.Factory.Encode);
 
         foreach( var sink in Sinks )
             await sink.Accept(list);
@@ -84,30 +72,6 @@ public class CompositeSink: IEventSink
 
     }
 
-
-    private void _enrich(ILogEvent logEvent)
-    {
-
-        if (logEvent.Error is not null)
-        {
-            var (type, source) = ForException.Serialize(logEvent.Error, logEvent.ErrorContext, logEvent.Retro);
-            logEvent.Type = type;
-            logEvent.Output = source;
-        }
-        else if (logEvent.Object is not null)
-        {
-            var (type, source) = ForObject.Serialize(logEvent.Object);
-            logEvent.Type = type;
-            logEvent.Output = source;
-        }
-
-        if (!string.IsNullOrWhiteSpace(logEvent.Output))
-        {
-            logEvent.Payload = WatchPayloadEncoder.Encode(logEvent.Output);
-        }
-
-
-    }
 
 
 }

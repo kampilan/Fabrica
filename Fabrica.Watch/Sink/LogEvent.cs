@@ -49,7 +49,7 @@ public class LogEvent: ILogEvent
 
     [JsonConverter(typeof(StringEnumConverter))]
     public PayloadType Type { get; set; } = PayloadType.None;
-    public string? Payload { get; set; }
+    public string? Base64 { get; set; }
 
 
     [JsonIgnore]
@@ -65,7 +65,7 @@ public class LogEvent: ILogEvent
 
 
     [JsonIgnore]
-    public string? Output { get; set; }
+    public string? Payload { get; set; }
 
 
     public void Dispose()
