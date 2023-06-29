@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,6 @@ namespace Fabrica.Api.Support.Identity.Gateway;
 
 public class GatewayHeaderBuilderMiddleware
 {
-
 
     public GatewayHeaderBuilderMiddleware(RequestDelegate next)
     {
@@ -53,7 +53,7 @@ public class GatewayHeaderBuilderMiddleware
 
         // *****************************************************************
         logger.Debug("Attempting to serialize claims set to json");
-        var json = JsonSerializer.Serialize(claims);
+        var json = JsonSerializer.Serialize( claims, claims.GetType() );
 
 
 

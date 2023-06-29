@@ -79,6 +79,35 @@ public class ClaimTests
 
     }
 
+    private IClaimSet CreateClaimSetAsIntf()
+    {
+
+        var set = new ClaimSetModel
+        {
+
+  //          AuthenticationType = "cookie",
+//            AuthenticationFlow = "AuthCode",
+//            Tenant = "Moring",
+            Subject = "1234567890",
+//            AltSubject = "0987654321",
+            UserName = "jmoring",
+            GivenName = "James",
+            FamilyName = "Moring",
+            Name = "James Moring",
+//            Email = "me@jamesmoring.com",
+//            Picture = "https/gmail.com"
+
+        };
+
+        set.Roles.Add("User");
+        set.Roles.Add("Admin");
+        set.Roles.Add("SysAdmin");
+
+        return set;
+
+    }
+
+
 
     [Test]
     public void Test8100_0100_CreateClaimIdentity()
@@ -112,9 +141,9 @@ public class ClaimTests
     public void Test8100_0200_CreateClaimIdentityJson()
     {
 
-        var set = CreateClaimSet();
+        var set = CreateClaimSetAsIntf();
 
-        var json = JsonSerializer.Serialize(set);
+        var json = JsonSerializer.Serialize(set, set.GetType());
 
         Assert.IsNotNull(json);
         Assert.IsNotEmpty(json);

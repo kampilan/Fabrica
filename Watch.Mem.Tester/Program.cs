@@ -15,10 +15,10 @@ maker.UseLocalSwitchSource()
     .WhenMatched(Category, "Test", Level.Debug, Color.Bisque )
     .WhenNotMatched( Level.Error, Color.Azure);
 
-maker.UseBatching( 1000, TimeSpan.FromMilliseconds(50) );
+//maker.UseBatching( 1000, TimeSpan.FromMilliseconds(50) );
 maker.Sinks.AddSink(theSink);
 
-//maker.UseQuiet();
+maker.UseQuiet();
 
 maker.Build();
 
@@ -33,7 +33,7 @@ while (true)
         break;
 
 
-    var count = 1_000_000;
+    var count = 1000; // 100_000_000;
     var x = "Cool";
 
     var sw = new Stopwatch();
@@ -58,7 +58,7 @@ while (true)
         }
 
 
-        Delay(TimeSpan.FromMilliseconds(1));
+//        Delay(TimeSpan.FromMilliseconds(1));
 
     }
     sw.Stop();
