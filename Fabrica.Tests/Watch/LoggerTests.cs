@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
+using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Switching;
@@ -122,7 +123,7 @@ public class LoggerTests
 
         for (int i = 0; i < count; i++)
         {
-            var corr = CorrelationGenerator.New();
+            string corr1 = Ulid.NewUlid();
         }
 
 

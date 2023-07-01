@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Security.Claims;
 using System.Security.Principal;
 using Fabrica.Identity;
+using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 
 // ReSharper disable UnusedMember.Global
@@ -36,7 +37,7 @@ public class Correlation: ICorrelation
 {
 
 
-    public string Uid { get; } = CorrelationGenerator.New();
+    public string Uid { get; } = Ulid.NewUlid().ToString();
 
     public string Tenant { get; set; } = "";
 

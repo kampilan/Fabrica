@@ -113,8 +113,8 @@ public class Logger : ILogger
     public virtual ILogEvent CreateEvent( Level level, object? title )
     {
 
-        if( string.IsNullOrWhiteSpace(CorrelationId) )
-            CorrelationId = CorrelationGenerator.New();
+        if (string.IsNullOrWhiteSpace(CorrelationId))
+            CorrelationId = Ulid.NewUlid();
 
         var le = new LogEvent
         {
@@ -137,8 +137,8 @@ public class Logger : ILogger
     public virtual ILogEvent CreateEvent( Level level, object? title, PayloadType type, string? content )
     {
 
-        if( string.IsNullOrWhiteSpace(CorrelationId) )
-            CorrelationId = CorrelationGenerator.New();
+        if (string.IsNullOrWhiteSpace(CorrelationId))
+            CorrelationId = Ulid.NewUlid();
 
         var le = new LogEvent
         {
@@ -170,7 +170,7 @@ public class Logger : ILogger
     {
 
         if( string.IsNullOrWhiteSpace(CorrelationId) )
-            CorrelationId = CorrelationGenerator.New();
+            CorrelationId = Ulid.NewUlid();
 
         var le = new LogEvent
         {
@@ -201,7 +201,7 @@ public class Logger : ILogger
     {
 
         if( string.IsNullOrWhiteSpace(CorrelationId) )
-            CorrelationId = CorrelationGenerator.New();
+            CorrelationId = Ulid.NewUlid();
 
         var le = new LogEvent
         {

@@ -67,7 +67,7 @@ public class RequestLoggingMiddleware
 
             if( builder.Length > 0 )
             {
-                var le = diagLogger.CreateEvent(Level.Debug, "HTTP Request", PayloadType.Text, builder.ToString());
+                var le = diagLogger.CreateEvent(Level.Debug, $"HTTP Request ({context.Request.Method.ToUpper()} {context.Request.Path})", PayloadType.Text, builder.ToString());
                 diagLogger.LogEvent(le);
             }
 
@@ -89,7 +89,7 @@ public class RequestLoggingMiddleware
 
             if( builder.Length > 0 )
             {
-                var le = diagLogger.CreateEvent(Level.Debug, "HTTP /Response", PayloadType.Text, builder.ToString());
+                var le = diagLogger.CreateEvent(Level.Debug, $"HTTP Response ({context.Request.Method.ToUpper()} {context.Request.Path})", PayloadType.Text, builder.ToString());
                 diagLogger.LogEvent(le);
             }
 
