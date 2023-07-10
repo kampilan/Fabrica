@@ -35,53 +35,57 @@ public class WatchBenchmark
 
     private static ILogger QuietLogger { get; } = new QuietLogger();
 
+    private static MonitorSink TheSink { get; } = new (){Accumulate = false};
+
     [GlobalSetup]
     public void Setup()
     {
 
-        var theSink = new MonitorSink
-        {
-            Accumulate = false
-        };
-
-
         var maker = new WatchFactoryBuilder();
         maker.UseLocalSwitchSource()
-            .WhenMatched(Category, "Test", Level.Info, Color.Bisque)
-//            .WhenMatched("ZZZZZ", "Test", Level.Debug, Color.Bisque)
+//            .WhenMatched(Category, "Test", Level.Info, Color.Bisque)
+            .WhenMatched("WatchBenchmark", "Test", Level.Debug, Color.Bisque)
             .WhenNotMatched(Level.Quiet);
 
         maker.UseBatching(1000, TimeSpan.FromMilliseconds(50));
-        maker.Sinks.AddSink(theSink);
+        maker.Sinks.AddSink(TheSink);
 
-        //maker.UseQuiet();
+//        maker.UseQuiet();
 
         maker.Build();
 
     }
 
     [GlobalCleanup]
-    public void Cleanup()
+    public async Task Cleanup()
     {
+
         WatchFactoryLocator.Factory.Stop();
+
+        await Task.Delay(2000);
+
+        await using var fs = new FileStream("e:/logs/output.txt", FileMode.Create, FileAccess.Write);
+        await using var sw = new StreamWriter(fs);
+        await sw.WriteLineAsync($"Sink Count: ({TheSink.Total})");
+       
+
     }
 
     [Benchmark]
     public void QuietBenchmark()
     {
 
-        using (var logger = WatchFactoryLocator.Factory.GetLogger(Category))
-        {
 
-            logger.EnterMethod(MethodName);
+//        using var logger = this.EnterMethodSlim( Category );
+        using var logger = this.EnterMethod();
 
-            logger.Debug(VarName);
+        //        logger.EnterMethod(MethodName);
 
-            logger.Inspect(VarName, 1);
+//        logger.Debug(VarName);
 
-            logger.LogObject(ModelName, TheModel);
+//        logger.Inspect(VarName, 1);
 
-        }
+//        logger.LogObject(ModelName, TheModel);
    
 
     }

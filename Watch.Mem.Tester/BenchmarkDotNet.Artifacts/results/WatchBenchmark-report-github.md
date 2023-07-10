@@ -8,6 +8,6 @@ BenchmarkDotNet=v0.13.5, OS=Windows 10 (10.0.19045.3086/22H2/2022Update)
 
 
 ```
-|         Method |     Mean |   Error |  StdDev | Allocated |
-|--------------- |---------:|--------:|--------:|----------:|
-| QuietBenchmark | 279.6 ns | 0.79 ns | 0.70 ns |         - |
+|         Method |     Mean |   Error |  StdDev |   Gen0 |   Gen1 | Allocated |
+|--------------- |---------:|--------:|--------:|-------:|-------:|----------:|
+| QuietBenchmark | 943.5 ns | 3.29 ns | 2.57 ns | 0.0496 | 0.0477 |     448 B |
