@@ -206,7 +206,7 @@ public class WatchFactory : IWatchFactory
 
 
         // Config the acquired logger
-        logger.Config(Sink, retroOn, "", "", sw.Tag, category, "", sw.Level, sw.Color);
+        logger.Config( Sink, string.Empty, string.Empty, sw.Tag, category, string.Empty, sw.Level, sw.Color );
 
 
         // **************************************
@@ -269,7 +269,7 @@ public class WatchFactory : IWatchFactory
 
 
         // Config the acquired logger
-        logger.Config( Sink, retroOn, request.Tenant, request.Subject, sw.Tag, request.Category, request.CorrelationId, sw.Level, sw.Color );
+        logger.Config( Sink, request.Tenant, request.Subject, sw.Tag, request.Category, request.CorrelationId, sw.Level, sw.Color );
 
 
         // ************************************************************
@@ -287,7 +287,7 @@ public class WatchFactory : IWatchFactory
 
         if( logEvent.Error is not null )
         {
-            var (type, source) = ForException.Serialize(logEvent.Error, logEvent.ErrorContext, logEvent.Retro);
+            var (type, source) = ForException.Serialize(logEvent.Error, logEvent.ErrorContext);
             logEvent.Type = type;
             logEvent.Payload = source;
         }

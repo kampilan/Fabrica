@@ -5,6 +5,6 @@ namespace Fabrica.Watch;
 public interface IWatchExceptionSerializer
 {
 
-    (PayloadType type, string payload) Serialize(Exception error, object? context=null, IList<string>? retro=null);
+    (PayloadType type, string payload) Serialize( Exception error, object? context=null );
 
 }

@@ -43,7 +43,6 @@ public interface ILogger: IDisposable
     bool IsWarningEnabled { get; }
     bool IsErrorEnabled { get; }
 
-    void AddToRetro(string message);
 
     ILogEvent CreateEvent(Level level, object? title);
     ILogEvent CreateEvent(Level level, object? title, PayloadType type, string? payload);

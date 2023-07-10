@@ -56,12 +56,10 @@ public class Logger : ILogger
 
     }
 
-    internal void Config( IEventSink sink, bool retroOn, string tenant, string subject, string tag, string category, string correlationId, Level level, Color color )
+    internal void Config( IEventSink sink, string tenant, string subject, string tag, string category, string correlationId, Level level, Color color )
     {
 
         Sink = sink;
-
-        Retro = retroOn ? new List<string>() : null;
 
         Tenant  = tenant;
         Subject = subject;
@@ -102,13 +100,6 @@ public class Logger : ILogger
     internal Level Level { get; set; }
     internal Color Color { get; set; }
 
-    internal IList<string>? Retro { get; set; }
-
-    public void AddToRetro(string message)
-    {
-        Retro?.Add(message);
-    }
-
 
     public virtual ILogEvent CreateEvent( Level level, object? title )
     {
@@ -127,7 +118,6 @@ public class Logger : ILogger
             Color         = Color.ToArgb(),
             Title         = title?.ToString() ?? "",
             Occurred      = DateTime.UtcNow,
-            Retro         = Retro
         };
 
         return le;
@@ -152,7 +142,6 @@ public class Logger : ILogger
             Title         = title?.ToString() ?? "",
             Occurred      = DateTime.UtcNow,
             Type          = PayloadType.None,
-            Retro         = Retro
         };
 
         if( string.IsNullOrWhiteSpace(content) )
@@ -184,7 +173,6 @@ public class Logger : ILogger
             Title         = title?.ToString() ?? "",
             Occurred      = DateTime.UtcNow,
             Type          = PayloadType.None,
-            Retro         = Retro
         };
 
         if( obj is null )
@@ -216,7 +204,6 @@ public class Logger : ILogger
             Occurred      = DateTime.UtcNow,
             Error         = ex,
             ErrorContext  = context,
-            Retro         = Retro
         };
 
         return le;

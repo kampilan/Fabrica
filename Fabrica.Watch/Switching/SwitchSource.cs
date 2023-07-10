@@ -49,6 +49,10 @@ public class SwitchSource : ISwitchSource
     public SwitchSource WhenMatched( string pattern, string tag, Level level, Color color )
     {
 
+        if (level == Level.Quiet)
+            return this;
+
+
         var switches = Switches.Select(p => new SwitchDef
         {
 
@@ -121,9 +125,31 @@ public class SwitchSource : ISwitchSource
 
 
             // ************************************************************************
-            var lu2      = Patterns.FirstOrDefault(category.StartsWith)??"";
-            var lu2Found = Switches.TryGetValue( lu2, out var psw );
+//            var match = Patterns.FirstOrDefault(category.StartsWith);
+//            if( match is null )
+//                return DefaultSwitch;
 
+
+            string? match = null;
+            var pc = Patterns.Count;
+            for( var i = 0; i < pc; i++ )
+            {
+
+                if (!category.StartsWith(Patterns.ElementAt(i))) 
+                    continue;
+
+                match = Patterns.ElementAt(i);
+                break;
+
+            }
+
+            if (match is null)
+                return DefaultSwitch;
+
+
+
+            // ************************************************************************
+            var lu2Found = Switches.TryGetValue( match, out var psw );
             if (lu2Found)
                 return psw;
 

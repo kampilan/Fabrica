@@ -435,20 +435,19 @@ public static class LoggerExtensions
 
     //****************************************************************************
 
-    public static void Inspect( this ILogger logger, object name, object? value)
+    public static void Inspect<T>( this ILogger logger, object name, T? value)
     {
 
-        if( !logger.IsDebugEnabled )
-        {
-            logger.AddToRetro($"Variable: {name} = ({value??"<null>"})");
+        if (!logger.IsDebugEnabled)
             return;
-        }
 
-        var le = logger.CreateEvent(Level.Debug, $"Variable: {name} = ({value??"<null>"})");
+        var le = logger.CreateEvent(Level.Debug, $"Variable: {name} = ({value ?? default})");
 
         logger.LogEvent(le);
 
+
     }
+
 
 
     //****************************************************************************

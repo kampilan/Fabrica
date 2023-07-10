@@ -8,7 +8,7 @@ public class TextExceptionSerializer: IWatchExceptionSerializer
 {
 
 
-    public (PayloadType type, string payload) Serialize( Exception? error, object? context, IList<string>? retro )
+    public (PayloadType type, string payload) Serialize( Exception? error, object? context )
     {
 
 
@@ -19,15 +19,6 @@ public class TextExceptionSerializer: IWatchExceptionSerializer
         var builder = new StringBuilder();
         builder.AppendLine("");
         builder.AppendLine("");
-
-
-        if( retro is { Count: > 0 } )
-        {
-            builder.AppendLine("--- Retro --------------------------------------------");
-            foreach (var msg in retro)
-                builder.AppendLine(msg);
-            builder.AppendLine();
-        }
 
 
         if( context is not null )

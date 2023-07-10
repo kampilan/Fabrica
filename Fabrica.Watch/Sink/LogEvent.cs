@@ -60,8 +60,6 @@ public class LogEvent: ILogEvent
     public Exception? Error { get; set; }
     [JsonIgnore]
     public object? ErrorContext { get; set; }
-    [JsonIgnore]
-    public IList<string>? Retro { get; set; }
 
 
     [JsonIgnore]

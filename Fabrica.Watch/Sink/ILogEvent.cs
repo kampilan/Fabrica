@@ -48,7 +48,6 @@ public interface ILogEvent: IDisposable
 
     Exception? Error { get; set; }
     object? ErrorContext { get; set; }
-    IList<string>? Retro { get; set; }
 
     string? Payload { get; set; }
     string? Base64 { get; set; }
