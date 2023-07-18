@@ -144,8 +144,43 @@ public class SearchTests
     private ILifetimeScope RootScope { get; set; }
 
 
+
     [Test]
     public async Task Test08120_0100_Build_Index()
+    {
+
+
+        await using var scope = RootScope.BeginLifetimeScope();
+
+        var provider = scope.Resolve<ISearchProvider<ResourceAvailabilityTest>>();
+
+        var res = await provider.Search("Apparel Amazon French");
+
+        Assert.IsNotNull(res);
+
+        Console.Out.WriteLine($"{res.Count()} items matched");
+
+        var sw = new Stopwatch();
+        sw.Start();
+
+        for (var i = 0; i < 100; i++)
+        {
+            var res2 = await provider.Search("Chemical Azure German");
+        }
+
+        sw.Stop();
+
+        await Console.Out.WriteLineAsync($"{sw.ElapsedMilliseconds} msec(s)");
+
+
+    }
+
+
+
+
+
+    [Test]
+    public async Task Test08120_0200_Build_Index()
     {
 
 
@@ -182,7 +217,7 @@ public class ResourceAvailabilityTest
 {
 }
 
-public class UserSearchProvider : AbstractClusterSearchProvider<UserDocument,ResourceAvailabilityTest>
+public class UserSearchProvider : AbstractClusterSearchProvider<ResourceAvailabilityTest>
 {
     
     
@@ -190,18 +225,51 @@ public class UserSearchProvider : AbstractClusterSearchProvider<UserDocument,Res
     {
     }
 
-    protected override Task<IEnumerable<UserDocument>> GetInputs()
+    protected override Task<IEnumerable<InputDocument>> GetInputs()
     {
 
         var docs = DocumentGenerator.BuildDocuments(20000);
 
-        return Task.FromResult( (IEnumerable<UserDocument>)docs );
+        var inputs = docs.Select(doc =>
+        {
+
+            var id = new InputDocument
+            {
+                Key = new InputKey("Resource", doc.Id),
+                Keywords =
+                {
+                    ["City"] = doc.City,
+                    ["State"] = doc.State,
+                    ["Languages"] = doc.LanguagesSpoken,
+                    ["Industry"] = doc.IndustryExperience,
+                    ["Work"] = doc.WorkExperience,
+                    ["Technical"] = doc.TechnicalExperience
+                }
+            };
+
+            return id;
+
+        });
+
+        return Task.FromResult( inputs );
 
     }
 
     protected override FullTextIndex<InputKey> CreateIndexDefinition()
     {
 
+
+        var builder = new FullTextIndexBuilder<InputKey>()
+            .WithObjectTokenization<InputDocument>(
+                options => options
+                    .WithKey(u => u.Key)
+                    .WithDynamicFields("Keywords", i => i.Keywords)
+            );
+
+        return builder.Build();
+
+
+/*
         var builder = new FullTextIndexBuilder<InputKey>()
             .WithObjectTokenization<UserDocument>(
                 options => options
@@ -215,8 +283,11 @@ public class UserSearchProvider : AbstractClusterSearchProvider<UserDocument,Res
             );
 
         return builder.Build();
+*/
 
     }
+
+
 
 }
 
