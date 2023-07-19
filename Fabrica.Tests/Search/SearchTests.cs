@@ -235,7 +235,8 @@ public class UserSearchProvider : AbstractClusterSearchProvider<ResourceAvailabi
 
             var id = new InputDocument
             {
-                Key = new InputKey("Resource", doc.Id),
+                Entity = "Resource",
+                Id     = doc.Id,
                 Keywords =
                 {
                     ["City"] = doc.City,
@@ -251,6 +252,7 @@ public class UserSearchProvider : AbstractClusterSearchProvider<ResourceAvailabi
 
         });
 
+
         return Task.FromResult( inputs );
 
     }
@@ -262,7 +264,7 @@ public class UserSearchProvider : AbstractClusterSearchProvider<ResourceAvailabi
         var builder = new FullTextIndexBuilder<InputKey>()
             .WithObjectTokenization<InputDocument>(
                 options => options
-                    .WithKey(u => u.Key)
+                    .WithKey(u => new InputKey(u.Entity, u.Id))
                     .WithDynamicFields("Keywords", i => i.Keywords)
             );
 
