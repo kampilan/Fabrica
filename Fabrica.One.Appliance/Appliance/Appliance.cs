@@ -13,16 +13,16 @@ namespace Fabrica.One.Appliance;
 public static class Appliance
 {
 
-    public static async Task<IAppliance> Bootstrap<TBootstrap>(string localConfigFile = null! ) where TBootstrap : IBootstrap
+    public static async Task<IAppliance> Bootstrap<TBootstrap>( string path="", string localConfigFile = null! ) where TBootstrap : IBootstrap
     {
 
-        var app = await Bootstrap<TBootstrap, InitService>(localConfigFile);
+        var app = await Bootstrap<TBootstrap, InitService>(path,localConfigFile);
 
         return app;
 
     }    
 
-    public static async Task<IAppliance> Bootstrap<TBootstrap,TService>( string localConfigFile=null!) where TBootstrap : IBootstrap where TService: class, IHostedService
+    public static async Task<IAppliance> Bootstrap<TBootstrap,TService>(string path = "", string localConfigFile=null!) where TBootstrap : IBootstrap where TService: class, IHostedService
     {
 
         IAppliance app;
@@ -67,7 +67,7 @@ public static class Appliance
 
             // *****************************************************************
             logger.Debug("Bootstrapping Appliance");
-            app = await bootstrap.Boot<TService>();
+            app = await bootstrap.Boot<TService>(path);
 
 
         }
