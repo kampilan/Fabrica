@@ -79,7 +79,7 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
     }
 
 
-    public async Task<IAppliance> Boot<TService>() where TService : class, IHostedService
+    public async Task<IAppliance> Boot<TService>( string path = "") where TService : class, IHostedService
     {
 
         var logger = EnterMethod();
@@ -162,7 +162,7 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
             cb.Register(_ =>
             {
 
-                var comp = new FileSignalController(FileSignalController.OwnerType.Appliance);
+                var comp = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
                 return comp;
 
             })

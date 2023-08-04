@@ -6,7 +6,7 @@ namespace Fabrica.One;
 public interface IBootstrap
 {
 
-    Task<IAppliance> Boot<TService>() where TService : class,IHostedService;
+    Task<IAppliance> Boot<TService>( string path="" ) where TService : class,IHostedService;
 
     bool AllowManualExit { get; set; }
 
