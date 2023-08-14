@@ -13,7 +13,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SmartInspect" Version="3.4.0.101" />
+		<PackageReference Include="SmartInspect" Version="3.4.2.43" />
 	</ItemGroup>
 
 	<ItemGroup>
