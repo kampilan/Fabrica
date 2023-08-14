@@ -313,7 +313,7 @@ public class RequestLoggingMiddleware
     {
 
         if (string.IsNullOrWhiteSpace(json))
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(json));
+            return "{}";
 
         var pretty = json;
         try
