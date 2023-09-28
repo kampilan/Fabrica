@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Api.Support.Endpoints;
 

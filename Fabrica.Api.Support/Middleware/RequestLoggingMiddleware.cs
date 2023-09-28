@@ -188,19 +188,22 @@ public class RequestLoggingMiddleware
                 {
                     var reader = new StreamReader(body);
                     var json   = await reader.ReadToEndAsync();
-                    bodyContent = MakeJsonPretty(json);
+                    if( !string.IsNullOrWhiteSpace(json) )
+                        bodyContent = MakeJsonPretty(json);
                 }
                 else if (context.Request.ContentType == "application/xml")
                 {
                     var reader = new StreamReader(body);
                     var xml    = await reader.ReadToEndAsync();
-                    bodyContent = MakeXmlPretty(xml);
+                    if (!string.IsNullOrWhiteSpace(xml))
+                        bodyContent = MakeXmlPretty(xml);
                 }
                 else if (context.Request.ContentType == "application/x-www-form-urlencoded")
                 {
                     var reader = new StreamReader(body);
                     var form   = await reader.ReadToEndAsync();
-                    bodyContent = MakeFormPretty(form);
+                    if (!string.IsNullOrWhiteSpace(form))
+                        bodyContent = MakeFormPretty(form);
                 }
                 else
                 {

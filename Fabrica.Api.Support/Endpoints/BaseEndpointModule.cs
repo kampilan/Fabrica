@@ -2,6 +2,7 @@
 using Fabrica.Models.Support;
 using Humanizer;
 using Microsoft.AspNetCore.Routing;
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Api.Support.Endpoints;
 
