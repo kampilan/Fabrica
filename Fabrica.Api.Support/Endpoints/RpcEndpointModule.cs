@@ -19,11 +19,11 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
 
     protected RpcEndpointModule(string route, string summary, string description)
     {
+        WithGroupName("Rpc");
 
         Route = route;
         Summary = summary;
         Description = description;
-
     }
 
 
