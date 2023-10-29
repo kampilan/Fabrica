@@ -50,6 +50,7 @@ public static class EndpointExtensions
                 {
 
                     logger.Debug("Attempting to Configure group");
+                    logger.LogObject(nameof(endpointModule), endpointModule);
 
                     var group = builder.MapGroup(endpointModule.BasePath);
 
