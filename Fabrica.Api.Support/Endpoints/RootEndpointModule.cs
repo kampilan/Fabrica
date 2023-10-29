@@ -39,51 +39,75 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
 
     }
 
+    protected bool IncludeQueryEndpoint { get; set; } = true;
+    protected bool IncludeRetrieveEndpoint { get; set; } = true;
+    protected bool IncludeCreateEndpoint { get; set; } = true;
+    protected bool IncludeUpdateEndpoint { get; set; } = true;
+    protected bool IncludeDeleteEndpoint { get; set; } = true;
+    protected bool IncludeJournalEndpoint { get; set; } = true;
+    protected bool IncludePatchEndpoint { get; set; } = true;
+
+
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        if (IncludeQueryEndpoint)
+        {
+            app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
+                .Produces<List<TExplorer>>()
+                .Produces<ErrorResponseModel>(400);
+        }
 
-        app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-            .Produces<List<TExplorer>>()
-            .Produces<ErrorResponseModel>(400);
+        if (IncludeRetrieveEndpoint)
+        {
+            app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+        }
 
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
-        app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404);
+        if (IncludeUpdateEndpoint)
+        {
+            app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+        }
 
+        if (IncludeDeleteEndpoint)
+        {
+            app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+        }
 
-        app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeJournalEndpoint)
+        {
+            app.MapGet("{uid}/journal",
+                    async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
+                .Produces<List<AuditJournalModel>>();
+        }
 
+        if (IncludePatchEndpoint)
+        {
 
-        app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
-
-
-        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
-            .Produces(200)
-            .Produces<ErrorResponseModel>(404);
-
-
-        app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-            .Produces<List<AuditJournalModel>>();
-
-
-        app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
-
+            app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
     }
 
@@ -114,50 +138,80 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
 
     }
 
+
+    protected bool IncludeQueryEndpoint { get; set; } = true;
+    protected bool IncludeRetrieveEndpoint { get; set; } = true;
+    protected bool IncludeCreateEndpoint { get; set; } = true;
+    protected bool IncludeUpdateEndpoint { get; set; } = true;
+    protected bool IncludeDeleteEndpoint { get; set; } = true;
+    protected bool IncludeJournalEndpoint { get; set; } = true;
+    protected bool IncludePatchEndpoint { get; set; } = true;
+
+
+
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
 
-        app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-            .Produces<List<TExplorer>>()
-            .Produces<ErrorResponseModel>(400);
+        if (IncludeQueryEndpoint)
+        {
+            app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
+                .Produces<List<TExplorer>>()
+                .Produces<ErrorResponseModel>(400);
+        }
 
+        if (IncludeRetrieveEndpoint)
+        {
+            app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+        }
 
-        app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
+        if (IncludeUpdateEndpoint)
+        {
 
-        app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+        }
 
+        if (IncludeDeleteEndpoint)
+        {
+            app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+        }
 
-        app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeJournalEndpoint)
+        {
+            app.MapGet("{uid}/journal",
+                    async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
+                .Produces<List<AuditJournalModel>>();
+        }
 
+        if (IncludePatchEndpoint)
+        {
 
-        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
-            .Produces(200)
-            .Produces<ErrorResponseModel>(404);
+            app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
-
-        app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-            .Produces<List<AuditJournalModel>>();
-
-
-        app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
 
 
     }
@@ -189,51 +243,77 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
 
     }
 
+
+    protected bool IncludeQueryEndpoint { get; set; } = true;
+    protected bool IncludeRetrieveEndpoint { get; set; } = true;
+    protected bool IncludeCreateEndpoint { get; set; } = true;
+    protected bool IncludeUpdateEndpoint { get; set; } = true;
+    protected bool IncludeDeleteEndpoint { get; set; } = true;
+    protected bool IncludeJournalEndpoint { get; set; } = true;
+    protected bool IncludePatchEndpoint { get; set; } = true;
+
+
+
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
 
-        app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-            .Produces<List<TExplorer>>()
-            .Produces<ErrorResponseModel>(400);
+        if (IncludeQueryEndpoint)
+        {
+            app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
+                .Produces<List<TExplorer>>()
+                .Produces<ErrorResponseModel>(400);
+        }
 
+        if (IncludeRetrieveEndpoint)
+        {
+            app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+        }
 
-        app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
+        if (IncludeUpdateEndpoint)
+        {
+            app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+        }
 
-        app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeDeleteEndpoint)
+        {
 
+            app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+        }
 
-        app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeJournalEndpoint)
+        {
+            app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
+                .Produces<List<AuditJournalModel>>();
+        }
 
-
-        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
-            .Produces(200)
-            .Produces<ErrorResponseModel>(404);
-
-
-        app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-            .Produces<List<AuditJournalModel>>();
-
-
-        app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
-
+        if (IncludePatchEndpoint)
+        {
+            app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
     }
 
@@ -264,50 +344,74 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
 
     }
 
+    protected bool IncludeQueryEndpoint { get; set; } = true;
+    protected bool IncludeRetrieveEndpoint { get; set; } = true;
+    protected bool IncludeCreateEndpoint { get; set; } = true;
+    protected bool IncludeUpdateEndpoint { get; set; } = true;
+    protected bool IncludeDeleteEndpoint { get; set; } = true;
+    protected bool IncludeJournalEndpoint { get; set; } = true;
+    protected bool IncludePatchEndpoint { get; set; } = true;
+
+
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
 
-        app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TEntity).Name.Pluralize()} using RQL"))
-            .Produces<List<TEntity>>()
-            .Produces<ErrorResponseModel>(400);
+        if (IncludeQueryEndpoint)
+        {
+            app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TEntity).Name.Pluralize()} using RQL"))
+                .Produces<List<TEntity>>()
+                .Produces<ErrorResponseModel>(400);
+        }
 
+        if (IncludeRetrieveEndpoint)
+        {
+            app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+        }
 
-        app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
+        if (IncludeUpdateEndpoint)
+        {
+            app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+        }
 
-        app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeDeleteEndpoint)
+        {
+            app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+        }
 
+        if (IncludeJournalEndpoint)
+        {
+            app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
+                .Produces<List<AuditJournalModel>>();
+        }
 
-        app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
-
-
-        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
-            .Produces(200)
-            .Produces<ErrorResponseModel>(404);
-
-
-        app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-            .Produces<List<AuditJournalModel>>();
-
-
-        app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+        if (IncludePatchEndpoint)
+        {
+            app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
 
     }

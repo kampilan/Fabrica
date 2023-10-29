@@ -37,26 +37,40 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
 
     }
 
+    protected bool IncludeCreateEndpoint { get; set; } = true;
+    protected bool IncludeUpdateEndpoint { get; set; } = true;
+    protected bool IncludeDeleteEndpoint { get; set; } = true;
+
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
 
-        app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
+        if (IncludeUpdateEndpoint)
+        {
+            app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+        }
 
-        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
-            .Produces(200)
-            .Produces<ErrorResponseModel>(404);
+        if (IncludeDeleteEndpoint)
+        {
+
+            app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+        }
 
     }
 
@@ -89,29 +103,41 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
 
     }
 
+    protected bool IncludeCreateEndpoint { get; set; } = true;
+    protected bool IncludeUpdateEndpoint { get; set; } = true;
+    protected bool IncludeDeleteEndpoint { get; set; } = true;
+
+
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO" })
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute {Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO"})
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+        }
 
-        app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = "Update", Description = $"Update {typeof(TEntity).Name} from delta RTO" })
-            .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute {Summary = "Update", Description = $"Update {typeof(TEntity).Name} from delta RTO"})
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+        }
 
-
-        app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = "Delete", Description = $"Delete {typeof(TEntity).Name} using UID" })
-            .Produces(200)
-            .Produces<ErrorResponseModel>(404);
+        if (IncludeCreateEndpoint)
+        {
+            app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
+                .WithMetadata(new SwaggerOperationAttribute {Summary = "Delete", Description = $"Delete {typeof(TEntity).Name} using UID"})
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+        }
 
     }
-
 
 
 }
