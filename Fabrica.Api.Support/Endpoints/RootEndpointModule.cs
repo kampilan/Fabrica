@@ -56,7 +56,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
             app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
                 .Produces<List<TExplorer>>()
-                .Produces<ErrorResponseModel>(400);
+                .Produces<ErrorResponseModel>(400)
+                .WithOpenApi();
         }
 
         if (IncludeRetrieveEndpoint)
@@ -64,7 +65,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeCreateEndpoint)
@@ -72,7 +74,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeUpdateEndpoint)
@@ -81,7 +84,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeDeleteEndpoint)
@@ -89,7 +93,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeJournalEndpoint)
@@ -97,7 +102,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
             app.MapGet("{uid}/journal",
                     async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
         if (IncludePatchEndpoint)
@@ -106,7 +112,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
     }
@@ -158,7 +165,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
                 .Produces<List<TExplorer>>()
-                .Produces<ErrorResponseModel>(400);
+                .Produces<ErrorResponseModel>(400)
+                .WithOpenApi();
         }
 
         if (IncludeRetrieveEndpoint)
@@ -166,7 +174,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeCreateEndpoint)
@@ -174,7 +183,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeUpdateEndpoint)
@@ -184,7 +194,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeDeleteEndpoint)
@@ -192,15 +203,16 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeJournalEndpoint)
         {
-            app.MapGet("{uid}/journal",
-                    async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
+            app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
         if (IncludePatchEndpoint)
@@ -209,7 +221,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
 
@@ -263,7 +276,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
                 .Produces<List<TExplorer>>()
-                .Produces<ErrorResponseModel>(400);
+                .Produces<ErrorResponseModel>(400)
+                .WithOpenApi();
         }
 
         if (IncludeRetrieveEndpoint)
@@ -271,7 +285,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeCreateEndpoint)
@@ -279,7 +294,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeUpdateEndpoint)
@@ -288,7 +304,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeDeleteEndpoint)
@@ -297,14 +314,16 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeJournalEndpoint)
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
         if (IncludePatchEndpoint)
@@ -312,7 +331,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
     }
@@ -362,7 +382,8 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
             app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TEntity).Name.Pluralize()} using RQL"))
                 .Produces<List<TEntity>>()
-                .Produces<ErrorResponseModel>(400);
+                .Produces<ErrorResponseModel>(400)
+                .WithOpenApi();
         }
 
         if (IncludeRetrieveEndpoint)
@@ -370,7 +391,8 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeCreateEndpoint)
@@ -378,7 +400,8 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeUpdateEndpoint)
@@ -387,7 +410,8 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeDeleteEndpoint)
@@ -395,14 +419,16 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
         if (IncludeJournalEndpoint)
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
         if (IncludePatchEndpoint)
@@ -410,7 +436,8 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
 
