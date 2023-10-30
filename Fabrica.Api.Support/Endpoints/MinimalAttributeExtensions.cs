@@ -52,11 +52,12 @@ public static class MinimalAttributeExtensions
             .WithMetadata(new SwaggerResponseAttribute(500, type: typeof(ErrorResponseModel)))
             .WithMetadata(new SwaggerResponseAttribute(400, type: typeof(ErrorResponseModel)))
             .WithMetadata(new SwaggerResponseAttribute(404, type: typeof(ErrorResponseModel)))
-            .WithMetadata(new SwaggerResponseAttribute(422, type: typeof(ErrorResponseModel)))
-            .WithMetadata(new SwaggerResponseAttribute(304, type: typeof(ErrorResponseModel)));
+            .WithMetadata(new SwaggerResponseAttribute(422, type: typeof(ErrorResponseModel)));
 
         return endpoint;
     }
+
+
 
     public static RouteHandlerBuilder AddMetaData(this RouteHandlerBuilder endpoint, string tag, string? summary = null, string? description = null)
     {
@@ -67,8 +68,7 @@ public static class MinimalAttributeExtensions
         endpoint.WithMetadata(new SwaggerResponseAttribute(500, type: typeof(ErrorResponseModel)))
             .WithMetadata(new SwaggerResponseAttribute(400, type: typeof(ErrorResponseModel)))
             .WithMetadata(new SwaggerResponseAttribute(404, type: typeof(ErrorResponseModel)))
-            .WithMetadata(new SwaggerResponseAttribute(422, type: typeof(ErrorResponseModel)))
-            .WithMetadata(new SwaggerResponseAttribute(304, type: typeof(ErrorResponseModel)));
+            .WithMetadata(new SwaggerResponseAttribute(422, type: typeof(ErrorResponseModel)));
 
         return endpoint;
     }

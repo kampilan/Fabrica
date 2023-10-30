@@ -42,9 +42,8 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
 
 
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-            .Produces<List<TExplorer>>()
-            .Produces<ErrorResponseModel>(400);
+            .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using Criteria", $"Query {typeof(TEntity).Name.Pluralize()} using Criteria");
+
 
     }
 
@@ -79,9 +78,8 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
     {
 
         app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-            .Produces<List<TExplorer>>()
-            .Produces<ErrorResponseModel>(400);
+            .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
+
 
     }
 
