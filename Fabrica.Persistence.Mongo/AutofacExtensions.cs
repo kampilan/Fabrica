@@ -29,10 +29,20 @@ public static class AutofacExtensions
 
         }
 
+
+        builder.Register(c =>
+            {
+                var client = new MongoClient(url);
+                return client;
+            })
+            .AsSelf()
+            .SingleInstance();
+
+
         builder.Register(c =>
             {
 
-                var client = new MongoClient(url);
+                var client = c.Resolve<MongoClient>();
                 var db = client.GetDatabase(database);
 
                 var comp = new MongoDbContext(client, db);
