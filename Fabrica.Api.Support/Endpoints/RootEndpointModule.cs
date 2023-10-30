@@ -56,7 +56,7 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-                .AddMetaData<List<TExplorer>>(OpenApiGroupName, OpenApiSummary, OpenApiDescription);
+                .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
         }
 
         if (IncludeRetrieveEndpoint)
@@ -162,7 +162,7 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .AddMetaData<List<TExplorer>>( OpenApiGroupName, OpenApiSummary, OpenApiDescription );
+                .AddMetaData<List<TExplorer>>(typeof(TEntity).Name.Pluralize(), "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
         }
 
         if (IncludeRetrieveEndpoint)
@@ -267,7 +267,7 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .AddMetaData<List<TExplorer>>( OpenApiGroupName, OpenApiSummary, OpenApiDescription );
+                .AddMetaData<List<TExplorer>>( typeof(TEntity).Name.Pluralize(), "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL" );
         }
 
         if (IncludeRetrieveEndpoint)
@@ -370,7 +370,7 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<List<TEntity>>(OpenApiGroupName, OpenApiSummary, OpenApiDescription);
+                .AddMetaData<List<TEntity>>(typeof(TEntity).Name.Pluralize(), "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
         }
 
         if (IncludeRetrieveEndpoint)
