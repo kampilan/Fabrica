@@ -46,11 +46,25 @@ public static class EndpointExtensions
 
                 logger.Inspect( "EndpointModule", moduleInterface.GetType().Name );
 
-                if (moduleInterface is BaseEndpointModule endpointModule)
+                if( moduleInterface is BaseEndpointModule endpointModule )
                 {
 
                     logger.Debug("Attempting to Configure group");
-                    logger.LogObject(nameof(endpointModule), endpointModule);
+                    var cfg = new
+                    {
+                        endpointModule.BasePath,
+                        endpointModule.AuthorizationPolicyNames,
+                        endpointModule.MetaData,
+                        endpointModule.OpenApiDescription,
+                        endpointModule.OpenApiDisplayName,
+                        endpointModule.OpenApiGroupName,
+                        endpointModule.OpenApiName,
+                        endpointModule.OpenApiSummary,
+                        endpointModule.RequiresAuthorization,
+                        endpointModule.Tags
+                    };
+                    logger.LogObject(nameof(cfg), cfg);
+
 
                     var group = builder.MapGroup(endpointModule.BasePath);
 
@@ -104,3 +118,4 @@ public static class EndpointExtensions
 
 
 }
+
