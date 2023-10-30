@@ -51,13 +51,12 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+
+
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-                .Produces<List<TExplorer>>()
-                .Produces<ErrorResponseModel>(400)
-                .WithOpenApi();
+                .AddMetaData<List<TExplorer>>(OpenApiGroupName, OpenApiSummary, OpenApiDescription);
         }
 
         if (IncludeRetrieveEndpoint)
@@ -163,19 +162,13 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-                .Produces<List<TExplorer>>()
-                .Produces<ErrorResponseModel>(400)
-                .WithOpenApi();
+                .AddMetaData<List<TExplorer>>( OpenApiGroupName, OpenApiSummary, OpenApiDescription );
         }
 
         if (IncludeRetrieveEndpoint)
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
-                .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404)
-                .WithOpenApi();
+                .AddMetaData<List<TExplorer>>(typeof(TEntity).Name, OpenApiSummary, OpenApiDescription);
         }
 
         if (IncludeCreateEndpoint)
@@ -274,10 +267,7 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TExplorer).Name.Pluralize()} using RQL"))
-                .Produces<List<TExplorer>>()
-                .Produces<ErrorResponseModel>(400)
-                .WithOpenApi();
+                .AddMetaData<List<TExplorer>>( OpenApiGroupName, OpenApiSummary, OpenApiDescription );
         }
 
         if (IncludeRetrieveEndpoint)
@@ -380,10 +370,7 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Using RQL", description: $"Query {typeof(TEntity).Name.Pluralize()} using RQL"))
-                .Produces<List<TEntity>>()
-                .Produces<ErrorResponseModel>(400)
-                .WithOpenApi();
+                .AddMetaData<List<TEntity>>(OpenApiGroupName, OpenApiSummary, OpenApiDescription);
         }
 
         if (IncludeRetrieveEndpoint)

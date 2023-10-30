@@ -50,27 +50,12 @@ public static class EndpointExtensions
                 {
 
                     logger.Debug("Attempting to Configure group");
-                    var cfg = new
-                    {
-                        endpointModule.BasePath,
-                        endpointModule.AuthorizationPolicyNames,
-                        endpointModule.MetaData,
-                        endpointModule.OpenApiDescription,
-                        endpointModule.OpenApiDisplayName,
-                        endpointModule.OpenApiGroupName,
-                        endpointModule.OpenApiName,
-                        endpointModule.OpenApiSummary,
-                        endpointModule.RequiresAuthorization,
-                        endpointModule.Tags
-                    };
-                    logger.LogObject(nameof(cfg), cfg);
-
 
                     var group = builder.MapGroup(endpointModule.BasePath);
 
                     if (endpointModule.RequiresAuthorization)
                         group = group.RequireAuthorization(endpointModule.AuthorizationPolicyNames);
-
+/*
                     if (!string.IsNullOrWhiteSpace(endpointModule.OpenApiDescription))
                         group = group.WithDescription(endpointModule.OpenApiDescription);
 
@@ -91,7 +76,7 @@ public static class EndpointExtensions
 
                     if (endpointModule.Tags.Any())
                         group = group.WithTags(endpointModule.Tags);
-
+*/
 
                     endpointModule.AddRoutes(group);
 
