@@ -20,7 +20,7 @@ public class PrivateFieldMappingConvention: ConventionBase, IClassMapConvention
     {
 
         var type = classMap.ClassType;
-        if (!type.IsAssignableTo(typeof(IModel)) && !type.IsAbstract)
+        if( !type.IsAssignableTo(typeof(IModel)) || type.IsAbstract )
             return;
 
         classMap.SetIgnoreExtraElements(true);
