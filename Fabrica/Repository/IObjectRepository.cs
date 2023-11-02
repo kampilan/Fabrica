@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using System.Text;
 
 namespace Fabrica.Repository;
 
@@ -12,8 +7,8 @@ public interface IObjectRepository
 
     Task<string> CreateKey(string extension = "", DateTime date = default);
 
-    Task<bool> Get( [NotNull] Action<GetOptions> builder, CancellationToken token = default );
-    Task<string> Put( [NotNull] Action<PutOptions> builder, CancellationToken token = default );
+    Task<bool> Get( Action<GetOptions> builder, CancellationToken token = default );
+    Task<string> Put( Action<PutOptions> builder, CancellationToken token = default );
 
 }
 

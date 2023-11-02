@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Identity;
 using Microsoft.Extensions.DependencyInjection;

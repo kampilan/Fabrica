@@ -36,7 +36,7 @@ public class ObjectRepository: IObjectRepository
 
 
     private IHttpClientFactory Factory { get; }
-    private IAccessTokenSource TokenSource { get; }
+    private IAccessTokenSource? TokenSource { get; }
     private string RepositoryClientName { get; }
 
 
@@ -170,16 +170,16 @@ public class ObjectRepository: IObjectRepository
 
         // *****************************************************************
         logger.Debug("Attempting to send Get request ");
-        var input = await client.GetStreamAsync( ops.Url );
+        var input = await client.GetStreamAsync( ops.Url, token);
 
 
 
         // *****************************************************************
         logger.Debug("Attempting to copy result to content stream");
-        await input.CopyToAsync(ops.Content);
+        await input.CopyToAsync(ops.Content, token);
 
 
-        if( !ops.Close && ops.Rewind && ops.Content.CanSeek )
+        if( ops is {Close: false, Rewind: true, Content.CanSeek: true} )
             ops.Content.Seek( 0, SeekOrigin.Begin );
 
         if( ops.Close )

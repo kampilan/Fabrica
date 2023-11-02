@@ -79,6 +79,7 @@ namespace Fabrica.Watch.Http.Sink
 
                 using var client = Factory.CreateClient();
 
+
                 var response = await client.PostAsJsonAsync( $"{Domain}", batch );
                 response.EnsureSuccessStatusCode();
 
