@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net.Http.Headers;
 using Fabrica.Http;
 using Fabrica.Identity;
 using Fabrica.Utilities.Text;
@@ -85,8 +80,7 @@ public class ObjectRepository: IObjectRepository
 
         // *****************************************************************
         logger.Debug("Attempting to build RepositoryResponse");
-        var response = httpRes.FromBody<RepositoryResponse>();
-
+        var response = httpRes.FromBody<RepositoryResponse>() ?? throw new InvalidOperationException($"Successful call to Repository could not be parsed");
         logger.LogObject(nameof(response), response);
 
 

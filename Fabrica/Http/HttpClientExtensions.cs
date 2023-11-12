@@ -1,4 +1,5 @@
-﻿using Fabrica.Watch;
+﻿using System.Text.Json;
+using Fabrica.Watch;
 
 namespace Fabrica.Http;
 
@@ -6,7 +7,121 @@ public static class HttpClientExtensions
 {
 
 
-    public static async Task<HttpResponse> Send( this HttpClient client, HttpRequest request, CancellationToken token)
+    public static async Task<(bool ok, TResponse? model)> One<TResponse>(this IHttpClientFactory factory, HttpRequest request, CancellationToken ct = new()) where TResponse : class
+    {
+
+        using var client = factory.CreateClient(request.HttpClientName);
+
+        var res = await client.One<TResponse>(request, ct);
+
+        return res;
+
+    }
+
+
+
+    public static async Task<(bool ok, TResponse? model)> One<TResponse>(this HttpClient client, HttpRequest request, CancellationToken ct=new()) where TResponse : class
+    {
+
+        var logger = client.GetLogger();
+
+
+        var res = await client.Send(request,ct, false);
+
+        if (!res.WasSuccessful)
+        {
+            logger.Inspect(nameof(res.StatusCode), res.StatusCode);
+            return (false, null);
+        }
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to read json");
+        var json = res.Content;
+
+        logger.LogJson(nameof(json), json);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to deserialize to model");
+        var one = JsonSerializer.Deserialize<TResponse>(json);
+
+        logger.LogObject(nameof(one), one);
+
+
+
+        // *****************************************************************
+        return (true, one);
+
+
+    }
+
+
+    public static async Task<(bool ok, IEnumerable<TResponse> results )> Many<TResponse>(this IHttpClientFactory factory, HttpRequest request, CancellationToken ct = new()) where TResponse : class
+    {
+
+        using var client = factory.CreateClient(request.HttpClientName);
+
+        var res = await client.Many<TResponse>(request, ct);
+
+        return res;
+
+    }
+
+
+    public static async Task<(bool ok, IEnumerable<TResponse> results )> Many<TResponse>(this HttpClient client, HttpRequest request, CancellationToken ct = new()) where TResponse : class
+    {
+
+        var logger = client.GetLogger();
+
+
+        var res = await client.Send(request, ct, false);
+
+        if (!res.WasSuccessful)
+        {
+            logger.Inspect(nameof(res.StatusCode), res.StatusCode);
+            return (false, Enumerable.Empty<TResponse>());
+        }
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to read json");
+        var json = res.Content;
+
+        logger.LogJson(nameof(json), json);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to deserialize to model");
+        var results = JsonSerializer.Deserialize<IEnumerable<TResponse>>(json) ?? Enumerable.Empty<TResponse>();
+
+
+
+        // *****************************************************************
+        return (true, results);
+
+
+    }
+
+
+    public static async Task<HttpResponse> Send(this IHttpClientFactory factory, HttpRequest request, CancellationToken ct = new(), bool throwException = true)
+    {
+
+        using var client = factory.CreateClient(request.HttpClientName);
+
+        var res = await client.Send(request, ct, throwException);
+
+        return res;
+
+    }
+
+
+
+    public static async Task<HttpResponse> Send( this HttpClient client, HttpRequest request, CancellationToken ct=new(), bool throwException=true)
     {
 
         var logger = client.GetLogger();
@@ -63,23 +178,24 @@ public static class HttpClientExtensions
 
                 // *****************************************************************
                 logger.Debug("Attempting to Send request");
-                var innerResponse = await client.SendAsync(innerRequest, token);
+                var innerResponse = await client.SendAsync(innerRequest, ct);
 
                 logger.Inspect(nameof(innerResponse.StatusCode), innerResponse.StatusCode);
 
-                innerResponse.EnsureSuccessStatusCode();
+                if(throwException)
+                    innerResponse.EnsureSuccessStatusCode();
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to read body content");
-                var content = await innerResponse.Content.ReadAsStringAsync();
+                var content = await innerResponse.Content.ReadAsStringAsync(ct);
 
 
 
                 // *****************************************************************
                 logger.Debug("Attempting to build response");
-                var response = new HttpResponse(innerResponse.StatusCode, "", true, content);
+                var response = new HttpResponse(innerResponse.StatusCode, "", innerResponse.IsSuccessStatusCode, content);
 
 
                 // *****************************************************************

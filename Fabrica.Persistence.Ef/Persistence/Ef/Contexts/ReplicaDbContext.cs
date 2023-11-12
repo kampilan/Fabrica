@@ -27,23 +27,20 @@ using Fabrica.Utilities.Container;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Fabrica.Persistence.Ef.Contexts
+// ReSharper disable UnusedMember.Global
+
+namespace Fabrica.Persistence.Ef.Contexts;
+
+public class ReplicaDbContext: BaseDbContext
 {
 
-    public class ReplicaDbContext: BaseDbContext
+
+    public ReplicaDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory factory) : base( correlation, options, factory )
     {
-
-
-        public ReplicaDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory factory) : base( correlation, options, factory )
-        {
-           
-
-        }
-
-
-        public DbSet<AuditJournalModel> AuditJournals { get; set; } = null!;
-
-
     }
+
+
+    public DbSet<AuditJournalModel> AuditJournals { get; set; } = null!;
+
 
 }

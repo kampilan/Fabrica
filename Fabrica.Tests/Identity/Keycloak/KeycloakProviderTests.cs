@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Fabrica.Http;
 using Fabrica.Identity;
+using Fabrica.Identity.Keycloak;
+using Fabrica.Identity.Keycloak.Models;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Fabrica.Tests.Identity.Keycloak;
@@ -21,7 +22,7 @@ namespace Fabrica.Tests.Identity.Keycloak;
 public class KeycloakProviderTests
 {
 
-    [SetUp]
+    [OneTimeSetUp]
     public async Task Setup()
     {
 
@@ -43,49 +44,73 @@ public class KeycloakProviderTests
 
     }
 
+    [OneTimeTearDown]
+    public void Teardown()
+    {
+        TheContainer.Dispose();
+        WatchFactoryLocator.Factory.Stop();
+    }
+
 
     private IContainer TheContainer { get; set; }
 
     [Test]
-    public async Task Test3100_0100_SyncExistingUserById()
+    public async Task Test3100_0100_Should_Return_Users_And_UserByUid()
     {
+        await using var scope = TheContainer.BeginLifetimeScope();
 
-        var provider = new KeycloakIdentityProvider( new Correlation(),"https://identity.after-it-services.io", "after-crm","", "E3fBZg4qCYreKHq8QRLNOeZFEGulFVg8");
+        var factory = scope.Resolve<IHttpClientFactory>();
+        using var client = factory.CreateClient("Keycloak");
 
-        var request = new SyncUserRequest
-        {
-            IdentityUid     = "ed390706-55df-43c8-b904-2287d5aa38f5",
-            NewFirstName    = "James"
-        };
+        var json = await client.GetStringAsync("users");
 
-        var res = await provider.SyncUser( request );
+        Assert.IsNotNull(json);
+        Assert.IsNotEmpty(json);
 
-        Assert.IsNotNull(res);
+        var list = JsonSerializer.Deserialize<List<User>>(json);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsFalse(res.Created);
+        Assert.IsNotNull(list);
+        Assert.IsNotEmpty(list);
+
+        var user = list.First();
+
+        Assert.IsNotNull(user);
+
+
+        var json2 = await client.GetStringAsync($"users/{user.Id}");
+
+
+        Assert.IsNotNull(json2);
+        Assert.IsNotEmpty(json2);
+
+        var user2 = JsonSerializer.Deserialize<User>(json2);
+
+        Assert.IsNotNull(user2);
+
+
 
     }
 
 
     [Test]
-    public async Task Test3100_0200_SyncNew()
+    public async Task Test3100_0200_Should_Create_New_User()
     {
 
-        var provider = new KeycloakIdentityProvider(new Correlation(), "https://identity.after-it-services.io", "after-crm","", "E3fBZg4qCYreKHq8QRLNOeZFEGulFVg8");
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
 
         var request = new SyncUserRequest
         {
+            Upsert = true,
             NewUsername = "wilma.moring",
             NewEmail = "wilma.l.moring@gmail.com",
             NewFirstName = "Wilma",
             NewLastName = "Moring",
-            GeneratePassword = false,
-            MustUpdatePassword = true
+            GeneratePassword = true,
         };
 
-        request.Groups.Add("Managers");
-        request.Groups.Add("after-tenant");
+//        request.Groups.Add("Managers");
+//        request.Groups.Add("after-tenant");
         request.Attributes["Cool"] = new[] {"Very"};
 
 
@@ -94,9 +119,109 @@ public class KeycloakProviderTests
         Assert.IsNotNull(res);
 
         Assert.IsNotEmpty(res.IdentityUid);
+        Assert.IsFalse(res.Exists);
+        Assert.IsFalse(res.Updated);
+        Assert.IsTrue(res.Created);
+
+
+
+    }
+
+
+    [Test]
+    public async Task Test3100_0210_Should_Create_New_User_And_Import_Bcrypt()
+    {
+
+        var hash = BCrypt.Net.BCrypt.HashPassword("GoNavyGoBears", 15);
+
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
+
+        var request = new SyncUserRequest
+        {
+            Upsert = true,
+            NewUsername = "gabby.moring",
+            NewEmail = "moring.gabby@gmail.com",
+            NewFirstName = "Gabby",
+            NewLastName = "Moring",
+            HashAlgorithm = "bcrypt",
+            HashIterations = 15,
+            HashedPassword = hash,
+        };
+
+        //        request.Groups.Add("Managers");
+        //        request.Groups.Add("after-tenant");
+        request.Attributes["Cool"] = new[] { "Very" };
+
+
+        var res = await provider.SyncUser(request);
+
+        Assert.IsNotNull(res);
+
+        Assert.IsNotEmpty(res.IdentityUid);
+        Assert.IsFalse(res.Exists);
+        Assert.IsFalse(res.Updated);
         Assert.IsTrue(res.Created);
 
     }
+
+
+
+    [Test]
+    public async Task Test3100_0220_Should_Update_User()
+    {
+
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
+
+        var request = new SyncUserRequest
+        {
+            CurrentUsername = "gabby.moring",
+            NewEmail = "james.moring@kampilangroup.com",
+            NewEnabled = false,
+            MustVerifyEmail = false
+        };
+
+
+        var res = await provider.SyncUser(request);
+
+        Assert.IsNotNull(res);
+
+        Assert.IsNotEmpty(res.IdentityUid);
+        Assert.IsTrue(res.Exists);
+        Assert.IsTrue(res.Updated);
+        Assert.IsFalse(res.Created);
+
+    }
+
+
+    [Test]
+    public async Task Test3100_0230_Should_Not_Update_User()
+    {
+
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
+
+        var request = new SyncUserRequest
+        {
+            CurrentUsername = "gabby.moring",
+            NewEmail = "me@jamesmoring.com",
+            NewEnabled = false,
+            MustVerifyEmail = true
+        };
+
+
+        var res = await provider.SyncUser(request);
+
+        Assert.IsNotNull(res);
+
+        Assert.IsNotEmpty(res.IdentityUid);
+        Assert.IsTrue(res.Exists);
+        Assert.IsFalse(res.Updated);
+        Assert.IsFalse(res.Created);
+
+    }
+
 
 
     [Test]
@@ -152,26 +277,46 @@ public class KeycloakProviderTests
 
 
 
+    [Test]
+    public async Task Test3100_0400_ImportUser()
+    {
+
+        var hash = BCrypt.Net.BCrypt.HashPassword("MyWonderfullAsawa", 13);
+
+    }
+
+
+
+
+
+
+
 }
 
 public class TheModule : Module
 {
 
-    public string MetaEndpoint { get; set; } = "https://identity.after-it-services.io/auth/realms/after-crm/.well-known/openid-configuration";
+    public string KeycloakMetaEndpoint { get; set; } = "https://identity.after-it-services.io/realms/master/.well-known/openid-configuration";
+    public string KeycloakApiEndpoint { get; set; } = "https://identity.after-it-services.io/admin/realms/pondhawk/";
+
+    public string PondHawkMetaEndpoint { get; set; } = "https://identity.after-it-services.io/realms/pondhawk/.well-known/openid-configuration";
 
     protected override void Load(ContainerBuilder builder)
     {
 
         builder.AddCorrelation();
 
-        builder.AddTokenApiClient("Api", o =>
-        {
-            o.MetaEndpoint = MetaEndpoint;
-            o.ClientId     = "service";
-            o.ClientSecret = "IX9RYgB0iAJeTIdHS3RMbkdakJOYqrkv";
-            o.ApiEndpoint  = "https://fabrica.ngrok.io/v1/";
-        });
 
+        builder.AddKeycloakIdentityProvider(o =>
+        {
+
+            o.GrantType = TokenApiGrantType.ClientCredential;
+            o.MetaEndpoint = KeycloakMetaEndpoint;
+            o.ApiEndpoint = KeycloakApiEndpoint;
+            o.ClientId = "service";
+            o.ClientSecret = "aQc6tEyajZ6ZpGQPxQarUgscO14ropXN";
+
+        });
 
     }
 

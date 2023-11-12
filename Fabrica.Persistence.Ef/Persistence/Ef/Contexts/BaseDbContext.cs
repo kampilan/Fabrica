@@ -24,71 +24,64 @@ SOFTWARE.
 
 using System.Runtime.CompilerServices;
 using Fabrica.Utilities.Container;
-using Fabrica.Watch;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ILogger = Fabrica.Watch.ILogger;
 
-namespace Fabrica.Persistence.Ef.Contexts
+namespace Fabrica.Persistence.Ef.Contexts;
+
+public abstract class BaseDbContext: DbContext
 {
 
 
-    public abstract class BaseDbContext: DbContext
+    protected BaseDbContext( ICorrelation correlation, DbContextOptions options, ILoggerFactory? factory ): base( options )
     {
 
+        Correlation = correlation;
 
-        protected BaseDbContext( ICorrelation correlation, [NotNull] DbContextOptions options, ILoggerFactory factory ): base( options )
-        {
-
-            Correlation = correlation;
-
-            Factory = factory;
-
-
-        }
-
-
-        protected ICorrelation Correlation { get; }
-
-        private ILoggerFactory Factory { get; }
-
-        protected override void OnConfiguring( [NotNull] DbContextOptionsBuilder optionsBuilder )
-        {
-
-            base.OnConfiguring(optionsBuilder);
-            if( Factory != null )
-                optionsBuilder.UseLoggerFactory(Factory);
-
-        }
-
-        public virtual void AfterCreate()
-        {
-
-        }
-
-
-        protected ILogger GetLogger()
-        {
-
-            var logger = Correlation.GetLogger(this);
-
-            return logger;
-
-        }
-
-        protected ILogger EnterMethod( [CallerMemberName] string name = "" )
-        {
-
-            var logger = Correlation.EnterMethod(GetType(), name);
-
-            return logger;
-
-        }
-
+        Factory = factory;
 
 
     }
+
+
+    protected ICorrelation Correlation { get; }
+
+    private ILoggerFactory? Factory { get; }
+
+    protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+    {
+
+        base.OnConfiguring(optionsBuilder);
+        if( Factory != null )
+            optionsBuilder.UseLoggerFactory(Factory);
+
+    }
+
+    public virtual void AfterCreate()
+    {
+
+    }
+
+
+    protected ILogger GetLogger()
+    {
+
+        var logger = Correlation.GetLogger(this);
+
+        return logger;
+
+    }
+
+    protected ILogger EnterMethod( [CallerMemberName] string name = "" )
+    {
+
+        var logger = Correlation.EnterMethod(GetType(), name);
+
+        return logger;
+
+    }
+
 
 
 }

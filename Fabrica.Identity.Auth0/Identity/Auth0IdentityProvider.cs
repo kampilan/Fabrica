@@ -26,7 +26,8 @@ public class Auth0IdentityProvider: CorrelatedObject, IIdentityProvider
 
     private ManagementApiClient Client { get; set; } = null!;
 
-    public async Task<SyncUserResponse> SyncUser( SyncUserRequest request )
+
+    public async Task<SyncUserResponse> SyncUser( SyncUserRequest request, CancellationToken ct=new() )
     {
 
         if (request == null) throw new ArgumentNullException(nameof(request));

@@ -7,6 +7,7 @@ using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Serialization;
+using Humanizer;
 using Newtonsoft.Json.Serialization;
 
 
@@ -168,6 +169,17 @@ public class HttpRequestBuilder
         Uid         = "";
         SubResource = "";
         SubUid      = "";
+
+        return this;
+
+    }
+
+
+    public HttpRequestBuilder ForResource<TResource>( bool atRoot = false ) where TResource : class
+    {
+
+        Path = typeof(TResource).Name.Pluralize().ToLowerInvariant();
+        AtRoot = atRoot;
 
         return this;
 
@@ -360,7 +372,7 @@ public class HttpRequestBuilder
                 switch (value)
                 {
                     case string:
-                        return $"'{value}'";
+                        return $"{value}";
                     case short:
                     case int:
                     case long:

@@ -163,8 +163,7 @@ public static class AutofacExtensions
             .As<IAccessTokenSource>()
             .Named<IAccessTokenSource>(name)
             .As<IRequiresStart>()
-            .SingleInstance()
-            .AutoActivate();
+            .SingleInstance();
 
 
 

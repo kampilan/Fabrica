@@ -1,4 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.SecurityToken;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Autofac;
@@ -47,6 +54,50 @@ public class AwsTests001
         Assert.IsNotNull(response);
 
     }
+
+
+    [Test]
+    public async Task Test_0850_0200_Should_Get_Sts_Token()
+    {
+
+        var builder = new ContainerBuilder();
+        builder.UseAws("kampilan", true);
+
+        var container = builder.Build();
+        var scope = container.BeginLifetimeScope();
+
+        var client = scope.Resolve<IAmazonSecurityTokenService>();
+
+        var set = await client.CreateCredentialSet("arn:aws:iam::523329725044:role/client-serene", "Moring0001");
+
+        Assert.IsNotNull(set);
+
+        Assert.IsNotEmpty(set.AccessKey);
+        Assert.IsNotEmpty(set.SecretKey);
+        Assert.IsNotEmpty(set.SessionToken);
+
+        Assert.IsTrue( set.Expiration > DateTime.Now );
+
+        var creds = new SessionAWSCredentials(set.AccessKey, set.SecretKey, set.SessionToken);
+
+        var s3 = new AmazonS3Client(creds, RegionEndpoint.USEast2);
+
+        var request = new GetObjectMetadataRequest
+        {
+            BucketName = "after-serene-permanent",
+            Key = "indexes/ResourceAvailability.bin"
+        };
+
+        var response = await s3.GetObjectMetadataAsync(request);
+
+        Assert.NotNull(response);
+        Assert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
+
+
+    }
+
+
+
 
 
 
