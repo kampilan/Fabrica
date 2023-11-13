@@ -62,7 +62,8 @@ public class OriginDbContext : BaseDbContext
 
         base.OnConfiguring(optionsBuilder);
 
-        Database.UseTransaction(Uow.Transaction);
+        if( Uow is not null )
+            Database.UseTransaction(Uow.Transaction);
 
     }
 
