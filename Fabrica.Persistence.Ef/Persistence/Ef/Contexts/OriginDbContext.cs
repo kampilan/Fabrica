@@ -57,28 +57,20 @@ public class OriginDbContext : BaseDbContext
 
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected async Task EnlistUnitOfWork()
     {
 
         using var logger = EnterMethod();
 
 
         // *****************************************************************
-        logger.Debug("Attempting to call base impl");
-        base.OnConfiguring(optionsBuilder);
-
-
-
-        // *****************************************************************
-        if (Uow is not null)
+        if( Uow is not null )
         {
             logger.Debug("Attempting to enlisting Transaction from Uow");
-            Database.UseTransaction(Uow.Transaction);
+            await Database.UseTransactionAsync(Uow.Transaction);
         }
 
-
     }
-
 
 
     public bool EvaluateEntities { get; set; } = true;
