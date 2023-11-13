@@ -39,6 +39,10 @@ public class ReplicaDbContext: BaseDbContext
     {
     }
 
+    public ReplicaDbContext( ReplicaDbContextOptionsBuilder builder ) : base(builder.Correlation, builder.Options, builder.LoggerFactory)
+    {
+    }
+
 
     public DbSet<AuditJournalModel> AuditJournals { get; set; } = null!;
 

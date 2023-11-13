@@ -27,6 +27,7 @@ using Fabrica.Identity;
 using Fabrica.Models;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Audit;
+using Fabrica.Persistence.UnitOfWork;
 using Fabrica.Rules;
 using Fabrica.Rules.Exceptions;
 using Fabrica.Utilities.Container;
@@ -41,16 +42,36 @@ public class OriginDbContext : BaseDbContext
 {
 
 
-    public OriginDbContext(ICorrelation correlation, IRuleSet rules, DbContextOptions options, ILoggerFactory? factory) : base(correlation, options, factory)
+    public OriginDbContext( ICorrelation correlation, IUnitOfWork uow, IRuleSet rules, DbContextOptions options, ILoggerFactory? factory ) : base(correlation, options, factory)
     {
 
         Rules = rules;
+        Uow = uow;
+
+    }
+
+    public OriginDbContext( OriginDbContextOptionBuilder builder ) : base(builder.Correlation, builder.Options, builder.Factory)
+    {
+
+        Rules = builder.Rules;
+        Uow   = builder.Uow;
+
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+
+        base.OnConfiguring(optionsBuilder);
+
+        Database.UseTransaction(Uow.Transaction);
 
     }
 
 
+
     public bool EvaluateEntities { get; set; } = true;
 
+    protected IUnitOfWork Uow { get; }
     protected IRuleSet Rules { get; }
 
 
