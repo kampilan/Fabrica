@@ -42,11 +42,10 @@ public class OriginDbContext : BaseDbContext
 {
 
 
-    public OriginDbContext( ICorrelation correlation, IUnitOfWork uow, IRuleSet rules, DbContextOptions options, ILoggerFactory? factory ) : base(correlation, options, factory)
+    public OriginDbContext( ICorrelation correlation, IRuleSet rules, DbContextOptions options, ILoggerFactory? factory ) : base(correlation, options, factory)
     {
 
         Rules = rules;
-        Uow = uow;
 
     }
 
@@ -71,7 +70,7 @@ public class OriginDbContext : BaseDbContext
 
     public bool EvaluateEntities { get; set; } = true;
 
-    protected IUnitOfWork Uow { get; }
+    protected IUnitOfWork? Uow { get; }
     protected IRuleSet Rules { get; }
 
 
