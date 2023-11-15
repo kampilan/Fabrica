@@ -29,134 +29,130 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using JetBrains.Annotations;
 
-namespace Fabrica.Persistence.UnitOfWork
+namespace Fabrica.Persistence.UnitOfWork;
+
+public class UnitOfWork: IUnitOfWork
 {
 
-    public class UnitOfWork: IUnitOfWork
+
+    public UnitOfWork( ICorrelation context, IConnectionResolver resolver )
     {
 
+        Correlation = context;
 
-        public UnitOfWork( [NotNull] ICorrelation context, [NotNull] IConnectionResolver resolver )
+        Resolver = resolver;
+
+    }
+
+    private ICorrelation Correlation { get; }
+
+
+    private IConnectionResolver Resolver { get; }
+
+    private DbConnection? Connection { get; set; }
+
+    [NotNull]
+    public DbConnection OriginConnection
+    {
+        get
         {
-
-            Correlation = context;
-
-            Resolver = resolver;
-
-        }
-
-        private ICorrelation Correlation { get; }
-
-
-        private IConnectionResolver Resolver { get; }
-
-        private DbConnection Connection { get; set; }
-
-        [NotNull]
-        public DbConnection OriginConnection
-        {
-            get
-            {
-                if( Connection != null )
-                    return Connection;
-
-                Connection = Resolver.GetOriginConnection();
-
-                if (Connection.State != ConnectionState.Open)
-                    Connection.Open();
-
-                Transaction = Connection.BeginTransaction();
-
+            if( Connection != null )
                 return Connection;
 
-            }
-        }
+            Connection = Resolver.GetOriginConnection();
 
+            if (Connection.State != ConnectionState.Open)
+                Connection.Open();
 
-        public DbTransaction Transaction { get; private set; }
-        public UnitOfWorkState State { get; private set; } = UnitOfWorkState.CanCommit;
+            Transaction = Connection.BeginTransaction();
 
-        public void CanCommit()
-        {
-
-            if( State == UnitOfWorkState.Unknown )
-                State = UnitOfWorkState.CanCommit;
+            return Connection;
 
         }
+    }
 
-        public void MustRollback()
+
+    public DbTransaction Transaction { get; private set; }
+    public UnitOfWorkState State { get; private set; } = UnitOfWorkState.CanCommit;
+
+    public void CanCommit()
+    {
+
+        if( State == UnitOfWorkState.Unknown )
+            State = UnitOfWorkState.CanCommit;
+
+    }
+
+    public void MustRollback()
+    {
+        State = UnitOfWorkState.MustRollback;
+    }
+
+
+    private bool IsClosed { get; set; }
+
+    public void Close()
+    {
+
+        var logger = Correlation.GetLogger(this);
+
+        try
         {
-            State = UnitOfWorkState.MustRollback;
-        }
+
+            logger.EnterMethod();
+
+            logger.Inspect( nameof(IsClosed), IsClosed );
+            logger.Inspect( nameof(State), State );
 
 
-        private bool IsClosed { get; set; }
+            if( IsClosed )
+                return;
 
-        public void Close()
-        {
 
-            var logger = Correlation.GetLogger(this);
-
-            try
+            // *****************************************************************
+            if ( Transaction != null )
             {
+                if (State == UnitOfWorkState.CanCommit)
+                    Transaction.Commit();
+                else
+                    Transaction.Rollback();
 
-                logger.EnterMethod();
-
-                logger.Inspect( nameof(IsClosed), IsClosed );
-                logger.Inspect( nameof(State), State );
-
-
-                if( IsClosed )
-                    return;
-
-
-                // *****************************************************************
-                if ( Transaction != null )
-                {
-                    if (State == UnitOfWorkState.CanCommit)
-                        Transaction.Commit();
-                    else
-                        Transaction.Rollback();
-
-                    Transaction.Dispose();
-                    Transaction = null;
-
-                }
-
-
-
-                // *****************************************************************
-                if (Connection != null)
-                {
-                    if (Connection.State == ConnectionState.Open)
-                        Connection.Close();
-
-                    Connection = null;
-
-                }
-
-
-
-                // *****************************************************************
-                IsClosed = true;
-
+                Transaction.Dispose();
+                Transaction = null;
 
             }
-            finally
+
+
+
+            // *****************************************************************
+            if (Connection != null)
             {
-                logger.LeaveMethod();
+                if (Connection.State == ConnectionState.Open)
+                    Connection.Close();
+
+                Connection = null;
+
             }
 
 
+
+            // *****************************************************************
+            IsClosed = true;
+
+
         }
-
-
-        public void Dispose()
+        finally
         {
-            Close();
+            logger.LeaveMethod();
         }
 
 
+    }
+
+
+    public void Dispose()
+    {
+        Close();
     }
 
 
