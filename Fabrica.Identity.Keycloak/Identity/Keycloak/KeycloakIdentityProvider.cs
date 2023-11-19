@@ -68,6 +68,12 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             if (ok)
                 user = model;
+            else
+            {
+                response.Created = false;
+                response.Exists = false;
+                return response;
+            }
 
         }
         else if (!string.IsNullOrWhiteSpace(request.CurrentUsername))
@@ -77,7 +83,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             var req = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource<User>()
-                .AddParameter("username", request.CurrentUsername)
+                .AddParameter("username", $"'{request.CurrentUsername}'")
                 .ToRequest();
 
             var (ok, results) = await _factory.Many<User>(req, ct);
@@ -93,13 +99,17 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             var req = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource<User>()
-                .AddParameter("username", request.NewUsername)
+                .AddParameter("username", $"'{request.NewUsername}'")
                 .ToRequest();
 
             var (ok, results) = await _factory.Many<User>(req, ct);
 
-            if( ok && results.Any() )
-                    return response;
+            if (ok && results.Any())
+            {
+                response.Created = false;
+                response.Exists = true;
+                return response;
+            }
 
         }
 

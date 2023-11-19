@@ -1,19 +1,12 @@
-﻿using System.Collections.Generic;
+﻿namespace Fabrica.Rql.Parser;
 
-namespace Fabrica.Rql.Parser
+public class RqlTree
 {
 
-    
-    public class RqlTree
-    {
+    public bool HasProjection => Projection.Count > 0;
+    public List<string> Projection { get; } = new List<string>();
 
-        public bool HasProjection => Projection.Count > 0;
-        public List<string> Projection { get; } = new List<string>();
-
-        public bool HasCriteria => Criteria.Count > 0;
-        public List<IRqlPredicate> Criteria { get;  } = new List<IRqlPredicate>();
-
-    }
-
+    public bool HasCriteria => Criteria.Count > 0;
+    public List<IRqlPredicate> Criteria { get;  } = new List<IRqlPredicate>();
 
 }

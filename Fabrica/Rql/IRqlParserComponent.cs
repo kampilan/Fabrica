@@ -1,23 +1,17 @@
-﻿using Fabrica.Models;
-using Fabrica.Models.Support;
+﻿using Fabrica.Models.Support;
 using Fabrica.Rql.Builder;
 
-namespace Fabrica.Rql
+namespace Fabrica.Rql;
+
+public interface IRqlParserComponent
 {
 
+    RqlFilterBuilder Parse(string rql);
 
-    public interface IRqlParserComponent
-    {
+    RqlFilterBuilder ParseCriteria(string rql);
 
-        RqlFilterBuilder Parse(string rql);
+    RqlFilterBuilder<TEntity> Parse<TEntity>( string rql ) where TEntity : class, IModel;
 
-        RqlFilterBuilder ParseCriteria(string rql);
-
-        RqlFilterBuilder<TEntity> Parse<TEntity>( string rql ) where TEntity : class, IModel;
-
-        RqlFilterBuilder<TEntity> ParseCriteria<TEntity>(string rql) where TEntity : class, IModel;
-
-    }
-
+    RqlFilterBuilder<TEntity> ParseCriteria<TEntity>(string rql) where TEntity : class, IModel;
 
 }
