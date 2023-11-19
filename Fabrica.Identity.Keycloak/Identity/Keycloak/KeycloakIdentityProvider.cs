@@ -83,7 +83,8 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             var req = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource<User>()
-                .AddParameter("username", $"'{request.CurrentUsername}'")
+                .AddParameter("username", $"{request.CurrentUsername}")
+                .AddParameter("exact", "true")
                 .ToRequest();
 
             var (ok, results) = await _factory.Many<User>(req, ct);
@@ -99,12 +100,13 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             var req = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource<User>()
-                .AddParameter("username", $"'{request.NewUsername}'")
+                .AddParameter("username", $"{request.NewUsername}")
+                .AddParameter("exact", "true")
                 .ToRequest();
 
             var (ok, results) = await _factory.Many<User>(req, ct);
 
-            if (ok && results.Any())
+            if( ok && results.Any() )
             {
                 response.Created = false;
                 response.Exists = true;
