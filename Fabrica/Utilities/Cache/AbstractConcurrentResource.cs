@@ -1,4 +1,7 @@
 ﻿// ReSharper disable UnusedMember.Global
+
+using Fabrica.Watch;
+
 namespace Fabrica.Utilities.Cache;
 
 public abstract class AbstractConcurrentResource<T> : IDisposable
@@ -7,9 +10,10 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
     protected abstract Task<IRenewedResource<T>> Renew();
 
 
-    private ReaderWriterLockSlim ResourceLock { get; } = new ();
-    private object RenewLock { get; } = new ();
-    private ManualResetEvent RenewComplete { get; } = new (true);
+    private ReaderWriterLockSlim ResourceLock { get; } = new();
+
+    private SemaphoreSlim RenewLock { get; } = new(1);
+    private ManualResetEvent RenewComplete { get; } = new(true);
 
     protected bool MustRenewFlag { get; set; }
     protected DateTime Renewable { get; private set; }
@@ -32,84 +36,91 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
     public async Task<T> GetResource(Func<Task>? onEnterRenew = null, Func<Task>? onExitRenew = null)
     {
 
-        try
+        using var logger = this.EnterMethod();
+
+
+        logger.Inspect(nameof(Renewable), Renewable);
+        logger.Inspect(nameof(Expiration), Expiration);
+
+
+        if (Expiration < DateTime.Now)
+            RenewComplete.WaitOne(10000);
+
+
+
+        if( (MustRenewFlag || Renewable < DateTime.Now) && RenewLock.Wait(0) )
         {
 
 
-            if( Expiration < DateTime.Now )
-                RenewComplete.WaitOne(10000);
+            // *****************************************************************
+            logger.Debug("Attempting to begin Renewal");
 
-
-            ResourceLock.EnterReadLock();
-
-
-            if( (MustRenewFlag || Renewable < DateTime.Now) && Monitor.TryEnter(RenewLock, 0) )
+            try
             {
 
                 RenewComplete.Reset();
 
+                if (onEnterRenew != null)
+                    await onEnterRenew.Invoke();
+
+                IRenewedResource<T> renewed;
+                try
+                {
+                    renewed = await Renew();
+                }
+                catch (Exception cause)
+                {
+                    logger.Warning(cause);
+                    return _current.Value;
+                }
+
                 try
                 {
 
-                    if (onEnterRenew != null)
-                        await onEnterRenew.Invoke();
+                    ResourceLock.EnterWriteLock();
 
-                    IRenewedResource<T> renewed;
-                    try
-                    {
-                        renewed = await Renew();
-                    }
-                    catch (Exception)
-                    {
-                        return _current.Value;
-                    }
+                    _current = renewed;
 
-                    try
-                    {
-
-                        ResourceLock.ExitReadLock();
-                        ResourceLock.EnterWriteLock();
-
-                        _current = renewed;
-
-                        MustRenewFlag = false;
-                        Renewable  = DateTime.Now + _current.TimeToRenew;
-                        Expiration = DateTime.Now + _current.TimeToLive;
-
-                    }
-                    finally
-                    {
-                        ResourceLock.ExitWriteLock();
-                    }
-
-                    RenewComplete.Set();
-
+                    MustRenewFlag = false;
+                    Renewable = DateTime.Now + _current.TimeToRenew;
+                    Expiration = DateTime.Now + _current.TimeToLive;
 
                 }
                 finally
                 {
-
-                    if (onExitRenew != null)
-                        await onExitRenew.Invoke();
-
-                    Monitor.Exit(RenewLock);
-
+                    ResourceLock.ExitWriteLock();
                 }
+
+                RenewComplete.Set();
 
 
             }
+            finally
+            {
+
+                if (onExitRenew != null)
+                    await onExitRenew.Invoke();
+
+                RenewLock.Release();
+
+            }
+
+            // *****************************************************************
+            logger.Debug("Renewal completed");
 
 
+        }
+
+
+        try
+        {
+            ResourceLock.EnterReadLock();
             return _current.Value;
-
 
         }
         finally
         {
-
-            if (ResourceLock.IsReadLockHeld)
-                ResourceLock.ExitReadLock();
-
+            ResourceLock.ExitReadLock();
         }
 
 
@@ -119,8 +130,8 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
 
     public void Dispose()
     {
-        ResourceLock?.Dispose();
-        RenewComplete?.Dispose();
+        ResourceLock.Dispose();
+        RenewComplete.Dispose();
     }
 
 }

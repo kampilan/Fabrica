@@ -57,36 +57,41 @@ public class KeycloakProviderTests
     [Test]
     public async Task Test3100_0100_Should_Return_Users_And_UserByUid()
     {
-        await using var scope = TheContainer.BeginLifetimeScope();
-
-        var factory = scope.Resolve<IHttpClientFactory>();
-        using var client = factory.CreateClient("Keycloak");
-
-        var json = await client.GetStringAsync("users");
-
-        Assert.IsNotNull(json);
-        Assert.IsNotEmpty(json);
-
-        var list = JsonSerializer.Deserialize<List<User>>(json);
-
-        Assert.IsNotNull(list);
-        Assert.IsNotEmpty(list);
-
-        var user = list.First();
-
-        Assert.IsNotNull(user);
 
 
-        var json2 = await client.GetStringAsync($"users/{user.Id}");
+        for (int x = 0; x < 10; x++)
+        {
+            await using var scope = TheContainer.BeginLifetimeScope();
+
+            var factory = scope.Resolve<IHttpClientFactory>();
+            using var client = factory.CreateClient("Keycloak");
+
+            var json = await client.GetStringAsync("users");
+
+            Assert.IsNotNull(json);
+            Assert.IsNotEmpty(json);
+
+            var list = JsonSerializer.Deserialize<List<User>>(json);
+
+            Assert.IsNotNull(list);
+            Assert.IsNotEmpty(list);
+
+            var user = list.First();
+
+            Assert.IsNotNull(user);
 
 
-        Assert.IsNotNull(json2);
-        Assert.IsNotEmpty(json2);
+            var json2 = await client.GetStringAsync($"users/{user.Id}");
 
-        var user2 = JsonSerializer.Deserialize<User>(json2);
 
-        Assert.IsNotNull(user2);
+            Assert.IsNotNull(json2);
+            Assert.IsNotEmpty(json2);
 
+            var user2 = JsonSerializer.Deserialize<User>(json2);
+
+            Assert.IsNotNull(user2);
+
+        }
 
 
     }

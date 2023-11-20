@@ -18,7 +18,6 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
 
         _cache = new ConcurrentResource<TokenModel>( _fetchToken );
 
-
     }
 
     public TimeSpan RenewalWindow { get; set; } = TimeSpan.FromSeconds(30);
@@ -27,7 +26,6 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
     private ICredentialGrant Grant { get; }
 
     private MetaModel? Meta { get; set; }
-    private TokenModel? Token { get; set; }
 
     public string Name => Grant.Name;
 
@@ -37,12 +35,13 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
         using var logger = EnterMethod();
 
         Meta  = await _fetchMeta();
-        Token = await _cache.GetResource();
+
+        await _cache.Initialize();
 
     }
 
     private readonly ConcurrentResource<TokenModel> _cache;
-    public bool HasExpired => Token?.HasExpired() ?? true;
+    public bool HasExpired => _cache.HasExpired;
 
     public async Task<string> GetToken()
     {
