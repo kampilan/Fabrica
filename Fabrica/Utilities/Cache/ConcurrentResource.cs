@@ -1,4 +1,5 @@
-﻿namespace Fabrica.Utilities.Cache;
+﻿// ReSharper disable UnusedMember.Global
+namespace Fabrica.Utilities.Cache;
 
 public class ConcurrentResource<T> : AbstractConcurrentResource<T>
 {

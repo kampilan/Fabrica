@@ -1,6 +1,8 @@
-﻿using Fabrica.Utilities.Container;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Fabrica.Utilities.Cache;
+using Fabrica.Utilities.Container;
 using Fabrica.Watch;
-using Newtonsoft.Json;
 
 namespace Fabrica.Identity;
 
@@ -14,7 +16,12 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
         Factory = factory;
         Grant   = grant;
 
+        _cache = new ConcurrentResource<TokenModel>( _fetchToken );
+
+
     }
+
+    public TimeSpan RenewalWindow { get; set; } = TimeSpan.FromSeconds(30);
 
     private IHttpClientFactory Factory { get; }
     private ICredentialGrant Grant { get; }
@@ -30,11 +37,11 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
         using var logger = EnterMethod();
 
         Meta  = await _fetchMeta();
-        Token = await _fetchToken();
+        Token = await _cache.GetResource();
 
     }
 
-
+    private readonly ConcurrentResource<TokenModel> _cache;
     public bool HasExpired => Token?.HasExpired() ?? true;
 
     public async Task<string> GetToken()
@@ -43,29 +50,16 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
         using var logger = EnterMethod();
 
 
-        logger.Inspect(nameof(HasExpired), HasExpired);
-
-
-
         // *****************************************************************
-        if ( HasExpired )
-        {
-            logger.Debug("Attempting to fetch new token");
-            Token = await _fetchToken();
-        }
+        logger.Debug("Attempting to get cached TokenModel");
+        var resource = await _cache.GetResource();
+        
 
-
-
-        // *****************************************************************
-        var token = Token?.AccessToken ?? "";
-
+        var token = resource.AccessToken;
         logger.Inspect(nameof(token.Length), token.Length);
 
 
-
-        // *****************************************************************
         return token;
-
 
     }
 
@@ -108,9 +102,9 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
 
             // *****************************************************************
             logger.Debug("Attempting to build MetaModel from JSON");
-            var model = JsonConvert.DeserializeObject<MetaModel>(json);
+            var model = JsonSerializer.Deserialize<MetaModel>(json);
 
-            if (model == null)
+            if (model is null)
                 throw new Exception("Null MetaModel encountered");
 
             logger.LogObject(nameof(model), model);
@@ -131,7 +125,7 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
     }
 
 
-    private async Task<TokenModel> _fetchToken()
+    private async Task<IRenewedResource<TokenModel>> _fetchToken()
     {
 
         using var logger = EnterMethod();
@@ -166,17 +160,20 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
 
             // *****************************************************************
             logger.Debug("Attempting to build TokenModel");
-            var model = JsonConvert.DeserializeObject<TokenModel>(json);
+            var model = JsonSerializer.Deserialize<TokenModel>(json);
 
-            if (model == null)
+            if (model is null)
                 throw new Exception("Null TokenModel encountered");
 
             logger.LogObject(nameof(model), model);
 
 
+            var timeToLive = model.GetAccessTokenTtl();
+            var timeToRenew = timeToLive - RenewalWindow;
+
 
             // *****************************************************************
-            return model;
+            return new RenewedResource<TokenModel>{ Value = model, TimeToLive = timeToLive, TimeToRenew = timeToRenew };
 
         }
         catch (Exception cause)
@@ -196,19 +193,19 @@ public class MetaModel
 {
 
 
-    [JsonProperty("issuer")]
+    [JsonPropertyName("issuer")]
     public string Issuer { get; set; } = "";
 
-    [JsonProperty("authorization_endpoint")]
+    [JsonPropertyName("authorization_endpoint")]
     public string AuthorizationEndpoint { get; set; } = "";
 
-    [JsonProperty("token_endpoint")]
+    [JsonPropertyName("token_endpoint")]
     public string TokenEndpoint { get; set; } = "";
 
-    [JsonProperty("introspection_endpoint")]
+    [JsonPropertyName("introspection_endpoint")]
     public string IntrospectionEndpoint { get; set; } = "";
 
-    [JsonProperty("userinfo_endpoint")]
+    [JsonPropertyName("userinfo_endpoint")]
     public string UserInfoEndpoint { get; set; } = "";
 
 
@@ -220,27 +217,27 @@ public class TokenModel
 
 
     [Sensitive]
-    [JsonProperty("access_token")]
+    [JsonPropertyName("access_token")]
     public string AccessToken { get; set; } = "";
 
-    [JsonProperty("expires_in")]
+    [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
 
     [Sensitive]
-    [JsonProperty("refresh_token")]
+    [JsonPropertyName("refresh_token")]
     public string RefreshToken { get; set; } = "";
 
 
     private readonly DateTime _created = DateTime.Now;
     public TimeSpan GetAccessTokenTtl()
     {
-        var ts = (DateTime.Now - _created) - TimeSpan.FromSeconds(120);
+        var ts = TimeSpan.FromSeconds(ExpiresIn - 120 );
         return ts;
     }
 
     public DateTime GetExpiration()
     {
-        var ts = _created + TimeSpan.FromSeconds( ExpiresIn - 120 );
+        var ts = _created + GetAccessTokenTtl();
         return ts;
     }
 
