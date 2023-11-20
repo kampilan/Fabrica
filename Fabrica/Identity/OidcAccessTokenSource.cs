@@ -46,17 +46,9 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
     public async Task<string> GetToken()
     {
 
-        using var logger = EnterMethod();
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to get cached TokenModel");
         var resource = await _cache.GetResource();
-        
 
         var token = resource.AccessToken;
-        logger.Inspect(nameof(token.Length), token.Length);
-
 
         return token;
 
