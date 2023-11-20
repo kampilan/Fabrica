@@ -17,7 +17,6 @@ public class ConcurrentResource<T> : AbstractConcurrentResource<T>
         return r;
     }
 
-    public bool HasExpired => Expiration < DateTime.Now;
 
 
 }

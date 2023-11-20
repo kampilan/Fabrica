@@ -16,8 +16,13 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
     private ManualResetEvent RenewComplete { get; } = new(true);
 
     protected bool MustRenewFlag { get; set; }
-    protected DateTime Renewable { get; private set; }
-    protected DateTime Expiration { get; private set; }
+
+    public DateTime RenewsAt { get; private set; }
+    public DateTime ExpiresAt { get; private set; }
+    public bool HasExpired => ExpiresAt < DateTime.Now;
+    public int RenewCount { get; private set; }
+
+    
     private IRenewedResource<T> _current;
 
     public async Task Initialize()
@@ -39,16 +44,16 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
         using var logger = this.EnterMethod();
 
 
-        logger.Inspect(nameof(Renewable), Renewable);
-        logger.Inspect(nameof(Expiration), Expiration);
+        logger.Inspect(nameof(RenewsAt), RenewsAt);
+        logger.Inspect(nameof(ExpiresAt), ExpiresAt);
 
 
-        if (Expiration < DateTime.Now)
+        if (ExpiresAt < DateTime.Now)
             RenewComplete.WaitOne(10000);
 
 
 
-        if( (MustRenewFlag || Renewable < DateTime.Now) && RenewLock.Wait(0) )
+        if( (MustRenewFlag || RenewsAt < DateTime.Now) && RenewLock.Wait(0) )
         {
 
 
@@ -82,8 +87,11 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
                     _current = renewed;
 
                     MustRenewFlag = false;
-                    Renewable = DateTime.Now + _current.TimeToRenew;
-                    Expiration = DateTime.Now + _current.TimeToLive;
+
+                    RenewsAt = DateTime.Now + _current.TimeToRenew;
+                    ExpiresAt = DateTime.Now + _current.TimeToLive;
+
+                    RenewCount++;
 
                 }
                 finally
