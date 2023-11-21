@@ -27,9 +27,17 @@ public abstract class AbstractConcurrentResource<T> : IDisposable
 
     public async Task Initialize()
     {
+
+        using var logger = this.EnterMethod();
+
         _current = await Renew();
 
         MustRenewFlag = false;
+
+        RenewsAt  = DateTime.Now + _current.TimeToRenew;
+        ExpiresAt = DateTime.Now + _current.TimeToLive;
+
+        RenewCount++;
 
     }
 

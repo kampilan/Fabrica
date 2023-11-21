@@ -42,6 +42,7 @@ public class OidcAccessTokenSource : CorrelatedObject, IAccessTokenSource, IRequ
 
     private readonly ConcurrentResource<TokenModel> _cache;
     public bool HasExpired => _cache.HasExpired;
+    public int RenewCount => _cache.RenewCount;
 
     public async Task<string> GetToken()
     {
