@@ -47,14 +47,8 @@ public static class MiddlewareExtensions
 
     public static IApplicationBuilder UseDiagnosticsMonitor(this IApplicationBuilder app )
     {
-
-        var c = app.ApplicationServices.GetService(typeof(ICorrelation));
-        var o = app.ApplicationServices.GetService(typeof(DiagnosticOptions))??new DiagnosticOptions();
-        if ( c is ICorrelation corr && o is DiagnosticOptions opt)
-            app.UseMiddleware<DiagnosticsMonitorMiddleware>(corr,opt);
-
+        app.UseMiddleware<DiagnosticsMonitorMiddleware>();
         return app;
-
     }
 
 
