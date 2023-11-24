@@ -43,7 +43,7 @@ public class DiagnosticsMonitorMiddleware: IMiddleware
 {
 
 
-    public DiagnosticsMonitorMiddleware(ICorrelation correlation)
+    public DiagnosticsMonitorMiddleware( ICorrelation correlation )
     {
 
         Correlation = correlation;

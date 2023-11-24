@@ -24,6 +24,7 @@ SOFTWARE.
 
 // ReSharper disable UnusedMember.Global
 
+using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Builder;
 
 namespace Fabrica.Api.Support.Middleware;
@@ -46,7 +47,12 @@ public static class MiddlewareExtensions
 
     public static IApplicationBuilder UseDiagnosticsMonitor(this IApplicationBuilder app )
     {
-        app.UseMiddleware<DiagnosticsMonitorMiddleware>();
+
+        var c = app.ApplicationServices.GetService(typeof(ICorrelation));
+        var o = app.ApplicationServices.GetService(typeof(DiagnosticOptions))??new DiagnosticOptions();
+        if ( c is ICorrelation corr && o is DiagnosticOptions opt)
+            app.UseMiddleware<DiagnosticsMonitorMiddleware>(corr,opt);
+
         return app;
 
     }
