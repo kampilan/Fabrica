@@ -43,6 +43,14 @@ public class DiagnosticsMonitorMiddleware: IMiddleware
 {
 
 
+    public DiagnosticsMonitorMiddleware(ICorrelation correlation)
+    {
+
+        Correlation = correlation;
+        Options = new DiagnosticOptions();
+
+    }
+
     public DiagnosticsMonitorMiddleware( ICorrelation correlation, DiagnosticOptions options )
     {
 

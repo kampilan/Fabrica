@@ -7,14 +7,13 @@ public static class ServiceCollectionExtensions
 {
 
 
-    public static IServiceCollection AddDiagnosticMiddleware( this IServiceCollection collection, DiagnosticOptions? options = null )
+    public static IServiceCollection AddDiagnosticMiddleware( this IServiceCollection collection, DiagnosticOptions options )
     {
 
         collection.AddTransient(p =>
         {
 
             var corr = p.GetRequiredService<ICorrelation>();
-            options = options ??= new DiagnosticOptions();
 
             var mw = new DiagnosticsMonitorMiddleware(corr, options);
 
