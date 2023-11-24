@@ -24,7 +24,6 @@ SOFTWARE.
 
 // ReSharper disable UnusedMember.Global
 
-using Fabrica.Utilities.Container;
 using Microsoft.AspNetCore.Builder;
 
 namespace Fabrica.Api.Support.Middleware;
