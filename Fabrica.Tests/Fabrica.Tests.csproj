@@ -12,6 +12,7 @@
     <PackageReference Include="Dumpify" Version="0.6.0" />
     <PackageReference Include="Fabrica.Mongo.Driver" Version="2.19.2" />
     <PackageReference Include="fastJSON" Version="2.4.0.4" />
+    <PackageReference Include="ImpromptuInterface" Version="8.0.4" />
     <PackageReference Include="JetBrains.dotMemoryUnit" Version="3.2.20220510" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />

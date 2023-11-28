@@ -1,13 +1,13 @@
-﻿namespace Fabrica.Http;
+﻿namespace Fabrica.Services;
 
-public static  class ServiceEndpoints
+public static class ServiceEndpoints
 {
 
     public static string Repository => "Fabrica.Service.Repository";
     public static string Work => "Fabrica.Service.Work";
 
 
-    public static HttpClient GetRepositoryClient(this IHttpClientFactory factory )
+    public static HttpClient GetRepositoryClient(this IHttpClientFactory factory)
     {
         return factory.CreateClient(Repository);
     }

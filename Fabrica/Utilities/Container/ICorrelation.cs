@@ -34,6 +34,7 @@ public interface ICorrelation
 
     string Uid { get; }
 
+    string CallerGatewayToken { get; }
 
     string Tenant { get; }
 

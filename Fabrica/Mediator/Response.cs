@@ -2,11 +2,11 @@
 // ReSharper disable UnusedMember.Global
 
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
-using Fabrica.Utilities.Container;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using static Fabrica.Exceptions.EventDetail;
 
 namespace Fabrica.Mediator;
 
@@ -37,7 +37,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
 
     public Exception? InnerException { get; protected set; }
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ErrorKind Kind { get; protected set; } = ErrorKind.System;
 
     [DefaultValue("")] 
@@ -170,3 +170,5 @@ public class Response<TValue>: FluentResponse<Response<TValue>>
     public override object GetValue() => Value!;
 
 }
+
+

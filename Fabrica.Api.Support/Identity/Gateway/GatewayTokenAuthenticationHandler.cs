@@ -136,9 +136,11 @@ public class GatewayTokenAuthenticationHandler : AuthenticationHandler<GatewayTo
 
         // *****************************************************************
         logger.Debug("Attempting to set Caller on Correlation");
-        if( Correlation is Correlation impl )
+        if ( Correlation is Correlation impl )
+        {
+            impl.CallerGatewayToken = token;
             impl.Caller = result.Principal;
-
+        }
 
 
         // *****************************************************************

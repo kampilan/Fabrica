@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using Fabrica.Http;
 using Fabrica.Identity;
+using Fabrica.Services;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 

@@ -39,6 +39,8 @@ public class Correlation: ICorrelation
 
     public string Uid { get; } = Ulid.NewUlid().ToString();
 
+    public string CallerGatewayToken { get; set; } = string.Empty;
+
     public string Tenant { get; set; } = "";
 
     public IPrincipal Caller { get; set; } = new NullUser();
@@ -49,15 +51,13 @@ public class Correlation: ICorrelation
     public Color Color { get; set; } = Color.PapayaWhip;
 
 
-    public void PopulateCaller( IClaimSet claimSet )
+    public void PopulateCaller(IClaimSet claimSet)
     {
 
         var ci = new FabricaIdentity(claimSet);
 
         Caller = new ClaimsPrincipal(ci);
-
     }
-
 
 }
 
@@ -72,6 +72,6 @@ public class NullUser : IPrincipal, IIdentity
     public IIdentity Identity => this;
     public string AuthenticationType => "None";
     public bool IsAuthenticated => false;
-    public string Name => "";
+    public string Name => string.Empty;
 
 }
