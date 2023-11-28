@@ -6,6 +6,7 @@ using Fabrica.Api.Support.Handlers;
 using Fabrica.Container;
 using Fabrica.One;
 using Fabrica.One.Appliance;
+using Fabrica.Services;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Process;
 using Fabrica.Watch;
@@ -114,15 +115,6 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
 
 
-        foreach (var pair in mission.ServiceEndpoints)
-        {
-
-            var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
-            var uri = new Uri(address);
-
-            builder.Services.AddHttpClient(pair.Key, c => c.BaseAddress = uri);
-
-        }
 
         try
         {
@@ -215,6 +207,15 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
                 .As<IServiceScopeFactory>()
                 .SingleInstance()
                 .AutoActivate();
+
+
+            foreach (var pair in mission.ServiceEndpoints)
+            {
+                var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
+                cb.AddServiceAddress( pair.Key, address );
+            }
+
+
 
 
             using var inner = GetLogger();
