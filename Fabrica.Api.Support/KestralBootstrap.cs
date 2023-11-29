@@ -216,8 +216,6 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
             }
 
 
-
-
             using var inner = GetLogger();
 
             try
