@@ -192,7 +192,7 @@ public class ServiceClient : CorrelatedObject
     }
 
 
-    public async Task<string> Request(ServiceEndpoint ep, string? body=null )
+    public async Task<string> RequestAsString( ServiceEndpoint ep, string? body=""  )
     {
 
         using var logger = EnterMethod();
@@ -273,16 +273,6 @@ public class ServiceClient : CorrelatedObject
 
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
     public async Task Execute(string endpointName, object? body=null)
