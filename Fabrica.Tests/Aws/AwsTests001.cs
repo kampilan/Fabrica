@@ -14,7 +14,6 @@ using Fabrica.Aws.Secrets;
 using Fabrica.Watch;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Aws;
 
@@ -71,7 +70,7 @@ public class AwsTests001
 
         var set = await client.CreateCredentialSet("arn:aws:iam::523329725044:role/client-serene", "Moring0001");
 
-        ClassicAssert.NotNull(set);
+        Assert.NotNull(set);
 
         Assert.IsNotEmpty(set.AccessKey);
         Assert.IsNotEmpty(set.SecretKey);

@@ -187,7 +187,7 @@ public class ServiceTest
             Timeout = TimeSpan.FromSeconds(20),
         };
 
-        var response = await client.RequestAsString(ep);
+        var response = await client.RequestAsStream(ep);
 
 
         Assert.IsNotNull(response);

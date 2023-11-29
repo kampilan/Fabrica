@@ -192,7 +192,7 @@ public class ServiceClient : CorrelatedObject
     }
 
 
-    public async Task<string> RequestAsString( ServiceEndpoint ep, string? body=""  )
+    public async Task<(MemoryStream content,string contentType)> RequestAsStream( ServiceEndpoint ep, string? body=""  )
     {
 
         using var logger = EnterMethod();
@@ -239,30 +239,19 @@ public class ServiceClient : CorrelatedObject
             httpRes.EnsureSuccessStatusCode();
 
 
-
             // *****************************************************************
-            logger.Debug("Attempting to dig out result into Response");
-            var response = "";
-            using( var sr = new StreamReader(await httpRes.Content.ReadAsStreamAsync()))
-                response = await sr.ReadToEndAsync();
+            logger.Debug("Attempting to dig out Content-Type and content");
+            var contentType = httpRes.Content.Headers.ContentType?.MediaType??"";
 
-            if( httpRes.Content.Headers.ContentType?.ToString().Contains("json") ?? false )
-            {
-                if (string.IsNullOrWhiteSpace(response))
-                    response = "{}";
-            }
-            else
-            {
-                var content = await httpRes.Content.ReadAsStringAsync();
-                var msg = new {Content = content};
-                response = JsonSerializer.Serialize(msg);
+            var strm = new MemoryStream();
+            await httpRes.Content.CopyToAsync(strm);
 
-            }
+            strm.Seek(0, SeekOrigin.Begin);
 
 
 
             // *****************************************************************
-            return response;
+            return (strm,contentType);
 
 
         }
