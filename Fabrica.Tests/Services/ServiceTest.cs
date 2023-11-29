@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Amazon.SimpleNotificationService.Model;
 using Auth0.ManagementApi.Models;
 using Autofac;
 using Autofac.Core;
@@ -169,7 +170,7 @@ public class ServiceTest
     }
 
 
-//    [Test]
+    [Test]
     public async Task Test1010_0200_Should_Return_Email_Payload()
     {
 
@@ -177,28 +178,17 @@ public class ServiceTest
 
         var client = scope.Resolve<ServiceClient>();
 
-        var request = new EmailRequest();
+        var ep = new ServiceEndpoint
+        {
+            ServiceName = "Make",
+            EndpointName = "PeriodClose",
+            BaseAddress = new Uri("https://hook.us1.make.com/xzhon4jn7bgmh23aqvua2jdagnh2e62y/"),
+            Path = new Uri("", UriKind.Relative),
+            Timeout = TimeSpan.FromSeconds(20),
+        };
 
-        request.To.Add("moring.gabby@gmail.com");
-        request.Cc.Add("me@jamesmoring.com");
-        request.Bcc.Add("wilma.l.moring@gmail.com");
+        var response = await client.RequestAsString(ep);
 
-        var sb = new StringBuilder();
-        sb.AppendLine("How are you honey?");
-        sb.AppendLine(" This is just a test email from your Pops.");
-        sb.AppendLine();
-        sb.AppendLine("Love you");
-
-        request.Template = "pond-hawk-standard";
-        request.Model.Subject = "Just a test email";
-        request.Model.Salutation = "Gabby";
-        request.Model.Body = sb.ToString();
-
-        var json = JsonSerializer.Serialize(request, new JsonSerializerOptions {WriteIndented = true});
-        Assert.IsNotEmpty(json);
-
-
-        var response = await client.SendEmail(request);
 
         Assert.IsNotNull(response);
 

@@ -243,9 +243,11 @@ public class ServiceClient : CorrelatedObject
             // *****************************************************************
             logger.Debug("Attempting to dig out result into Response");
             var response = "";
-            if (httpRes.Content.Headers.ContentType?.ToString().Contains("json") ?? false)
+            using( var sr = new StreamReader(await httpRes.Content.ReadAsStreamAsync()))
+                response = await sr.ReadToEndAsync();
+
+            if( httpRes.Content.Headers.ContentType?.ToString().Contains("json") ?? false )
             {
-                response = await httpRes.Content.ReadAsStringAsync();
                 if (string.IsNullOrWhiteSpace(response))
                     response = "{}";
             }
