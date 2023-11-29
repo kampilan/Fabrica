@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -189,6 +190,96 @@ public class ServiceClient : CorrelatedObject
 
 
     }
+
+
+    public async Task<string> Request(ServiceEndpoint ep, string? body=null )
+    {
+
+        using var logger = EnterMethod();
+
+
+        if (logger.IsDebugEnabled)
+        {
+            var obj = new { Endpoint = ep };
+            logger.LogObject("Request", obj);
+        }
+
+
+        try
+        {
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to get service Http client");
+            using var client = CreateClient(ep);
+
+
+
+            // *****************************************************************
+            var httpReq = new HttpRequestMessage();
+            if (!string.IsNullOrWhiteSpace(body))
+            {
+                logger.Debug("Attempting to put body into request content");
+                var content = new StringContent( body, Encoding.UTF8,  "application/json" );
+                httpReq.Content = content;
+            }
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send via HttpClient");
+            var httpRes = await client.SendAsync(httpReq);
+
+            logger.LogObject(nameof(httpRes), httpRes);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to ensure success");
+            httpRes.EnsureSuccessStatusCode();
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to dig out result into Response");
+            var response = "";
+            if (httpRes.Content.Headers.ContentType?.ToString().Contains("json") ?? false)
+            {
+                response = await httpRes.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(response))
+                    response = "{}";
+            }
+            else
+            {
+                var content = await httpRes.Content.ReadAsStringAsync();
+                var msg = new {Content = content};
+                response = JsonSerializer.Serialize(msg);
+
+            }
+
+
+
+            // *****************************************************************
+            return response;
+
+
+        }
+        catch (Exception cause)
+        {
+            var obj = new { Endpoint = ep };
+            logger.ErrorWithContext(cause, obj, "Service client Send Failed.");
+            throw;
+        }
+
+
+    }
+
+
+
+
+
+
+
 
 
 
