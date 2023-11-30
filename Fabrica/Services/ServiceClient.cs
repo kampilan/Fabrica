@@ -58,12 +58,22 @@ public class ServiceClient : CorrelatedObject
             logger.Debug("Attempting to get service Http client");
             var client = _factory.CreateClient(HttpClientName);
 
-            client.BaseAddress = ep.Endpoint;
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build HttpRequestMessage");
+            var httpReq = new HttpRequestMessage
+            {
+                RequestUri = ep.Endpoint,
+                Method     = ep.Method
+            };
+
+            if ( ep.Authentication == AuthenticationType.Gateway && !string.IsNullOrWhiteSpace(Correlation.CallerGatewayToken) )
+                httpReq.Headers.Authorization = new AuthenticationHeaderValue("bearer", Correlation.CallerGatewayToken);
 
 
 
             // *****************************************************************
-            var httpReq = new HttpRequestMessage();
             if ( body is not null )
             {
                 logger.Debug("Attempting to serialize body into request content");
@@ -132,12 +142,22 @@ public class ServiceClient : CorrelatedObject
             logger.Debug("Attempting to get service Http client");
             var client = _factory.CreateClient(HttpClientName);
 
-            client.BaseAddress = ep.Endpoint;
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to build HttpRequestMessage");
+            var httpReq = new HttpRequestMessage
+            {
+                RequestUri = ep.Endpoint,
+                Method = ep.Method
+            };
+
+            if (ep.Authentication == AuthenticationType.Gateway && !string.IsNullOrWhiteSpace(Correlation.CallerGatewayToken))
+                httpReq.Headers.Authorization = new AuthenticationHeaderValue("bearer", Correlation.CallerGatewayToken);
 
 
 
             // *****************************************************************
-            var httpReq = new HttpRequestMessage();
             if (body is not null)
             {
                 logger.Debug("Attempting to serialize body into request content");
@@ -206,13 +226,21 @@ public class ServiceClient : CorrelatedObject
             logger.Debug("Attempting to get service Http client");
             var client = _factory.CreateClient(HttpClientName);
 
-            client.BaseAddress = ep.Endpoint;
-
 
 
             // *****************************************************************
-            var httpReq = new HttpRequestMessage();
-            if( body is not null )
+            logger.Debug("Attempting to build HttpRequestMessage");
+            var httpReq = new HttpRequestMessage
+            {
+                RequestUri = ep.Endpoint,
+                Method = ep.Method
+            };
+
+            if (ep.Authentication == AuthenticationType.Gateway && !string.IsNullOrWhiteSpace(Correlation.CallerGatewayToken))
+                httpReq.Headers.Authorization = new AuthenticationHeaderValue("bearer", Correlation.CallerGatewayToken);
+
+
+            if ( body is not null )
             {
 
                 logger.Debug("Attempting to put body into request content");
@@ -296,13 +324,20 @@ public class ServiceClient : CorrelatedObject
             logger.Debug("Attempting to get service Http client");
             var client = _factory.CreateClient(HttpClientName);
 
-            client.BaseAddress = ep.Endpoint;
-
 
 
             // *****************************************************************
-            logger.Debug("Attempting to serialize body into request content");
-            var httpReq = new HttpRequestMessage();
+            logger.Debug("Attempting to build HttpRequestMessage");
+            var httpReq = new HttpRequestMessage
+            {
+                RequestUri = ep.Endpoint,
+                Method = ep.Method
+            };
+
+            if (ep.Authentication == AuthenticationType.Gateway && !string.IsNullOrWhiteSpace(Correlation.CallerGatewayToken))
+                httpReq.Headers.Authorization = new AuthenticationHeaderValue("bearer", Correlation.CallerGatewayToken);
+
+
             if (body is not null)
             {
                 logger.Debug("Attempting to serialize body into request content");
@@ -359,20 +394,26 @@ public class ServiceClient : CorrelatedObject
             logger.Debug("Attempting to get service Http client");
             var client = _factory.CreateClient(HttpClientName);
 
-            client.BaseAddress = ep.Endpoint;
-
 
 
             // *****************************************************************
-            logger.Debug("Attempting to serialize body into request content");
-            var httpReq = new HttpRequestMessage();
+            logger.Debug("Attempting to build HttpRequestMessage");
+            var httpReq = new HttpRequestMessage
+            {
+                RequestUri = ep.Endpoint,
+                Method = ep.Method
+            };
+
+            if (ep.Authentication == AuthenticationType.Gateway && !string.IsNullOrWhiteSpace(Correlation.CallerGatewayToken))
+                httpReq.Headers.Authorization = new AuthenticationHeaderValue("bearer", Correlation.CallerGatewayToken);
+
+
             if (body is not null)
             {
                 logger.Debug("Attempting to serialize body into request content");
                 var content = JsonContent.Create(body, options: Options);
                 httpReq.Content = content;
             }
-
 
 
 
