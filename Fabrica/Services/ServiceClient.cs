@@ -1,10 +1,9 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
+using System.Net.Mime;
 using System.Text.Json;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
-using Microsoft.Extensions.Http;
 
 namespace Fabrica.Services;
 
@@ -13,39 +12,21 @@ public class ServiceClient : CorrelatedObject
 
     private static readonly JsonSerializerOptions Options = new();
 
-    public ServiceClient(ICorrelation correlation, ServiceEndpointResolver resolver) : base(correlation)
+
+    public static readonly string HttpClientName = "Fabrica.ServiceClient";
+
+
+    public ServiceClient(ICorrelation correlation, ServiceEndpointResolver resolver, IHttpClientFactory factory ) : base(correlation)
     {
 
-        Resolver = resolver;
+        _resolver = resolver;
+        _factory  = factory;
 
-    }
-    private ServiceEndpointResolver Resolver { get; }
-
-    private HttpClient CreateClient(string endpointName)
-    {
-
-        var ep = Resolver.GetEndpoint(endpointName);
-        if( ep is null )
-            throw new InvalidOperationException($"Endpoint: ({endpointName}) was not found");
-
-        return CreateClient(ep);
 
     }
 
-    private HttpClient CreateClient( ServiceEndpoint ep )
-    {
-
-        var handler = new ServiceMessageHandler(Correlation, ep);
-
-        var client = new HttpClient(handler, true)
-        {
-            BaseAddress = ep.Endpoint
-        };
-
-        return client;
-
-    }
-
+    private readonly ServiceEndpointResolver _resolver;
+    private readonly IHttpClientFactory _factory;
 
 
     public async Task<TResponse> Request<TResponse>(string endpointName, object? body=null ) where TResponse : class
@@ -66,8 +47,18 @@ public class ServiceClient : CorrelatedObject
 
 
             // *****************************************************************
+            logger.Debug("Attempting to get ServiceEndpoint for given endpoint name");
+            var ep = _resolver.GetEndpoint(endpointName);
+            if( ep is null )
+                throw new InvalidOperationException($"Endpoint: ({endpointName}) was not found");
+
+
+
+            // *****************************************************************
             logger.Debug("Attempting to get service Http client");
-            using var client = CreateClient(endpointName);
+            var client = _factory.CreateClient(HttpClientName);
+
+            client.BaseAddress = ep.Endpoint;
 
 
 
@@ -139,7 +130,9 @@ public class ServiceClient : CorrelatedObject
 
             // *****************************************************************
             logger.Debug("Attempting to get service Http client");
-            using var client = CreateClient(ep);
+            var client = _factory.CreateClient(HttpClientName);
+
+            client.BaseAddress = ep.Endpoint;
 
 
 
@@ -192,13 +185,13 @@ public class ServiceClient : CorrelatedObject
     }
 
 
-    public async Task<(MemoryStream content,string contentType)> RequestAsStream( ServiceEndpoint ep, string? body=""  )
+    public async Task<ContentStream> RequestAsStream( ServiceEndpoint ep, ContentStream? body=null  )
     {
 
         using var logger = EnterMethod();
 
 
-        if (logger.IsDebugEnabled)
+        if( logger.IsDebugEnabled )
         {
             var obj = new { Endpoint = ep };
             logger.LogObject("Request", obj);
@@ -211,17 +204,23 @@ public class ServiceClient : CorrelatedObject
 
             // *****************************************************************
             logger.Debug("Attempting to get service Http client");
-            using var client = CreateClient(ep);
+            var client = _factory.CreateClient(HttpClientName);
+
+            client.BaseAddress = ep.Endpoint;
 
 
 
             // *****************************************************************
             var httpReq = new HttpRequestMessage();
-            if (!string.IsNullOrWhiteSpace(body))
+            if( body is not null )
             {
+
                 logger.Debug("Attempting to put body into request content");
-                var content = new StringContent( body, Encoding.UTF8,  "application/json" );
+                var content = new StreamContent(body);
+                content.Headers.ContentType = body.ContentType;
+
                 httpReq.Content = content;
+
             }
 
 
@@ -241,9 +240,11 @@ public class ServiceClient : CorrelatedObject
 
             // *****************************************************************
             logger.Debug("Attempting to dig out Content-Type and content");
-            var contentType = httpRes.Content.Headers.ContentType?.MediaType??"";
+            var contentType = httpRes.Content.Headers.ContentType??new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
 
-            var strm = new MemoryStream();
+            var strm = new ContentStream();
+            strm.ContentType = contentType;
+
             await httpRes.Content.CopyToAsync(strm);
 
             strm.Seek(0, SeekOrigin.Begin);
@@ -251,7 +252,7 @@ public class ServiceClient : CorrelatedObject
 
 
             // *****************************************************************
-            return (strm,contentType);
+            return strm;
 
 
         }
@@ -284,8 +285,18 @@ public class ServiceClient : CorrelatedObject
 
 
             // *****************************************************************
+            logger.Debug("Attempting to get ServiceEndpoint for given endpoint name");
+            var ep = _resolver.GetEndpoint(endpointName);
+            if (ep is null)
+                throw new InvalidOperationException($"Endpoint: ({endpointName}) was not found");
+
+
+
+            // *****************************************************************
             logger.Debug("Attempting to get service Http client");
-            using var client = CreateClient(endpointName);
+            var client = _factory.CreateClient(HttpClientName);
+
+            client.BaseAddress = ep.Endpoint;
 
 
 
@@ -343,9 +354,12 @@ public class ServiceClient : CorrelatedObject
         {
 
 
+
             // *****************************************************************
             logger.Debug("Attempting to get service Http client");
-            using var client = CreateClient(ep);
+            var client = _factory.CreateClient(HttpClientName);
+
+            client.BaseAddress = ep.Endpoint;
 
 
 

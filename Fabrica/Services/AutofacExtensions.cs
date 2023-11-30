@@ -1,5 +1,10 @@
 ﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Fabrica.Utilities.Container;
+using Microsoft.Extensions.DependencyInjection;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
+using Polly;
 
 
 // ReSharper disable UnusedMember.Global
@@ -23,8 +28,36 @@ public static class AutofacExtensions
     }
 
 
-    public static ContainerBuilder AddServiceClient(this ContainerBuilder builder)
+    public static ContainerBuilder AddServiceClient(this ContainerBuilder builder, int retryCount = 3, TimeSpan timeout = default )
     {
+
+
+        if( timeout == default )
+            timeout = TimeSpan.FromSeconds(30);
+
+
+        var delay = Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), retryCount, fastFirst: true);
+        var retryPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .WaitAndRetryAsync(delay);
+
+        var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(timeout);
+
+        var policy = Policy.WrapAsync(retryPolicy, timeoutPolicy);
+
+
+
+        var services = new ServiceCollection();
+
+        services.AddHttpClient(ServiceClient.HttpClientName, _ =>
+            {
+
+            })
+            .AddPolicyHandler(policy);
+
+
+        builder.Populate(services);
+
 
         builder.Register(c =>
             {
@@ -43,8 +76,9 @@ public static class AutofacExtensions
 
                 var corr     = c.Resolve<ICorrelation>();
                 var resolver = c.Resolve<ServiceEndpointResolver>();
+                var factory  = c.Resolve<IHttpClientFactory>();
 
-                var comp = new ServiceClient( corr, resolver );
+                var comp = new ServiceClient( corr, resolver, factory );
 
                 return comp;
 
@@ -58,8 +92,37 @@ public static class AutofacExtensions
     }
 
 
-    public static ContainerBuilder AddServiceClient(this ContainerBuilder builder, Func<IEnumerable<ServiceAddress>, IEnumerable<ServiceEndpoint>> binder)
+    public static ContainerBuilder AddServiceClient(this ContainerBuilder builder, Func<IEnumerable<ServiceAddress>, IEnumerable<ServiceEndpoint>> binder, int retryCount = 3, TimeSpan timeout = default)
     {
+
+
+        if (timeout == default)
+            timeout = TimeSpan.FromSeconds(30);
+
+
+        var delay = Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), retryCount, fastFirst: true);
+        var retryPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .WaitAndRetryAsync(delay);
+
+        var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(timeout);
+
+        var policy = Policy.WrapAsync(retryPolicy, timeoutPolicy);
+
+
+
+        var services = new ServiceCollection();
+
+        services.AddHttpClient(ServiceClient.HttpClientName, _ =>
+            {
+
+            })
+            .AddPolicyHandler(policy);
+
+
+        builder.Populate(services);
+
+
 
         builder.Register(c =>
             {
@@ -79,10 +142,11 @@ public static class AutofacExtensions
         builder.Register(c =>
             {
 
-                var corr = c.Resolve<ICorrelation>();
+                var corr     = c.Resolve<ICorrelation>();
                 var resolver = c.Resolve<ServiceEndpointResolver>();
+                var factory  = c.Resolve<IHttpClientFactory>();
 
-                var comp = new ServiceClient(corr, resolver);
+                var comp = new ServiceClient(corr, resolver, factory);
 
                 return comp;
 
