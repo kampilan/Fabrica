@@ -219,6 +219,27 @@ public class ExceptionMonitorMiddleware
         }
 
 
+        // ***********************************************************************
+        if (exception is NotFoundException nfe)
+        {
+
+            var errorRes = new ProblemDetailModel
+            {
+                Type = nfe.ErrorCode,
+                Title      = "Resource not found",
+                StatusCode = statusCode,
+                Detail     = nfe.Explanation,
+                Instance   = instance,
+            };
+
+            logger.Debug(exception, "Resource not found");
+
+            return errorRes;
+
+        }
+
+
+
         var diagLogger = Correlation.GetLogger("Fabrica.Diagnostics.Http");
 
         // ***********************************************************************
