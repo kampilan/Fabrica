@@ -111,7 +111,7 @@ public class ExceptionMonitorMiddleware
                 break;
 
             case ErrorKind.NotFound:
-                statusCode = HttpStatusCode.UnprocessableEntity;
+                statusCode = HttpStatusCode.NotFound;
                 break;
 
             case ErrorKind.NotImplemented:
@@ -119,7 +119,7 @@ public class ExceptionMonitorMiddleware
                 break;
 
             case ErrorKind.Predicate:
-                statusCode = HttpStatusCode.BadRequest;
+                statusCode = HttpStatusCode.UnprocessableEntity;
                 break;
 
             case ErrorKind.Conflict:
