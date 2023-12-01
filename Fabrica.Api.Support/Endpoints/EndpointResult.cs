@@ -1,7 +1,8 @@
 ﻿using System.Net;
-using System.Text;
+using System.Net.Mime;
 using Fabrica.Mediator;
 using Fabrica.Models.Serialization;
+using Fabrica.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -71,13 +72,28 @@ public class EndpointResult: IResult
             jwriter.Flush();
 
         }
-        else if( response is {Ok: true, Value: Stream stream} )
+        else if (response is { Ok: true, Value: ContentStream cs })
+        {
+
+            result.ContentType = cs.ContentType.MediaType??MediaTypeNames.Application.Json;
+
+            if (cs.CanSeek)
+                cs.Seek(0, SeekOrigin.Begin);
+
+            cs.CopyTo(result.Output);
+
+            cs.Dispose();
+
+        }
+        else if ( response is {Ok: true, Value: Stream stream} )
         {
 
             if (stream.CanSeek)
                 stream.Seek(0, SeekOrigin.Begin);
             
             stream.CopyTo(result.Output);
+
+            stream.Dispose();
 
         }
 
@@ -92,12 +108,13 @@ public class EndpointResult: IResult
     }
 
     private HttpStatusCode Status { get; init; } = HttpStatusCode.OK;
+    private string ContentType { get; set; } = MediaTypeNames.Application.Json;
     private MemoryStream Output { get; } = new();
 
     public async Task ExecuteAsync(HttpContext httpContext)
     {
 
-        httpContext.Response.ContentType = "application/json";
+        httpContext.Response.ContentType = ContentType;
         httpContext.Response.ContentLength = Output.Length;
         
         httpContext.Response.StatusCode = (int)Status;
