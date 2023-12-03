@@ -6,14 +6,7 @@ namespace Fabrica.Persistence.Ef.Entities;
 public abstract class BaseEntity<TImp> : IModel where TImp : BaseEntity<TImp>
 {
 
-
-    private string _uid = Ulid.NewUlid();
-    public virtual string Uid
-    {
-        get => _uid;
-        set => _uid = value;
-    }
-
+    public abstract string Uid { get; set; }
 
     #region Identity members
 
