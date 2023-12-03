@@ -22,7 +22,7 @@ public abstract class AbstractDbContext: DbContext
 {
 
 
-    protected AbstractDbContext( OriginDbContextOptionBuilder builder ) : base(builder.Options)
+    protected AbstractDbContext( OriginDbContextOptionsBuilder builder ) : base(builder.Options)
     {
 
         Correlation = builder.Correlation;

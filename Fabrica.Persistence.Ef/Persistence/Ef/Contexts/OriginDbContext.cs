@@ -49,7 +49,7 @@ public class OriginDbContext : BaseDbContext
 
     }
 
-    public OriginDbContext( OriginDbContextOptionBuilder builder ) : base(builder.Correlation, builder.Options, builder.LoggerFactory)
+    public OriginDbContext( OriginDbContextOptionsBuilder builder ) : base(builder.Correlation, builder.Options, builder.LoggerFactory)
     {
 
         Rules = builder.Rules;

@@ -7,10 +7,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Persistence.Ef.Contexts;
 
-public class OriginDbContextOptionBuilder: DbContextOptionsBuilder
+public class OriginDbContextOptionsBuilder: DbContextOptionsBuilder
 {
 
-    public OriginDbContextOptionBuilder(ICorrelation correlation, IRuleSet rules, IConnectionResolver resolver, IUnitOfWork uow, ILoggerFactory loggerFactory)
+    public OriginDbContextOptionsBuilder(ICorrelation correlation, IRuleSet rules, IConnectionResolver resolver, IUnitOfWork uow, ILoggerFactory loggerFactory)
     {
 
         Correlation = correlation;
