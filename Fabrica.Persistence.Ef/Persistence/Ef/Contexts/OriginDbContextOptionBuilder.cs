@@ -10,14 +10,14 @@ namespace Fabrica.Persistence.Ef.Contexts;
 public class OriginDbContextOptionBuilder: DbContextOptionsBuilder
 {
 
-    public OriginDbContextOptionBuilder(ICorrelation correlation, IRuleSet rules, IConnectionResolver resolver, IUnitOfWork uow, ILoggerFactory factory)
+    public OriginDbContextOptionBuilder(ICorrelation correlation, IRuleSet rules, IConnectionResolver resolver, IUnitOfWork uow, ILoggerFactory loggerFactory)
     {
 
         Correlation = correlation;
         Rules = rules;
         Resolver = resolver;
         Uow = uow;
-        Factory = factory;
+        LoggerFactory = loggerFactory;
 
     }    
     
@@ -26,7 +26,7 @@ public class OriginDbContextOptionBuilder: DbContextOptionsBuilder
     public IRuleSet Rules { get; }
     public IConnectionResolver Resolver { get; }
     public IUnitOfWork Uow { get; }
-    public ILoggerFactory Factory { get; }
+    public ILoggerFactory LoggerFactory { get; }
 
 
     public void ConfigureDbContext( OriginDbContext context )
