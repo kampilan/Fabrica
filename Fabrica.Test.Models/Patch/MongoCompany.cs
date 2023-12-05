@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mongo;
+using Fabrica.Utilities.Text;
 using MongoDB.Bson;
 using PropertyChanged.SourceGenerator;
 
@@ -31,6 +32,8 @@ public partial class MongoCompany : BaseMutableModel<MongoCompany>, IRootModel, 
     }
 
     private ObjectId _id;
+
+    public override string Uid { get; set; } = Base62Converter.NewGuid();
 
 
     [Notify]
