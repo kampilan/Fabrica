@@ -38,7 +38,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Persistence.Ef.Contexts;
 
-public class OriginDbContext : BaseDbContext
+public class OriginDbContext : BaseDbContext, IOriginDbContext
 {
 
 

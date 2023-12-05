@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabrica.Persistence.Ef.Mediator.Handlers;
 
-public abstract class BaseCreateMemberHandler<TRequest,TParent,TChild,TDbContext> : BaseDeltaHandler<TRequest, TChild, TDbContext> where TRequest : class, ICreateMemberEntityRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : OriginDbContext
+public abstract class BaseCreateMemberHandler<TRequest,TParent,TChild,TDbContext> : BaseDeltaHandler<TRequest, TChild, TDbContext> where TRequest : class, ICreateMemberEntityRequest, IRequest<Response<TChild>> where TParent : class, IModel where TChild : class, IModel, new() where TDbContext : DbContext, IOriginDbContext
 {
 
     protected BaseCreateMemberHandler( ICorrelation correlation, IModelMetaService meta, IUnitOfWork uow, TDbContext context, IMapper mapper ) : base( correlation, meta, uow, context, mapper )

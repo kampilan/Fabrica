@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabrica.Persistence.Ef.Mediator.Handlers;
 
-public abstract class BaseRetrieveHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IRetrieveEntityRequest where TResponse : class, IModel where TDbContext : OriginDbContext
+public abstract class BaseRetrieveHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IRetrieveEntityRequest where TResponse : class, IModel where TDbContext : DbContext, IOriginDbContext
 {
 
 

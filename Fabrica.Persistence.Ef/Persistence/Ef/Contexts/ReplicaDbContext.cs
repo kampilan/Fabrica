@@ -31,7 +31,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Persistence.Ef.Contexts;
 
-public class ReplicaDbContext: BaseDbContext
+public class ReplicaDbContext: BaseDbContext, IReplicaDbContext
 {
 
 

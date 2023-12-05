@@ -13,7 +13,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
     
-    public abstract class BaseDeleteHandler<TRequest,TModel,TDbContext> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>, IDeleteEntityRequest where TModel: class, IModel where TDbContext: OriginDbContext
+    public abstract class BaseDeleteHandler<TRequest,TModel,TDbContext> : BaseHandler<TRequest> where TRequest : class, IRequest<Response>, IDeleteEntityRequest where TModel: class, IModel where TDbContext : DbContext, IOriginDbContext
     {
 
 

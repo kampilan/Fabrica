@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabrica.Persistence.Ef.Mediator.Handlers;
 
-public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse: class, IModel where TDbContext: ReplicaDbContext
+public abstract class BaseQueryHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, List<TResponse>> where TRequest : class, IRequest<Response<List<TResponse>>>, IQueryEntityRequest<TResponse> where TResponse: class, IModel where TDbContext: DbContext, IReplicaDbContext
 {
 
 

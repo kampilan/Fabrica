@@ -18,7 +18,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 {
 
 
-    public abstract class BaseDeltaHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IDeltaEntityRequest where TResponse : class, IModel, new() where TDbContext : OriginDbContext
+    public abstract class BaseDeltaHandler<TRequest, TResponse, TDbContext> : BaseHandler<TRequest, TResponse> where TRequest : class, IRequest<Response<TResponse>>, IDeltaEntityRequest where TResponse : class, IModel, new() where TDbContext : DbContext, IOriginDbContext
     {
 
 
