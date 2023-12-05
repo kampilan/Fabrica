@@ -7,6 +7,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Reflection;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -45,7 +46,12 @@ public abstract class RootCreateMemberEndpointModule<TParent, TEntity> : BasePer
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        var route = $"{{udi}}/{MemberSegment}";
+        var sb = new StringBuilder();
+        sb.Append("{uid}");
+        if (!string.IsNullOrWhiteSpace(MemberSegment))
+            sb.Append($"/{MemberSegment}");
+
+        var route = sb.ToString();
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TEntity> handler) => await handler.Handle())
             .WithMetadata(new SwaggerOperationAttribute(summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}"))
@@ -91,7 +97,12 @@ public abstract class RootCreateMemberEndpointModule<TParent, TDelta, TEntity> :
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        var route = $"{{udi}}/{MemberSegment}";
+        var sb = new StringBuilder();
+        sb.Append("{uid}");
+        if (!string.IsNullOrWhiteSpace(MemberSegment))
+            sb.Append($"/{MemberSegment}");
+
+        var route = sb.ToString();
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TDelta, TEntity> handler) => await handler.Handle())
             .WithMetadata(new SwaggerOperationAttribute(summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}"))

@@ -21,6 +21,11 @@ public class ToTimestampStringTests
         Assert.IsNotEmpty(ts);
         Assert.IsTrue(ts.Length == 28);
 
+        var label = "X";
+        var x = $"{{label}}";
+
+
+
     }
 
 
