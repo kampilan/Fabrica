@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace Fabrica.Api.Support.Endpoints;
 
-public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<DeltaEndpointModule<TEntity>> where TEntity : class, IModel
+public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<UpdateEndpointModule<TEntity>> where TEntity : class, IModel
 {
 
     protected UpdateEndpointModule()
@@ -49,7 +49,7 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Delta
 }
 
 
-public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModule<DeltaEndpointModule<TDelta, TEntity>> where TDelta : BaseDelta where TEntity : class, IModel
+public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModule<UpdateEndpointModule<TDelta, TEntity>> where TDelta : BaseDelta where TEntity : class, IModel
 {
 
     protected UpdateEndpointModule()

@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace Fabrica.Api.Support.Endpoints;
 
-public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<DeltaEndpointModule<TEntity>> where TEntity : class, IModel
+public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<DeleteEndpointModule<TEntity>> where TEntity : class, IModel
 {
 
 
