@@ -2,14 +2,12 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Reflection;
-using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 

@@ -13,10 +13,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
-public abstract class RootCreateMemberEndpointModule<TParent, TEntity> : BasePersistenceEndpointModule<RootCreateMemberEndpointModule<TParent, TEntity>> where TParent : class, IModel where TEntity : class, IAggregateModel
+public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersistenceEndpointModule<CreateMemberEndpointModule<TParent, TEntity>> where TParent : class, IModel where TEntity : class, IAggregateModel
 {
 
-    protected RootCreateMemberEndpointModule()
+    protected CreateMemberEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -33,7 +33,7 @@ public abstract class RootCreateMemberEndpointModule<TParent, TEntity> : BasePer
 
     }
 
-    protected RootCreateMemberEndpointModule(string route) : base(route)
+    protected CreateMemberEndpointModule(string route) : base(route)
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
@@ -64,11 +64,11 @@ public abstract class RootCreateMemberEndpointModule<TParent, TEntity> : BasePer
 }
 
 
-public abstract class RootCreateMemberEndpointModule<TParent, TDelta, TEntity> : BasePersistenceEndpointModule<RootCreateMemberEndpointModule<TParent, TDelta, TEntity>> where TParent : class, IModel where TDelta : BaseDelta where TEntity : class, IAggregateModel
+public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : BasePersistenceEndpointModule<CreateMemberEndpointModule<TParent, TDelta, TEntity>> where TParent : class, IModel where TDelta : BaseDelta where TEntity : class, IAggregateModel
 {
 
 
-    protected RootCreateMemberEndpointModule()
+    protected CreateMemberEndpointModule()
     {
 
         var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
@@ -84,7 +84,7 @@ public abstract class RootCreateMemberEndpointModule<TParent, TDelta, TEntity> :
 
     }
 
-    protected RootCreateMemberEndpointModule(string route) : base(route)
+    protected CreateMemberEndpointModule(string route) : base(route)
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");

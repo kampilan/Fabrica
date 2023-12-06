@@ -120,7 +120,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
                 .Produces<ErrorResponseModel>(422);
         }
 
-        if (IncludeCreateEndpoint)
+        if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute {Summary = "Update", Description = $"Update {typeof(TEntity).Name} from delta RTO"})
@@ -129,7 +129,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
                 .Produces<ErrorResponseModel>(422);
         }
 
-        if (IncludeCreateEndpoint)
+        if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithMetadata(new SwaggerOperationAttribute {Summary = "Delete", Description = $"Delete {typeof(TEntity).Name} using UID"})
