@@ -20,8 +20,8 @@ public class EndpointResult: IResult
             DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate,
             NullValueHandling          = NullValueHandling.Ignore,
             DateTimeZoneHandling       = DateTimeZoneHandling.Utc,
-            PreserveReferencesHandling = PreserveReferencesHandling.None,
-            ReferenceLoopHandling      = ReferenceLoopHandling.Ignore
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            ReferenceLoopHandling      = ReferenceLoopHandling.Serialize
         };
 
     }
