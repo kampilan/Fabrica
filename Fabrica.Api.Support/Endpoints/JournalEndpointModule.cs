@@ -42,7 +42,7 @@ public abstract class JournalEndpointModule<TEntity> : BasePersistenceEndpointMo
     {
 
         app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID")
             .Produces<List<AuditJournalModel>>();
 
     }

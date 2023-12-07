@@ -43,7 +43,7 @@ public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModu
     {
 
         app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

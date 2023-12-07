@@ -37,7 +37,7 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
     {
 
         app.MapPost(Route, async ([AsParameters] RpcHandler handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = Summary, Description = Description })
+            .AddMetaData( OpenApiGroupName, summary: Summary, description: Description )
             .Produces(200)
             .Produces<ErrorResponseModel>(422);
 

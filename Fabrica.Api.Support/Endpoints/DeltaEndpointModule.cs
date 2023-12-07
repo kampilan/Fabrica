@@ -8,7 +8,6 @@ using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -51,7 +50,7 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(422);
         }
@@ -59,7 +58,7 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
                 .Produces<ErrorResponseModel>(422);
@@ -69,7 +68,7 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         {
 
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
                 .Produces<ErrorResponseModel>(404);
         }
@@ -119,7 +118,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute {Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO"})
+                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(422);
         }
@@ -127,7 +126,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute {Summary = "Update", Description = $"Update {typeof(TEntity).Name} from delta RTO"})
+                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
                 .Produces<ErrorResponseModel>(422);
@@ -136,7 +135,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .WithMetadata(new SwaggerOperationAttribute {Summary = "Delete", Description = $"Delete {typeof(TEntity).Name} using UID"})
+                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Delete", description: $"Delete {typeof(TEntity).Name} using UID")
                 .Produces(200)
                 .Produces<ErrorResponseModel>(404);
         }

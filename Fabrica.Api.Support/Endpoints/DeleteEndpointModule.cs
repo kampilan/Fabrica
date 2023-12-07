@@ -43,7 +43,7 @@ public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<Delet
     {
 
         app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID")
             .Produces(200)
             .Produces<ErrorResponseModel>(404);
 

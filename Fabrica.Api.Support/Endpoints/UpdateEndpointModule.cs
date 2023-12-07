@@ -41,7 +41,7 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Updat
     {
         
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
             .Produces<ErrorResponseModel>(422);
@@ -81,7 +81,7 @@ public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
     {
 
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = "Update", Description = $"Update {typeof(TEntity).Name} from delta RTO" })
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
             .Produces<ErrorResponseModel>(422);

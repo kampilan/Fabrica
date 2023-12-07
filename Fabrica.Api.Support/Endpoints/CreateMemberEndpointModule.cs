@@ -56,7 +56,7 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
         var route = sb.ToString();
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
@@ -108,7 +108,7 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
         var route = sb.ToString();
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

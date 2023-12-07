@@ -40,7 +40,7 @@ public abstract class RetrieveEndpointModule<TEntity> : BasePersistenceEndpointM
     {
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "By UID", description: $"Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404);
 
