@@ -24,6 +24,7 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Updat
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -31,6 +32,7 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Updat
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -62,6 +64,7 @@ public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -69,6 +72,7 @@ public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 

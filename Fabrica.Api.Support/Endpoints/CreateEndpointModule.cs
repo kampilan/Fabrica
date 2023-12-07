@@ -25,6 +25,7 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -32,6 +33,7 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -70,6 +72,7 @@ public class CreateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 

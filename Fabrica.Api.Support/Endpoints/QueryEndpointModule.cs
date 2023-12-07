@@ -24,6 +24,7 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -31,6 +32,7 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 

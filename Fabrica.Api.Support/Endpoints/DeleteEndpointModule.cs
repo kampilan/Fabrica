@@ -25,6 +25,7 @@ public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<Delet
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -32,6 +33,7 @@ public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<Delet
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 

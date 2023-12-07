@@ -26,10 +26,16 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
 
         BasePath = $"{prefix}/{resource}";
 
+        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
+
     }
 
     protected RootEndpointModule(string route) : base(route)
     {
+
+        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 

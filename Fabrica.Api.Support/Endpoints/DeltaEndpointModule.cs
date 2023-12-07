@@ -27,6 +27,7 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -34,6 +35,7 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -92,6 +94,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         BasePath = $"{prefix}/{resource}";
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -100,6 +103,7 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 

@@ -29,6 +29,7 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
 
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
 
     }
@@ -37,6 +38,7 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -80,7 +82,7 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
         MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
-
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -88,6 +90,7 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
     {
 
         WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
