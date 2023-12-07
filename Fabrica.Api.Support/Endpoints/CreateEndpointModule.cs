@@ -42,7 +42,7 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
     {
 
         app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute(summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO"))
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta payload")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
@@ -81,7 +81,7 @@ public class CreateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
     {
 
         app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = "Create", Description = $"Create {typeof(TEntity).Name} from delta RTO" })
+            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
