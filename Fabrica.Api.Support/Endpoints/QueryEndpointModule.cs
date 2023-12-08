@@ -23,7 +23,7 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -31,7 +31,7 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
     protected QueryEndpointModule(string route) : base(route)
     {
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -61,7 +61,7 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -69,7 +69,7 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
     protected QueryEndpointModule(string route) : base(route)
     {
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }

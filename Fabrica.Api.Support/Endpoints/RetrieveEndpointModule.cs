@@ -24,14 +24,14 @@ public abstract class RetrieveEndpointModule<TEntity> : BasePersistenceEndpointM
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
     }
 
     protected RetrieveEndpointModule(string route) : base(route)
     {
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }

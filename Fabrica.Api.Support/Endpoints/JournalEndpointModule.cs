@@ -25,7 +25,7 @@ public abstract class JournalEndpointModule<TEntity> : BasePersistenceEndpointMo
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -33,7 +33,7 @@ public abstract class JournalEndpointModule<TEntity> : BasePersistenceEndpointMo
     protected JournalEndpointModule(string route) : base(route)
     {
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }

@@ -25,7 +25,7 @@ public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModu
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
@@ -33,7 +33,7 @@ public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModu
     protected PatchEndpointModule(string route) : base(route)
     {
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize()}");
+        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
         WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
