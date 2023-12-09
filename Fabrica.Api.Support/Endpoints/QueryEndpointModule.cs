@@ -40,6 +40,12 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
             WithGroupName(label);
         }
 
+        if (Tags.Length == 0)
+        {
+            var label = ExtractGroupName<TEntity>();
+            WithTags(label);
+        }
+
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
             .WithTags( Tags )
             .WithGroupName( OpenApiGroupName )
@@ -79,13 +85,17 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         if( Tags.Length == 0 )
         {
-            var label = ExtractGroupName<TEntity>();
+            var label = ExtractTag<TEntity>();
             WithTags(label);
         }
 
         app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
             .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL")
-            .WithTags(Tags);
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Using RQL")
+            .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL");
+
 
 
     }
