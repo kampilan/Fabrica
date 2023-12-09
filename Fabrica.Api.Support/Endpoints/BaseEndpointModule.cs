@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Fabrica.Models.Support;
+using Fabrica.Rql.Parser;
 using Humanizer;
 using Microsoft.AspNetCore.Routing;
 // ReSharper disable UnusedMember.Global
@@ -89,6 +90,20 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         return (T)this;
     }
 
+    protected virtual string ExtractResourceLabel<TEntity>() where TEntity : class, IModel
+    {
+
+        var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
+
+        var name = typeof(TEntity).Name;
+        if( attr is not null )
+            name = attr.Resource;
+
+        var label = name.Pluralize().Humanize(LetterCasing.Title);
+
+        return label;
+
+    }
 
     protected static string ExtractResource<TTarget>() where TTarget : class
     {

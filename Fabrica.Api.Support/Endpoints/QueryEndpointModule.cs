@@ -23,16 +23,10 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected QueryEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -41,8 +35,21 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
     {
 
 
+        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
+        {
+            var label = ExtractResourceLabel<TEntity>();
+            WithGroupName(label);
+        }
+
+        if( Tags.Length == 0 )
+        {
+            var label = ExtractResourceLabel<TEntity>();
+            WithTags(label);
+        }
+
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-            .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using Criteria", $"Query {typeof(TEntity).Name.Pluralize()} using Criteria");
+            .AddMetaData<List<TExplorer>>(OpenApiGroupName, summary:"Using Criteria", description:$"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
+            .WithTags(Tags);
 
 
     }
@@ -61,24 +68,30 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected QueryEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
+        {
+            var label = ExtractResourceLabel<TEntity>();
+            WithGroupName(label);
+        }
+
+        if( Tags.Length == 0 )
+        {
+            var label = ExtractResourceLabel<TEntity>();
+            WithTags(label);
+        }
+
         app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-            .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
+            .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL")
+            .WithTags(Tags);
 
 
     }

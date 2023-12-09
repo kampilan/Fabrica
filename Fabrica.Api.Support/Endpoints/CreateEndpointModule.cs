@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Reflection;
+using System.Runtime.InteropServices.JavaScript;
 
 // ReSharper disable UnusedMember.Global
 
@@ -24,25 +25,32 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected CreateEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
+        {
+            var label = ExtractResourceLabel<TEntity>();
+            WithGroupName(label);
+        }
+
+        if( Tags.Length == 0 )
+        {
+            var label = ExtractResourceLabel<TEntity>();
+            WithTags(label);
+        }
+
+
         app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
             .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta payload")
+            .WithTags(Tags)
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
