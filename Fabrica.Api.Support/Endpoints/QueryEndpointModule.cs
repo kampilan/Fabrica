@@ -34,23 +34,17 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-
         if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
         {
-            var label = ExtractResourceLabel<TEntity>();
+            var label = ExtractGroupName<TEntity>();
             WithGroupName(label);
         }
 
-        if( Tags.Length == 0 )
-        {
-            var label = ExtractResourceLabel<TEntity>();
-            WithTags(label);
-        }
-
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-            .AddMetaData<List<TExplorer>>(OpenApiGroupName, summary:"Using Criteria", description:$"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
-            .WithTags(Tags);
-
+            .WithTags( Tags )
+            .WithGroupName( OpenApiGroupName )
+            .WithSummary( "Using Criteria" )
+            .WithDescription( $"Query {typeof(TEntity).Name.Pluralize()} using Criteria" );
 
     }
 
@@ -79,13 +73,13 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
         {
-            var label = ExtractResourceLabel<TEntity>();
+            var label = ExtractGroupName<TEntity>();
             WithGroupName(label);
         }
 
         if( Tags.Length == 0 )
         {
-            var label = ExtractResourceLabel<TEntity>();
+            var label = ExtractGroupName<TEntity>();
             WithTags(label);
         }
 

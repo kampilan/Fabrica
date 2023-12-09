@@ -4,9 +4,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Reflection;
-using System.Runtime.InteropServices.JavaScript;
 
 // ReSharper disable UnusedMember.Global
 
@@ -37,22 +35,25 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
 
         if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
         {
-            var label = ExtractResourceLabel<TEntity>();
+            var label = ExtractGroupName<TEntity>();
             WithGroupName(label);
         }
 
-        if( Tags.Length == 0 )
+        if (Tags.Length == 0)
         {
-            var label = ExtractResourceLabel<TEntity>();
+            var label = ExtractTag<TEntity>();
             WithTags(label);
         }
 
 
         app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta payload")
-            .WithTags(Tags)
+            .WithTags( Tags )
+            .WithGroupName( OpenApiGroupName )
+            .WithSummary( "Create" )
+            .WithDescription( $"Create {typeof(TEntity).Name} from delta payload" )
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
+
 
     }
 

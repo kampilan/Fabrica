@@ -90,7 +90,7 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         return (T)this;
     }
 
-    protected virtual string ExtractResourceLabel<TEntity>() where TEntity : class, IModel
+    protected virtual string ExtractGroupName<TEntity>() where TEntity : class, IModel
     {
 
         var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
@@ -104,6 +104,22 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         return label;
 
     }
+
+    protected virtual string ExtractTag<TEntity>() where TEntity : class, IModel
+    {
+
+        var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
+
+        var name = typeof(TEntity).Name;
+        if (attr is not null)
+            name = attr.Resource;
+
+        var label = name.Pluralize();
+
+        return label;
+
+    }
+
 
     protected static string ExtractResource<TTarget>() where TTarget : class
     {
