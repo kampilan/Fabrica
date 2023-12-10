@@ -42,7 +42,8 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Updat
             .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 
@@ -82,7 +83,8 @@ public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
             .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 

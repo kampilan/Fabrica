@@ -42,7 +42,8 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
             .WithSummary( "Create" )
             .WithDescription( $"Create {typeof(TEntity).Name} from delta payload" )
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
 
     }
@@ -82,7 +83,8 @@ public class CreateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
             .WithSummary("Create")
             .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 

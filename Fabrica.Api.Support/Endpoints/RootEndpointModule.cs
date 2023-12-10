@@ -56,7 +56,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using Criteria")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
-                .Produces<List<TExplorer>>();
+                .Produces<List<TExplorer>>()
+                .WithOpenApi();
 
         }
 
@@ -68,7 +69,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
 
         }
 
@@ -80,7 +82,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -93,7 +96,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -105,7 +109,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
 
         }
 
@@ -116,7 +121,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
         if (IncludePatchEndpoint)
@@ -127,7 +133,8 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -182,7 +189,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using RQL")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
-                .Produces<List<TExplorer>>();
+                .Produces<List<TExplorer>>()
+                .WithOpenApi();
 
         }
 
@@ -194,7 +202,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
 
         }
 
@@ -206,7 +215,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -219,7 +229,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -231,7 +242,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
 
         }
 
@@ -242,7 +254,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
         if (IncludePatchEndpoint)
@@ -253,7 +266,8 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -308,7 +322,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using RQL")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
-                .Produces<List<TExplorer>>();
+                .Produces<List<TExplorer>>()
+                .WithOpenApi();
 
         }
 
@@ -320,7 +335,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
 
         }
 
@@ -332,7 +348,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -345,7 +362,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 
@@ -357,7 +375,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
 
         }
 
@@ -368,7 +387,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
-                .Produces<List<AuditJournalModel>>();
+                .Produces<List<AuditJournalModel>>()
+                .WithOpenApi();
         }
 
 
@@ -380,7 +400,8 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
 
         }
 

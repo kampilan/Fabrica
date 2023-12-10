@@ -4,7 +4,6 @@
 using System.Reflection;
 using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
-using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -52,7 +51,8 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeUpdateEndpoint)
@@ -64,7 +64,8 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeDeleteEndpoint)
@@ -76,7 +77,8 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
     }
@@ -125,7 +127,8 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeUpdateEndpoint)
@@ -137,7 +140,8 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
-                .Produces<ErrorResponseModel>(422);
+                .Produces<ErrorResponseModel>(422)
+                .WithOpenApi();
         }
 
         if (IncludeDeleteEndpoint)
@@ -148,7 +152,8 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} using UID")
                 .Produces(200)
-                .Produces<ErrorResponseModel>(404);
+                .Produces<ErrorResponseModel>(404)
+                .WithOpenApi();
         }
 
     }

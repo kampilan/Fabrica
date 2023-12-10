@@ -41,7 +41,8 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
             .WithSummary(Summary)
             .WithDescription(Description)
             .Produces(200)
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 
@@ -105,7 +106,8 @@ public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModul
             .WithSummary(Summary)
             .WithDescription(Description)
             .Produces<TResponse>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 
@@ -127,6 +129,7 @@ public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModul
             using var logger = EnterMethod();
 
             return Task.FromResult(RpcRequest);
+                ;
 
         }
 

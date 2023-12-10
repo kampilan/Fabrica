@@ -41,7 +41,8 @@ public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<Delet
             .WithSummary("Delete")
             .WithDescription($"Delete {typeof(TEntity).Name} by UID")
             .Produces(200)
-            .Produces<ErrorResponseModel>(404);
+            .Produces<ErrorResponseModel>(404)
+            .WithOpenApi();
 
     }
 

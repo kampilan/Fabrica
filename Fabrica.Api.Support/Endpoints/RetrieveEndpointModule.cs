@@ -40,7 +40,8 @@ public abstract class RetrieveEndpointModule<TEntity> : BasePersistenceEndpointM
             .WithSummary("By UID")
             .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(404);
+            .Produces<ErrorResponseModel>(404)
+            .WithOpenApi();
 
     }
 

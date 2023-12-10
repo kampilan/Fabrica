@@ -43,7 +43,8 @@ public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModu
             .WithSummary("Patch")
             .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 

@@ -41,7 +41,8 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
             .WithGroupName(OpenApiGroupName)
             .WithSummary("Using Criteria")
             .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
-            .Produces<List<TExplorer>>();
+            .Produces<List<TExplorer>>()
+            .WithOpenApi();
 
     }
 
@@ -75,7 +76,8 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
             .WithGroupName(OpenApiGroupName)
             .WithSummary("Using RQL")
             .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
-            .Produces<List<TExplorer>>();
+            .Produces<List<TExplorer>>()
+            .WithOpenApi();
 
     }
 

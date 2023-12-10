@@ -60,7 +60,8 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
             .WithSummary("Create Member")
             .WithDescription($"Create {typeof(TEntity).Name} from delta payload in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 
@@ -118,7 +119,8 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
             .WithSummary("Create Member")
             .WithDescription($"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
 
     }
 
