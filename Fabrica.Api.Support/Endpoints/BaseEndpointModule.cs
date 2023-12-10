@@ -124,7 +124,7 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         var attr = typeof(TTarget).GetCustomAttribute<ModelAttribute>();
         var path = attr is not null ? attr.Resource : "";
 
-        if (string.IsNullOrWhiteSpace(path))
+        if( string.IsNullOrWhiteSpace(path) )
             path = typeof(TTarget).Name.Pluralize().ToLowerInvariant();
 
         return path;

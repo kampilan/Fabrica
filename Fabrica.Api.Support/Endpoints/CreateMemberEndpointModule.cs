@@ -94,19 +94,16 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
         CheckOpenApiDefaults<TEntity>();
 
 
-
         var sb = new StringBuilder();
         sb.Append("{uid}");
-        if (!string.IsNullOrWhiteSpace(MemberSegment))
-            sb.Append($"/{MemberSegment}");
-        else
+        if (string.IsNullOrWhiteSpace(MemberSegment))
         {
             var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
             MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
         }
 
+        sb.Append($"/{MemberSegment}");
         var route = sb.ToString();
-
 
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TDelta, TEntity> handler) => await handler.Handle())
