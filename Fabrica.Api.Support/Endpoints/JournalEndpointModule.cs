@@ -4,11 +4,9 @@
 using System.Reflection;
 using Fabrica.Models;
 using Fabrica.Models.Support;
-using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -25,24 +23,23 @@ public abstract class JournalEndpointModule<TEntity> : BasePersistenceEndpointMo
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected JournalEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
+
         app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Journal", description: $"{typeof(TEntity).Name} Audit Journal for given UID")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Journal")
+            .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
             .Produces<List<AuditJournalModel>>();
 
     }

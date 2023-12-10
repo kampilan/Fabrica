@@ -34,23 +34,14 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
-        {
-            var label = ExtractGroupName<TEntity>();
-            WithGroupName(label);
-        }
-
-        if (Tags.Length == 0)
-        {
-            var label = ExtractGroupName<TEntity>();
-            WithTags(label);
-        }
+        CheckOpenApiDefaults<TEntity>();
 
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
-            .WithTags( Tags )
-            .WithGroupName( OpenApiGroupName )
-            .WithSummary( "Using Criteria" )
-            .WithDescription( $"Query {typeof(TEntity).Name.Pluralize()} using Criteria" );
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Using Criteria")
+            .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
+            .Produces<List<TExplorer>>();
 
     }
 
@@ -77,26 +68,14 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
-        {
-            var label = ExtractGroupName<TEntity>();
-            WithGroupName(label);
-        }
-
-        if( Tags.Length == 0 )
-        {
-            var label = ExtractTag<TEntity>();
-            WithTags(label);
-        }
+        CheckOpenApiDefaults<TEntity>();
 
         app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-            .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL")
             .WithTags(Tags)
             .WithGroupName(OpenApiGroupName)
             .WithSummary("Using RQL")
-            .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL");
-
-
+            .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
+            .Produces<List<TExplorer>>();
 
     }
 

@@ -3,13 +3,11 @@
 
 using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
-using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -25,21 +23,10 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
 
         BasePath = $"{prefix}/{resource}";
 
-        MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
-
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
-
     }
 
     protected CreateMemberEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected string MemberSegment { get; set; } = "";
@@ -48,15 +35,30 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+
+        CheckOpenApiDefaults<TEntity>();
+
+
+        
         var sb = new StringBuilder();
         sb.Append("{uid}");
         if (!string.IsNullOrWhiteSpace(MemberSegment))
             sb.Append($"/{MemberSegment}");
+        else
+        {
+            var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+            MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
+        }
 
         var route = sb.ToString();
 
+
+
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Create Member")
+            .WithDescription($"Create {typeof(TEntity).Name} from delta payload in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
@@ -79,18 +81,10 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
 
         BasePath = $"{prefix}/{resource}";
 
-        MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected CreateMemberEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -100,15 +94,29 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
+
+
         var sb = new StringBuilder();
         sb.Append("{uid}");
         if (!string.IsNullOrWhiteSpace(MemberSegment))
             sb.Append($"/{MemberSegment}");
+        else
+        {
+            var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
+            MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
+        }
 
         var route = sb.ToString();
 
+
+
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TDelta, TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create Member", description: $"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Create Member")
+            .WithDescription($"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

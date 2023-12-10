@@ -1,10 +1,8 @@
 ﻿using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
-using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Reflection;
 
 // ReSharper disable UnusedMember.Global
@@ -23,25 +21,25 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Updat
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected UpdateEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        
+
+
+        CheckOpenApiDefaults<TEntity>();
+
+
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Update")
+            .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
             .Produces<ErrorResponseModel>(422);
@@ -63,25 +61,25 @@ public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected UpdateEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+
+        CheckOpenApiDefaults<TEntity>();
+
+
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Update")
+            .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(404)
             .Produces<ErrorResponseModel>(422);

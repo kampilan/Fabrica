@@ -1,6 +1,5 @@
 ﻿using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
-using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -33,17 +32,8 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
-        {
-            var label = ExtractGroupName<TEntity>();
-            WithGroupName(label);
-        }
 
-        if (Tags.Length == 0)
-        {
-            var label = ExtractTag<TEntity>();
-            WithTags(label);
-        }
+        CheckOpenApiDefaults<TEntity>();
 
 
         app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
@@ -73,16 +63,10 @@ public class CreateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected CreateEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -90,11 +74,17 @@ public class CreateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
         app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Create")
+            .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 
     }
+
 
 }

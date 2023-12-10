@@ -25,25 +25,23 @@ public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModu
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected PatchEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
         app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Patch", description: $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Patch")
+            .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()
             .Produces<ErrorResponseModel>(422);
 

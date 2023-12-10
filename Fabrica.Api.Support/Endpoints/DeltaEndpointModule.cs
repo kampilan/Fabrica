@@ -25,16 +25,10 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected DeltaEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
 
     }
 
@@ -47,10 +41,16 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
     {
 
 
+        CheckOpenApiDefaults<TEntity>();
+
+
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO")
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Create")
+                .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(422);
         }
@@ -58,7 +58,10 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO")
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Update")
+                .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
                 .Produces<ErrorResponseModel>(422);
@@ -68,7 +71,10 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         {
 
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID")
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Delete")
+                .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
                 .Produces<ErrorResponseModel>(404);
         }
@@ -92,18 +98,11 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
 
     protected DeltaEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected bool IncludeCreateEndpoint { get; set; } = true;
@@ -115,10 +114,16 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
+
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Create", description: $"Create {typeof(TEntity).Name} from delta RTO")
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Create")
+                .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(422);
         }
@@ -126,7 +131,10 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Update", description: $"Update {typeof(TEntity).Name} from delta RTO")
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Update")
+                .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
                 .Produces<ErrorResponseModel>(404)
                 .Produces<ErrorResponseModel>(422);
@@ -135,7 +143,10 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, summary: "Delete", description: $"Delete {typeof(TEntity).Name} using UID")
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Delete")
+                .WithDescription($"Delete {typeof(TEntity).Name} using UID")
                 .Produces(200)
                 .Produces<ErrorResponseModel>(404);
         }

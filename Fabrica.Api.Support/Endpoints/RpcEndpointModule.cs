@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -19,9 +18,6 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
 
     protected RpcEndpointModule(string route, string summary, string description)
     {
-        WithGroupName("Rpc");
-        WithTags("Rpc");
-
         Route = route;
         Summary = summary;
         Description = description;
@@ -36,8 +32,14 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        WithGroupName("Rpc");
+        WithTags("Rpc");
+
         app.MapPost(Route, async ([AsParameters] RpcHandler handler) => await handler.Handle())
-            .AddMetaData( OpenApiGroupName, summary: Summary, description: Description )
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary(Summary)
+            .WithDescription(Description)
             .Produces(200)
             .Produces<ErrorResponseModel>(422);
 
@@ -72,7 +74,7 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
 
 
 
-public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModule where TRequest : class, IRequest<Response<TResponse>> where TResponse : class
+public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModule<RpcEndpointModule<TRequest, TResponse>> where TRequest : class, IRequest<Response<TResponse>> where TResponse : class
 {
 
 
@@ -94,8 +96,14 @@ public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModul
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        WithGroupName("Rpc");
+        WithTags("Rpc");
+
         app.MapPost(Route, async ([AsParameters] RpcHandler handler) => await handler.Handle())
-            .WithMetadata(new SwaggerOperationAttribute { Summary = Summary, Description = Description })
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary(Summary)
+            .WithDescription(Description)
             .Produces<TResponse>()
             .Produces<ErrorResponseModel>(422);
 

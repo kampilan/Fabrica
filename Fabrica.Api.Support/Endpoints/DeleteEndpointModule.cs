@@ -1,10 +1,8 @@
 ﻿using Fabrica.Api.Support.Models;
 using Fabrica.Models.Support;
-using Humanizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Reflection;
 
 // ReSharper disable UnusedMember.Global
@@ -24,26 +22,24 @@ public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<Delet
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected DeleteEndpointModule(string route) : base(route)
     {
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
-
 
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
         app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-            .AddMetaData<TEntity>(OpenApiGroupName, summary: "Delete", description: $"Delete {typeof(TEntity).Name} by UID")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Delete")
+            .WithDescription($"Delete {typeof(TEntity).Name} by UID")
             .Produces(200)
             .Produces<ErrorResponseModel>(404);
 

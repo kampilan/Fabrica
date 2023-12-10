@@ -7,6 +7,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Reflection;
+using Fabrica.Api.Support.Models;
 using Microsoft.AspNetCore.Builder;
 using Fabrica.Models;
 
@@ -26,17 +27,10 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
 
         BasePath = $"{prefix}/{resource}";
 
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected RootEndpointModule(string route) : base(route)
     {
-
-        WithGroupName($"{typeof(TEntity).Name.Pluralize().Humanize()}");
-        WithTags($"{typeof(TEntity).Name.Pluralize()}");
-
     }
 
     protected bool IncludeQueryEndpoint { get; set; } = true;
@@ -52,46 +46,89 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
     {
 
 
+        CheckOpenApiDefaults<TEntity>();
+
+
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using Criteria", $"Query {typeof(TEntity).Name.Pluralize()} using Criteria");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Using Criteria")
+                .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
+                .Produces<List<TExplorer>>();
+
         }
 
         if (IncludeRetrieveEndpoint)
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "By UID", $"Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("By UID")
+                .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Create", $"Create {typeof(TEntity).Name} from delta RTO");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Create")
+                .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+
         }
 
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Update", $"Update {typeof(TEntity).Name} from delta RTO");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Update")
+                .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+
         }
 
         if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData(OpenApiGroupName, "Delete", $"Delete {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Delete")
+                .WithDescription($"Delete {typeof(TEntity).Name} by UID")
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeJournalEndpoint)
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<List<AuditJournalModel>>(OpenApiGroupName, "Journal", $"{typeof(TEntity).Name} Audit Journal for given UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Journal")
+                .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
+                .Produces<List<AuditJournalModel>>();
         }
 
         if (IncludePatchEndpoint)
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Patch", $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Patch")
+                .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+
         }
 
 
@@ -135,48 +172,91 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
     {
 
 
+        CheckOpenApiDefaults<TEntity>();
+
+
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Using RQL")
+                .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
+                .Produces<List<TExplorer>>();
+
         }
 
         if (IncludeRetrieveEndpoint)
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "By UID", $"Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("By UID")
+                .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Create", $"Create {typeof(TEntity).Name} from delta RTO");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Create")
+                .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
 
         }
 
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Update", $"Update {typeof(TEntity).Name} from delta RTO");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Update")
+                .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+
         }
 
         if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData(OpenApiGroupName, "Delete", $"Delete {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Delete")
+                .WithDescription($"Delete {typeof(TEntity).Name} by UID")
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeJournalEndpoint)
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<List<AuditJournalModel>>(OpenApiGroupName, "Journal", $"{typeof(TEntity).Name} Audit Journal for given UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Journal")
+                .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
+                .Produces<List<AuditJournalModel>>();
         }
 
         if (IncludePatchEndpoint)
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Patch", $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Patch")
+                .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+
         }
+
 
 
     }
@@ -218,48 +298,90 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
+        CheckOpenApiDefaults<TEntity>();
+
 
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
-                .AddMetaData<List<TExplorer>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Using RQL")
+                .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
+                .Produces<List<TExplorer>>();
+
         }
 
         if (IncludeRetrieveEndpoint)
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "By UID", $"Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("By UID")
+                .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Create", $"Create {typeof(TEntity).Name} from delta");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Create")
+                .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
 
         }
 
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Update", $"Update {typeof(TEntity).Name} from delta");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Update")
+                .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+
         }
 
         if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData(OpenApiGroupName, "Delete", $"Delete {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Delete")
+                .WithDescription($"Delete {typeof(TEntity).Name} by UID")
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeJournalEndpoint)
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<List<AuditJournalModel>>(OpenApiGroupName, "Journal", $"{typeof(TEntity).Name} Audit Journal for given UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Journal")
+                .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
+                .Produces<List<AuditJournalModel>>();
         }
+
 
         if (IncludePatchEndpoint)
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Patch", $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Patch")
+                .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+
         }
 
 
@@ -300,47 +422,90 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
     {
 
 
+        CheckOpenApiDefaults<TEntity>();
+
+
         if (IncludeQueryEndpoint)
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<List<TEntity>>(OpenApiGroupName, "Using RQL", $"Query {typeof(TEntity).Name.Pluralize()} using RQL");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Using RQL")
+                .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
+                .Produces<List<TEntity>>();
+
         }
 
         if (IncludeRetrieveEndpoint)
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "By UID", $"Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("By UID")
+                .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeCreateEndpoint)
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Create", $"Create {typeof(TEntity).Name} from delta");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Create")
+                .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
 
         }
 
         if (IncludeUpdateEndpoint)
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Update", $"Update {typeof(TEntity).Name} from delta");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Update")
+                .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(404)
+                .Produces<ErrorResponseModel>(422);
+
         }
 
         if (IncludeDeleteEndpoint)
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData(OpenApiGroupName, "Delete", $"Delete {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Delete")
+                .WithDescription($"Delete {typeof(TEntity).Name} by UID")
+                .Produces(200)
+                .Produces<ErrorResponseModel>(404);
+
         }
 
         if (IncludeJournalEndpoint)
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<List<AuditJournalModel>>(OpenApiGroupName, "Journal", $"{typeof(TEntity).Name} Audit Journal for given UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Journal")
+                .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
+                .Produces<List<AuditJournalModel>>();
         }
+
 
         if (IncludePatchEndpoint)
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
-                .AddMetaData<TEntity>(OpenApiGroupName, "Patch", $"Apply Patches and Retrieve {typeof(TEntity).Name} by UID");
+                .WithTags(Tags)
+                .WithGroupName(OpenApiGroupName)
+                .WithSummary("Patch")
+                .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
+                .Produces<TEntity>()
+                .Produces<ErrorResponseModel>(422);
+
         }
 
 
