@@ -34,8 +34,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         public string Rql { get; set; } = null!;
 
 
-        [FromQuery(Name = "limit")]
-        [SwaggerParameter(Required = false)]
+        [FromQuery(Name = "limit"), SwaggerParameter(Required = false)]
         public int? Limit { get; set; }
 
         protected override Task<QueryEntityRequest<TExplorer>> BuildRequest()
@@ -61,11 +60,10 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     {
 
 
-        [FromQuery(Name = "limit")]
-        [SwaggerParameter(Required = false)]
+        [FromQuery(Name = "limit"), SwaggerParameter(Required = false)]
         public int? Limit { get; set; }
 
-        [FromBody]
+        [FromBody, SwaggerRequestBody(Description = "Criteria Body", Required = true)]
         public TCriteria Criteria { get; set; } = null!;
 
 
@@ -117,7 +115,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         public string Rql { get; set; } = null!;
 
 
-        [FromQuery(Name = "limit")]
+        [FromQuery(Name = "limit"), SwaggerParameter(Required = false)]
         public int? Limit { get; set; }
 
 
@@ -144,10 +142,10 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     {
 
 
-        [FromQuery(Name = "limit")]
+        [FromQuery(Name = "limit"), SwaggerParameter(Required = false)]
         public int? Limit { get; set; }
 
-        [FromBody]
+        [FromBody, SwaggerRequestBody(Description = "Criteria Body", Required = true)]
         public TCriteria Criteria { get; set; } = null!;
 
 
@@ -220,7 +218,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     {
 
 
-        [FromBody]
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
         public TDelta Delta { get; set; } = null!;
 
 
@@ -246,7 +244,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         [FromRoute(Name = "uid")]
         public string Uid { get; set; } = null!;
 
-        [FromBody]
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
         public TDelta Delta { get; set; } = null!;
 
 
@@ -335,7 +333,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         public string Uid { get; set; } = null!;
 
 
-        [FromBody]
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
         public TDelta Delta { get; set; } = null!;
 
 
@@ -366,7 +364,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         public string Uid { get; set; } = null!;
 
 
-        [FromBody]
+        [FromBody, SwaggerRequestBody(Description = "Delta Body",Required = true)]
         public Dictionary<string, object> Delta { get; set; } = null!;
 
 

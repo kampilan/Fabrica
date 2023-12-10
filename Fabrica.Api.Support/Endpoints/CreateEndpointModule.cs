@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Reflection;
+using Swashbuckle.AspNetCore.Annotations;
 
 // ReSharper disable UnusedMember.Global
 
@@ -41,7 +42,9 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
             .WithSummary("Create")
             .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422);
+            .Produces<ErrorResponseModel>(422)
+            .WithOpenApi();
+
 
 
     }
