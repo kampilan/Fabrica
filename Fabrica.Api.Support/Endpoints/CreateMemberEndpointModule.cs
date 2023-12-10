@@ -56,7 +56,6 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Create Member")
             .WithDescription($"Create {typeof(TEntity).Name} from delta payload in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()
@@ -115,7 +114,6 @@ public abstract class CreateMemberEndpointModule<TParent, TDelta, TEntity> : Bas
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TDelta, TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Create Member")
             .WithDescription($"Create {typeof(TEntity).Name} from delta RTO in Parent {typeof(TParent).Name}")
             .Produces<TEntity>()

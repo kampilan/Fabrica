@@ -38,7 +38,6 @@ public abstract class QueryEndpointModule<TCriteria, TExplorer, TEntity> : BaseP
 
         app.MapGet("", async ([AsParameters] QueryHandler<TCriteria, TExplorer> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Using Criteria")
             .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
             .Produces<List<TExplorer>>()
@@ -73,7 +72,6 @@ public abstract class QueryEndpointModule<TExplorer, TEntity> : BasePersistenceE
 
         app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Using RQL")
             .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
             .Produces<List<TExplorer>>()

@@ -53,7 +53,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using Criteria")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using Criteria")
                 .Produces<List<TExplorer>>()
@@ -65,7 +64,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -78,7 +76,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -91,7 +88,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Update")
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -105,7 +101,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
@@ -118,7 +113,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
                 .Produces<List<AuditJournalModel>>()
@@ -129,7 +123,6 @@ public abstract class RootEndpointModule<TCriteria, TExplorer, TDelta, TEntity> 
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -186,7 +179,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using RQL")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
                 .Produces<List<TExplorer>>()
@@ -198,7 +190,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -211,7 +202,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -224,7 +214,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Update")
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -238,7 +227,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
@@ -251,7 +239,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
                 .Produces<List<AuditJournalModel>>()
@@ -262,7 +249,6 @@ public abstract class RootEndpointModule<TExplorer,TDelta,TEntity> : BasePersist
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -319,7 +305,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TExplorer> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using RQL")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
                 .Produces<List<TExplorer>>()
@@ -331,7 +316,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -344,7 +328,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
                 .Produces<TEntity>()
@@ -357,7 +340,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Update")
                 .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
                 .Produces<TEntity>()
@@ -371,7 +353,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
@@ -384,7 +365,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
                 .Produces<List<AuditJournalModel>>()
@@ -396,7 +376,6 @@ public abstract class RootEndpointModule<TExplorer, TEntity> : BasePersistenceEn
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -450,7 +429,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapGet("", async ([AsParameters] QueryHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Using RQL")
                 .WithDescription($"Query {typeof(TEntity).Name.Pluralize()} using RQL")
                 .Produces<List<TEntity>>();
@@ -461,7 +439,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("By UID")
                 .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()
@@ -473,7 +450,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
                 .Produces<TEntity>()
@@ -485,7 +461,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Update")
                 .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
                 .Produces<TEntity>()
@@ -498,7 +473,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
@@ -510,7 +484,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapGet("{uid}/journal", async ([AsParameters] JournalHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Journal")
                 .WithDescription($"{typeof(TEntity).Name} Audit Journal for given UID")
                 .Produces<List<AuditJournalModel>>();
@@ -521,7 +494,6 @@ public abstract class RootEndpointModule<TEntity> : BasePersistenceEndpointModul
         {
             app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Patch")
                 .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
                 .Produces<TEntity>()

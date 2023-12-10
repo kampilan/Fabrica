@@ -36,7 +36,6 @@ public abstract class RetrieveEndpointModule<TEntity> : BasePersistenceEndpointM
 
         app.MapGet("{uid}", async ([AsParameters] RetrieveHandler<TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("By UID")
             .WithDescription($"Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()

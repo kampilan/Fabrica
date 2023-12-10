@@ -37,7 +37,6 @@ public class UpdateEndpointModule<TEntity> : BasePersistenceEndpointModule<Updat
 
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Update")
             .WithDescription($"Update {typeof(TEntity).Name} from delta payload")
             .Produces<TEntity>()
@@ -78,7 +77,6 @@ public class UpdateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
 
         app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Update")
             .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
             .Produces<TEntity>()

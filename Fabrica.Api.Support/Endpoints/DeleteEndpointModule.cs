@@ -37,7 +37,6 @@ public class DeleteEndpointModule<TEntity> : BasePersistenceEndpointModule<Delet
 
         app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Delete")
             .WithDescription($"Delete {typeof(TEntity).Name} by UID")
             .Produces(200)

@@ -32,12 +32,10 @@ public abstract class RpcEndpointModule<TRequest> : BaseEndpointModule<RpcEndpoi
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        WithGroupName("Rpc");
         WithTags("Rpc");
 
         app.MapPost(Route, async ([AsParameters] RpcHandler handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary(Summary)
             .WithDescription(Description)
             .Produces(200)
@@ -97,12 +95,10 @@ public abstract class RpcEndpointModule<TRequest, TResponse> : BaseEndpointModul
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-        WithGroupName("Rpc");
         WithTags("Rpc");
 
         app.MapPost(Route, async ([AsParameters] RpcHandler handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary(Summary)
             .WithDescription(Description)
             .Produces<TResponse>()

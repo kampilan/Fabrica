@@ -47,7 +47,6 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -59,7 +58,6 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Update")
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -73,7 +71,6 @@ public abstract class DeltaEndpointModule<TEntity> : BasePersistenceEndpointModu
 
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} by UID")
                 .Produces(200)
@@ -123,7 +120,6 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         {
             app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Create")
                 .WithDescription($"Create {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -135,7 +131,6 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         {
             app.MapPut("{uid}", async ([AsParameters] UpdateHandler<TDelta, TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Update")
                 .WithDescription($"Update {typeof(TEntity).Name} from delta RTO")
                 .Produces<TEntity>()
@@ -148,7 +143,6 @@ public abstract class DeltaEndpointModule<TDelta, TEntity> : BasePersistenceEndp
         {
             app.MapDelete("{uid}", async ([AsParameters] DeleteHandler<TEntity> handler) => await handler.Handle())
                 .WithTags(Tags)
-                .WithGroupName(OpenApiGroupName)
                 .WithSummary("Delete")
                 .WithDescription($"Delete {typeof(TEntity).Name} using UID")
                 .Produces(200)

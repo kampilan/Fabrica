@@ -94,12 +94,6 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
     protected void CheckOpenApiDefaults<TEntity>() where TEntity : class, IModel
     {
 
-        if( string.IsNullOrWhiteSpace(OpenApiGroupName) )
-        {
-            var label = ExtractGroupName<TEntity>();
-            WithGroupName(label);
-        }
-
         if( Tags.Length == 0 )
         {
             var label = ExtractTag<TEntity>();

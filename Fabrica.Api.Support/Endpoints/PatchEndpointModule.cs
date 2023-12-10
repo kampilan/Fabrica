@@ -39,7 +39,6 @@ public abstract class PatchEndpointModule<TEntity> : BasePersistenceEndpointModu
 
         app.MapPatch("{uid}", async ([AsParameters] PatchHandler<TEntity> handler) => await handler.Handle())
             .WithTags(Tags)
-            .WithGroupName(OpenApiGroupName)
             .WithSummary("Patch")
             .WithDescription($"Apply Patches and Retrieve {typeof(TEntity).Name} by UID")
             .Produces<TEntity>()
