@@ -32,7 +32,6 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
 
-
         CheckOpenApiDefaults<TEntity>();
 
 

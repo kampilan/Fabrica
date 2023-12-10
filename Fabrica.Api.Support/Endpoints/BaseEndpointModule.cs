@@ -93,22 +93,12 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
 
     protected void CheckOpenApiDefaults<TEntity>() where TEntity : class, IModel
     {
-        var label = ExtractTag<TEntity>();
-        WithTags(label);
-    }
 
-    protected virtual string ExtractGroupName<TEntity>() where TEntity : class, IModel
-    {
-
-        var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
-
-        var name = typeof(TEntity).Name;
-        if( attr is not null )
-            name = attr.Resource;
-
-        var label = name.Pluralize().Humanize(LetterCasing.Title);
-
-        return label;
+        if( Tags.Length == 0 )
+        {
+            var label = ExtractTag<TEntity>();
+            WithTags(label);
+        }
 
     }
 
@@ -118,7 +108,7 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         var attr = typeof(TEntity).GetCustomAttribute<ModelAttribute>();
 
         var name = typeof(TEntity).Name;
-        if (attr is not null)
+        if (attr is not null && !string.IsNullOrWhiteSpace(attr.Resource))
             name = attr.Resource;
 
         var label = name.Pluralize();
