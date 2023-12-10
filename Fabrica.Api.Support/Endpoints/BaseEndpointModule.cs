@@ -93,13 +93,8 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
 
     protected void CheckOpenApiDefaults<TEntity>() where TEntity : class, IModel
     {
-
-        if( Tags.Length == 0 )
-        {
-            var label = ExtractTag<TEntity>();
-            WithTags(label);
-        }
-
+        var label = ExtractTag<TEntity>();
+        WithTags(label);
     }
 
     protected virtual string ExtractGroupName<TEntity>() where TEntity : class, IModel
