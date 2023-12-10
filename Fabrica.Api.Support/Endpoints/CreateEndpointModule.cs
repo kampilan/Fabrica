@@ -37,13 +37,13 @@ public class CreateEndpointModule<TEntity> : BasePersistenceEndpointModule<Creat
 
 
         app.MapPost("", async ([AsParameters] CreateHandler<TEntity> handler) => await handler.Handle())
-            .WithTags( Tags )
-            .WithGroupName( OpenApiGroupName )
-            .WithSummary( "Create" )
-            .WithDescription( $"Create {typeof(TEntity).Name} from delta payload" )
+            .WithName($"Create{typeof(TEntity).Name}")
+            .WithTags(Tags)
+            .WithGroupName(OpenApiGroupName)
+            .WithSummary("Create")
+            .WithDescription($"Create {typeof(TEntity).Name} from delta payload")
             .Produces<TEntity>()
-            .Produces<ErrorResponseModel>(422)
-            .WithOpenApi();
+            .Produces<ErrorResponseModel>(422);
 
 
     }
@@ -78,6 +78,7 @@ public class CreateEndpointModule<TDelta, TEntity> : BasePersistenceEndpointModu
         CheckOpenApiDefaults<TEntity>();
 
         app.MapPost("", async ([AsParameters] CreateHandler<TDelta, TEntity> handler) => await handler.Handle())
+            .WithName($"Create{typeof(TEntity).Name}")
             .WithTags(Tags)
             .WithGroupName(OpenApiGroupName)
             .WithSummary("Create")
