@@ -42,17 +42,14 @@ public abstract class CreateMemberEndpointModule<TParent, TEntity> : BasePersist
         
         var sb = new StringBuilder();
         sb.Append("{uid}");
-        if (!string.IsNullOrWhiteSpace(MemberSegment))
-            sb.Append($"/{MemberSegment}");
-        else
+        if( string.IsNullOrWhiteSpace(MemberSegment) )
         {
             var attr = GetType().GetCustomAttribute<ModuleRouteAttribute>();
             MemberSegment = !string.IsNullOrWhiteSpace(attr?.Member) ? attr.Member : ExtractResource<TEntity>();
         }
 
+        sb.Append($"/{MemberSegment}");
         var route = sb.ToString();
-
-
 
         app.MapPost(route, async ([AsParameters] CreateMemberHandler<TParent, TEntity> handler) => await handler.Handle())
             .WithTags(Tags)

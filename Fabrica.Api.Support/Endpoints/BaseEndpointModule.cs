@@ -111,7 +111,7 @@ public abstract class BaseEndpointModule<T> : BaseEndpointModule where T : BaseE
         if (attr is not null && !string.IsNullOrWhiteSpace(attr.Resource))
             name = attr.Resource;
 
-        var label = name.Pluralize();
+        var label = name.Pluralize().Humanize(LetterCasing.Title);
 
         return label;
 
