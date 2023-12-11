@@ -14,6 +14,12 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
     public IMessageMediator Mediator { get; set; } = null!;
 
 
+    protected virtual Task Validate()
+    {
+        return Task.CompletedTask;
+    }
+
+
     protected async Task<IResult> Send<TValue>(IRequest<Response<TValue>> request)
     {
 
@@ -88,6 +94,11 @@ public abstract class BaseMediatorEndpointHandler<TRequest, TResponse> : BaseMed
 
 
         // *****************************************************************
+        logger.Debug("Attempting to validate");
+        await Validate();            
+
+
+        // *****************************************************************
         logger.Debug("Attempting to build request");
         var request = await BuildRequest();
 
@@ -117,6 +128,12 @@ public abstract class BaseMediatorEndpointHandler<TRequest> : BaseMediatorEndpoi
     {
 
         using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to validate");
+        await Validate();
+
 
 
         // *****************************************************************

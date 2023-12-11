@@ -55,7 +55,6 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
     }
 
-
     protected class QueryHandler<TCriteria, TExplorer> : BaseMediatorEndpointHandler<QueryEntityRequest<TExplorer>, List<TExplorer>> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel
     {
 
@@ -65,6 +64,16 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
         [FromBody, SwaggerRequestBody(Description = "Criteria Body", Required = true)]
         public TCriteria Criteria { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+            
+            Validate(Criteria);
+
+        }
 
 
         protected override Task<QueryEntityRequest<TExplorer>> BuildRequest()
@@ -137,7 +146,6 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
     }
 
-
     protected class ThinQueryHandler<TCriteria, TExplorer> : BaseMediatorEndpointHandler<QueryThinEntityRequest<TExplorer>, MemoryStream> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel
     {
 
@@ -147,6 +155,16 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
         [FromBody, SwaggerRequestBody(Description = "Criteria Body", Required = true)]
         public TCriteria Criteria { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Criteria);
+
+        }
 
 
         protected override Task<QueryThinEntityRequest<TExplorer>> BuildRequest()
@@ -189,6 +207,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     }
 
 
+
     protected class RetrieveHandler<TEntity> : BaseMediatorEndpointHandler<RetrieveEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
     {
 
@@ -222,6 +241,16 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         public TDelta Delta { get; set; } = null!;
 
 
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Delta);
+
+        }
+
+
         protected override Task<CreateEntityRequest<TEntity>> BuildRequest()
         {
 
@@ -248,10 +277,21 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         public TDelta Delta { get; set; } = null!;
 
 
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Delta);
+
+        }
+
+
         protected override Task<CreateMemberEntityRequest<TParent, TEntity>> BuildRequest()
         {
 
             using var logger = EnterMethod();
+
 
             var request = new CreateMemberEntityRequest<TParent, TEntity>
             {
@@ -266,7 +306,6 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
-
 
 
     protected class CreateHandler<TEntity> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
@@ -293,7 +332,6 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
-
 
     protected class CreateMemberHandler<TParent, TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity> where TParent : class, IModel where TEntity : class, IAggregateModel
     {
@@ -325,7 +363,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     }
 
 
-    protected class UpdateHandler<TDelta, TEntity> : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity> where TDelta : class where TEntity : class, IModel
+    protected class UpdateHandler<TDelta, TEntity> : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity> where TDelta : BaseDelta where TEntity : class, IModel
     {
 
 
@@ -335,6 +373,17 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
         [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
         public TDelta Delta { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Delta);
+
+        }
+
 
 
         protected override Task<UpdateEntityRequest<TEntity>> BuildRequest()
@@ -387,6 +436,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
     }
 
+
     protected class DeleteHandler<TEntity> : BaseMediatorEndpointHandler<DeleteEntityRequest<TEntity>> where TEntity : class, IModel
     {
 
@@ -436,7 +486,6 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
-
 
 
     protected class PatchHandler<TEntity> : BaseMediatorEndpointHandler where TEntity : class, IModel

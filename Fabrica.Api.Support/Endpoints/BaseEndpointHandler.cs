@@ -57,14 +57,13 @@ public abstract class BaseEndpointHandler
     public abstract Task<IResult> Handle();
 
 
-    protected virtual bool TryValidate(BaseCriteria? criteria, out IResult error)
+    protected virtual void Validate(BaseCriteria? criteria)
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(criteria), criteria);
 
-        error = null!;
 
 
         if (criteria is null)
@@ -75,19 +74,16 @@ public abstract class BaseEndpointHandler
             throw new BadRequestException($"The following properties were not found: ({string.Join(',', criteria.GetOverpostNames())})")
                 .WithErrorCode("DisallowedProperties");
 
-        return true;
 
     }
 
 
-    protected virtual bool TryValidate(BaseDelta? delta, out IResult error)
+    protected virtual void Validate(BaseDelta? delta)
     {
 
         using var logger = EnterMethod();
 
         logger.LogObject(nameof(delta), delta);
-
-        error = null!;
 
 
         if (delta is null)
@@ -97,8 +93,6 @@ public abstract class BaseEndpointHandler
         if (delta.IsOverposted())
             throw new BadRequestException($"The following properties were not found or are not mutable: ({string.Join(',', delta.GetOverpostNames())})")
                 .WithErrorCode("DisallowedProperties");
-
-        return true;
 
     }
 
