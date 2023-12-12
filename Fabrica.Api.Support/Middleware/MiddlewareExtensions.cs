@@ -50,5 +50,12 @@ public static class MiddlewareExtensions
         return app;
     }
 
+    public static IApplicationBuilder UseUnitOfWorkMonitor(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<UnitOfWorkMonitorMiddleware>();
+        return app;
+    }
+
+
 
 }
