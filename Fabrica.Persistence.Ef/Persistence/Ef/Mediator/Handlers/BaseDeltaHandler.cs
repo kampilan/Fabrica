@@ -375,7 +375,7 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
         }
 
 
-        protected override async Task<TResponse> Success(TRequest request, TResponse response)
+        protected override async Task InternalSuccess()
         {
 
             using var logger = EnterMethod();
@@ -384,17 +384,17 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
 
             Uow.CanCommit();
 
-            return await base.Success(request, response);
-
         }
 
 
-        protected override void Failure(TRequest request, Exception cause)
+        protected override Task InternalFailure()
         {
 
             using var logger = EnterMethod();
 
             Uow.MustRollback();
+
+            return Task.CompletedTask;
 
         }
 

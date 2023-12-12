@@ -22,214 +22,173 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using System.Data.Common;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
-using JetBrains.Annotations;
 
-namespace Fabrica.Persistence.Connection
+namespace Fabrica.Persistence.Connection;
+
+public class ConnectionResolver : IConnectionResolver
 {
 
-
-    public class ConnectionResolver: IConnectionResolver
+    public ConnectionResolver(ICorrelation correlation, DbProviderFactory factory, string replicaConnectionStr, string originConnectionStr)
     {
 
-        public ConnectionResolver( ICorrelation correlation, DbProviderFactory factory, string replicaConnectionStr, string originConnectionStr )
+        Correlation = correlation;
+        Factory = factory;
+        ReplicaConnectionStr = replicaConnectionStr;
+        OriginConnectionStr = originConnectionStr;
+
+    }
+
+    private ICorrelation Correlation { get; }
+
+
+    public string ReplicaConnectionStr { get; }
+    public string OriginConnectionStr { get; }
+
+
+    public DbProviderFactory Factory { get; }
+
+
+    public DbConnection GetReplicaConnection()
+    {
+
+
+        using var logger = this.EnterMethod();
+
+
+        logger.Inspect("Factory type", Factory.GetType().FullName);
+
+
+        DbConnection? conn;
+        try
         {
 
-            Correlation          = correlation;
-            Factory              = factory;
-            ReplicaConnectionStr = replicaConnectionStr;
-            OriginConnectionStr  = originConnectionStr;
+            // ***********************************************************
+            logger.Debug("Attempting to create connection");
+            conn = Factory.CreateConnection();
+
+            if (conn == null)
+                throw new Exception("DbConnection is null");
 
         }
-
-        private ICorrelation Correlation { get; }
-
-
-        public string ReplicaConnectionStr { get; }
-        public string OriginConnectionStr { get; }
-
-
-        public DbProviderFactory Factory { get; }
-
-
-        public DbConnection GetReplicaConnection()
+        catch (Exception cause)
         {
-
-            var logger = Correlation.GetLogger(this);
-
-            try
-            {
-
-                logger.EnterMethod();
-
-
-                logger.Inspect( "Factory type", Factory.GetType().FullName );
-
-
-                DbConnection conn;
-                try
-                {
-
-                    // ***********************************************************
-                    logger.Debug("Attempting to create connection");
-                    conn = Factory.CreateConnection();
-
-                    if (conn == null)
-                        throw new Exception("DbConnection is null");
-
-                }
-                catch (Exception cause)
-                {
-                    logger.Error(cause, "Could not create connection from factory {0}", Factory.GetType().FullName);
-                    throw;
-                }
-
-
-                // ***********************************************************
-                try
-                {
-
-                    logger.Inspect( "ReplicaConnectionStr", ReplicaConnectionStr );
-
-
-                    // ***********************************************************
-                    logger.Debug("Attempting to set connection string on connection");
-                    conn.ConnectionString = ReplicaConnectionStr;
-
-
-
-                    // ***********************************************************
-                    logger.Debug("Attempting to open connection");
-                    conn.Open();
-
-
-
-                    // ***********************************************************
-                    return conn;
-
-
-                }
-                catch (Exception cause)
-                {
-                    logger.Error(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, ReplicaConnectionStr);
-                    throw;
-                }
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
+            logger.Error(cause, "Could not create connection from factory {0}", Factory.GetType().FullName);
+            throw;
         }
 
 
-        public DbConnection GetOriginConnection()
+        // ***********************************************************
+        try
         {
 
-            var logger = Correlation.GetLogger(this);
-
-            try
-            {
-
-                logger.EnterMethod();
+            logger.Inspect("ReplicaConnectionStr", ReplicaConnectionStr);
 
 
-                logger.Inspect("Factory type", Factory.GetType().FullName);
-
-
-                DbConnection conn;
-                try
-                {
-
-                    // ***********************************************************
-                    logger.Debug("Attempting to create connection");
-                    conn = Factory.CreateConnection();
-
-                    if( conn == null )
-                        throw new Exception( "DbConnection is null" );
-
-                }
-                catch (Exception cause)
-                {
-                    logger.Error(cause, "Could not create connection from driver {0}", Factory.GetType().FullName);
-                    throw;
-                }
+            // ***********************************************************
+            logger.Debug("Attempting to set connection string on connection");
+            conn.ConnectionString = ReplicaConnectionStr;
 
 
 
-                // ***********************************************************
-                try
-                {
-
-
-                    logger.Inspect("OriginConnectionStr", OriginConnectionStr);
-
-
-                    // ***********************************************************
-                    logger.Debug("Attempting to set connection string on connection");
-                    conn.ConnectionString = OriginConnectionStr;
+            // ***********************************************************
+            logger.Debug("Attempting to open connection");
+            conn.Open();
 
 
 
-                    // ***********************************************************
-                    logger.Debug("Attempting to open connection");
-                    conn.Open();
-
-
-
-                    // ***********************************************************
-                    return conn;
-
-
-                }
-                catch (Exception cause)
-                {
-                    logger.Error(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, OriginConnectionStr);
-                    throw;
-                }
-
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
+            // ***********************************************************
+            return conn;
 
 
         }
-
-
-        public void CloseConnection([NotNull] DbConnection conn)
+        catch (Exception cause)
         {
-
-
-            var logger = Correlation.GetLogger(this);
-
-            try
-            {
-
-                logger.EnterMethod();
-
-                conn.Close();
-
-            }
-            finally
-            {
-                logger.LeaveMethod();
-            }
-
-
+            logger.Error(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, ReplicaConnectionStr);
+            throw;
         }
-
 
 
     }
+
+
+    public DbConnection GetOriginConnection()
+    {
+
+        using var logger = this.EnterMethod();
+
+
+        logger.Inspect("Factory type", Factory.GetType().FullName);
+
+
+        DbConnection? conn;
+        try
+        {
+
+            // ***********************************************************
+            logger.Debug("Attempting to create connection");
+            conn = Factory.CreateConnection();
+
+            if (conn == null)
+                throw new Exception("DbConnection is null");
+
+        }
+        catch (Exception cause)
+        {
+            logger.Error(cause, "Could not create connection from driver {0}", Factory.GetType().FullName);
+            throw;
+        }
+
+
+
+        // ***********************************************************
+        try
+        {
+
+
+            logger.Inspect("OriginConnectionStr", OriginConnectionStr);
+
+
+            // ***********************************************************
+            logger.Debug("Attempting to set connection string on connection");
+            conn.ConnectionString = OriginConnectionStr;
+
+
+
+            // ***********************************************************
+            logger.Debug("Attempting to open connection");
+            conn.Open();
+
+
+
+            // ***********************************************************
+            return conn;
+
+
+        }
+        catch (Exception cause)
+        {
+            logger.Error(cause, "Could not open connection from driver {0} using {1} ", Factory.GetType().FullName, OriginConnectionStr);
+            throw;
+        }
+
+
+    }
+
+
+    public void CloseConnection(DbConnection conn)
+    {
+
+
+        using var logger = this.EnterMethod();
+
+        conn.Close();
+
+
+    }
+
 
 
 }

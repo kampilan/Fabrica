@@ -72,7 +72,7 @@ public class UnitOfWork: IUnitOfWork
     }
 
 
-    public DbTransaction Transaction { get; private set; }
+    public DbTransaction Transaction { get; private set; } = null!;
     public UnitOfWorkState State { get; private set; } = UnitOfWorkState.CanCommit;
 
     public void CanCommit()

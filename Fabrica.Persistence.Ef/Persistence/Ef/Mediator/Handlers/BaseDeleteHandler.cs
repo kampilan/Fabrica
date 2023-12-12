@@ -73,13 +73,10 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
         }
 
 
-        protected override async Task<Response> Success( TRequest request )
+        protected override async Task InternalSuccess()
         {
 
             await Context.SaveChangesAsync();
-            await base.Success(request);
-
-            return new Response().IsOk();
 
         }
 
