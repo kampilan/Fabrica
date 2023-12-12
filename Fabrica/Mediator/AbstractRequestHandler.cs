@@ -55,7 +55,8 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
     public async Task<Response<TResponse>> Handle(TRequest request, CancellationToken cancellationToken)
     {
 
-        var logger = GetLogger();
+         using var logger = EnterMethod();
+
 
         try
         {
@@ -93,7 +94,7 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
 
             // *****************************************************************
             logger.Debug("Attempting to call internal Success");
-            await InternalSuccess();
+            await HandleSuccess();
 
 
             // *****************************************************************
@@ -104,7 +105,7 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         catch (NotFoundException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
             
             logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
@@ -113,7 +114,7 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         catch (ViolationsExistException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
@@ -122,7 +123,7 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         catch (RqlException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause).WithKind(ErrorKind.BadRequest).WithErrorCode("InvalidRQL");
@@ -131,7 +132,7 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         catch (ExternalException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Error(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
@@ -140,16 +141,12 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         catch (Exception cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Error(cause, "Unhandled exception encountered");
             var ec = cause.GetType().FullName ?? "";
             return CreateFailureResponse().WithInner(cause).WithKind(ErrorKind.System).WithErrorCode(ec).WithExplanation(cause.Message);
 
-        }
-        finally
-        {
-            logger.LeaveMethod();
         }
 
 
@@ -172,18 +169,18 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
     }
 
 
-    protected internal virtual Task InternalSuccess()
-    {
-        return Task.CompletedTask;
-    }
-
-
     protected virtual Task<TResponse> Success(TRequest request, TResponse response)
     {
         return Task.FromResult(response);
     }
 
-    protected internal virtual Task InternalFailure()
+    protected internal virtual Task HandleSuccess()
+    {
+        return Task.CompletedTask;
+    }
+
+
+    protected internal virtual Task HandleFailure()
     {
         return Task.CompletedTask;
     }
@@ -238,7 +235,7 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
     public async Task<Response> Handle(TRequest request, CancellationToken cancellationToken)
     {
 
-        var logger = GetLogger();
+         using var logger = EnterMethod();
 
         try
         {
@@ -277,7 +274,7 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
 
             // *****************************************************************
             logger.Debug("Attempting to call internal Success");
-            await InternalSuccess();
+            await HandleSuccess();
 
 
 
@@ -289,7 +286,7 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         catch (NotFoundException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
@@ -298,7 +295,7 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         catch (ViolationsExistException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause);
@@ -307,7 +304,7 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         catch (RqlException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Debug(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName!);
             return CreateFailureResponse().From(cause).WithKind(ErrorKind.BadRequest).WithErrorCode("InvalidRQL");
@@ -316,7 +313,7 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         catch (ExternalException cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Error(cause, " Caught {0} in {1}", cause.GetType().FullName!, GetType().FullName! );
             return CreateFailureResponse().From(cause);
@@ -325,16 +322,12 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         catch (Exception cause)
         {
 
-            await InternalFailure();
+            await HandleFailure();
 
             logger.Error(cause, "Unhandled exception encountered");
             var ec = cause.GetType().FullName ?? "";
             return CreateFailureResponse().WithKind(ErrorKind.System).WithErrorCode(ec).WithExplanation(cause.Message);
 
-        }
-        finally
-        {
-            logger.LeaveMethod();
         }
 
 
@@ -356,18 +349,19 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
 
     }
 
-    protected internal virtual Task InternalSuccess()
-    {
-        return Task.CompletedTask;
-    }
-
 
     protected virtual Task Success(TRequest request)
     {
         return Task.CompletedTask;
     }
 
-    protected internal virtual Task InternalFailure()
+    protected virtual Task HandleSuccess()
+    {
+        return Task.CompletedTask;
+    }
+
+
+    protected virtual Task HandleFailure()
     {
         return Task.CompletedTask;
     }

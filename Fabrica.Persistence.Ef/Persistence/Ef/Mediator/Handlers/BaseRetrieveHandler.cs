@@ -38,7 +38,7 @@ public abstract class BaseRetrieveHandler<TRequest, TResponse, TDbContext> : Bas
         logger.Debug("Attempting to fetch one entity");
         var entity = await One(Context).SingleOrDefaultAsync(e => e.Uid == Request.Uid, cancellationToken: cancellationToken);
 
-        if (entity is null)
+        if( entity is null )
             throw new NotFoundException($"Could not find {typeof(TResponse).Name} using Uid = ({Request.Uid})");
 
         logger.LogObject(nameof(entity), entity);
@@ -49,5 +49,6 @@ public abstract class BaseRetrieveHandler<TRequest, TResponse, TDbContext> : Bas
         return entity;
 
     }
+
 
 }

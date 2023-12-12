@@ -73,10 +73,26 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
         }
 
 
-        protected override async Task InternalSuccess()
+        protected sealed override async Task HandleSuccess()
         {
 
+            using var logger = EnterMethod();
+
             await Context.SaveChangesAsync();
+
+            Uow.CanCommit();
+
+        }
+
+
+        protected sealed override Task HandleFailure()
+        {
+
+            using var logger = EnterMethod();
+
+            Uow.MustRollback();
+            
+            return Task.CompletedTask;
 
         }
 
