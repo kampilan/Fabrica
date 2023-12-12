@@ -95,7 +95,7 @@ public abstract class AbstractDbContext: DbContext
 
 
 
-    protected async Task EnlistUnitOfWork()
+    protected void EnlistUnitOfWork()
     {
 
         using var logger = EnterMethod();
@@ -105,7 +105,7 @@ public abstract class AbstractDbContext: DbContext
         if (Uow is not null)
         {
             logger.Debug("Attempting to enlisting Transaction from Uow");
-            await Database.UseTransactionAsync(Uow.Transaction);
+            Database.UseTransaction(Uow.Transaction);
         }
 
     }
