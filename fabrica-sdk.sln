@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Persistence.Mongo",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabrica.Search", "Fabrica.Search\Fabrica.Search.csproj", "{4652A2E2-7507-4130-8C21-42A97A5E5897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch.Mem.Tester", "Watch.Mem.Tester\Watch.Mem.Tester.csproj", "{CF018877-0D93-42DA-A2DD-09E7D44FB12F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watch.Mem.Tester", "Watch.Mem.Tester\Watch.Mem.Tester.csproj", "{CF018877-0D93-42DA-A2DD-09E7D44FB12F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -196,7 +196,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9D9AC3FD-C125-45AB-8310-CB4798C15B6F} = {A5161544-8D49-43C6-93D7-FD8742626D25}
 		{6D297C61-74C7-4E44-BE2D-3BA8EF20DEB3} = {A5161544-8D49-43C6-93D7-FD8742626D25}
 		{28779567-A1C0-4B94-AEED-E742CE83DBB5} = {A5161544-8D49-43C6-93D7-FD8742626D25}
 		{C314FDB7-71C5-4C1D-9C33-00D4EE2FD2DF} = {A5161544-8D49-43C6-93D7-FD8742626D25}

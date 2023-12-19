@@ -69,6 +69,17 @@ public static class StsExtensions
 
 }
 
+public class StsConfiguration
+{
+
+    public string RoleArn { get; set; } = string.Empty;
+    public string Policy { get; set; } = string.Empty;
+
+    public TimeSpan Duration { get; set; } = default;
+
+}
+
+
 public class CredentialSet
 {
 

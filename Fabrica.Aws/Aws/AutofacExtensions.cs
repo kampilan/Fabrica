@@ -31,7 +31,6 @@ using Amazon.AppConfig;
 using Amazon.AppConfigData;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model.Internal.MarshallTransformations;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
@@ -249,5 +248,23 @@ public static class AutofacExtensions
 
     }
 
+    public static ContainerBuilder AddStsConfiguration(this ContainerBuilder builder, string roleArn, string policy )
+    {
 
+        builder.Register(c =>
+            {
+                var comp = new StsConfiguration
+                {
+                    RoleArn = roleArn,
+                    Policy = policy
+                };
+
+                return comp;
+            })
+            .AsSelf()
+            .SingleInstance();
+        
+        return builder;
+
+    }
 }
