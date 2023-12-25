@@ -13,7 +13,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Auth0.ManagementApi" Version="7.25.1" />
+		<PackageReference Include="Auth0.ManagementApi" Version="7.26.0" />
 	</ItemGroup>
 
 	<ItemGroup>
