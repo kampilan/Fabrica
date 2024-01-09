@@ -1,4 +1,5 @@
-﻿using Fabrica.Identity;
+﻿using System.Text.Json;
+using Fabrica.Identity;
 using Fabrica.Watch;
 
 namespace Fabrica.Api.Support.Identity.Token;
@@ -10,7 +11,6 @@ public class GatewayAccessTokenSource: IAccessTokenSource
     {
         Encoder = encoder;
         Claims  = claims;
-
     }
     
     private IGatewayTokenEncoder Encoder { get; }
@@ -23,7 +23,10 @@ public class GatewayAccessTokenSource: IAccessTokenSource
     {
         using var logger = this.EnterMethod();
 
-        var token = Encoder.Encode(Claims);
+        var json = JsonSerializer.Serialize(Claims);
+        var cc = JsonSerializer.Deserialize<ClaimSetModel>(json)??new ClaimSetModel();
+
+        var token = Encoder.Encode(cc);
         return Task.FromResult(token);
 
     }
