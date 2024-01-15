@@ -20,7 +20,7 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
 {
 
     public bool RunningOnEc2 { get; set; } = true;
-
+    public string ProfileFilter { get; set; } = "";
 
     public string MissionPrefix { get; set; } = "missions/";
     public Func<string, bool> MissionFilter { get; set; } = k=>k.EndsWith("-mission-plan.json");
@@ -757,21 +757,28 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
         logger.Debug("Attempting to build S3 client");
         using var client = new AmazonS3Client(credentials, cp.Region);
 
+        try
+        {
+
+            // *****************************************************************
+            logger.Debug("Attempting to list buckets");
+            var res = await client.ListBucketsAsync(new ListBucketsRequest());
+            if (res.HttpStatusCode != HttpStatusCode.OK)
+                throw new Exception($"Could not fetch buckets for AwsProfileName {cp.Name} Status: {res.HttpStatusCode}");
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to list buckets");
-        var res = await client.ListBucketsAsync(new ListBucketsRequest());
-        if (res.HttpStatusCode != HttpStatusCode.OK)
-            throw new Exception($"Could not fetch buckets for AwsProfileName {cp.Name} Status: {res.HttpStatusCode}");
+            // *****************************************************************
+            logger.Debug("Attempting to load bucket names that end with '-appliance-repository'");
+            buckets.AddRange(res.Buckets.Where(b => b.BucketName.EndsWith("-appliance-repository")).Select(b => b.BucketName));
+
+            logger.Inspect(nameof(buckets.Count), buckets.Count);
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to load bucket names that end with '-appliance-repository'");
-        buckets.AddRange(res.Buckets.Where(b => b.BucketName.EndsWith("-appliance-repository")).Select(b => b.BucketName));
-
-        logger.Inspect(nameof(buckets.Count), buckets.Count);
-
+        }
+        catch (Exception cause)
+        {
+            logger.Info( cause, $"Failed to get buckets for profile: {cp.Name}");
+        }
 
 
         // *****************************************************************
@@ -866,11 +873,22 @@ public class S3RepositoryManager: IRepositoryManager, IRequiresStart
 
             logger.Inspect(nameof(profiles.Count), profiles.Count);
 
+            var included = new List<CredentialProfile>();
+            if( !string.IsNullOrWhiteSpace(ProfileFilter) )
+            {
+                var filter = ProfileFilter.Split(',');
+                included.AddRange(profiles.Where(p => filter.Contains(p.Name)));
+            }
+            else
+            {
+                included.AddRange(profiles);
+            }
+
 
 
             // *****************************************************************
             logger.Debug("Attempting to process each profile");
-            foreach (var p in profiles.Where(p => p.Region != null))
+            foreach (var p in included.Where(p => p.Region != null))
             {
 
                 logger.Inspect(nameof(p.Name), p.Name);

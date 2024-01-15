@@ -16,7 +16,7 @@ public class RepositoryTests
 {
 
     [OneTimeSetUp]
-    public void Setup()
+    public async Task Setup()
     {
 
         var maker = new WatchFactoryBuilder();
@@ -28,9 +28,11 @@ public class RepositoryTests
 
         Manager = new S3RepositoryManager
         {
-            RunningOnEc2 = false
+            RunningOnEc2 = false,
+            ProfileFilter = "kampilan"
         };
 
+        await Manager.Start();
     }
 
     private S3RepositoryManager Manager { get; set; } = null!;
