@@ -152,12 +152,12 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
             }
 
             cb.Register(_ =>
-            {
+                {
 
-                var comp = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
-                return comp;
+                    var comp = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
+                    return comp;
 
-            })
+                })
                 .As<ISignalController>()
                 .As<IRequiresStart>()
                 .SingleInstance()
@@ -165,16 +165,16 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
 
             cb.Register(c =>
-            {
+                {
 
-                var hal = c.Resolve<IHostApplicationLifetime>();
-                var sc = c.Resolve<ISignalController>();
+                    var hal = c.Resolve<IHostApplicationLifetime>();
+                    var sc = c.Resolve<ISignalController>();
 
-                var comp = new ApplianceLifetime(hal, sc);
+                    var comp = new ApplianceLifetime(hal, sc);
 
-                return comp;
+                    return comp;
 
-            })
+                })
                 .AsSelf()
                 .As<IRequiresStart>()
                 .SingleInstance()
@@ -212,7 +212,7 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
             foreach (var pair in mission.ServiceEndpoints)
             {
                 var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
-                cb.AddServiceAddress( pair.Key, address );
+                cb.AddServiceAddress(pair.Key, address);
             }
 
 
@@ -230,6 +230,12 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
 
         }));
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to configure Host");
+        ConfigureHost(builder.Host);
 
 
 
@@ -301,6 +307,18 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
 
 
     }
+
+    public virtual void ConfigureHost(IHostBuilder builder)
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Info("Base ConfigureHost does nothing");
+
+
+    }
+
+
 
     public virtual void ConfigureContainer(ContainerBuilder builder)
     {
