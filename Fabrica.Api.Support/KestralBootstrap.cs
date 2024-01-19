@@ -43,6 +43,8 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
     public bool AllowAnyIp { get; set; } = false;
     public int ListeningPort { get; set; } = 8080;
 
+    public bool UseFabricaOneLifetime { get; set; } = true;
+    public bool UseSystemdLifetime { get; set; } = false;
 
     public string Environment { get; set; } = "Development";
     public string MissionName { get; set; } = "";
@@ -138,47 +140,59 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
                 .As<IConfiguration>()
                 .SingleInstance();
 
-            if (AllowManualExit)
+
+            if (UseFabricaOneLifetime)
             {
-                cb.RegisterType<ApplianceConsoleLifetimeWithExit>()
-                    .As<IHostLifetime>()
-                    .SingleInstance();
+
+                if (AllowManualExit)
+                {
+                    cb.RegisterType<ApplianceConsoleLifetimeWithExit>()
+                        .As<IHostLifetime>()
+                        .SingleInstance();
+                }
+                else
+                {
+                    cb.RegisterType<ApplianceConsoleLifetime>()
+                        .As<IHostLifetime>()
+                        .SingleInstance();
+                }
+
+                cb.Register(_ =>
+                    {
+
+                        var comp = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
+                        return comp;
+
+                    })
+                    .As<ISignalController>()
+                    .As<IRequiresStart>()
+                    .SingleInstance()
+                    .AutoActivate();
+
+
+                cb.Register(c =>
+                    {
+
+                        var hal = c.Resolve<IHostApplicationLifetime>();
+                        var sc = c.Resolve<ISignalController>();
+
+                        var comp = new ApplianceLifetime(hal, sc);
+
+                        return comp;
+
+                    })
+                    .AsSelf()
+                    .As<IRequiresStart>()
+                    .SingleInstance()
+                    .AutoActivate();
+
+
             }
-            else
+            else if (UseSystemdLifetime)
             {
-                cb.RegisterType<ApplianceConsoleLifetime>()
-                    .As<IHostLifetime>()
-                    .SingleInstance();
+                builder.Host.UseSystemd();
             }
 
-            cb.Register(_ =>
-                {
-
-                    var comp = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
-                    return comp;
-
-                })
-                .As<ISignalController>()
-                .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
-
-
-            cb.Register(c =>
-                {
-
-                    var hal = c.Resolve<IHostApplicationLifetime>();
-                    var sc = c.Resolve<ISignalController>();
-
-                    var comp = new ApplianceLifetime(hal, sc);
-
-                    return comp;
-
-                })
-                .AsSelf()
-                .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
 
 
             cb.AddCorrelation();
