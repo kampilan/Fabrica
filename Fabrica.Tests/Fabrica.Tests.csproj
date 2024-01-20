@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="Bogus" Version="35.3.2" />
+    <PackageReference Include="Bogus" Version="35.4.0" />
     <PackageReference Include="DnsClient" Version="1.7.0" />
     <PackageReference Include="Dumpify" Version="0.6.4" />
     <PackageReference Include="Fabrica.Mongo.Driver" Version="2.19.2" />
