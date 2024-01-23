@@ -283,10 +283,10 @@ public class KeycloakProviderTests
 
 
     [Test]
-    public async Task Test3100_0400_ImportUser()
+    public void Test3100_0400_ImportUser()
     {
 
-        var hash = BCrypt.Net.BCrypt.HashPassword("MyWonderfullAsawa", 13);
+        var hash = BCrypt.Net.BCrypt.HashPassword("Myxxxxxxxxxxxx", 13);
 
     }
 

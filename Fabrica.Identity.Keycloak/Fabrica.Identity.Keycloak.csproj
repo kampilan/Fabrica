@@ -12,10 +12,6 @@
     <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
-  </ItemGroup>
-
 	<ItemGroup>
 	  <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
 	</ItemGroup>
