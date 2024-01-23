@@ -170,6 +170,37 @@ public class KeycloakProviderTests
 
     }
 
+    [Test]
+    public async Task Test3100_0210_Should_Create_New_User_And_Custom_Password()
+    {
+
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
+
+        var request = new SyncUserRequest
+        {
+            Upsert = true,
+            CurrentUsername = "gabby.moring",
+            NewPassword = "Monkey!2345"
+        };
+
+        //        request.Groups.Add("Managers");
+        //        request.Groups.Add("after-tenant");
+        request.Attributes["Cool"] = new[] { "Very" };
+
+
+        var res = await provider.SyncUser(request);
+
+        Assert.IsNotNull(res);
+
+        Assert.IsNotEmpty(res.IdentityUid);
+        Assert.IsFalse(res.Exists);
+        Assert.IsFalse(res.Updated);
+        Assert.IsTrue(res.Created);
+
+    }
+
+
 
 
     [Test]

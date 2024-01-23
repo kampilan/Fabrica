@@ -181,7 +181,16 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
 
             var password = "";
-            if( request.GeneratePassword )
+            if( !string.IsNullOrWhiteSpace(request.NewPassword) )
+            {
+
+                logger.Debug("Attempting to save custom password");
+
+                password = request.NewPassword;
+                user.Credentials = new List<Credentials> { new() { Type = "password", UserLabel = "Custom", Value = password, Temporary = false } };
+
+            }
+            else if ( request.GeneratePassword )
             {
                 logger.Debug("Attempting to generate password");
 
@@ -290,6 +299,13 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
             {
                 logger.Debug("Updating Enabled to {0}", request.NewEnabled);
                 user.Enabled = request.NewEnabled.Value;
+                perform = true;
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                user.Credentials = new List<Credentials> { new() { Type = "password", UserLabel = "Custom", Value = request.NewPassword, Temporary = false } };
                 perform = true;
             }
 

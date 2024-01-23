@@ -27,6 +27,8 @@ public class SyncUserRequest
     public string? NewFirstName { get; set; }
     public string? NewLastName { get; set; }
 
+    public string? NewPassword { get; set; }
+
     public Dictionary<string, IEnumerable<string>> Attributes { get; } = new ();
 
     public List<string> Groups { get; } = new ();
