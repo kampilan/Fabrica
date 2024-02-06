@@ -391,7 +391,6 @@ public abstract class AbstractSearchProvider<TIndex> : CorrelatedObject, ISearch
         var index = CreateIndexDefinition();
 
 
-
         // *****************************************************************
         logger.Debug("Attempting to get Input documents");
         var inputs = await GetInputs();

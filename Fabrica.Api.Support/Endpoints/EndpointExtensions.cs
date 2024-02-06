@@ -46,46 +46,36 @@ public static class EndpointExtensions
 
                 logger.Inspect( "EndpointModule", moduleInterface.GetType().Name );
 
-                if( moduleInterface is BaseEndpointModule endpointModule )
+                try
                 {
 
-                    logger.Debug("Attempting to Configure group");
+                    if (moduleInterface is BaseEndpointModule endpointModule)
+                    {
 
-                    var group = builder.MapGroup(endpointModule.BasePath);
+                        logger.Debug("Attempting to Configure group");
 
-                    if (endpointModule.RequiresAuthorization)
-                        group = group.RequireAuthorization(endpointModule.AuthorizationPolicyNames);
-/*
-                    if (!string.IsNullOrWhiteSpace(endpointModule.OpenApiDescription))
-                        group = group.WithDescription(endpointModule.OpenApiDescription);
+                        var group = builder.MapGroup(endpointModule.BasePath);
 
-                    if (endpointModule.MetaData.Any())
-                        group = group.WithMetadata(endpointModule.MetaData);
+                        if (endpointModule.RequiresAuthorization)
+                            group = group.RequireAuthorization(endpointModule.AuthorizationPolicyNames);
 
-                    if (!string.IsNullOrWhiteSpace(endpointModule.OpenApiName))
-                        group = group.WithName(endpointModule.OpenApiName);
+                        endpointModule.AddRoutes(group);
 
-                    if (!string.IsNullOrWhiteSpace(endpointModule.OpenApiSummary))
-                        group = group.WithSummary(endpointModule.OpenApiSummary);
-
-                    if (!string.IsNullOrWhiteSpace(endpointModule.OpenApiDisplayName))
-                        group = group.WithDisplayName(endpointModule.OpenApiDisplayName);
-
-                    if (!string.IsNullOrWhiteSpace(endpointModule.OpenApiGroupName))
-                        group = group.WithGroupName(endpointModule.OpenApiGroupName);
-
-                    if (endpointModule.Tags.Any())
-                        group = group.WithTags(endpointModule.Tags);
-*/
-
-                    endpointModule.AddRoutes(group);
+                    }
+                    else
+                    {
+                        logger.Debug("No Group");
+                        moduleInterface.AddRoutes(builder);
+                    }
 
                 }
-                else
+                catch (Exception cause)
                 {
-                    logger.Debug("No Group");
-                    moduleInterface.AddRoutes(builder);
+                    var ctx = new {Module = moduleInterface.GetType().FullName};
+                    logger.ErrorWithContext(cause, ctx, "Caught exception mapping endpoint modules");
                 }
+
+
             }
 
 

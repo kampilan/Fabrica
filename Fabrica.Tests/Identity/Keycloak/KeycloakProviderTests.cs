@@ -350,7 +350,7 @@ public class TheModule : Module
             o.MetaEndpoint = KeycloakMetaEndpoint;
             o.ApiEndpoint = KeycloakApiEndpoint;
             o.ClientId = "service";
-            o.ClientSecret = "aQc6tEyajZ6ZpGQPxQarUgscO14ropXN";
+            o.ClientSecret = "";
 
         });
 
