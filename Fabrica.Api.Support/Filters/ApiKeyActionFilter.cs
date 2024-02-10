@@ -6,6 +6,7 @@ using Fabrica.Watch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Sprache;
 
 namespace Fabrica.Api.Support.Filters;
 
@@ -93,15 +94,13 @@ public class ApiKeyEndpointFilter : IEndpointFilter
         if( string.IsNullOrWhiteSpace(key) )
         {
             logger.Warning("API key not present");
-            var result = new StatusCodeResult(401);
-            return result;
+            return Results.BadRequest();
         }
         
         if( !_validator.IsValid(key) )
         {
             logger.Warning("API key not Valid");
-            var result = new StatusCodeResult(401);
-            return result;
+            return Results.Unauthorized();
         }
 
         return await next(context);
