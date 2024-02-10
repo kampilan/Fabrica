@@ -3,6 +3,7 @@
 
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -64,5 +65,48 @@ public class ApiKeyActionFilter: IAsyncActionFilter
 
     }
 
+
+}
+
+
+public class ApiKeyEndpointFilter : IEndpointFilter
+{
+
+    public ApiKeyEndpointFilter(IApiKeyValidator validator, ICorrelation correlation)
+    {
+        _validator = validator;
+        _correlation = correlation;
+    }
+
+
+    private readonly IApiKeyValidator _validator;
+    private readonly ICorrelation _correlation;
+
+    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    {
+
+        using var logger = _correlation.EnterMethod();
+
+        var header = context.HttpContext.Request.Headers["x-api-key"];
+        var key = header.FirstOrDefault();
+
+        if( string.IsNullOrWhiteSpace(key) )
+        {
+            logger.Warning("API key not present");
+            var result = new StatusCodeResult(401);
+            return result;
+        }
+        
+        if( !_validator.IsValid(key) )
+        {
+            logger.Warning("API key not Valid");
+            var result = new StatusCodeResult(401);
+            return result;
+        }
+
+        return await next(context);
+
+
+    }
 
 }
