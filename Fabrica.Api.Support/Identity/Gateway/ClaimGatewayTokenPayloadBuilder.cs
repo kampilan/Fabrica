@@ -42,6 +42,7 @@ public class ClaimGatewayTokenPayloadBuilder: IGatewayTokenPayloadBuilder
             [FabricaClaims.FlowClaim]            = FabricaClaims.FlowClaim,
             [FabricaClaims.TenantClaim]          = FabricaClaims.TenantClaim,
             [JwtRegisteredClaimNames.Sub]        = FabricaClaims.SubjectClaim,
+            [ClaimTypes.NameIdentifier]          = FabricaClaims.SubjectClaim,
             [FabricaClaims.AltSubjectClaim]      = FabricaClaims.AltSubjectClaim,
             ["preferred_username"]               = FabricaClaims.UserNameClaim,
             [JwtRegisteredClaimNames.GivenName]  = FabricaClaims.GivenNameClaim,
