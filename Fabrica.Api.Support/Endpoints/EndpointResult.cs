@@ -103,6 +103,83 @@ public class EndpointResult: IResult
 
     }
 
+
+    public static IResult Create(object model, JsonSerializerSettings settings, HttpStatusCode status = HttpStatusCode.OK)
+    {
+
+        var result = new EndpointResult
+        {
+            Status = status
+        };
+
+        var serializer = JsonSerializer.Create(settings);
+
+        using var writer = new StreamWriter(result.Output, leaveOpen: true);
+        using var jwriter = new JsonTextWriter(writer);
+
+        serializer.Serialize(jwriter, model);
+        jwriter.Flush();
+
+        result.Output.Seek(0, SeekOrigin.Begin);
+
+        return result;
+
+    }
+
+
+
+    public static IResult Create<T>(Response<T> response, JsonSerializerSettings settings, HttpStatusCode status = HttpStatusCode.OK)
+    {
+
+        var result = new EndpointResult
+        {
+            Status = status
+        };
+
+        var serializer = JsonSerializer.Create(settings);
+
+        if (response is { Ok: true, Value: not Stream })
+        {
+            using var writer = new StreamWriter(result.Output, leaveOpen: true);
+            using var jwriter = new JsonTextWriter(writer);
+
+            serializer.Serialize(jwriter, response.Value);
+            jwriter.Flush();
+
+        }
+        else if (response is { Ok: true, Value: ContentStream cs })
+        {
+
+            result.ContentType = cs.ContentType.MediaType ?? MediaTypeNames.Application.Json;
+
+            if (cs.CanSeek)
+                cs.Seek(0, SeekOrigin.Begin);
+
+            cs.CopyTo(result.Output);
+
+            cs.Dispose();
+
+        }
+        else if (response is { Ok: true, Value: Stream stream })
+        {
+
+            if (stream.CanSeek)
+                stream.Seek(0, SeekOrigin.Begin);
+
+            stream.CopyTo(result.Output);
+
+            stream.Dispose();
+
+        }
+
+        result.Output.Seek(0, SeekOrigin.Begin);
+
+        return result;
+
+    }
+
+
+
     private EndpointResult()
     {
     }

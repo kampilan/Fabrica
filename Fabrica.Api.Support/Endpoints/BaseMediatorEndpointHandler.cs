@@ -13,6 +13,9 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
     [FromServices]
     public IMessageMediator Mediator { get; set; } = null!;
 
+    [FromServices]
+    public IEndpointResultBuilder Builder { get; set; } = null!;
+
 
     protected virtual Task Validate()
     {
@@ -39,7 +42,7 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
 
         // *****************************************************************
         logger.Debug("Attempting to build Result");
-        var result = EndpointResult.Create(response);
+        var result = Builder.Create(response);
 
 
         // *****************************************************************

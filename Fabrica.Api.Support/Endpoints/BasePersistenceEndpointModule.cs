@@ -501,6 +501,9 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
         [FromServices]
         public IPatchResolver Resolver { get; set; } = null!;
 
+        [FromServices]
+        public IEndpointResultBuilder Builder { get; set; } = null!;
+
 
         public override async Task<IResult> Handle()
         {
@@ -564,7 +567,7 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
             // *****************************************************************
             logger.Debug("Attempting to build action result");
 
-            var result = EndpointResult.Create(retrieveResponse);
+            var result = Builder.Create(retrieveResponse);
 
 
 

@@ -30,10 +30,13 @@ public abstract class UtilityEndpointModule : BaseEndpointModule<UtilityEndpoint
         [FromServices]
         public IMissionContext Mission { get; set; } = null!;
 
+        [FromServices]
+        public IEndpointResultBuilder Builder { get; set; } = null!;
+
         public override Task<IResult> Handle()
         {
 
-            var result = EndpointResult.Create(Mission);
+            var result = Builder.Create(Mission);
 
             return Task.FromResult(result);
 
@@ -45,6 +48,10 @@ public abstract class UtilityEndpointModule : BaseEndpointModule<UtilityEndpoint
 
     protected class PingHandler : BaseEndpointHandler
     {
+
+
+        [FromServices]
+        public IEndpointResultBuilder Builder { get; set; } = null!;
 
 
         public override Task<IResult> Handle()
@@ -87,7 +94,7 @@ public abstract class UtilityEndpointModule : BaseEndpointModule<UtilityEndpoint
                 });
 
 
-            var result = EndpointResult.Create(response);
+            var result = Builder.Create(response);
 
             return Task.FromResult(result);
 

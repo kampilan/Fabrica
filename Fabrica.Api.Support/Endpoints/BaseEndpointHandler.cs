@@ -22,7 +22,7 @@ public abstract class BaseEndpointHandler
 
         Settings = new JsonSerializerSettings
         {
-            ContractResolver = new CamelModelContractResolver(),
+            ContractResolver = new ModelContractResolver(),
             DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
             NullValueHandling = NullValueHandling.Ignore,
             DateTimeZoneHandling = DateTimeZoneHandling.Utc,
