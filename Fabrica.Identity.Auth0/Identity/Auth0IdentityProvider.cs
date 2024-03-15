@@ -27,6 +27,11 @@ public class Auth0IdentityProvider: CorrelatedObject, IIdentityProvider
     private ManagementApiClient Client { get; set; } = null!;
 
 
+    public Task<bool> ExecutePasswordReset(string email, CancellationToken ct = new())
+    {
+        return Task.FromResult( false );
+    }
+
     public async Task<SyncUserResponse> SyncUser( SyncUserRequest request, CancellationToken ct=new() )
     {
 

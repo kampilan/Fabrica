@@ -232,6 +232,49 @@ public class KeycloakProviderTests
 
 
     [Test]
+    public async Task Test3100_0221_Should_Update_Password()
+    {
+
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
+
+        var request = new SyncUserRequest
+        {
+            CurrentUsername = "gabby.moring",
+            NewPassword = "TestTest123"
+        };
+
+
+        var res = await provider.SyncUser(request);
+
+        Assert.IsNotNull(res);
+
+        Assert.IsNotEmpty(res.IdentityUid);
+        Assert.IsTrue(res.Exists);
+        Assert.IsTrue(res.Updated);
+        Assert.IsFalse(res.Created);
+
+    }
+
+
+    [Test]
+    public async Task Test3100_0222_Should_Send_Update_Password_Email()
+    {
+
+        await using var scope = TheContainer.BeginLifetimeScope();
+        var provider = scope.Resolve<IIdentityProvider>();
+
+        var res = await provider.ExecutePasswordReset("james.moring@kampilangroup.com");
+
+
+        Assert.IsTrue(res);
+
+    }
+
+
+
+
+    [Test]
     public async Task Test3100_0230_Should_Not_Update_User()
     {
 
@@ -350,7 +393,7 @@ public class TheModule : Module
             o.MetaEndpoint = KeycloakMetaEndpoint;
             o.ApiEndpoint = KeycloakApiEndpoint;
             o.ClientId = "service";
-            o.ClientSecret = "";
+            o.ClientSecret = "aQc6tEyajZ6ZpGQPxQarUgscO14ropXN";
 
         });
 

@@ -7,7 +7,7 @@ namespace Fabrica.Identity;
 
 public interface IIdentityProvider
 {
-
+    Task<bool> ExecutePasswordReset(string email, CancellationToken ct = new());
     Task<SyncUserResponse> SyncUser( SyncUserRequest request, CancellationToken ct=new() );
 
 }

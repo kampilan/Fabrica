@@ -7,6 +7,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using Humanizer;
+using MediatR;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -33,6 +34,74 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
     private readonly IHttpClientFactory _factory;
 
     private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
+
+
+    public async Task<bool> ExecutePasswordReset( string email, CancellationToken ct = new() )
+    {
+
+        using var logger = EnterMethod();
+
+
+        logger.Debug("Attempting to fetch User by Email");
+
+        var req = HttpRequestBuilder.Get(HttpClientName)
+            .ForResource<User>()
+            .AddParameter("email", email)
+            .AddParameter("exact", true )
+            .ToRequest();
+
+        logger.Inspect("endpoint", req.Path);
+
+
+        var (ok, results) = await _factory.Many<User>(req, ct);
+
+        logger.Inspect(nameof(ok), ok);
+
+
+
+        // *****************************************************************
+        if( ok && results.FirstOrDefault() is { } user && !string.IsNullOrWhiteSpace(user.Id) )
+        {
+
+
+            // *****************************************************************
+            logger.Debug("User found");
+
+            var body = new List<string> {"UPDATE_PASSWORD"};
+
+            var actReq = HttpRequestBuilder.Put(HttpClientName)
+                .ForResource<User>()
+                .WithIdentifier(user.Id)
+                .WithSubResource("execute-actions-email")
+                .WithBody(body)
+                .ToRequest();
+            
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to send Reset Password Email request");
+            var actRes = await _factory.Send(actReq, ct);
+
+            logger.LogObject(nameof(actRes), actRes);
+
+
+
+            // *****************************************************************
+            return actRes.WasSuccessful;
+
+        }
+
+
+
+        // *****************************************************************
+        if ( ok )
+            logger.Debug("User not found");
+
+
+        // *****************************************************************
+        return false;
+
+    }
 
 
     public async Task<SyncUserResponse> SyncUser( SyncUserRequest request, CancellationToken ct=new() )
@@ -83,7 +152,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             var req = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource<User>()
-                .AddParameter("username", $"{request.CurrentUsername}")
+                .AddParameter("username", request.CurrentUsername )
                 .AddParameter("exact", "true")
                 .ToRequest();
 
@@ -100,7 +169,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             var req = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource<User>()
-                .AddParameter("username", $"{request.NewUsername}")
+                .AddParameter("username", request.NewUsername)
                 .AddParameter("exact", "true")
                 .ToRequest();
 
