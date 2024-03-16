@@ -20,7 +20,6 @@ public class PrivateFieldMappingConvention() : ConventionBase("Fabrica.ClassMapp
             return;
 
         classMap.SetIgnoreExtraElements(true);
-        classMap.UnmapProperty("Uid");
 
         var flags  = BindingFlags.NonPublic | BindingFlags.Instance;
         var fields = type.GetFields(flags);
