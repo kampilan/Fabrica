@@ -128,6 +128,7 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
         builder.Services.AddHostedService<TService>();
 
+        builder.Host.UseOneLifetime(path, AllowManualExit);
 
         // *****************************************************************
         logger.Debug("Attempting to configure Autofac container");
@@ -139,7 +140,7 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
                 .SingleInstance();
 
 
-
+/*
             if (AllowManualExit)
             {
                 cb.RegisterType<ApplianceConsoleLifetimeWithExit>()
@@ -182,7 +183,7 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
                 .SingleInstance()
                 .AutoActivate();
 
-
+*/
 
 
             cb.AddCorrelation();

@@ -16,6 +16,7 @@ public class ApplianceConsoleLifetime : IHostLifetime, IDisposable
     private CancellationTokenRegistration _applicationStartedRegistration;
     private CancellationTokenRegistration _applicationStoppingRegistration;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public ApplianceConsoleLifetime(IOptions<ConsoleLifetimeOptions> options, IHostEnvironment environment, IHostApplicationLifetime applicationLifetime, IOptions<HostOptions> hostOptions)
     {
 
