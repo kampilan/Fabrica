@@ -21,8 +21,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Api.Support;
 
-public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
+public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), IBootstrap
 {
+
 
     public bool AllowManualExit { get; set; } = false;
 
@@ -62,12 +63,10 @@ public abstract class KestralBootstrap : CorrelatedObject, IBootstrap
     public string GatewayTokenSigningKey { get; set; } = "";
     public string TokenSigningKey { get; set; } = "";
 
+    public bool ExposeApiDocumentation { get; set; } = true;
+
     public IConfiguration Configuration { get; set; } = null!;
 
-
-    protected KestralBootstrap() : base(new Correlation())
-    {
-    }
 
     public virtual void ConfigureWatch()
     {

@@ -9,12 +9,8 @@ using MongoDB.Bson.Serialization.IdGenerators;
 namespace Fabrica.Persistence.Mongo.Conventions;
 
 
-public class PrivateFieldMappingConvention: ConventionBase, IClassMapConvention
+public class PrivateFieldMappingConvention() : ConventionBase("Fabrica.ClassMapping"), IClassMapConvention
 {
-
-    public PrivateFieldMappingConvention(): base("Fabrica.ClassMapping")
-    {
-    }
 
     public void Apply( BsonClassMap classMap )
     {
@@ -24,9 +20,11 @@ public class PrivateFieldMappingConvention: ConventionBase, IClassMapConvention
             return;
 
         classMap.SetIgnoreExtraElements(true);
+        classMap.UnmapProperty("Uid");
 
         var flags  = BindingFlags.NonPublic | BindingFlags.Instance;
         var fields = type.GetFields(flags);
+
 
         foreach( var field in fields.Where(f=>!f.IsPublic && f.Name.StartsWith("_") && !f.FieldType.IsAssignableTo(typeof(IAggregateCollection)) && !f.FieldType.IsAssignableTo(typeof(IReferenceModel)) ) )
         {
