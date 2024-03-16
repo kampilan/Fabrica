@@ -8,7 +8,6 @@ using Fabrica.One;
 using Fabrica.One.Appliance;
 using Fabrica.Services;
 using Fabrica.Utilities.Container;
-using Fabrica.Utilities.Process;
 using Fabrica.Watch;
 using Fabrica.Watch.Bridges.MicrosoftImpl;
 using Microsoft.AspNetCore.Builder;
@@ -21,13 +20,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabrica.Api.Support;
 
-public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), IBootstrap
+public abstract class WebApplicationBootstrap() : CorrelatedObject(new Correlation()), IBootstrap
 {
 
 
     public bool AllowManualExit { get; set; } = false;
 
+    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
 
+    
     public bool QuietLogging { get; set; } = false;
 
     public bool RealtimeLogging { get; set; } = false;
@@ -44,7 +45,6 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
     public bool AllowAnyIp { get; set; } = false;
     public int ListeningPort { get; set; } = 8080;
 
-    public bool UseFabricaOneLifetime { get; set; } = true;
 
     public string Environment { get; set; } = "Development";
     public string MissionName { get; set; } = "";
@@ -93,7 +93,7 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
         logger.Debug("Attempting to call OnConfigure");
         await OnConfigured();
 
-        logger.LogObject("KestralBootstrap", this);
+        logger.LogObject("WebApplicationBootstrap", this);
 
 
 
@@ -103,9 +103,6 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
         builder.Configuration.AddConfiguration(Configuration);
 
-        var mission = Configuration.Get<MissionContext>();
-        if (mission is null)
-            throw new InvalidOperationException("Mission is null after Configuration binding, Verify configuration files exist.");
 
 
         // *****************************************************************
@@ -114,6 +111,33 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
         builder.Logging.AddProvider(new LoggerProvider());
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
 
+
+
+        // *****************************************************************
+        if( ApplicationLifetimeType.ToLowerInvariant() == "fabricaone" )
+        {
+            logger.Debug("Attempting to add FabricaOne application lifetime");
+            builder.Host.UseFabricaOne(path, AllowManualExit);
+        }
+        else if (ApplicationLifetimeType.ToLowerInvariant() == "systemd")
+        {
+            logger.Debug("Attempting to add FabricaOne application lifetime");
+            builder.Host.UseSystemd();
+        }
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to configure Host");
+        try
+        {
+            ConfigureHost(builder.Host);
+        }
+        catch (Exception cause)
+        {
+            logger.ErrorWithContext(cause, this, "Bootstrap ConfigureHost failed.");
+            throw;
+        }
 
 
         try
@@ -128,7 +152,7 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
         builder.Services.AddHostedService<TService>();
 
-        builder.Host.UseOneLifetime(path, AllowManualExit);
+
 
         // *****************************************************************
         logger.Debug("Attempting to configure Autofac container");
@@ -140,58 +164,7 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
                 .SingleInstance();
 
 
-/*
-            if (AllowManualExit)
-            {
-                cb.RegisterType<ApplianceConsoleLifetimeWithExit>()
-                    .As<IHostLifetime>()
-                    .SingleInstance();
-            }
-            else
-            {
-                cb.RegisterType<ApplianceConsoleLifetime>()
-                    .As<IHostLifetime>()
-                    .SingleInstance();
-            }
-
-            cb.Register(_ =>
-                {
-
-                    var comp = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
-                    return comp;
-
-                })
-                .As<ISignalController>()
-                .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
-
-
-            cb.Register(c =>
-                {
-
-                    var hal = c.Resolve<IHostApplicationLifetime>();
-                    var sc = c.Resolve<ISignalController>();
-
-                    var comp = new ApplianceLifetime(hal, sc);
-
-                    return comp;
-
-                })
-                .AsSelf()
-                .As<IRequiresStart>()
-                .SingleInstance()
-                .AutoActivate();
-
-*/
-
-
             cb.AddCorrelation();
-
-
-            cb.RegisterInstance(mission)
-                .As<IMissionContext>()
-                .SingleInstance();
 
 
             cb.RegisterType<CircuitBootstrap>()
@@ -214,10 +187,15 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
                 .AutoActivate();
 
 
-            foreach (var pair in mission.ServiceEndpoints)
+
+            var mc = Configuration.Get<MissionContext>();
+            if( mc is not null )
             {
-                var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
-                cb.AddServiceAddress(pair.Key, address);
+                foreach (var pair in mc.ServiceEndpoints)
+                {
+                    var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
+                    cb.AddServiceAddress(pair.Key, address);
+                }
             }
 
 
@@ -235,12 +213,6 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
 
         }));
-
-
-
-        // *****************************************************************
-        logger.Debug("Attempting to configure Host");
-        ConfigureHost(builder.Host);
 
 
 
@@ -303,15 +275,6 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
     }
 
-    public virtual void ConfigureServices(IServiceCollection services)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base ConfigureServices adds no services");
-
-
-    }
 
     public virtual void ConfigureHost(IHostBuilder builder)
     {
@@ -323,6 +286,16 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
     }
 
+
+    public virtual void ConfigureServices(IServiceCollection services)
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Info("Base ConfigureServices adds no services");
+
+
+    }
 
 
     public virtual void ConfigureContainer(ContainerBuilder builder)
@@ -357,15 +330,9 @@ public abstract class KestralBootstrap() : CorrelatedObject(new Correlation()), 
 
 }
 
-public class WebAppliance : IAppliance
+public class WebAppliance(WebApplication app) : IAppliance
 {
-
-    public WebAppliance(WebApplication app)
-    {
-        App = app;
-    }
-
-    private WebApplication App { get; }
+    private WebApplication App { get; } = app;
 
     public void Run()
     {

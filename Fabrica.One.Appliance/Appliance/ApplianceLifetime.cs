@@ -24,8 +24,8 @@ namespace Fabrica.One.Appliance
         public Task Start()
         {
 
-            Lifetime.ApplicationStarted.Register(() => Controller.Started());
-            Lifetime.ApplicationStopped.Register(() => Controller.Stopped());
+            Lifetime.ApplicationStarted.Register(Controller.Started);
+            Lifetime.ApplicationStopped.Register(Controller.Stopped);
 
             Task.Run(_run);
 

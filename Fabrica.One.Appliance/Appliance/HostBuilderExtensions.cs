@@ -1,5 +1,6 @@
 ﻿using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Process;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -12,15 +13,14 @@ public static class HostBuilderExtensions
 {
 
 
-    public static IHostBuilder UseOneLifetime(this IHostBuilder builder, string path="", bool allowExit = false )
+    public static IHostBuilder UseFabricaOne(this IHostBuilder builder, string path="", bool allowExit = false )
     {
 
         builder.ConfigureServices((_, sc) =>
         {
 
-            var fs = new FileSignalController(FileSignalController.OwnerType.Appliance, path);
-            sc.AddSingleton<ISignalController>(fs);
-            sc.AddSingleton<IRequiresStart>(fs);
+            sc.AddSingleton<ISignalController,FileSignalController>(_ => new FileSignalController(FileSignalController.OwnerType.Appliance, path) );
+            sc.AddSingleton<IRequiresStart>(sp=>sp.GetRequiredService<FileSignalController>() );
 
             sc.AddSingleton(typeof(IHostLifetime), sp =>
             {
@@ -46,6 +46,14 @@ public static class HostBuilderExtensions
                 var sg = sp.GetRequiredService<ISignalController>();
 
                 return new ApplianceLifetime(hal, sg);
+
+            });
+
+            sc.AddSingleton<IMissionContext>(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+                var mc = cfg.Get<MissionContext>() ?? new MissionContext();
+                return mc;
 
             });
 
