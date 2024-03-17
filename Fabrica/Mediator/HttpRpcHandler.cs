@@ -58,7 +58,7 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
 
         // *****************************************************************
         logger.Debug("Attempting to add body content");
-        if( string.IsNullOrWhiteSpace(Request.BodyContent) )
+        if( !string.IsNullOrWhiteSpace(Request.BodyContent) )
             innerRequest.Content =  new StringContent(Request.BodyContent, Encoding.UTF8, "application/json");
 
 
