@@ -79,6 +79,11 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
             logger.Debug("Attempting to read body content");
             var content = await innerResponse.Content.ReadAsStringAsync(token);
 
+            logger.LogJson("content", content );
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to deserialize content into response");
             var response = JsonConvert.DeserializeObject<TResponse>(content);
 
 
