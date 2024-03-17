@@ -19,7 +19,8 @@ public static class HostBuilderExtensions
         builder.ConfigureServices((_, sc) =>
         {
 
-            sc.AddSingleton<ISignalController,FileSignalController>(_ => new FileSignalController(FileSignalController.OwnerType.Appliance, path) );
+            sc.AddSingleton(_ => new FileSignalController(FileSignalController.OwnerType.Appliance, path) );
+            sc.AddSingleton<ISignalController>(sp => sp.GetRequiredService<FileSignalController>());
             sc.AddSingleton<IRequiresStart>(sp=>sp.GetRequiredService<FileSignalController>() );
 
             sc.AddSingleton(typeof(IHostLifetime), sp =>
