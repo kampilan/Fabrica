@@ -24,7 +24,7 @@ public class Program
 
 
         Console.WriteLine("Fabrica One AWS Orchestrator Service");
-        Console.WriteLine("Pond Hawk Technologies Inc. (c) 2023");
+        Console.WriteLine("Pond Hawk Technologies Inc. (c) 2024");
         Console.WriteLine("");
 
         Console.WriteLine("Press Ctrl-C to Stop");
@@ -33,7 +33,8 @@ public class Program
         {
 
             var cfgBuilder = new ConfigurationBuilder()
-                .AddYamlFile("configuration.yml");
+                .AddYamlFile("configuration.yml")
+                .AddEnvironmentVariables();
 
             TheConfiguration = cfgBuilder.Build();
 

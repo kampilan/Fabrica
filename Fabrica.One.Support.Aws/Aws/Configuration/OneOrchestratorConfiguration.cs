@@ -13,11 +13,10 @@ using Fabrica.Watch;
 
 namespace Fabrica.One.Support.Aws.Configuration;
 
-public class OneOrchestratorConfiguration: Module, IAwsCredentialConfiguration
+public class OneOrchestratorConfiguration: Module
 {
         
     public string AwsProfileName { get; set; } = "";
-    public bool UseLocalAwsCredentials { get; set; } = false;
 
     public string OneRoot { get; set; } = "";
 
@@ -86,7 +85,7 @@ public class OneOrchestratorConfiguration: Module, IAwsCredentialConfiguration
 
 
 
-            builder.UseAws(this);
+            builder.UseAws(AwsProfileName);
 
 
             // *****************************************************************

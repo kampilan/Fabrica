@@ -75,18 +75,15 @@ public class SearchTests
 
 
 
-    protected class TheModule : Module, IAwsCredentialConfiguration
+    protected class TheModule : Module
     {
-
-        public string AwsProfileName { get; set; } = "kampilan";
-        public bool UseLocalAwsCredentials { get; set; } = true;
 
 
         protected override void Load(ContainerBuilder builder)
         {
 
 
-            builder.UseAws(this);
+            builder.UseAws("kampilan");
 
 
             builder.Register(c =>

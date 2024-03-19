@@ -54,26 +54,7 @@ public static class AutofacExtensions
 {
 
 
-    public static ContainerBuilder UseAws(this ContainerBuilder builder, IAwsCredentialConfiguration configuration)
-    {
-
-        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-
-
-        using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
-
-        logger.EnterScope(nameof(UseAws));
-
-        logger.LogObject(nameof(configuration), configuration);
-
-
-        // *****************************************************************
-        return builder.UseAws(configuration.AwsProfileName, configuration.UseLocalAwsCredentials);
-
-
-    }
-
-    public static ContainerBuilder UseAws(this ContainerBuilder builder, string profileName = "", bool useLocalCredentials = false )
+    public static ContainerBuilder UseAws(this ContainerBuilder builder, string profileName )
     {
 
 
@@ -82,34 +63,19 @@ public static class AutofacExtensions
 
         logger.EnterScope(nameof(UseAws));
 
+        if (string.IsNullOrWhiteSpace(profileName))
+            return UseAws(builder);
 
 
-        // *****************************************************************
-        logger.Debug("Attempting to check if running on EC2");
-        AWSCredentials credentials;
-        if( !useLocalCredentials && string.IsNullOrWhiteSpace(profileName) )
-        {
-            logger.Debug("Attempting to build default instance profile");
-            credentials = new InstanceProfileAWSCredentials();
-        }
-        else if( !useLocalCredentials && !string.IsNullOrWhiteSpace(profileName) )
-        {
-            logger.Debug("Attempting to build default instance profile");
-            credentials = new InstanceProfileAWSCredentials(profileName);
-        }
-        else
-        {
-
-            logger.Debug("Attempting to build local profile credentials");
+        logger.Debug("Attempting to build local profile credentials");
             var sharedFile = new SharedCredentialsFile();
-            if (!(sharedFile.TryGetProfile(profileName, out var profile) && AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out credentials)))
+            if (!(sharedFile.TryGetProfile(profileName, out var profile) && AWSCredentialsFactory.TryGetAWSCredentials(profile, sharedFile, out var credentials)))
                 throw new Exception($"Local profile {profile} could not be loaded");
 
             logger.Inspect(nameof(profile.Region), profile.Region.SystemName);
 
             AWSConfigs.AWSRegion = profile.Region.SystemName;
 
-        }
 
 
         builder.Register(c => credentials)
@@ -183,6 +149,87 @@ public static class AutofacExtensions
 
 
     }
+
+
+
+    public static ContainerBuilder UseAws(this ContainerBuilder builder)
+    {
+
+
+        using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AutofacExtensions));
+
+
+        logger.EnterScope(nameof(UseAws));
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonS3Client())
+            .As<IAmazonS3>()
+            .SingleInstance();
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonSecurityTokenServiceClient())
+            .As<IAmazonSecurityTokenService>()
+            .SingleInstance();
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonSQSClient())
+            .As<IAmazonSQS>()
+            .SingleInstance();
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonSimpleNotificationServiceClient())
+            .As<IAmazonSimpleNotificationService>()
+            .SingleInstance();
+
+
+
+        builder.Register(c => new AmazonSimpleSystemsManagementClient())
+            .As<IAmazonSimpleSystemsManagement>()
+            .SingleInstance();
+
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonAppConfigClient())
+            .As<IAmazonAppConfig>()
+            .SingleInstance();
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonAppConfigDataClient())
+            .As<IAmazonAppConfigData>()
+            .SingleInstance();
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonSecretsManagerClient())
+            .As<IAmazonSecretsManager>()
+            .SingleInstance();
+
+
+        // ******************************************************************
+        builder.Register(c => new AmazonDynamoDBClient())
+            .As<IAmazonDynamoDB>()
+            .SingleInstance();
+
+        // ******************************************************************
+        builder.Register(c => new DynamoDBContext(c.Resolve<IAmazonDynamoDB>()))
+            .As<IDynamoDBContext>()
+            .InstancePerDependency();
+
+
+
+        // ******************************************************************
+        return builder;
+
+
+    }
+
+
 
 
     public static ContainerBuilder AddStorage(this ContainerBuilder builder)

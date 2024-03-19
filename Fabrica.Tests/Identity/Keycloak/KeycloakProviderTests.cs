@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Autofac;
+using Fabrica.Configuration.Yaml;
 using Fabrica.Http;
 using Fabrica.Identity;
 using Fabrica.Identity.Keycloak;
@@ -14,6 +15,7 @@ using Fabrica.Identity.Keycloak.Models;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Fabrica.Tests.Identity.Keycloak;
@@ -33,8 +35,15 @@ public class KeycloakProviderTests
 
         maker.Build();
 
+
+        var cb = new ConfigurationBuilder()
+            .AddYamlFile("e:/locals/fabrica/tests/keycloak/pht.yml", true);
+        var cfg = cb.Build();
+
+        var module = cfg.Get<TheModule>();
+
         var builder = new ContainerBuilder();
-        builder.RegisterModule<TheModule>();
+        builder.RegisterModule(module);
 
 
         TheContainer = builder.Build();
@@ -375,10 +384,11 @@ public class KeycloakProviderTests
 public class TheModule : Module
 {
 
-    public string KeycloakMetaEndpoint { get; set; } = "https://identity.after-it-services.io/realms/master/.well-known/openid-configuration";
-    public string KeycloakApiEndpoint { get; set; } = "https://identity.after-it-services.io/admin/realms/pondhawk/";
+    public string KeycloakMetaEndpoint { get; set; } = string.Empty;
+    public string KeycloakApiEndpoint { get; set; } = string.Empty;
 
-    public string PondHawkMetaEndpoint { get; set; } = "https://identity.after-it-services.io/realms/pondhawk/.well-known/openid-configuration";
+    public string ClientId { get; set; } = string.Empty;
+    public string ClientSecret { get; set; } = string.Empty;
 
     protected override void Load(ContainerBuilder builder)
     {
@@ -392,11 +402,12 @@ public class TheModule : Module
             o.GrantType = TokenApiGrantType.ClientCredential;
             o.MetaEndpoint = KeycloakMetaEndpoint;
             o.ApiEndpoint = KeycloakApiEndpoint;
-            o.ClientId = "service";
-            o.ClientSecret = "aQc6tEyajZ6ZpGQPxQarUgscO14ropXN";
+            o.ClientId = ClientId;
+            o.ClientSecret = ClientSecret;
 
         });
 
     }
 
 }
+

@@ -37,7 +37,7 @@ public class AwsTests001
     {
 
         var builder = new ContainerBuilder();
-        builder.UseAws("kampilan", true);
+        builder.UseAws("kampilan");
 
         var container = builder.Build();
         var scope = container.BeginLifetimeScope();
@@ -61,14 +61,14 @@ public class AwsTests001
     {
 
         var builder = new ContainerBuilder();
-        builder.UseAws("kampilan", true);
+        builder.UseAws("kampilan");
 
         var container = builder.Build();
         var scope = container.BeginLifetimeScope();
 
         var client = scope.Resolve<IAmazonSecurityTokenService>();
 
-        var set = await client.CreateCredentialSet("arn:aws:iam::523329725044:role/client-serene", "Moring0001");
+        var set = await client.CreateCredentialSet("arn:aws:iam::523329725044:role/client-serene", "Moring0001",  duration:TimeSpan.FromHours(8) );
 
         Assert.NotNull(set);
 
@@ -97,6 +97,59 @@ public class AwsTests001
     }
 
 
+    [Test]
+    public async Task Test_0850_0300_Should_Get_Creds_Automatically()
+    {
+
+
+        var builder = new ContainerBuilder();
+        builder.UseAws();
+
+        var container = builder.Build();
+        var scope = container.BeginLifetimeScope();
+
+
+        var client = scope.Resolve<IAmazonS3>();
+
+        var request = new GetObjectRequest
+        {
+            BucketName = "pondhawk-appliance-repository",
+            Key = "missions/fakeproduction-production-mission-plan.json"
+        };
+
+        var response = await client.GetObjectAsync(request);
+
+        Assert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
+
+
+    }
+
+    [Test]
+    public async Task Test_0850_0300_Should_Get_Creds_ByProfile()
+    {
+
+
+        var builder = new ContainerBuilder();
+        builder.UseAws("kampilan");
+
+        var container = builder.Build();
+        var scope = container.BeginLifetimeScope();
+
+
+        var client = scope.Resolve<IAmazonS3>();
+
+        var request = new GetObjectRequest
+        {
+            BucketName = "pondhawk-appliance-repository",
+            Key = "missions/fakeproduction-production-mission-plan.json"
+        };
+
+        var response = await client.GetObjectAsync(request);
+
+        Assert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
+
+
+    }
 
 
 
