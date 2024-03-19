@@ -26,7 +26,7 @@ public class AwsTests001
     {
 
         var model = new SecretsModel();
-        await AwsSecretsHelper.PopulateWithSecrets(model, "kampilan-local", "kampilan", true );
+        await AwsSecretsHelper.PopulateWithSecrets(model, "kampilan-local", "kampilan" );
 
         Assert.IsNotEmpty(model.OriginDbPassword);
 

@@ -14,7 +14,7 @@ public static class AwsSecretsHelper
 {
 
 
-    public static async Task PopulateWithSecrets(object target, string secretId, string profileName = "", bool useLocalCredentials = false)
+    public static async Task PopulateWithSecrets(object target, string secretId, string profileName = "")
     {
 
         using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AwsSecretsHelper));
@@ -27,7 +27,7 @@ public static class AwsSecretsHelper
         // *****************************************************************
         logger.Debug("Attempting to check if should use local credentials");
         AmazonSecretsManagerClient client;
-        if( useLocalCredentials )
+        if( !string.IsNullOrWhiteSpace(profileName) )
         {
 
             var sharedFile = new SharedCredentialsFile();
