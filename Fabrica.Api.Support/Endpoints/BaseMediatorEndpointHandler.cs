@@ -1,8 +1,10 @@
-﻿using Fabrica.Mediator;
+﻿using AutoMapper;
+using Fabrica.Mediator;
 using Fabrica.Watch;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -118,6 +120,71 @@ public abstract class BaseMediatorEndpointHandler<TRequest, TResponse> : BaseMed
 
 
 }
+
+
+public abstract class BaseMediatorEndpointHandler<TRequest,TResponse,TRto> : BaseMediatorEndpointHandler where TRequest : class, IRequest<Response<TResponse>> where TResponse : class where TRto: class
+{
+
+
+    [FromServices] 
+    public IMapper Mapper { get; set; } = null!;
+
+
+    protected abstract Task<TRequest> BuildRequest();
+
+
+    public override async Task<IResult> Handle()
+    {
+
+        using var logger = EnterMethod();
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to validate");
+        await Validate();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = await BuildRequest();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to send request via mediator");
+        var response = await Mediator.Send(request);
+
+        response.EnsureSuccess();
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to map response to Rto");
+        var rto = Mapper.Map<TRto>(response.Value);
+
+        logger.LogObject(nameof(rto), rto);
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to build result");
+        var result = Builder.Create(rto);
+
+
+
+        // *****************************************************************
+        return result;
+
+    }
+
+
+}
+
+
+
+
+
 
 
 public abstract class BaseMediatorEndpointHandler<TRequest> : BaseMediatorEndpointHandler where TRequest : class, IRequest<Response>

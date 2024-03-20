@@ -55,6 +55,37 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
     }
 
+
+    protected class QueryHandlerRto<TExplorer,TRto> : BaseMediatorEndpointHandler<QueryEntityRequest<TExplorer>, List<TExplorer>,TRto> where TExplorer : class, IExplorableModel where TRto: class
+    {
+
+
+        [FromQuery(Name = "rql")]
+        public string Rql { get; set; } = null!;
+
+
+        [FromQuery(Name = "limit"), SwaggerParameter(Required = false)]
+        public int? Limit { get; set; }
+
+        protected override Task<QueryEntityRequest<TExplorer>> BuildRequest()
+        {
+
+            var list = Request.Query["rql"].Where(rql => rql is not null).Cast<string>().ToList();
+
+
+            var request = new QueryEntityRequest<TExplorer>();
+
+            foreach (var tree in list.Select(RqlLanguageParser.ToCriteria))
+                request.Filters.Add(new RqlFilterBuilder<TExplorer>(tree) { RowLimit = Limit ?? 0 });
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
     protected class QueryHandler<TCriteria, TExplorer> : BaseMediatorEndpointHandler<QueryEntityRequest<TExplorer>, List<TExplorer>> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel
     {
 
@@ -114,6 +145,70 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
+
+
+    protected class QueryHandlerRto<TCriteria, TExplorer,TRto> : BaseMediatorEndpointHandler<QueryEntityRequest<TExplorer>, List<TExplorer>,TRto> where TCriteria : BaseCriteria where TExplorer : class, IExplorableModel where TRto: class
+    {
+
+
+        [FromQuery(Name = "limit"), SwaggerParameter(Required = false)]
+        public int? Limit { get; set; }
+
+        [FromBody, SwaggerRequestBody(Description = "Criteria Body", Required = true)]
+        public TCriteria Criteria { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Criteria);
+
+        }
+
+
+        protected override Task<QueryEntityRequest<TExplorer>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+
+            var request = new QueryEntityRequest<TExplorer>();
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to introspect criteria RQL");
+            var criteria = RqlFilterBuilder<TExplorer>.Create().Introspect(Criteria);
+            criteria.RowLimit = Limit ?? 0;
+
+            // *****************************************************************
+            request.Filters.Add(criteria);
+
+
+
+            // *****************************************************************
+            logger.Debug("Attempting to produce filters from additional RQL");
+            if (Criteria.Rql?.Any() ?? false)
+            {
+                request.Filters.AddRange(Criteria.Rql.Select(s =>
+                {
+                    var tree = RqlLanguageParser.ToCriteria(s);
+                    return new RqlFilterBuilder<TExplorer>(tree);
+                }));
+            }
+
+
+            return Task.FromResult(request);
+
+
+        }
+
+
+    }
+
+
+
 
 
     protected class ThinQueryHandler<TExplorer> : BaseMediatorEndpointHandler<QueryThinEntityRequest<TExplorer>, MemoryStream> where TExplorer : class, IExplorableModel
@@ -232,6 +327,31 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     }
 
 
+    protected class RetrieveHandlerRto<TEntity,TRto> : BaseMediatorEndpointHandler<RetrieveEntityRequest<TEntity>, TEntity, TRto> where TEntity : class, IModel where TRto: class
+    {
+
+
+        [FromRoute(Name = "uid")]
+        public string Uid { get; set; } = null!;
+
+
+        protected override Task<RetrieveEntityRequest<TEntity>> BuildRequest()
+        {
+
+            var request = new RetrieveEntityRequest<TEntity>
+            {
+                Uid = Uid
+            };
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
+
 
     protected class CreateHandler<TDelta, TEntity> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity> where TDelta : BaseDelta where TEntity : class, IModel
     {
@@ -265,6 +385,42 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
+
+
+    protected class CreateHandlerRto<TDelta,TEntity,TRto> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity, TRto> where TDelta : BaseDelta where TEntity : class, IModel where TRto: class
+    {
+
+
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
+        public TDelta Delta { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Delta);
+
+        }
+
+
+        protected override Task<CreateEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new CreateEntityRequest<TEntity>();
+            request.FromObject(Delta);
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
 
     protected class CreateMemberHandler<TParent, TDelta, TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity> where TParent : class, IModel where TDelta : BaseDelta where TEntity : class, IAggregateModel
     {
@@ -308,6 +464,51 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
     }
 
 
+    protected class CreateMemberHandlerRto<TParent, TDelta, TEntity,TRto> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity, TRto> where TParent : class, IModel where TDelta : BaseDelta where TEntity : class, IAggregateModel where TRto: class
+    {
+
+
+        [FromRoute(Name = "uid")]
+        public string Uid { get; set; } = null!;
+
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
+        public TDelta Delta { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Delta);
+
+        }
+
+
+        protected override Task<CreateMemberEntityRequest<TParent, TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+
+            var request = new CreateMemberEntityRequest<TParent, TEntity>
+            {
+                ParentUid = Uid
+            };
+
+            request.FromObject(Delta);
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
+
+
+
     protected class CreateHandler<TEntity> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
     {
 
@@ -332,6 +533,33 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
+
+    protected class CreateHandlerRto<TEntity,TRto> : BaseMediatorEndpointHandler<CreateEntityRequest<TEntity>, TEntity,TRto> where TEntity : class, IModel where TRto: class
+    {
+
+
+        [FromBody]
+        public Dictionary<string, object> Delta { get; set; } = null!;
+
+
+        protected override Task<CreateEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new CreateEntityRequest<TEntity>
+            {
+                Delta = Delta
+            };
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
 
     protected class CreateMemberHandler<TParent, TEntity> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity> where TParent : class, IModel where TEntity : class, IAggregateModel
     {
@@ -361,6 +589,40 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
+
+
+    protected class CreateMemberHandlerRto<TParent, TEntity,TRto> : BaseMediatorEndpointHandler<CreateMemberEntityRequest<TParent, TEntity>, TEntity,TRto> where TParent : class, IModel where TEntity : class, IAggregateModel where TRto: class
+    {
+
+
+        [FromRoute(Name = "uid")]
+        public string Uid { get; set; } = null!;
+
+        [FromBody]
+        public Dictionary<string, object> Delta { get; set; } = null!;
+
+
+        protected override Task<CreateMemberEntityRequest<TParent, TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new CreateMemberEntityRequest<TParent, TEntity>
+            {
+                ParentUid = Uid,
+                Delta = Delta
+            };
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
+
+
 
 
     protected class UpdateHandler<TDelta, TEntity> : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity> where TDelta : BaseDelta where TEntity : class, IModel
@@ -405,6 +667,51 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
     }
 
+
+    protected class UpdateHandler<TDelta, TEntity,TRto> : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity> where TDelta : BaseDelta where TEntity : class, IModel
+    {
+
+
+        [FromRoute(Name = "uid")]
+        public string Uid { get; set; } = null!;
+
+
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
+        public TDelta Delta { get; set; } = null!;
+
+
+        protected override async Task Validate()
+        {
+
+            await base.Validate();
+
+            Validate(Delta);
+
+        }
+
+
+
+        protected override Task<UpdateEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new UpdateEntityRequest<TEntity>
+            {
+                Uid = Uid
+            };
+
+            request.FromObject(Delta);
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
+
     protected class UpdateHandler<TEntity> : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
     {
 
@@ -435,6 +742,40 @@ public abstract class BasePersistenceEndpointModule<T> : BaseEndpointModule<T> w
 
 
     }
+
+
+    protected class UpdateHandlerRto<TEntity,TRto> : BaseMediatorEndpointHandler<UpdateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel where TRto: class
+    {
+
+
+        [FromRoute(Name = "uid")]
+        public string Uid { get; set; } = null!;
+
+
+        [FromBody, SwaggerRequestBody(Description = "Delta Body", Required = true)]
+        public Dictionary<string, object> Delta { get; set; } = null!;
+
+
+        protected override Task<UpdateEntityRequest<TEntity>> BuildRequest()
+        {
+
+            using var logger = EnterMethod();
+
+            var request = new UpdateEntityRequest<TEntity>
+            {
+                Uid = Uid,
+                Delta = Delta
+            };
+
+
+            return Task.FromResult(request);
+
+        }
+
+
+    }
+
+
 
 
     protected class DeleteHandler<TEntity> : BaseMediatorEndpointHandler<DeleteEntityRequest<TEntity>> where TEntity : class, IModel
