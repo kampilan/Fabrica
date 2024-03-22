@@ -38,6 +38,7 @@ public static class Appliance
 
             cfgb
                 .AddYamlFile("configuration.yml", true)
+                .AddEnvironmentVariables()
                 .AddJsonFile("environment.json", true)
                 .AddJsonFile("mission.json", true);
 
