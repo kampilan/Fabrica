@@ -7,17 +7,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Fabrica.Utilities.Container;
 
-public class InitService: IHostedService
+public class RequiresStartService(ILifetimeScope root) : IHostedService
 {
 
-    public InitService( ILifetimeScope root )
-    {
-
-        RootScope = root;
-
-    }
-
-    protected ILifetimeScope RootScope { get; }
+    protected ILifetimeScope RootScope { get; } = root;
 
 
     public virtual async Task StartAsync(CancellationToken cancellationToken)
@@ -43,7 +36,7 @@ public class InitService: IHostedService
         catch (Exception cause)
         {
             var ctx = new { FailedStartable = currentStartable };
-            logger.ErrorWithContext( cause, ctx, "InitService failed during start");
+            logger.ErrorWithContext( cause, ctx, "RequiresStartService failed during start");
             throw;
         }
 

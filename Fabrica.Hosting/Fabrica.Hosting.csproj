@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Title>Fabrica.Hosting</Title>
+    <Company>Pond Hawk Technologies Inc.</Company>
+    <Description>Generic Hosting Bootstrap</Description>
+    <Copyright>Pond Hawk Technologies Inc.  (c) 2024</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+    <ProjectReference Include="..\Fabrica.Watch.Bridges\Fabrica.Watch.Bridges.csproj" />
+    <ProjectReference Include="..\Fabrica.Watch\Fabrica.Watch.csproj" />
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
+
+</Project>

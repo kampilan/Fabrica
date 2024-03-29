@@ -3,26 +3,16 @@
 // ReSharper disable ConvertToUsingDeclaration
 
 using Fabrica.Configuration.Yaml;
-using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 
 namespace Fabrica.One.Appliance;
 
 public static class Appliance
 {
 
-    public static async Task<IAppliance> Bootstrap<TBootstrap>( string path="", string localConfigFile = null! ) where TBootstrap : IBootstrap
-    {
 
-        var app = await Bootstrap<TBootstrap, InitService>(path,localConfigFile);
-
-        return app;
-
-    }    
-
-    public static async Task<IAppliance> Bootstrap<TBootstrap,TService>(string path = "", string localConfigFile=null!) where TBootstrap : IBootstrap where TService: class, IHostedService
+    public static async Task<IAppliance> Bootstrap<TBootstrap>(string path = "", string localConfigFile=null!) where TBootstrap : IBootstrap
     {
 
         IAppliance app;
@@ -68,7 +58,7 @@ public static class Appliance
 
             // *****************************************************************
             logger.Debug("Bootstrapping Appliance");
-            app = await bootstrap.Boot<TService>(path);
+            app = await bootstrap.Boot(path);
 
 
         }
