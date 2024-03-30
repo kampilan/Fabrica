@@ -42,7 +42,7 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
             if (client.BaseAddress is null)
                 throw new InvalidOperationException($"HttpClient: ({request.HttpClientName}) has a null BaseAddress");
 
-
+            
 
             logger.Inspect(nameof(client.BaseAddress), client.BaseAddress);
             logger.Inspect(nameof(request.Method), request.Method);
