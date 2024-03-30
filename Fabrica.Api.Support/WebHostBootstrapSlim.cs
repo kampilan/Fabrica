@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿
+// ReSharper disable UnusedMember.Global
+
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Container;
 using Fabrica.One;
@@ -7,50 +10,63 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Bridges.MicrosoftImpl;
 using Fabrica.Watch.Switching;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable UnusedMember.Global
+namespace Fabrica.Api.Support;
 
-namespace Fabrica.Hosting;
-
-public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()), IBootstrap
+public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation()), IBootstrap
 {
 
-    public IConfiguration Configuration { get; set; } = null!;
 
-    public bool AllowManualExit { get; set; }
+    public bool AllowManualExit { get; set; } = false;
 
+    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
+
+    
     public bool QuietLogging { get; set; } = false;
 
     public bool RealtimeLogging { get; set; } = false;
-    public List<LocalSwitchConfig> RealtimeSwitches { get; set; } = [];
+    public List<LocalSwitchConfig> RealtimeSwitches { get; set; } = new();
 
     public bool RelayLogging { get; set; } = false;
 
 
-    public string WatchEventStoreUri { get; set; } = string.Empty;
-    public string WatchDomainName { get; set; } = string.Empty;
+    public string WatchEventStoreUri { get; set; } = "";
+    public string WatchDomainName { get; set; } = "";
     public int WatchPollingDurationSecs { get; set; } = 15;
 
 
+    public bool AllowAnyIp { get; set; } = false;
+    public int ListeningPort { get; set; } = 8080;
+
+
     public string Environment { get; set; } = "Development";
-    public string MissionName { get; set; } = string.Empty;
+    public string MissionName { get; set; } = "";
     public bool RunningAsMission => !string.IsNullOrWhiteSpace(MissionName);
 
 
-    public string ApplianceId { get; set; } = string.Empty;
-    public string ApplianceName { get; set; } = string.Empty;
-    public string ApplianceBuild { get; set; } = string.Empty;
+    public string ApplianceId { get; set; } = "";
+    public string ApplianceName { get; set; } = "";
+    public string ApplianceBuild { get; set; } = "";
     public DateTime ApplianceBuildDate { get; set; } = DateTime.MinValue;
-    public string ApplianceRoot { get; set; } = string.Empty;
+    public string ApplianceRoot { get; set; } = "";
     public DateTime ApplianceStartTime { get; set; } = DateTime.MinValue;
 
 
+    public bool RequiresAuthentication { get; set; } = true;
+    public string GatewayTokenSigningKey { get; set; } = "";
+    public string TokenSigningKey { get; set; } = "";
 
-    protected IHostBuilder Builder { get; set; } = null!;
+    public bool ExposeApiDocumentation { get; set; } = true;
+    public string ApiName { get; set; } = "";
+    public string ApiVersion { get; set; } = "";
+
+    public IConfiguration Configuration { get; set; } = null!;
 
 
     public virtual void ConfigureWatch()
@@ -64,22 +80,26 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
     }
 
-    public virtual async Task<IAppliance> Boot(string path = "")
+    protected IHostBuilder Builder { get; set; } = null!;
+
+
+    public async Task<IAppliance> Boot(string path = "")
     {
 
-        using var logger = EnterMethod();
+        var logger = EnterMethod();
+
 
 
         // *****************************************************************
-        logger.Debug("Attempting to call OnConfigured");
+        logger.Debug("Attempting to call OnConfigure");
         await OnConfigured();
 
-        logger.LogObject("Boostrap", this );
+        logger.LogObject("WebHostBootstrap", this);
 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to create HostBuilder");
+        logger.Debug("Attempting to build WebApplicationBuilder");
         Builder = Host.CreateDefaultBuilder();
 
 
@@ -111,7 +131,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
         logger.Debug("Attempting to call ConfigureServices");
         Builder.ConfigureServices(sc =>
         {
-
+            
             sc.AddHostedService<RequiresStartService>();
 
         });
@@ -132,7 +152,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
 
             var mc = Configuration.Get<MissionContext>();
-            if (mc is not null)
+            if( mc is not null )
             {
 
                 cb.RegisterInstance(mc)
@@ -154,11 +174,11 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
             try
             {
-                inner.Debug("Attempting to call Configure");
 
                 var services = new ServiceCollection();
                 
-                Build( Builder, services, cb );
+                inner.Debug("Attempting to call BuildHost");
+                BuildHost( Builder, services, cb );
 
                 cb.Populate(services);
 
@@ -171,6 +191,37 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
 
         }));
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to Configure WebHost");
+        Builder.ConfigureWebHost(whb =>
+        {
+
+            whb.Configure(app =>
+                {
+
+                    using var inner = GetLogger();
+
+                    try
+                    {
+
+                        inner.Debug("Attempting to call BuildWebApp");
+                           
+                        BuildWebApp(whb, app);
+
+                    }
+                    catch (Exception cause)
+                    {
+                        inner.ErrorWithContext(cause, this, "Bootstrap BuildWebApp failed.");
+                        throw;
+                    }
+
+                });
+
+
+        });
 
 
 
@@ -190,6 +241,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
         return app;
 
 
+
     }
 
 
@@ -205,13 +257,24 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
     }
 
 
-    public virtual void Build( IHostBuilder host, IServiceCollection services, ContainerBuilder builder )
+    public virtual void BuildHost( IHostBuilder host,IServiceCollection services, ContainerBuilder builder )
     {
 
         using var logger = EnterMethod();
 
-        
-        logger.Info("Base Configure does nothing");
+        logger.Info("Base Build does nothing");
+
+
+    }
+
+
+    public virtual void BuildWebApp( IWebHostBuilder host, IApplicationBuilder app )
+    {
+
+        using var logger = EnterMethod();
+
+        logger.Info("Base Build does nothing");
+
 
     }
 
