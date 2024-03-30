@@ -58,11 +58,14 @@ public class HttpRpcRequest<TResponse> : IHttpRpcRequest, IRequest<Response<TRes
 
             if (value)
             {
-                if (!CustomHeaders.TryGetValue("Accept-Encoding", out _))
-                    CustomHeaders["Accept-Encoding"] = "gzip, deflate, br";
+                CustomHeaders.Remove("Accept-Encoding");
+                CustomHeaders["Accept-Encoding"] = "gzip, deflate, br";
             }
             else
+            {
                 CustomHeaders.Remove("Accept-Encoding");
+                CustomHeaders["Accept-Encoding"] = "none";
+            }
 
         }
     }
