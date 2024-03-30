@@ -1,16 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace Fabrica.One;
 
 public interface IBootstrap
 {
 
-    Task<IAppliance> Boot(string path = "");
-
-    bool AllowManualExit { get; set; }
-
+    string ApplicationBaseDirectory { get; set; }
     IConfiguration Configuration { get; set; }
+
+    Task<IAppliance> Boot();
 
     void ConfigureWatch();
 

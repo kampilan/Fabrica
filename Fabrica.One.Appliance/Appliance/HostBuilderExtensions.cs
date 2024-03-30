@@ -1,6 +1,5 @@
 ﻿using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Process;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -47,14 +46,6 @@ public static class HostBuilderExtensions
                 var sg = sp.GetRequiredService<ISignalController>();
 
                 return new ApplianceLifetime(hal, sg);
-
-            });
-
-            sc.AddSingleton<IMissionContext>(sp =>
-            {
-                var cfg = sp.GetRequiredService<IConfiguration>();
-                var mc = cfg.Get<MissionContext>() ?? new MissionContext();
-                return mc;
 
             });
 

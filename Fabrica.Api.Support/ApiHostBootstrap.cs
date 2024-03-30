@@ -9,6 +9,7 @@ using Fabrica.Api.Support.Swagger;
 using Fabrica.Container;
 using Fabrica.Models.Serialization;
 using Fabrica.One;
+using Fabrica.One.Appliance;
 using Fabrica.Services;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -32,15 +33,15 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Fabrica.Api.Support;
 
-public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), IBootstrap
+public abstract class ApiHostBootstrap() : CorrelatedObject(new Correlation()), IBootstrap
 {
 
 
+    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
+    public string ApplicationBaseDirectory { get; set; } = string.Empty;
     public bool AllowManualExit { get; set; } = false;
 
-    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
 
-    
     public bool QuietLogging { get; set; } = false;
 
     public bool RealtimeLogging { get; set; } = false;
@@ -96,7 +97,7 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
     protected IHostBuilder Builder { get; set; } = null!;
 
 
-    public async Task<IAppliance> Boot(string path = "")
+    public async Task<IAppliance> Boot()
     {
 
         var logger = EnterMethod();
@@ -107,7 +108,7 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
         logger.Debug("Attempting to call OnConfigure");
         await OnConfigured();
 
-        logger.LogObject("WebHostBootstrap", this);
+        logger.LogObject("ApiHostBootstrap", this);
 
 
 
@@ -136,6 +137,20 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
             lb.AddProvider(new LoggerProvider());
             lb.SetMinimumLevel(LogLevel.Trace);
         });
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to configure ApplicationLifetime");
+        switch (ApplicationLifetimeType.ToLowerInvariant())
+        {
+            case "fabricaone":
+                Builder.UseFabricaOne(ApplicationBaseDirectory, AllowManualExit);
+                break;
+            case "systemd":
+                Builder.UseSystemd();
+                break;
+        }
 
 
 
@@ -331,7 +346,7 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
     }
 
 
-    public virtual Task OnConfigured()
+    protected virtual Task OnConfigured()
     {
 
         using var logger = EnterMethod();
@@ -343,27 +358,9 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
     }
 
 
-    public virtual void BuildHost(IHostBuilder host, IServiceCollection services, ContainerBuilder builder)
-    {
+    protected abstract void BuildHost(IHostBuilder host, IServiceCollection services, ContainerBuilder builder);
 
-        using var logger = EnterMethod();
-
-        logger.Info("Base Build does nothing");
-
-
-    }
-
-
-    public virtual void BuildWebApp(IWebHostBuilder host, IApplicationBuilder app)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base Build does nothing");
-
-
-    }
-
+    protected abstract void BuildWebApp(IWebHostBuilder host, IApplicationBuilder app);
 
 
 }

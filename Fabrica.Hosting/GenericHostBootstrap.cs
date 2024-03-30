@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Container;
 using Fabrica.One;
+using Fabrica.One.Appliance;
 using Fabrica.Services;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -19,9 +20,13 @@ namespace Fabrica.Hosting;
 public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()), IBootstrap
 {
 
-    public IConfiguration Configuration { get; set; } = null!;
 
-    public bool AllowManualExit { get; set; }
+    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
+    public string ApplicationBaseDirectory { get; set; } = string.Empty;
+    public bool AllowManualExit { get; set; } = false;
+
+
+    public IConfiguration Configuration { get; set; } = null!;
 
     public bool QuietLogging { get; set; } = false;
 
@@ -64,7 +69,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
     }
 
-    public virtual async Task<IAppliance> Boot(string path = "")
+    public async Task<IAppliance> Boot()
     {
 
         using var logger = EnterMethod();
@@ -104,6 +109,20 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
             lb.AddProvider(new LoggerProvider());
             lb.SetMinimumLevel(LogLevel.Trace);
         });
+
+
+
+        // *****************************************************************
+        logger.Debug("Attempting to configure ApplicationLifetime");
+        switch (ApplicationLifetimeType.ToLowerInvariant())
+        {
+            case "fabricaone":
+                Builder.UseFabricaOne(ApplicationBaseDirectory, AllowManualExit);
+                break;
+            case "systemd":
+                Builder.UseSystemd();
+                break;
+        }
 
 
 
@@ -193,7 +212,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
     }
 
 
-    public virtual Task OnConfigured()
+    protected virtual Task OnConfigured()
     {
 
         using var logger = EnterMethod();
@@ -204,16 +223,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
     }
 
-
-    public virtual void Build( IHostBuilder host, IServiceCollection services, ContainerBuilder builder )
-    {
-
-        using var logger = EnterMethod();
-
-        
-        logger.Info("Base Configure does nothing");
-
-    }
+    protected abstract void Build( IHostBuilder host, IServiceCollection services, ContainerBuilder builder );
 
 
 }

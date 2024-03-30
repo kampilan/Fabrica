@@ -14,7 +14,8 @@ public static class Appliance
 
     public static async Task<IAppliance> Bootstrap<TBootstrap>(string path = "", string localConfigFile=null!) where TBootstrap : IBootstrap
     {
-
+        
+        IBootstrap bootstrap=null!;
         IAppliance app;
         try
         {
@@ -40,12 +41,10 @@ public static class Appliance
 
 
             // *****************************************************************
-            logger.Debug("Building BaseBootstrap");
-            var bootstrap = configuration.Get<TBootstrap>();
-            if (bootstrap is null)
-                throw new InvalidOperationException("Could not build Bootstrap from Configuration binding. Verify configuration files exist.");
+            logger.Debug("BuildingBootstrap");
+            bootstrap = configuration.Get<TBootstrap>() ?? throw new InvalidOperationException("Could not build Bootstrap from Configuration binding. Verify configuration files exist.");
 
-
+            bootstrap.ApplicationBaseDirectory = string.IsNullOrWhiteSpace(path) ? AppDomain.CurrentDomain.BaseDirectory : path;
             bootstrap.Configuration = configuration;
 
 
@@ -58,14 +57,14 @@ public static class Appliance
 
             // *****************************************************************
             logger.Debug("Bootstrapping Appliance");
-            app = await bootstrap.Boot(path);
+            app = await bootstrap.Boot();
 
 
         }
         catch (Exception cause)
         {
-            var el = WatchFactoryLocator.Factory.GetLogger("Fabrica.Appliance.Bootstrap");
-            el.Error(cause, "Bootstrap failed");
+            var el = WatchFactoryLocator.Factory.GetLogger("Fabrica.One.Appliance.Bootstrap");
+            el.ErrorWithContext(cause, bootstrap, "Bootstrap failed");
             throw;
         }
 

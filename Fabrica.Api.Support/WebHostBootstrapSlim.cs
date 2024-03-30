@@ -5,6 +5,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Fabrica.Container;
 using Fabrica.One;
+using Fabrica.One.Appliance;
 using Fabrica.Services;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
@@ -22,12 +23,11 @@ namespace Fabrica.Api.Support;
 public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation()), IBootstrap
 {
 
-
+    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
+    public string ApplicationBaseDirectory { get; set; } = string.Empty;
     public bool AllowManualExit { get; set; } = false;
 
-    public string ApplicationLifetimeType { get; set; } = "FabricaOne";
 
-    
     public bool QuietLogging { get; set; } = false;
 
     public bool RealtimeLogging { get; set; } = false;
@@ -83,7 +83,7 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     protected IHostBuilder Builder { get; set; } = null!;
 
 
-    public async Task<IAppliance> Boot( string path = "" )
+    public async Task<IAppliance> Boot()
     {
 
         var logger = EnterMethod();
@@ -125,6 +125,18 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
             lb.SetMinimumLevel(LogLevel.Trace);
         });
 
+
+        // *****************************************************************
+        logger.Debug("Attempting to configure ApplicationLifetime");
+        switch (ApplicationLifetimeType.ToLowerInvariant())
+        {
+            case "fabricaone":
+                Builder.UseFabricaOne(ApplicationBaseDirectory, AllowManualExit);
+                break;
+            case "systemd":
+                Builder.UseSystemd();
+                break;
+        }
 
 
         // *****************************************************************
@@ -257,7 +269,7 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     }
 
 
-    public virtual Task OnConfigured()
+    protected virtual Task OnConfigured()
     {
 
         using var logger = EnterMethod();
@@ -269,26 +281,9 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     }
 
 
-    public virtual void BuildHost( IHostBuilder host,IServiceCollection services, ContainerBuilder builder )
-    {
+    protected abstract void BuildHost(IHostBuilder host, IServiceCollection services, ContainerBuilder builder);
 
-        using var logger = EnterMethod();
-
-        logger.Info("Base Build does nothing");
-
-
-    }
-
-
-    public virtual void BuildWebApp( IWebHostBuilder host, IApplicationBuilder app )
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base Build does nothing");
-
-
-    }
+    protected abstract void BuildWebApp(IWebHostBuilder host, IApplicationBuilder app);
 
 
 }

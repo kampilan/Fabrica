@@ -25,7 +25,7 @@ public class FileSignalController: ISignalController, IRequiresStart, IDisposabl
             if( string.IsNullOrWhiteSpace(path) )
             {
                 logger.Debug("Attempting to calculate application entry directory");
-                var entry = Assembly.GetEntryAssembly()?.Location ?? "";
+                var entry = AppDomain.CurrentDomain.BaseDirectory;
                 var fi    = new FileInfo(entry);
                 path = fi.DirectoryName??Path.GetTempPath();
                 logger.Inspect(nameof(path), path);
