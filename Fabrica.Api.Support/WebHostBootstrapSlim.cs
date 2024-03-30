@@ -36,8 +36,8 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     public bool RelayLogging { get; set; } = false;
 
 
-    public string WatchEventStoreUri { get; set; } = "";
-    public string WatchDomainName { get; set; } = "";
+    public string WatchEventStoreUri { get; set; } = string.Empty;
+    public string WatchDomainName { get; set; } = string.Empty;
     public int WatchPollingDurationSecs { get; set; } = 15;
 
 
@@ -46,25 +46,25 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
 
 
     public string Environment { get; set; } = "Development";
-    public string MissionName { get; set; } = "";
+    public string MissionName { get; set; } = string.Empty;
     public bool RunningAsMission => !string.IsNullOrWhiteSpace(MissionName);
 
 
-    public string ApplianceId { get; set; } = "";
-    public string ApplianceName { get; set; } = "";
-    public string ApplianceBuild { get; set; } = "";
+    public string ApplianceId { get; set; } = string.Empty;
+    public string ApplianceName { get; set; } = string.Empty;
+    public string ApplianceBuild { get; set; } = string.Empty;
     public DateTime ApplianceBuildDate { get; set; } = DateTime.MinValue;
-    public string ApplianceRoot { get; set; } = "";
+    public string ApplianceRoot { get; set; } = string.Empty;
     public DateTime ApplianceStartTime { get; set; } = DateTime.MinValue;
 
 
     public bool RequiresAuthentication { get; set; } = true;
-    public string GatewayTokenSigningKey { get; set; } = "";
-    public string TokenSigningKey { get; set; } = "";
+    public string GatewayTokenSigningKey { get; set; } = string.Empty;
+    public string TokenSigningKey { get; set; } = string.Empty;
 
     public bool ExposeApiDocumentation { get; set; } = true;
-    public string ApiName { get; set; } = "";
-    public string ApiVersion { get; set; } = "";
+    public string ApiName { get; set; } = string.Empty;
+    public string ApiVersion { get; set; } = string.Empty;
 
     public IConfiguration Configuration { get; set; } = null!;
 
@@ -83,7 +83,7 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     protected IHostBuilder Builder { get; set; } = null!;
 
 
-    public async Task<IAppliance> Boot(string path = "")
+    public async Task<IAppliance> Boot( string path = "" )
     {
 
         var logger = EnterMethod();
@@ -198,6 +198,18 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
         logger.Debug("Attempting to Configure WebHost");
         Builder.ConfigureWebHost(whb =>
         {
+
+
+            whb.UseKestrel(op =>
+            {
+
+                if (AllowAnyIp)
+                    op.ListenAnyIP(ListeningPort);
+                else
+                    op.ListenLocalhost(ListeningPort);
+
+            });
+
 
             whb.Configure(app =>
                 {

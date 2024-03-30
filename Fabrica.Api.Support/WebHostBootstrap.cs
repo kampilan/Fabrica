@@ -1,8 +1,8 @@
 ﻿
-// ReSharper disable UnusedMember.Global
+
 
 using Autofac;
-using Autofac.Core;
+using Autofac.Extensions.DependencyInjection;
 using Fabrica.Api.Support.Endpoints;
 using Fabrica.Api.Support.Identity.Gateway;
 using Fabrica.Api.Support.Swagger;
@@ -28,6 +28,8 @@ using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Newtonsoft;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Fabrica.Api.Support;
 
 public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), IBootstrap
@@ -47,8 +49,8 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
     public bool RelayLogging { get; set; } = false;
 
 
-    public string WatchEventStoreUri { get; set; } = "";
-    public string WatchDomainName { get; set; } = "";
+    public string WatchEventStoreUri { get; set; } = string.Empty;
+    public string WatchDomainName { get; set; } = string.Empty;
     public int WatchPollingDurationSecs { get; set; } = 15;
 
 
@@ -57,25 +59,25 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
 
 
     public string Environment { get; set; } = "Development";
-    public string MissionName { get; set; } = "";
+    public string MissionName { get; set; } = string.Empty;
     public bool RunningAsMission => !string.IsNullOrWhiteSpace(MissionName);
 
 
-    public string ApplianceId { get; set; } = "";
-    public string ApplianceName { get; set; } = "";
-    public string ApplianceBuild { get; set; } = "";
+    public string ApplianceId { get; set; } = string.Empty;
+    public string ApplianceName { get; set; } = string.Empty;
+    public string ApplianceBuild { get; set; } = string.Empty;
     public DateTime ApplianceBuildDate { get; set; } = DateTime.MinValue;
-    public string ApplianceRoot { get; set; } = "";
+    public string ApplianceRoot { get; set; } = string.Empty;
     public DateTime ApplianceStartTime { get; set; } = DateTime.MinValue;
 
 
     public bool RequiresAuthentication { get; set; } = true;
-    public string GatewayTokenSigningKey { get; set; } = "";
-    public string TokenSigningKey { get; set; } = "";
+    public string GatewayTokenSigningKey { get; set; } = string.Empty;
+    public string TokenSigningKey { get; set; } = string.Empty;
 
     public bool ExposeApiDocumentation { get; set; } = true;
-    public string ApiName { get; set; } = "";
-    public string ApiVersion { get; set; } = "";
+    public string ApiName { get; set; } = string.Empty;
+    public string ApiVersion { get; set; } = string.Empty;
 
     public IConfiguration Configuration { get; set; } = null!;
 
@@ -115,12 +117,6 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
 
 
         // *****************************************************************
-        logger.Debug("Attempting to call ConfigureHost");
-        ConfigureHost(Builder);
-
-
-
-        // *****************************************************************
         logger.Debug("Attempting to Add Host Configuration ");
         Builder.ConfigureHostConfiguration(cfb => cfb.AddConfiguration(Configuration));
 
@@ -152,7 +148,21 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
             sc.AddHostedService<RequiresStartService>();
 
 
-            if( RequiresAuthentication )
+            sc.Configure<ForwardedHeadersOptions>(options =>
+            {
+
+                options.RequireHeaderSymmetry = false;
+                options.ForwardedHeaders = ForwardedHeaders.All;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+
+            });
+
+
+            sc.AddRouting();
+
+
+            if ( RequiresAuthentication )
             {
 
                 var token = !string.IsNullOrWhiteSpace(GatewayTokenSigningKey) ? GatewayTokenSigningKey : TokenSigningKey;
@@ -197,34 +207,6 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
             }
 
 
-
-            sc.Configure<ForwardedHeadersOptions>(options =>
-            {
-
-                options.RequireHeaderSymmetry = false;
-                options.ForwardedHeaders = ForwardedHeaders.All;
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-
-            });
-
-
-            sc.AddRouting();
-
-
-            using var inner = GetLogger();
-            try
-            {
-                inner.Debug("Attempting to call ConfigureServices");
-                ConfigureServices(sc);
-            }
-            catch (Exception cause)
-            {
-                inner.ErrorWithContext(cause, this, "Bootstrap ConfigureServices failed.");
-                throw;
-            }
-
-
         });
 
 
@@ -265,8 +247,14 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
 
             try
             {
+
+                var services = new ServiceCollection();
+                
                 inner.Debug("Attempting to call ConfigureContainer");
-                ConfigureContainer(cb);
+                BuildHost(Builder, services, cb);
+
+                cb.Populate(services);
+
             }
             catch (Exception cause)
             {
@@ -284,8 +272,6 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
         Builder.ConfigureWebHost(whb =>
         {
 
-            using var inner = GetLogger();
-
 
             whb.UseKestrel(op =>
             {
@@ -298,33 +284,30 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
             });
 
 
-            try
+            whb.Configure(app =>
             {
-                
-                inner.Debug("Attempting to call ConfigureWebHost");
-                ConfigureWebHost(whb);
 
-            }
-            catch (Exception cause)
-            {
-                inner.ErrorWithContext(cause, this, "Bootstrap ConfigureWebHost failed.");
-                throw;
-            }
+                using var inner = GetLogger();
 
+                try
+                {
 
-            try
-            {
-                inner.Debug("Attempting to call ConfigureWebApp");
-                whb.Configure(ConfigureWebApp);
-            }
-            catch (Exception cause)
-            {
-                inner.ErrorWithContext(cause, this, "Bootstrap ConfigureWebApp failed.");
-                throw;
-            }
+                    inner.Debug("Attempting to call BuildWebApp");
+
+                    BuildWebApp(whb, app);
+
+                }
+                catch (Exception cause)
+                {
+                    inner.ErrorWithContext(cause, this, "Bootstrap BuildWebApp failed.");
+                    throw;
+                }
+
+            });
 
 
         });
+
 
 
 
@@ -360,64 +343,27 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
     }
 
 
-    public virtual void ConfigureHost(IHostBuilder builder)
+    public virtual void BuildHost(IHostBuilder host, IServiceCollection services, ContainerBuilder builder)
     {
 
         using var logger = EnterMethod();
 
-        logger.Info("Base ConfigureHost does nothing");
+        logger.Info("Base Build does nothing");
 
 
     }
 
 
-    public virtual void ConfigureServices(IServiceCollection services)
+    public virtual void BuildWebApp(IWebHostBuilder host, IApplicationBuilder app)
     {
 
         using var logger = EnterMethod();
 
-        logger.Info("Base ConfigureServices adds no services");
+        logger.Info("Base Build does nothing");
 
 
     }
 
-
-    public virtual void ConfigureContainer(ContainerBuilder builder)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base ConfigureContainer adds no services");
-
-    }
-
-    public virtual void ConfigureScopedContainer(ContainerBuilder builder)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base ConfigureScopedContainer adds no services");
-
-    }
-
-    public virtual void ConfigureWebHost(IWebHostBuilder builder )
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base ConfigureWebHost does nothing");
-
-    }
-
-
-    public virtual void ConfigureWebApp( IApplicationBuilder app)
-    {
-
-        using var logger = EnterMethod();
-
-        logger.Info("Base ConfigureWebApp does nothing");
-
-    }
 
 
 }
@@ -443,5 +389,4 @@ public static class NewtonsoftServiceCollectionExtensions
     }
 
 }
-
 
