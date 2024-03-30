@@ -66,6 +66,7 @@ public abstract class BaseHttpHandler<TRequest, TResponse> : AbstractRequestHand
             foreach (var pair in request.CustomHeaders)
             {
                 logger.Debug("{0} = ({1})", pair.Key, pair.Value);
+                innerRequest.Headers.Remove(pair.Key);
                 innerRequest.Headers.Add(pair.Key, pair.Value);
             }
 

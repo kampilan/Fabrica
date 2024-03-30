@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -28,6 +29,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Newtonsoft;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IO.Compression;
 
 // ReSharper disable UnusedMember.Global
 
@@ -177,6 +179,31 @@ public abstract class ApiHostBootstrap() : CorrelatedObject(new Correlation()), 
             sc.AddRouting();
 
 
+            sc.Configure<BrotliCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
+            sc.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
+
+            sc.AddResponseCompression(op =>
+            {
+
+                op.EnableForHttps = true;
+
+                op.Providers.Add<BrotliCompressionProvider>();
+                op.Providers.Add<GzipCompressionProvider>();
+
+                op.MimeTypes = ResponseCompressionDefaults.MimeTypes;
+
+            });
+
+
+
             if ( RequiresAuthentication )
             {
 
@@ -220,6 +247,7 @@ public abstract class ApiHostBootstrap() : CorrelatedObject(new Correlation()), 
                 sc.AddModelContractSwaggerGenSupport();
 
             }
+
 
 
         });

@@ -50,6 +50,25 @@ public class HttpRpcRequest<TResponse> : IHttpRpcRequest, IRequest<Response<TRes
         }
     }
 
+    public bool UseCompression
+    {
+        get => CustomHeaders.ContainsKey("Accept-Encoding");
+        set
+        {
+
+            if (value)
+            {
+                if (!CustomHeaders.TryGetValue("Accept-Encoding", out _))
+                    CustomHeaders["Accept-Encoding"] = "gzip, deflate, br";
+            }
+            else
+                CustomHeaders.Remove("Accept-Encoding");
+
+        }
+    }
+
+
+
     public Dictionary<string, string> CustomHeaders { get; } = new();
 
     public HttpMethod Method { get; set; } = HttpMethod.Post;
