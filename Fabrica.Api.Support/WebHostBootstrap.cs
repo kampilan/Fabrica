@@ -2,6 +2,7 @@
 // ReSharper disable UnusedMember.Global
 
 using Autofac;
+using Autofac.Core;
 using Fabrica.Api.Support.Endpoints;
 using Fabrica.Api.Support.Identity.Gateway;
 using Fabrica.Api.Support.Swagger;
@@ -16,6 +17,7 @@ using Fabrica.Watch.Switching;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -146,6 +148,7 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
         Builder.ConfigureServices(sc =>
         {
 
+            
             sc.AddHostedService<RequiresStartService>();
 
 
@@ -192,6 +195,21 @@ public abstract class WebHostBootstrap() : CorrelatedObject(new Correlation()), 
                 sc.AddModelContractSwaggerGenSupport();
 
             }
+
+
+
+            sc.Configure<ForwardedHeadersOptions>(options =>
+            {
+
+                options.RequireHeaderSymmetry = false;
+                options.ForwardedHeaders = ForwardedHeaders.All;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+
+            });
+
+
+            sc.AddRouting();
 
 
             using var inner = GetLogger();
@@ -410,7 +428,7 @@ public static class NewtonsoftServiceCollectionExtensions
 
     public static readonly JsonSerializerSettings Settings = new()
     {
-        ContractResolver = new CamelModelContractResolver(),
+        ContractResolver = new ModelContractResolver(),
         ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
         PreserveReferencesHandling = PreserveReferencesHandling.Objects,
         DateFormatHandling = DateFormatHandling.IsoDateFormat,
