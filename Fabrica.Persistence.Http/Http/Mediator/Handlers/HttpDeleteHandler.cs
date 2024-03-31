@@ -6,20 +6,15 @@ using Fabrica.Watch;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
-public class HttpDeleteHandler<TEntity> : BaseHttpHandler<DeleteEntityRequest<TEntity>> where TEntity : class, IModel
+public class HttpDeleteHandler<TEntity>(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : BaseHttpHandler<DeleteEntityRequest<TEntity>>(correlation, factory, meta) where TEntity : class, IModel
 {
 
-
-    public HttpDeleteHandler(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
-    {
-    }
 
     protected override async Task Perform(CancellationToken cancellationToken = default)
     {
 
 
         using var logger = EnterMethod();
-
 
 
         logger.Inspect("Entity Type", typeof(TEntity).FullName);

@@ -4,65 +4,58 @@ using Fabrica.Persistence.Mediator;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 
-namespace Fabrica.Persistence.Http.Mediator.Handlers
+namespace Fabrica.Persistence.Http.Mediator.Handlers;
+
+public class HttpUpdateHandler<TEntity>(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : BaseHttpHandler<UpdateEntityRequest<TEntity>, TEntity>(correlation, factory, meta) where TEntity : class, IModel
 {
 
 
-    public class HttpUpdateHandler<TEntity> : BaseHttpHandler<UpdateEntityRequest<TEntity>, TEntity> where TEntity : class, IModel
+    protected override async Task<TEntity> Perform(CancellationToken cancellationToken = default)
     {
 
-        public HttpUpdateHandler(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : base(correlation, factory, meta)
-        {
-        }
 
-        protected override async Task<TEntity> Perform(CancellationToken cancellationToken = default)
-        {
-
-
-            using var logger = EnterMethod();
+        using var logger = EnterMethod();
 
 
 
-            logger.Inspect("Entity Type", typeof(TEntity).FullName);
+        logger.Inspect("Entity Type", typeof(TEntity).FullName);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to get Meta for given explorer type");
-            var meta = Meta.GetMetaFromType(typeof(TEntity));
+        // *****************************************************************
+        logger.Debug("Attempting to get Meta for given explorer type");
+        var meta = Meta.GetMetaFromType(typeof(TEntity));
 
-            logger.LogObject(nameof(meta), meta);
-
-
-
-            // *****************************************************************
-            logger.Debug("Attempting to build request");
-            var request = HttpRequestBuilder.Put()
-                .ForResource(meta.Resource)
-                .WithIdentifier(Request.Uid)
-                .WithBody(Request.Delta);
+        logger.LogObject(nameof(meta), meta);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to send request");
-            var response = await Send(request, cancellationToken);
+        // *****************************************************************
+        logger.Debug("Attempting to build request");
+        var request = HttpRequestBuilder.Put()
+            .ForResource(meta.Resource)
+            .WithIdentifier(Request.Uid)
+            .WithBody(Request.Delta);
 
 
 
-            // *****************************************************************
-            logger.Debug("Attempting to build entity from body");
-            var entity = response.FromBody<TEntity>();
+        // *****************************************************************
+        logger.Debug("Attempting to send request");
+        var response = await Send(request, cancellationToken);
 
 
 
-            // *****************************************************************
-            return entity!;
+        // *****************************************************************
+        logger.Debug("Attempting to build entity from body");
+        var entity = response.FromBody<TEntity>();
 
 
-        }
+
+        // *****************************************************************
+        return entity!;
 
 
     }
+
 
 }
