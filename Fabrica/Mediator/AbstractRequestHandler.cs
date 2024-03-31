@@ -61,7 +61,6 @@ public abstract class AbstractRequestHandler<TRequest, TResponse> : MediatorHand
         try
         {
 
-            logger.EnterMethod();
 
             logger.LogObject(nameof(request), request);
 
@@ -240,7 +239,6 @@ public abstract class AbstractRequestHandler<TRequest> : MediatorHandler, IReque
         try
         {
 
-            logger.EnterMethod();
 
             logger.LogObject(nameof(request), request);
 
