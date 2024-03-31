@@ -76,7 +76,13 @@ public static class AutofacExtensions
                     c.BaseAddress = new Uri($"{options.ApiEndpoint}/");
 
             })
-//            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+                if (handler.SupportsAutomaticDecompression)
+                    handler.AutomaticDecompression = DecompressionMethods.All;
+                return handler;
+            })
             .AddPolicyHandler(retry);
 
 
@@ -204,7 +210,13 @@ public static class AutofacExtensions
                     c.BaseAddress = new Uri($"{options.ApiEndpoint}/" );
 
             })
-//            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+                if (handler.SupportsAutomaticDecompression)
+                    handler.AutomaticDecompression = DecompressionMethods.All;
+                return handler;
+            })
             .AddHttpMessageHandler<AccessTokenSourceRequestHandler>()
             .AddPolicyHandler(retry);
 
@@ -254,7 +266,13 @@ public static class AutofacExtensions
                     c.BaseAddress = new Uri(baseUri);
 
             })
-//            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler{AutomaticDecompression = DecompressionMethods.All})
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+                if (handler.SupportsAutomaticDecompression)
+                    handler.AutomaticDecompression = DecompressionMethods.All;
+                return handler;
+            })
             .AddPolicyHandler(retry);
 
 
@@ -285,7 +303,13 @@ public static class AutofacExtensions
                     c.BaseAddress = new Uri(baseUri);
 
             })
-//            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+                if (handler.SupportsAutomaticDecompression)
+                    handler.AutomaticDecompression = DecompressionMethods.All;
+                return handler;
+            })
             .AddHttpMessageHandler<THandler>()
             .AddPolicyHandler(retry);
 
