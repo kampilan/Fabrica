@@ -169,7 +169,7 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
 
 
-            using var inner = GetLogger();
+            var inner = GetLogger();
 
             try
             {

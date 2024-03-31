@@ -86,7 +86,7 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     public async Task<IAppliance> Boot()
     {
 
-        var logger = EnterMethod();
+        using var logger = EnterMethod();
 
 
 
@@ -182,7 +182,7 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
 
 
 
-            using var inner = GetLogger();
+            var inner = GetLogger();
 
             try
             {
@@ -226,7 +226,7 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
             whb.Configure(app =>
                 {
 
-                    using var inner = GetLogger();
+                    var inner = GetLogger();
 
                     try
                     {
