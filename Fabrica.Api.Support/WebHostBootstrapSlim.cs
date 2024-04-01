@@ -66,6 +66,9 @@ public abstract class WebHostBootstrapSlim() : CorrelatedObject(new Correlation(
     public string ApiName { get; set; } = string.Empty;
     public string ApiVersion { get; set; } = string.Empty;
 
+    public bool UseResponseCompression { get; set; }
+
+
     public IConfiguration Configuration { get; set; } = null!;
 
 
