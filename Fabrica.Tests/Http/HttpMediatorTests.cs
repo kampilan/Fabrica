@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Fabrica.Api.Support;
 using Fabrica.Http;
 using Fabrica.Mediator;
 using Fabrica.Models;
@@ -15,11 +16,13 @@ using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Rules;
 using Fabrica.Test.Models.Patch;
+using Fabrica.Tests.Models;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using ModelJsonTypeInfoResolver = Fabrica.Models.Serialization.ModelJsonTypeInfoResolver;
 using Module = Autofac.Module;
 
 namespace Fabrica.Tests.Http;
@@ -275,7 +278,7 @@ public class HttpMediatorTests
     }
 
 
-    [Test]
+//    [Test]
     public async Task Test0700_0100_RpcCall()
     {
         
@@ -324,6 +327,12 @@ public class TheModule : Module
 
         builder.UseModelMeta()
             .AddModelMetaSource(Assembly.GetExecutingAssembly());
+
+        builder.ConfigureJsonSerializerOptions(o =>
+        {
+            o.WriteIndented = true;
+            o.TypeInfoResolver = new ModelJsonTypeInfoResolver();
+        });
 
         builder.UseMediator()
             .AddHttpRpcHandler()

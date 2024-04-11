@@ -4,7 +4,6 @@ using Fabrica.Watch;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Fabrica.Api.Support.Endpoints;
 
@@ -14,9 +13,6 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
 
     [FromServices]
     public IMessageMediator Mediator { get; set; } = null!;
-
-    [FromServices]
-    public IEndpointResultBuilder Builder { get; set; } = null!;
 
 
     protected virtual Task Validate()
@@ -44,7 +40,7 @@ public abstract class BaseMediatorEndpointHandler : BaseEndpointHandler
 
         // *****************************************************************
         logger.Debug("Attempting to build Result");
-        var result = Builder.Create(response);
+        var result = Results.Json(response, Options);
 
 
         // *****************************************************************
@@ -168,8 +164,8 @@ public abstract class BaseMediatorEndpointHandler<TRequest,TResponse,TRto> : Bas
 
 
         // *****************************************************************
-        logger.Debug("Attempting to build result");
-        var result = Builder.Create(rto);
+        logger.Debug("Attempting to build Result");
+        var result = Results.Json(rto, Options);
 
 
 

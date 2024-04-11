@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
@@ -12,7 +13,6 @@ using Autofac;
 using Fabrica.Aws;
 using Fabrica.Aws.Secrets;
 using Fabrica.Watch;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Fabrica.Tests.Aws;
@@ -25,8 +25,7 @@ public class AwsTests001
     public async Task Test_0850_0100_Should_Return_AwsSecrets()
     {
 
-        var model = new SecretsModel();
-        await AwsSecretsHelper.PopulateWithSecrets(model, "kampilan-local", "kampilan" );
+        var model = await AwsSecretsHelper.PopulateWithSecrets<SecretsModel>( "kampilan-local", "kampilan" );
 
         Assert.IsNotEmpty(model.OriginDbPassword);
 
@@ -159,16 +158,16 @@ public class AwsTests001
 public class SecretsModel
 {
 
-    [JsonProperty("origin-db-user-name")]
+    [JsonPropertyName("origin-db-user-name")]
     public string OriginDbUserName { get; set; } = "";
     [Sensitive]
-    [JsonProperty("origin-db-password")]
+    [JsonPropertyName("origin-db-password")]
     public string OriginDbPassword { get; set; } = "";
 
-    [JsonProperty("replica-db-user-name")]
+    [JsonPropertyName("replica-db-user-name")]
     public string ReplicaDbUserName { get; set; } = "";
     [Sensitive]
-    [JsonProperty("replica-db-password")]
+    [JsonPropertyName("replica-db-password")]
     public string ReplicaDbPassword { get; set; } = "";
 
 }

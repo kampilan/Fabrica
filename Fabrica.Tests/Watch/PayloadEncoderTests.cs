@@ -3,15 +3,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Dumpify;
 using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch.Sink;
-using fastJSON;
-using Newtonsoft.Json;
+using Fabrica.Watch.Utilities;
 using NUnit.Framework;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Fabrica.Tests.Watch;
 
@@ -115,7 +112,23 @@ public class PayloadEncoderTests
 
 
     [Test]
-    public void Test_08200_0400_ShouldBeFast()
+    public void Test_08200_0400_ShouldHandleBadObject()
+    {
+
+        var bad = new BadObject();
+
+        var json = JsonSerializer.Serialize(bad,JsonWatchObjectSerializer.WatchOptions);
+
+        Assert.IsNotEmpty(json);
+
+
+    }
+
+
+
+
+    [Test]
+    public void Test_08200_0500_ShouldBeFast()
     {
 
         var model = new Person
@@ -197,22 +210,14 @@ public class PayloadEncoderTests
         var sw = new Stopwatch();
 
 
-        var ops = new JsonSerializerOptions(JsonSerializerOptions.Default);
-        ops.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-
-        var js = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            ContractResolver = new WatchContractResolver(),
-            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        };
+//        var ops = new JsonSerializerOptions(JsonSerializerOptions.Default);
+//        ops.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 
         sw.Reset();
         sw.Start();
         for (var i = 0; i < 10000; i++)
         {
-            var json1 = JsonConvert.SerializeObject(company, js );
+            var json1 = JsonSerializer.Serialize(company, JsonWatchObjectSerializer.WatchOptions );
             var base64 = WatchPayloadEncoder.Encode(json1);
             var p2 = WatchPayloadEncoder.DecodeToString(base64);
 
@@ -246,5 +251,13 @@ public class PayloadEncoderTests
 
 
 
+
+}
+
+public class BadObject
+{
+
+    public string Test { get; set; } = null;
+    public Stream Bad { get; set; } = new MemoryStream();
 
 }

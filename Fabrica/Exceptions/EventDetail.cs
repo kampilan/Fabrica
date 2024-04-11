@@ -23,9 +23,9 @@ SOFTWARE.
 */
 
 using System.ComponentModel;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
+
+// ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Exceptions;
 
@@ -90,7 +90,7 @@ public class EventDetail
         return new EventDetail();
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EventCategory Category { get; set; } = EventCategory.Error;
 
     [DefaultValue("")]
@@ -112,26 +112,29 @@ public class EventDetail
         return this;
     }
 
-    public EventDetail WithRuleName([NotNull] string ruleName )
+    public EventDetail WithRuleName( string ruleName )
     {
         RuleName = ruleName ?? throw new ArgumentNullException(nameof(ruleName));
         return this;
     }
 
-    public EventDetail WithGroup([NotNull] string group )
+    public EventDetail WithGroup( string group )
     {
         Group = group ?? throw new ArgumentNullException(nameof(group));
         return this;
     }
 
-    public EventDetail WithSource([NotNull] object source )
+    public EventDetail WithSource( object source )
     {
-        if (source == null) throw new ArgumentNullException(nameof(source));
-        Source = source.ToString();
+        if (source is null) 
+            throw new ArgumentNullException(nameof(source));
+
+        Source = source.ToString()??"";
+
         return this;
     }
 
-    public EventDetail WithExplanation([NotNull] string message )
+    public EventDetail WithExplanation( string message )
     {
         Explanation = message ?? throw new ArgumentNullException(nameof(message));
         return this;

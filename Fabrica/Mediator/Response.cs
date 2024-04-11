@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Text.Json.Serialization;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
-using Newtonsoft.Json.Converters;
 using static Fabrica.Exceptions.EventDetail;
 
 namespace Fabrica.Mediator;
@@ -50,7 +49,7 @@ public abstract class FluentResponse<TDescendant>: IResponse where TDescendant :
     public List<EventDetail> Details { get; protected set; } = new ();
 
 
-    public bool HasViolations => Details.Any(d => d.Category == EventDetail.EventCategory.Violation);
+    public bool HasViolations => Details.Any(d => d.Category == EventCategory.Violation);
 
 
 

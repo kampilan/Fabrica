@@ -1,4 +1,5 @@
-﻿using Fabrica.Http;
+﻿using System.Text.Json;
+using Fabrica.Http;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Persistence.Mediator;
@@ -7,7 +8,7 @@ using Fabrica.Watch;
 
 namespace Fabrica.Persistence.Http.Mediator.Handlers;
 
-public class HttpQueryHandler<TExplorer>(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta) : BaseHttpHandler<QueryEntityRequest<TExplorer>, List<TExplorer>>(correlation, factory, meta) where TExplorer : class, IModel
+public class HttpQueryHandler<TExplorer>(ICorrelation correlation, IHttpClientFactory factory, IModelMetaService meta, JsonSerializerOptions options) : BaseHttpHandler<QueryEntityRequest<TExplorer>, List<TExplorer>>(correlation, factory, meta) where TExplorer : class, IModel
 {
 
     protected override async Task<List<TExplorer>> Perform(CancellationToken cancellationToken = default)
@@ -47,7 +48,7 @@ public class HttpQueryHandler<TExplorer>(ICorrelation correlation, IHttpClientFa
 
         // *****************************************************************
         logger.Debug("Attempting to build list from body");
-        var list = response.FromBodyToList<TExplorer>(new ModelExplorerContractResolver());
+        var list = response.FromBodyToList<TExplorer>(options);
 
 
 

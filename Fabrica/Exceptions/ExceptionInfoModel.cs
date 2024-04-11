@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 using Fabrica.Models.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Fabrica.Exceptions;
 
@@ -9,7 +8,7 @@ public class ExceptionInfoModel: IExceptionInfo
 {
 
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ErrorKind Kind { get; set; } = ErrorKind.Unknown;
 
     [DefaultValue("")]

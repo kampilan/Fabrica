@@ -13,7 +13,7 @@ using MediatR;
 
 namespace Fabrica.Identity.Keycloak;
 
-public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
+public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFactory factory) : CorrelatedObject(correlation), IIdentityProvider
 {
 
     public const string HttpClientName = "Keycloak";
@@ -23,15 +23,6 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
-
-    public KeycloakIdentityProvider( ICorrelation correlation, IHttpClientFactory factory ) : base(correlation)
-    {
-
-        _factory = factory;
-
-    }
-
-    private readonly IHttpClientFactory _factory;
 
     private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
@@ -53,7 +44,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
         logger.Inspect("endpoint", req.Path);
 
 
-        var (ok, results) = await _factory.Many<User>(req, ct);
+        var (ok, results) = await factory.Many<User>(req, ct);
 
         logger.Inspect(nameof(ok), ok);
 
@@ -80,7 +71,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
 
             // *****************************************************************
             logger.Debug("Attempting to send Reset Password Email request");
-            var actRes = await _factory.Send(actReq, ct);
+            var actRes = await factory.Send(actReq, ct);
 
             logger.LogObject(nameof(actRes), actRes);
 
@@ -133,7 +124,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
                 .WithIdentifier(request.IdentityUid)
                 .ToRequest();
 
-            var (ok, model) = await _factory.One<User>( req, ct );
+            var (ok, model) = await factory.One<User>( req, ct );
 
             if (ok)
                 user = model;
@@ -156,7 +147,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
                 .AddParameter("exact", "true")
                 .ToRequest();
 
-            var (ok, results) = await _factory.Many<User>(req, ct);
+            var (ok, results) = await factory.Many<User>(req, ct);
 
             if ( ok )
                 user = results.FirstOrDefault();
@@ -173,7 +164,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
                 .AddParameter("exact", "true")
                 .ToRequest();
 
-            var (ok, results) = await _factory.Many<User>(req, ct);
+            var (ok, results) = await factory.Many<User>(req, ct);
 
             if( ok && results.Any() )
             {
@@ -297,7 +288,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
                 .WithJson(json)
                 .ToRequest();
 
-            var res = await _factory.Send( req, ct, false );
+            var res = await factory.Send( req, ct, false );
 
             logger.Inspect(nameof(res.WasSuccessful), res.WasSuccessful);
 
@@ -313,7 +304,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
                 .AddParameter("username", request.NewUsername)
                 .ToRequest();
 
-            var (okGet, results) = await _factory.Many<User>(reqGet, ct);
+            var (okGet, results) = await factory.Many<User>(reqGet, ct);
 
             if( okGet )
             {
@@ -394,7 +385,7 @@ public class KeycloakIdentityProvider : CorrelatedObject, IIdentityProvider
                 logger.Inspect(nameof(req), req);
 
 
-                var res = await _factory.Send(req, ct, false);
+                var res = await factory.Send(req, ct, false);
 
                 logger.LogObject(nameof(res), res );
 

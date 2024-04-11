@@ -3,7 +3,6 @@ using System.ComponentModel;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
-using Newtonsoft.Json;
 
 
 #pragma warning disable CS8618
@@ -13,7 +12,6 @@ using Newtonsoft.Json;
 
 namespace Fabrica.Test.Models.Patch;
 
-[JsonObject(MemberSerialization.OptIn)]
 [Model]
 public class Company: BaseMutableModel<Company>, IRootModel, INotifyPropertyChanged
 {
@@ -40,13 +38,13 @@ public class Company: BaseMutableModel<Company>, IRootModel, INotifyPropertyChan
 
 
     private long _id;
+    [ModelMeta(Scope = PropertyScope.Exclude)]
     public long Id
     {
         get => _id;
         protected set => _id = value;
     }
 
-    [JsonProperty("Uid")]
     private string _uid = Base62Converter.NewGuid();
     [ModelMeta(Scope = PropertyScope.Immutable)]
     public override string Uid
@@ -55,31 +53,30 @@ public class Company: BaseMutableModel<Company>, IRootModel, INotifyPropertyChan
         set { _uid = value; }
     }
 
-    [JsonProperty("Name")]
     private string _name = "";
+    [ModelMeta]
     public string Name
     {
         get { return _name; }
         set { _name = value; }
     }
 
-    [JsonProperty("Address1")]
     private string _address1 = "";
+    [ModelMeta]
     public string Address1
     {
         get { return _address1; }
         set { _address1 = value; }
     }
 
-    [JsonProperty("Address2")]
     private string _address2 = "";
+    [ModelMeta]
     public string Address2
     {
         get { return _address2; }
         set { _address2 = value; }
     }
 
-    [JsonProperty("City")]
     private string _city = "";
     public string City
     {
@@ -87,48 +84,48 @@ public class Company: BaseMutableModel<Company>, IRootModel, INotifyPropertyChan
         set { _city = value; }
     }
 
-    [JsonProperty("State")]
     private string _state = "";
+    [ModelMeta]
     public string State
     {
         get { return _state; }
         set { _state = value; }
     }
 
-    [JsonProperty("Zip")]
     private string _zip = "";
+    [ModelMeta]
     public string Zip
     {
         get { return _zip; }
         set { _zip = value; }
     }
 
-    [JsonProperty("MainPhone")]
     private string _mainPhone = "";
+    [ModelMeta]
     public string MainPhone
     {
         get { return _mainPhone; }
         set { _mainPhone = value; }
     }
 
-    [JsonProperty("Fax")]
     private string _fax = "";
+    [ModelMeta]
     public string Fax
     {
         get { return _fax; }
         set { _fax = value; }
     }
 
-    [JsonProperty("Website")]
     private string _website = "";
+    [ModelMeta]
     public string Website
     {
         get { return _website; }
         set { _website = value; }
     }
 
-    [JsonProperty("EmployeeCount")]
     private int _employeeCount = 0;
+    [ModelMeta]
     public int EmployeeCount
     {
         get { return _employeeCount; }
@@ -137,6 +134,7 @@ public class Company: BaseMutableModel<Company>, IRootModel, INotifyPropertyChan
 
 
     private AggregateObservable<Person> _employees;
+    [ModelMeta]
     public ICollection<Person> Employees
     {
         get => _employees;

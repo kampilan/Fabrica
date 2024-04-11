@@ -1,6 +1,7 @@
 ﻿using Fabrica.Watch.Sink;
+using Fabrica.Watch.Utilities;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Fabrica.Watch;
 
@@ -23,7 +24,7 @@ public class TextExceptionSerializer: IWatchExceptionSerializer
 
         if( context is not null )
         {
-            var json = JsonConvert.SerializeObject(context, Formatting.Indented);
+            var json =  JsonSerializer.Serialize(context, JsonWatchObjectSerializer.WatchOptions);
             builder.AppendLine("--- Context -----------------------------------------");
             builder.AppendLine(json);
             builder.AppendLine();

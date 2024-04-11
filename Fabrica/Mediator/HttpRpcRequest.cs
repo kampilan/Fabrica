@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using System.Text.Json;
 using MediatR;
-using Newtonsoft.Json;
 
 namespace Fabrica.Mediator;
 
@@ -60,7 +60,7 @@ public class HttpRpcRequest<TResponse> : IHttpRpcRequest, IRequest<Response<TRes
 
     public void ToBody(object source)
     {
-        var json = JsonConvert.SerializeObject(source);
+        var json = JsonSerializer.Serialize(source);
         BodyContent = json;
     }
 

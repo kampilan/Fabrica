@@ -31,7 +31,7 @@ public static class EndpointExtensions
     }
 
 
-    public static IEndpointRouteBuilder MapEndpointModules(this IEndpointRouteBuilder builder)
+    public static IEndpointRouteBuilder MapEndpointModules(this IEndpointRouteBuilder builder, string basePath = "", Action<RouteGroupBuilder>? rgb = null)
     {
 
         var logger = WatchFactoryLocator.Factory.GetLogger("Fabrica.Api.Support.Endpoints");
@@ -39,6 +39,11 @@ public static class EndpointExtensions
         try
         {
             logger.EnterScope("MapEndpointModules");
+
+
+            var root = builder.MapGroup(basePath);
+            if (rgb is not null)
+                rgb(root);
 
 
             foreach (var moduleInterface in builder.ServiceProvider.GetServices<IEndpointModule>())
@@ -49,24 +54,29 @@ public static class EndpointExtensions
                 try
                 {
 
-                    if (moduleInterface is BaseEndpointModule endpointModule)
+
+                    if( moduleInterface is BaseEndpointModule endpointModule )
                     {
 
                         logger.Debug("Attempting to Configure group");
 
-                        var group = builder.MapGroup(endpointModule.BasePath);
+                        var group = root.MapGroup(endpointModule.BasePath);
 
                         if (endpointModule.RequiresAuthorization)
                             group = group.RequireAuthorization(endpointModule.AuthorizationPolicyNames);
 
                         endpointModule.AddRoutes(group);
-
                     }
                     else
                     {
+
                         logger.Debug("No Group");
-                        moduleInterface.AddRoutes(builder);
+
+                        var group = root.MapGroup(string.Empty);
+                        moduleInterface.AddRoutes(group);
+
                     }
+
 
                 }
                 catch (Exception cause)

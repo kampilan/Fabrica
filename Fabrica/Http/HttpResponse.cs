@@ -28,9 +28,7 @@ SOFTWARE.
 
 
 using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 
 
 namespace Fabrica.Http;
@@ -61,72 +59,32 @@ public class HttpResponse
     public string Content { get; set; }
 
 
-    protected virtual JsonSerializer GetSerializer( IContractResolver? resolver = null)
+
+    public TModel? FromBody<TModel>( JsonSerializerOptions? options = null ) where TModel: class
     {
 
-        var settings = new JsonSerializer
-        {
-            DateTimeZoneHandling       = DateTimeZoneHandling.Local,
-            DefaultValueHandling       = DefaultValueHandling.Ignore,
-            DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-            DateParseHandling          = DateParseHandling.DateTime,
-            ContractResolver           = new DefaultContractResolver(),
-            Formatting                 = Formatting.None,
-            MissingMemberHandling      = MissingMemberHandling.Ignore,
-            NullValueHandling          = NullValueHandling.Ignore,
-            ObjectCreationHandling     = ObjectCreationHandling.Auto,
-            ReferenceLoopHandling      = ReferenceLoopHandling.Serialize,
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        };
 
-        if (resolver != null)
-            settings.ContractResolver = resolver;
-
-
-        return settings;
-
-    }
-
-
-
-    public TModel? FromBody<TModel>( IContractResolver? resolver = null ) where TModel: class
-    {
-
-        var serializer = GetSerializer(resolver);
-
-        using var reader = new StringReader(HasContent ? Content : "{}");
-        using var jreader = new JsonTextReader(reader);
-
-        var model = serializer.Deserialize<TModel>(jreader);
+        var model = JsonSerializer.Deserialize<TModel>(HasContent ? Content : "{}");
 
         return model;
 
     }
 
 
-    public object? FromBody( Type modelType, IContractResolver? resolver = null )
+    public object? FromBody( Type modelType, JsonSerializerOptions? options = null )
     {
 
-        var serializer = GetSerializer(resolver);
-
-        using var reader = new StringReader(HasContent ? Content : "{}");
-        using var jreader = new JsonTextReader(reader);
-
-        var model = serializer.Deserialize(jreader, modelType);
+        var model = JsonSerializer.Deserialize(HasContent ? Content : "{}", modelType, options);
 
         return model;
 
     }
 
 
-    public List<TType?> FromBodyToList<TType>( IContractResolver? resolver = null ) where TType: class
+    public List<TType>? FromBodyToList<TType>( JsonSerializerOptions? options = null ) where TType: class
     {
 
-        var serializer = GetSerializer(resolver);
-
-        var array = JArray.Parse( HasContent ? Content : "[]" );
-
-        var list = array.Select( token => token.ToObject<TType>( serializer ) ).ToList();
+        var list = JsonSerializer.Deserialize<List<TType>>(HasContent ? Content : "{}", options);
 
         return list;
 

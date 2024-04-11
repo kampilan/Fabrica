@@ -126,10 +126,9 @@ namespace Fabrica.Persistence.Ef.Mediator.Handlers
             logger.Debug("Attempting to serializer reader to json");
             // ReSharper disable once IdentifierTypo
             var strm = new MemoryStream();
-            await using (var writer = new StreamWriter(strm, leaveOpen: true))
             await using (var reader = await cmd.ExecuteReaderAsync(cancellationToken))
             {
-                await reader.ToJson( writer );
+                await reader.ToJson( strm );
             }
 
             strm.Seek(0, SeekOrigin.Begin);

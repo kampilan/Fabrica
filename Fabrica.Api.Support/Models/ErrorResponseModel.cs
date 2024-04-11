@@ -22,31 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.ComponentModel;
+using System.Text.Json.Serialization;
 using Fabrica.Exceptions;
 using Fabrica.Models.Serialization;
-using Newtonsoft.Json;
 
 namespace Fabrica.Api.Support.Models;
 
 public class ErrorResponseModel
 {
 
-    [DefaultValue("")]
-    [JsonProperty(nameof(ErrorCode))]
+    [JsonPropertyName(nameof(ErrorCode))]
     public string ErrorCode { get; set; } = "";
 
-    [DefaultValue("")]
-    [JsonProperty(nameof(Explanation))]
+    [JsonPropertyName(nameof(Explanation))]
     public string Explanation { get; set; } = "";
 
-    [DefaultValue(null)]
-    [JsonProperty(nameof(Details))]
+    [JsonPropertyName(nameof(Details))]
     [ExcludeEmpty]
     public IList<EventDetail> Details { get; set; } = null!;
 
-    [DefaultValue("")]
-    [JsonProperty(nameof(CorrelationId))]
+    [JsonPropertyName(nameof(CorrelationId))]
     public string CorrelationId { get; set; } = "";
 
 }

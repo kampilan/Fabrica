@@ -20,5 +20,9 @@
 	  <ProjectReference Include="..\Fabrica.Watch\Fabrica.Watch.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Bridges\" />
+	</ItemGroup>
+
 
 </Project>

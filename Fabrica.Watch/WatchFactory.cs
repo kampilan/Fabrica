@@ -26,34 +26,21 @@ using System.Collections.Concurrent;
 using Fabrica.Watch.Pool;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Switching;
+using Fabrica.Watch.Utilities;
 
 namespace Fabrica.Watch;
 
-public class WatchFactory : IWatchFactory
+public class WatchFactory(int initialPoolSize = 50, int maxPoolSize = 500) : IWatchFactory
 {
 
     private static readonly ILogger Silencer = new QuietLogger();
 
-
-    public WatchFactory( int initialPoolSize=50, int maxPoolSize=500 )
-    {
-
-        ForObject = new NewtonsoftWatchObjectSerializer();
-        ForException = new TextExceptionSerializer();
-
-        InitialPoolSize = initialPoolSize;
-        MaxPoolSize     = maxPoolSize;
-
-    }
+    private IWatchObjectSerializer ForObject { get; set; } = new JsonWatchObjectSerializer();
+    private IWatchExceptionSerializer ForException { get; set; } = new TextExceptionSerializer();
 
 
-    private IWatchObjectSerializer ForObject { get; set; }
-    private IWatchExceptionSerializer ForException { get; set; }
-
-
-
-    private int InitialPoolSize { get; set; }
-    private int MaxPoolSize { get; set; }
+    private int InitialPoolSize { get; set; } = initialPoolSize;
+    private int MaxPoolSize { get; set; } = maxPoolSize;
     private Pool<Logger> Pool { get; set; } = null!;
 
 

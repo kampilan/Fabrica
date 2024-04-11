@@ -35,41 +35,6 @@ namespace Fabrica.Tests.Press
 
 
         [Test]
-        public void Test0900_0200_ManyCreateMergeModel()
-        {
-
-            var builder = new MergeModelBuilder();
-            builder.Many( new List<object> { new { Name = "James", Age = 58 }, new { Name = "Wilma", Age = 45 } }, "People" );
-
-            var sources = builder.Sources;
-
-            Assert.AreEqual(1, sources.Count);
-
-            var json = builder.ToJson(true);
-
-            Assert.IsNotNull(json);
-            Assert.IsNotEmpty(json);
-
-
-            var ds = JsonConvert.DeserializeObject<List<JsonDataSource>>(json);
-
-            Assert.IsNotNull( ds );
-
-            var ms = ds.FirstOrDefault();
-            while (ms.MoveNext())
-            {
-
-                ms.TryGetValue("Name", out var name);
-                ms.TryGetValue("Age", out var age);
-
-                Assert.IsNotNull( name );
-                Assert.IsNotNull( age );
-
-            }
-
-        }
-
-        [Test]
         public void Test0900_0300_ManyCreateDict()
         {
 

@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Fabrica.Models.Support;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Fabrica.Models.Patch.Builder;
 
@@ -11,7 +10,7 @@ public class ModelPatch
 {
 
     [DefaultValue(PatchVerb.Update)]
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PatchVerb Verb { get; set; } = PatchVerb.Update;
     public string Model { get; set; } = "";
     public string Uid { get; set; } = "";

@@ -23,10 +23,8 @@ SOFTWARE.
 */
 
 using System.Text;
+using System.Text.Json;
 using Fabrica.Watch;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Fabrica.Http;
 
@@ -49,33 +47,8 @@ public class HttpRequest
     public bool DebugMode { get; set; }
 
 
-    [NotNull]
-    protected virtual JsonSerializerSettings GetSerializerSettings( IContractResolver? resolver = null)
-    {
 
-        var settings = new JsonSerializerSettings
-        {
-            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-            DefaultValueHandling = DefaultValueHandling.Populate,
-            DateFormatHandling = DateFormatHandling.IsoDateFormat,
-            DateParseHandling = DateParseHandling.DateTime,
-            Formatting = Formatting.None,
-            MissingMemberHandling = MissingMemberHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore,
-            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        };
-
-        if (resolver != null)
-            settings.ContractResolver = resolver;
-
-
-        return settings;
-
-    }
-
-
-    public void ToBody( object model, IContractResolver? resolver = null )
+    public void ToBody( object model, JsonSerializerOptions? options = null )
     {
 
         if (model == null) throw new ArgumentNullException(nameof(model));
@@ -83,8 +56,7 @@ public class HttpRequest
         using var logger = this.EnterMethod();
 
 
-        var settings = GetSerializerSettings(resolver);
-        var json = JsonConvert.SerializeObject(model, settings);
+        var json = JsonSerializer.Serialize(model, options);
 
         ToBody(json);
 

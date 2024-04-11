@@ -1,12 +1,11 @@
 ﻿
 // ReSharper disable UnusedMember.Global
 
-using Amazon;
+using System.Text.Json;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using Fabrica.Watch;
-using Newtonsoft.Json;
 
 namespace Fabrica.Aws.Secrets;
 
@@ -14,7 +13,7 @@ public static class AwsSecretsHelper
 {
 
 
-    public static async Task PopulateWithSecrets(object target, string secretId, string profileName = "")
+    public static async Task<T?> PopulateWithSecrets<T>(string secretId, string profileName = "") where T: class
     {
 
         using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AwsSecretsHelper));
@@ -70,7 +69,9 @@ public static class AwsSecretsHelper
 
             // *****************************************************************
             logger.Debug("Attempting to parser JSON secrets into Configuration Data");
-            JsonConvert.PopulateObject(json, target);
+            var target = JsonSerializer.Deserialize<T>(json);
+
+            return target;
 
 
         }

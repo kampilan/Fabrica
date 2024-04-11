@@ -26,16 +26,14 @@ SOFTWARE.
 
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Fabrica.Api.Support.ActionResult;
 using Fabrica.Api.Support.Middleware;
-using Fabrica.Api.Support.Models;
 using Fabrica.Exceptions;
 using Fabrica.Mediator;
-using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Fabrica.Api.Support.Controllers;
 
@@ -43,16 +41,16 @@ public abstract class BaseController: Controller
 {
 
 
-    protected BaseController( ICorrelation correlation  )
+    protected BaseController( ICorrelation correlation, JsonSerializerOptions options  )
     {
 
         Correlation = correlation;
-
+        Options = options;
     }
 
 
     protected ICorrelation Correlation { get; }
-
+    protected JsonSerializerOptions Options { get; }
 
     protected ILogger GetLogger()
     {
@@ -245,12 +243,7 @@ public abstract class BaseController: Controller
 
         // *****************************************************************
         logger.Debug("Attempting to build ContentResult");
-        var serializer = new JsonSerializerSettings()
-        {
-            ContractResolver = new ModelContractResolver(),
-            NullValueHandling = NullValueHandling.Ignore
-        };
-        var json = JsonConvert.SerializeObject(model, Formatting.Indented, serializer);
+        var json = JsonSerializer.Serialize(model, Options );
 
         var result = new ContentResult
         {

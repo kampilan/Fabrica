@@ -22,8 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace Fabrica.Watch.Sink;
 
@@ -40,14 +39,14 @@ public class LogEvent: ILogEvent
     public string Subject { get; set; } = "";
     public string Tag { get; set; } = "";
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public Level Level { get; set; } = Level.Trace;
     public int Color { get; set; } = 0;
     public int Nesting { get; set; } = 0;
 
     public DateTime Occurred { get; set; } = DateTime.UtcNow;
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PayloadType Type { get; set; } = PayloadType.None;
     public string? Base64 { get; set; }
 

@@ -7,7 +7,6 @@ using Fabrica.Api.Support.Endpoints;
 using Fabrica.Api.Support.Identity.Gateway;
 using Fabrica.Api.Support.Swagger;
 using Fabrica.Container;
-using Fabrica.Models.Serialization;
 using Fabrica.One;
 using Fabrica.One.Appliance;
 using Fabrica.Services;
@@ -22,13 +21,10 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Newtonsoft;
-using Swashbuckle.AspNetCore.SwaggerGen;
+
 using System.IO.Compression;
 
 // ReSharper disable UnusedMember.Global
@@ -138,9 +134,7 @@ public abstract class ApiHostBootstrap() : CorrelatedObject(new Correlation()), 
         logger.Debug("Attempting to Configure the Microsoft Logging bridge");
         Builder.ConfigureLogging(lb =>
         {
-            lb.ClearProviders();
-            lb.AddProvider(new LoggerProvider());
-            lb.SetMinimumLevel(LogLevel.Trace);
+            lb.UseWatch();
         });
 
 
@@ -224,8 +218,6 @@ public abstract class ApiHostBootstrap() : CorrelatedObject(new Correlation()), 
                     c.EnableAnnotations();
                     c.SchemaFilter<NoAdditionalPropertiesFilter>();
                 });
-
-                sc.AddModelContractSwaggerGenSupport();
 
             }
 
@@ -404,7 +396,7 @@ public abstract class ApiHostBootstrap() : CorrelatedObject(new Correlation()), 
 
 }
 
-
+/*
 public static class NewtonsoftServiceCollectionExtensions
 {
 
@@ -425,4 +417,4 @@ public static class NewtonsoftServiceCollectionExtensions
     }
 
 }
-
+*/

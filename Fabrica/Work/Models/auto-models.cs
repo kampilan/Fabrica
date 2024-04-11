@@ -24,11 +24,9 @@ using System.ComponentModel;
 using Fabrica.Models.Serialization;
 using Fabrica.Models.Support;
 using Fabrica.Utilities.Text;
-using Newtonsoft.Json;
 
 namespace Fabrica.Work.Models;
 
-[JsonObject(MemberSerialization.OptIn)]
 [Model( Alias=nameof(WorkTopic) )]
 public partial class WorkTopic : BaseMutableModel<WorkTopic>, INotifyPropertyChanged
 {
@@ -61,7 +59,6 @@ public partial class WorkTopic : BaseMutableModel<WorkTopic>, INotifyPropertyCha
 
 
 
-    [JsonProperty("Uid")]
     private string _uid = Base62Converter.NewGuid();
     [ModelMeta(Scope=PropertyScope.Immutable)]		
     public override  string Uid
@@ -71,72 +68,65 @@ public partial class WorkTopic : BaseMutableModel<WorkTopic>, INotifyPropertyCha
     } 
 
 
-    [JsonProperty("Environment")]
+
     private string _environment = "";
-		 		
+    [ModelMeta]
     public  string Environment 
     { 
         get { return _environment; } 
         set { _environment = value; } 
     } 
 
-    [JsonProperty("TenantUid")]
     private string _tenantUid = "";
-		 		
+    [ModelMeta]
     public  string TenantUid 
     { 
         get { return _tenantUid; } 
         set { _tenantUid = value; } 
     } 
 
-    [JsonProperty("Topic")]
     private string _topic = "";
-		 		
+    [ModelMeta]
     public  string Topic 
     { 
         get { return _topic; } 
         set { _topic = value; } 
     } 
 
-    [JsonProperty("Description")]
     private string _description = "";
-		 		
+    [ModelMeta]
     public  string Description 
     { 
         get { return _description; } 
         set { _description = value; } 
     } 
 
-    [JsonProperty("Synchronous")]
     private bool _synchronous = false;
-		 		
+    [ModelMeta]
     public  bool Synchronous 
     { 
         get { return _synchronous; } 
         set { _synchronous = value; } 
     } 
 
-    [JsonProperty("ClientName")]
     private string _clientName = "";
-		 		
+    [ModelMeta]
     public  string ClientName 
     { 
         get { return _clientName; } 
         set { _clientName = value; } 
     } 
 
-    [JsonProperty("Path")]
     private string _path = "";
-		 		
+    [ModelMeta]
     public  string Path 
     { 
         get { return _path; } 
         set { _path = value; } 
     } 
 
-    [JsonProperty("FullUrl")]
     private string _fullUrl = "";
-		 		
+    [ModelMeta]
     public  string FullUrl 
     { 
         get { return _fullUrl; } 

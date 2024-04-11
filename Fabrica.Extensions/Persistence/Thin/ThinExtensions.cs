@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Data.Common;
+using System.Text.Json;
 using Fabrica.Watch;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace Fabrica.Persistence.Thin
 {
@@ -13,31 +9,22 @@ namespace Fabrica.Persistence.Thin
     {
 
 
-        public static async Task<string> ToJson([NotNull] this DbDataReader reader, ISet<string> exclusions=null)
+        public static async Task<string> ToJson( this DbDataReader reader, ISet<string>? exclusions=null)
         {
 
-            using (var writer = new StringWriter())
-            {
-                await ToJson( reader, writer, exclusions );
+            await using var stream = new MemoryStream();
+            
+            await ToJson( reader, stream, exclusions );
 
-                return writer.ToString();
-            }
+            stream.Seek(0, SeekOrigin.Begin);
+            using var sr = new StreamReader(stream);
+
+            return await sr.ReadToEndAsync();
 
         }
 
 
-        public static async Task ToJson([NotNull] this DbDataReader reader, Stream output, ISet<string> exclusions = null)
-        {
-
-            var writer = new StreamWriter(output);
-            await ToJson( reader, writer, exclusions );
-
-            await writer.FlushAsync();
-
-        }
-
-
-        public static async Task ToJson( [NotNull] this DbDataReader reader, TextWriter writer, ISet<string> exclusions = null)
+        public static async Task ToJson(  this DbDataReader reader, Stream output, ISet<string>? exclusions = null)
         {
 
             var type = typeof(ThinExtensions);
@@ -71,32 +58,58 @@ namespace Fabrica.Persistence.Thin
 
                 // *****************************************************************
                 logger.Debug("Attempting to serialize each row into json");
-                var jw = new JsonTextWriter(writer)
-                {
-                    DateFormatHandling   = DateFormatHandling.IsoDateFormat,
-                    Formatting           = Formatting.None,
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                };
+                var jw = new Utf8JsonWriter(output);
 
 
-                await jw.WriteStartArrayAsync();
+                jw.WriteStartArray();
 
                 while( await reader.ReadAsync() )
                 {
 
-                    await jw.WriteStartObjectAsync();
+                    jw.WriteStartObject();
                   
                     foreach (var col in names)
                     {
-                        await jw.WritePropertyNameAsync(col);
-                        await jw.WriteValueAsync(reader[col]);
+                        jw.WritePropertyName(col);
+
+                        switch (reader[col])
+                        {
+                            case string v:
+                                jw.WriteStringValue(v);
+                                break;
+                            case int v:
+                                jw.WriteNumberValue(v);
+                                break;
+                            case long v:
+                                jw.WriteNumberValue(v);
+                                break;
+                            case short v:
+                                jw.WriteNumberValue(v);
+                                break;
+                            case float v:
+                                jw.WriteNumberValue(v);
+                                break;
+                            case double v:
+                                jw.WriteNumberValue(v);
+                                break;
+                            case decimal v:
+                                jw.WriteNumberValue(v);
+                                break;
+                            case bool v:
+                                jw.WriteBooleanValue(v);
+                                break;
+                            case DateTime v:
+                                jw.WriteStringValue(v);
+                                break;
+                        }
+
                     }
 
-                    await jw.WriteEndObjectAsync();
+                    jw.WriteEndObject();
 
                 }
 
-                await jw.WriteEndArrayAsync();
+                jw.WriteEndArray();
 
 
 

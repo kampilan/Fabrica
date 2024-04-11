@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
-using JetBrains.Annotations;
 using MediatR;
-using Newtonsoft.Json;
 
 namespace Fabrica.Persistence.Mediator;
 
@@ -18,7 +13,7 @@ public class CreateEntityRequest<TEntity>: BaseEntityRequest, IRequest<Response<
 
     public Dictionary<string,object> Delta { get; set; } = new();
 
-    public void FromObject([NotNull] object source)
+    public void FromObject( object source)
     {
 
         if (source == null) throw new ArgumentNullException(nameof(source));

@@ -1,6 +1,7 @@
 ﻿
 // ReSharper disable UnusedMember.Global
 
+using System.Text.Json;
 using Fabrica.Mediator;
 using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
@@ -15,7 +16,7 @@ public abstract class BasePatchController : BaseMediatorController
 {
 
 
-    protected BasePatchController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, IPatchResolver resolver) : base(correlation, meta,mediator)
+    protected BasePatchController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, IPatchResolver resolver, JsonSerializerOptions options ) : base(correlation, meta,mediator, options)
     {
 
         Resolver = resolver;

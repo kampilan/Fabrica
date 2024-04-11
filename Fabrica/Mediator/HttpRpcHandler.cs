@@ -1,7 +1,7 @@
 ﻿using System.Text;
+using System.Text.Json;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
-using Newtonsoft.Json;
 
 namespace Fabrica.Mediator;
 
@@ -84,7 +84,7 @@ public class HttpRpcHandler<TRequest,TResponse>: AbstractRequestHandler<TRequest
 
             // *****************************************************************
             logger.Debug("Attempting to deserialize content into response");
-            var response = JsonConvert.DeserializeObject<TResponse>(content);
+            var response = JsonSerializer.Deserialize<TResponse>(content);
 
 
             // *****************************************************************

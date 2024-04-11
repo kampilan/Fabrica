@@ -1,6 +1,8 @@
-﻿using Fabrica.Models.Support;
+﻿using System.Text.Json;
+using Fabrica.Models.Support;
 using Fabrica.Watch;
-using Newtonsoft.Json;
+
+
 // ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Models.Patch.Builder
@@ -14,7 +16,7 @@ namespace Fabrica.Models.Patch.Builder
         public static PatchSet FromJsonOne( string json )
         {
 
-            var patch = JsonConvert.DeserializeObject<ModelPatch>(json, Settings);
+            var patch = JsonSerializer.Deserialize<ModelPatch>(json, Options);
 
             var set = new PatchSet();
             set.Patches.Add(patch!);
@@ -26,36 +28,16 @@ namespace Fabrica.Models.Patch.Builder
         public static PatchSet FromJsonOne( Stream stream )
         {
 
-            using var reader = new StreamReader(stream);
 
-            var set = FromJsonOne(reader);
-
-            return set;
-
-        }
-
-        public static PatchSet FromJsonOne( TextReader reader )
-        {
-
-            using var jr = new JsonTextReader(reader);
-
-            var serializer = new JsonSerializer()
-            {
-                Formatting                 = Formatting.Indented,
-                DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-                DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
-                DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
-            };
-
-            var patch = serializer.Deserialize<ModelPatch>(jr);
+            var patch = JsonSerializer.Deserialize<ModelPatch>(stream, Options);
 
             var set = new PatchSet();
             set.Patches.Add(patch!);
 
-
             return set;
-        }
 
+
+        }
 
 
         public static PatchSet FromJsonMany( string json )
@@ -63,7 +45,7 @@ namespace Fabrica.Models.Patch.Builder
 
             var set = new PatchSet
             {
-                Patches = JsonConvert.DeserializeObject<List<ModelPatch>>(json, Settings)!
+                Patches = JsonSerializer.Deserialize<List<ModelPatch>>(json, Options)!
             };
 
             return set;
@@ -73,37 +55,15 @@ namespace Fabrica.Models.Patch.Builder
         public static PatchSet FromJsonMany( Stream stream )
         {
 
-            using var reader = new StreamReader(stream);
-
-            var set = FromJsonMany(reader);
-
-            return set;
-
-        }    
-
-        public static PatchSet FromJsonMany( TextReader reader )
-        {
-
-            using var jr = new JsonTextReader(reader);
-
-            var serializer = new JsonSerializer
-            {
-                Formatting                 = Formatting.Indented,
-                DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-                DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
-                DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
-            };
-
-            var patches = serializer.Deserialize<List<ModelPatch>>( jr );
-
             var set = new PatchSet
             {
-                Patches = patches!
+                Patches = JsonSerializer.Deserialize<List<ModelPatch>>(stream, Options)!
             };
 
             return set;
-        }
 
+
+        }
 
 
         public static PatchSet Create( IMutableModel model)
@@ -257,17 +217,15 @@ namespace Fabrica.Models.Patch.Builder
         }
 
 
-        private static readonly JsonSerializerSettings Settings  = new()
+        private static readonly JsonSerializerOptions Options = new()
         {
-            Formatting                 = Formatting.Indented,
-            DateFormatHandling         = DateFormatHandling.IsoDateFormat,
-            DateTimeZoneHandling       = DateTimeZoneHandling.RoundtripKind,
-            DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate
+            WriteIndented = true
         };
+
 
         public string ToJson()
         {
-            var json = JsonConvert.SerializeObject( Patches, Settings );
+            var json = JsonSerializer.Serialize( Patches, Options );
             return json;
         }
 

@@ -2,13 +2,13 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Text;
+using System.Text.Json;
 using Fabrica.Models.Patch.Builder;
 using Fabrica.Models.Support;
 using Fabrica.Rql;
 using Fabrica.Rql.Builder;
 using Fabrica.Rql.Serialization;
 using Humanizer;
-using Newtonsoft.Json.Serialization;
 
 
 namespace Fabrica.Http;
@@ -106,7 +106,7 @@ public class HttpRequestBuilder
 
 
         if( string.IsNullOrWhiteSpace(builder.Json) && builder.Body != null )
-            request.ToBody(builder.Body, builder.Resolver);
+            request.ToBody(builder.Body, builder.Options);
         else if( !string.IsNullOrWhiteSpace(builder.Json) )
             request.ToBody( builder.Json );
         else if( builder.BodyStream != null )
@@ -143,10 +143,11 @@ public class HttpRequestBuilder
     private List<KeyValuePair<string,object>> QueryParameters { get; set; } = new ();
 
 
+    private JsonSerializerOptions Options { get; set; } = null!;
+
     private string? Json { get; set; }
 
     private object? Body { get; set; }
-    private IContractResolver? Resolver { get; set; }
 
     private Stream? BodyStream { get; set; }
 
@@ -285,7 +286,7 @@ public class HttpRequestBuilder
 
     public HttpRequestBuilder WithParameters( IEnumerable<KeyValuePair<string,object>> parameters )
     {
-        QueryParameters = new List<KeyValuePair<string,object>>( parameters );
+        QueryParameters = [..parameters];
         return this;
     }
 
@@ -304,10 +305,10 @@ public class HttpRequestBuilder
     }
 
 
-    public HttpRequestBuilder WithBody( object body, IContractResolver? resolver=null )
+    public HttpRequestBuilder WithBody( object body, JsonSerializerOptions? options=null )
     {
         Body = body;
-        Resolver = resolver;
+        Options = options;
         return this;
     }
 

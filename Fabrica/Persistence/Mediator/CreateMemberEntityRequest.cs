@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using Fabrica.Mediator;
 using Fabrica.Models.Support;
 using JetBrains.Annotations;
 using MediatR;
-using Newtonsoft.Json;
 
 // ReSharper disable UnusedTypeParameter
 

@@ -151,19 +151,13 @@ public abstract class GenericHostBootstrap(): CorrelatedObject(new Correlation()
 
 
             var mc = Configuration.Get<MissionContext>();
-            if (mc is not null)
+            if( mc is not null )
             {
 
                 cb.RegisterInstance(mc)
                     .AsSelf()
                     .As<IMissionContext>()
                     .SingleInstance();
-
-                foreach (var pair in mc.ServiceEndpoints)
-                {
-                    var address = pair.Value.EndsWith("/") ? pair.Value : $"{pair.Value}/";
-                    cb.AddServiceAddress(pair.Key, address);
-                }
 
             }
 

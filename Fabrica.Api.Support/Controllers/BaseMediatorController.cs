@@ -9,9 +9,8 @@ using Fabrica.Rql.Parser;
 using Fabrica.Utilities.Container;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Reflection;
+using System.Text.Json;
 using Fabrica.Watch;
 // ReSharper disable UnusedMember.Global
 
@@ -21,7 +20,7 @@ public abstract class BaseMediatorController : BaseController
 {
 
 
-    protected BaseMediatorController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator ) : base(correlation)
+    protected BaseMediatorController(ICorrelation correlation, IModelMetaService meta, IMessageMediator mediator, JsonSerializerOptions options ) : base(correlation, options )
     {
 
         Meta     = meta;
@@ -495,8 +494,8 @@ public abstract class BaseMediatorController : BaseController
 
             // *****************************************************************
             logger.Debug("Attempting to map parameters to criteria model");
-            var jo = JObject.FromObject(parameters);
-            var criteria = jo.ToObject<TCriteria>();
+            var jo = JsonSerializer.Serialize(parameters);
+            var criteria = JsonSerializer.Deserialize<TCriteria>(jo);
 
             criteria ??= new TCriteria();
 
@@ -527,14 +526,9 @@ public abstract class BaseMediatorController : BaseController
 
         using var logger = EnterMethod();
 
+        var delta = await JsonSerializer.DeserializeAsync<Dictionary<string, object>>(Request.Body);
 
-        using var reader = new StreamReader(Request.Body, leaveOpen: true);
-        using var jreader = new JsonTextReader(reader);
-
-        var jo = await JObject.LoadAsync(jreader);
-        var delta = jo.ToObject<Dictionary<string, object>>();
-
-        return delta;
+        return delta??new Dictionary<string, object>();
 
     }
 

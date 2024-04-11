@@ -22,68 +22,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
 
 // ReSharper disable UnusedMember.Global
-namespace Fabrica.Press.Generation
+
+using System.Text.Json;
+
+namespace Fabrica.Press.Generation;
+
+public class MergeModelBuilder
 {
 
+    private static readonly JsonSerializerOptions Formatted = new  (){WriteIndented = true};
+    private static readonly JsonSerializerOptions Unformatted = new  (){ WriteIndented = false };
 
-    public class MergeModelBuilder
+
+    public static implicit operator string( MergeModelBuilder builder )
+    {
+        var json = builder.ToJson();
+        return json;
+    }
+
+    public static implicit operator List<MergeModel>( MergeModelBuilder builder )
+    {
+        var list = new List<MergeModel>( builder.Sources );
+        return list;
+    }
+
+
+    public IList<MergeModel> Sources { get; } = new List<MergeModel>();
+
+
+    public void Add( MergeModel model )
+    {
+        Sources.Add(model);
+    }
+
+
+    public void Single( object single, string region="" )
+    {
+        var model = new MergeModel { Region = region, Data = single };
+        Add(model);
+    }
+
+
+    public void Many( IEnumerable<object> list, string region )
+    {
+        var model = new MergeModel { Region=region, Data=list.ToList() };
+        Add( model );
+    }
+
+    public string ToJson( bool formatted=false )
     {
 
-        public static implicit operator string( MergeModelBuilder builder )
-        {
-            var json = builder.ToJson();
-            return json;
-        }
-
-        public static implicit operator List<MergeModel>( MergeModelBuilder builder )
-        {
-            var list = new List<MergeModel>( builder.Sources );
-            return list;
-        }
-
-
-        public IList<MergeModel> Sources { get; } = new List<MergeModel>();
-
-
-        public void Add( MergeModel model )
-        {
-            Sources.Add(model);
-        }
-
-
-        public void Single( object single, string region="" )
-        {
-            var model = new MergeModel { Region = region, Data = single };
-            Add(model);
-        }
-
-
-        public void Many( IEnumerable<object> list, string region )
-        {
-            var model = new MergeModel { Region=region, Data=list.ToList() };
-            Add( model );
-        }
-
-        public string ToJson( bool formatted=false )
-        {
-
-            var settings = new JsonSerializerSettings
-            {
-                Formatting = formatted?Formatting.Indented:Formatting.None,
-                DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate
-            };
-
-            var json = JsonConvert.SerializeObject(Sources, settings);
-            
-            return json;
-
-        }
-
+        var json = JsonSerializer.Serialize(Sources, formatted?Formatted:Unformatted );
+           
+        return json;
 
     }
 

@@ -23,29 +23,22 @@ SOFTWARE.
 */
 
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Xml;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using Fabrica.Watch.Sink;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json.Linq;
-using Formatting = Newtonsoft.Json.Formatting;
 
 // ReSharper disable UnusedMember.Global
 
 namespace Fabrica.Api.Support.Middleware;
 
-public class RequestLoggingMiddleware
+public class RequestLoggingMiddleware(RequestDelegate next)
 {
-
-
-    public RequestLoggingMiddleware( RequestDelegate next )
-    {
-        Next = next;
-    }
-
-    private RequestDelegate Next { get; }
+    private RequestDelegate Next { get; } = next;
 
 
     public async Task Invoke( HttpContext context, ICorrelation correlation )
@@ -321,8 +314,8 @@ public class RequestLoggingMiddleware
         var pretty = json;
         try
         {
-            var tok = JToken.Parse(json);
-            pretty = tok.ToString(Formatting.Indented);
+            var tok = JsonNode.Parse(json);
+            pretty = tok?.ToJsonString(new JsonSerializerOptions {WriteIndented = true})??"{}";
         }
         catch
         {
@@ -347,7 +340,7 @@ public class RequestLoggingMiddleware
             using var writer = new StringWriter();
             using var xw = new XmlTextWriter(writer);
 
-            xw.Formatting = System.Xml.Formatting.Indented;
+            xw.Formatting = Formatting.Indented;
             document.Save(xw);
             writer.Flush();
             pretty = writer.ToString();
