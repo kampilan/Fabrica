@@ -68,7 +68,7 @@ public static class AwsSecretsHelper
 
 
             // *****************************************************************
-            logger.Debug("Attempting to parser JSON secrets into Configuration Data");
+            logger.Debug("Attempting to parse JSON secrets into Configuration Data");
             var target = JsonSerializer.Deserialize<T>(json);
 
             return target;
