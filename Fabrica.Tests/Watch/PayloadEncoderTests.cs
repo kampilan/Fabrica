@@ -257,6 +257,7 @@ public class PayloadEncoderTests
 public class BadObject
 {
 
+    public Type BadType { get; set; } = typeof(BadObject);
     public string Test { get; set; } = null;
     public Stream Bad { get; set; } = new MemoryStream();
 

@@ -9,13 +9,21 @@ namespace Fabrica.Watch.Utilities;
 public class JsonWatchObjectSerializer: IWatchObjectSerializer
 {
 
-    public static readonly JsonSerializerOptions WatchOptions = new (JsonSerializerDefaults.General)
+    static JsonWatchObjectSerializer()
+    {
+
+        WatchOptions = new(JsonSerializerDefaults.General)
         {
             WriteIndented = true,
             ReferenceHandler = ReferenceHandler.Preserve,
             TypeInfoResolver = new WatchJsonTypeInfoResolver()
         };
 
+        WatchOptions.Converters.Add(new TypeWatchJsonConvert());
+
+    }
+
+    public static readonly JsonSerializerOptions WatchOptions;
 
     public (PayloadType type, string payload) Serialize(object? source)
     {
@@ -32,16 +40,20 @@ public class JsonWatchObjectSerializer: IWatchObjectSerializer
 internal class WatchJsonTypeInfoResolver : DefaultJsonTypeInfoResolver
 {
 
+
     public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
     {
 
         var typeInfo = base.GetTypeInfo(type, options);
 
+
         if (typeInfo.Kind != JsonTypeInfoKind.Object)
             return typeInfo;
 
+
         foreach (var prop in typeInfo.Properties)
         {
+            
             var sensitive = prop.PropertyType.GetCustomAttribute<SensitiveAttribute>();
             if (sensitive is not null)
             {
@@ -122,7 +134,20 @@ internal class WatchJsonTypeInfoResolver : DefaultJsonTypeInfoResolver
     }
 
 
+}
 
+internal class TypeWatchJsonConvert: JsonConverter<Type>
+{
+    public override Type? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return typeToConvert;
+    }
 
-
+    public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WritePropertyName("Name");
+        writer.WriteStringValue(value.GetConciseFullName());
+        writer.WriteEndObject();
+    }
 }

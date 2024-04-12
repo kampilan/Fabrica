@@ -9,15 +9,9 @@ using Humanizer;
 
 namespace Fabrica.Models.Support;
 
-public class ModelMetaService: IModelMetaService, IRequiresStart
+public class ModelMetaService(IEnumerable<ModelMetaSource> sources) : IModelMetaService, IRequiresStart
 {
-
-    public ModelMetaService(IEnumerable<ModelMetaSource> sources)
-    {
-        Sources = sources;
-    }
-
-    private IEnumerable<ModelMetaSource> Sources { get; }
+    private IEnumerable<ModelMetaSource> Sources { get; } = sources;
 
     private static ISet<string> Empty { get; } = new HashSet<string>();
 
