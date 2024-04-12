@@ -140,7 +140,7 @@ internal class TypeWatchJsonConvert: JsonConverter<Type>
 {
     public override Type? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return typeToConvert;
+        throw new NotImplementedException();
     }
 
     public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options)

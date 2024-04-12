@@ -3,6 +3,7 @@ using System.Reflection;
 using Fabrica.Models.Serialization;
 using Fabrica.Utilities.Container;
 using Fabrica.Watch;
+using Fabrica.Watch.Utilities;
 using Humanizer;
 
 // ReSharper disable CollectionNeverUpdated.Local
@@ -138,7 +139,7 @@ public class ModelMetaService(IEnumerable<ModelMetaSource> sources) : IModelMeta
 
         logger.LogObject("AliasMap", AliasMap);
         logger.LogObject("ResourceMap", ResourceMap);
-        logger.LogObject("TypeMap", TypeMap);
+        logger.LogObject("TypeMap", TypeMap.ToDictionary(p=>p.Key.GetConciseFullName(), p=>p.Value));
 
 
         return Task.CompletedTask;

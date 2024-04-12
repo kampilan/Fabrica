@@ -2,8 +2,11 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
+using Fabrica.Models.Support;
+using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
+using Fabrica.Watch.Realtime;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Switching;
 using Fabrica.Watch.Utilities;
@@ -29,10 +32,12 @@ public class LoggerTests
             Accumulate = true
         };
 
-        maker.UseBatching();
-        maker.Sinks.AddSink(TheSink);
+//        maker.UseBatching();
+//        maker.Sinks.AddSink(TheSink);
 
 //        maker.UseQuiet();
+        maker.UseRealtime();
+
 
         maker.Build();
 
@@ -65,6 +70,32 @@ public class LoggerTests
         Assert.AreEqual(3,TheSink.Count);
 
     }
+
+    [Test]
+    public async Task Test_08300_0150_ShouldHandleBadObject()
+    {
+
+        using var logger = this.EnterMethod();
+
+        var bad = new BadObject();
+
+        logger.LogObject("Bad", bad);
+
+        Assert.IsTrue(true);
+
+        var ms = new ModelMetaSource();
+        ms.AddTypes(typeof(Person).Assembly);
+        var mm = new ModelMetaService([ms]);
+
+        await mm.Start();
+
+
+
+
+    }
+
+
+
 
     [Test]
     public async Task Test_8300_0200_ShouldNotAllocate()

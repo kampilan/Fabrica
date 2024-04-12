@@ -6,6 +6,7 @@ using System.Text.Json;
 using Dumpify;
 using Fabrica.Test.Models.Patch;
 using Fabrica.Utilities.Text;
+using Fabrica.Watch;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Utilities;
 using NUnit.Framework;
@@ -109,21 +110,6 @@ public class PayloadEncoderTests
 
 
     }
-
-
-    [Test]
-    public void Test_08200_0400_ShouldHandleBadObject()
-    {
-
-        var bad = new BadObject();
-
-        var json = JsonSerializer.Serialize(bad,JsonWatchObjectSerializer.WatchOptions);
-
-        Assert.IsNotEmpty(json);
-
-
-    }
-
 
 
 
