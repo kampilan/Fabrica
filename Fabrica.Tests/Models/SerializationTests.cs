@@ -18,7 +18,6 @@ using Fabrica.Watch.Realtime;
 using NUnit.Framework;
 using System.Linq;
 using System.Text.Json.Serialization;
-using Amazon.DynamoDBv2;
 using Autofac.Extensions.DependencyInjection;
 using JetBrains.Annotations;
 using Fabrica.Test.Models.Patch;

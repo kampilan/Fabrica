@@ -1,4 +1,6 @@
-﻿using Amazon.AppConfigData;
+﻿using Amazon;
+using Amazon.AppConfigData;
+using Amazon.Runtime;
 using Amazon.S3;
 using Autofac;
 using Fabrica.Aws;
@@ -17,6 +19,7 @@ public class OneOrchestratorConfiguration: Module
 {
         
     public string AwsProfileName { get; set; } = "";
+    public string AwsRegionName { get; set; } = "";
 
     public string OneRoot { get; set; } = "";
 
@@ -85,7 +88,36 @@ public class OneOrchestratorConfiguration: Module
 
 
 
-            builder.UseAws(AwsProfileName);
+            builder.UseAws(AwsProfileName)
+                .AddS3Client(AwsRegionName);
+
+
+            builder.Register(c =>
+                {
+
+                    RegionEndpoint? region = null;
+                    if (!string.IsNullOrWhiteSpace(AwsRegionName))
+                        region = RegionEndpoint.GetBySystemName(AwsRegionName);
+
+                    var credentials = c.ResolveOptional<AWSCredentials>();
+
+                    if (credentials is not null && region is not null)
+                        return new AmazonAppConfigDataClient(credentials, region);
+
+                    if (region is not null)
+                        return new AmazonAppConfigDataClient(region);
+
+                    if( credentials is not null)
+                        return new AmazonAppConfigDataClient(credentials);
+
+
+                    return new AmazonAppConfigDataClient();
+
+
+                })
+                .As<IAmazonAppConfigData>()
+                .SingleInstance();
+
 
 
             // *****************************************************************
@@ -119,7 +151,7 @@ public class OneOrchestratorConfiguration: Module
 
 
             // *****************************************************************
-            logger.Debug("Attempting to register MissionOchestrator");
+            logger.Debug("Attempting to register MissionOrchestrator");
             builder.Register(c =>
                 {
 

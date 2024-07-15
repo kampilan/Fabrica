@@ -12,9 +12,9 @@
     <Copyright>Pond Hawk Technologies Inc. (c) 2023</Copyright>
   </PropertyGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fabrica\Fabrica.csproj" />
+  </ItemGroup>
 
 
 </Project>

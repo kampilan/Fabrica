@@ -7,11 +7,8 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.SecurityToken;
-using Amazon.SQS;
-using Amazon.SQS.Model;
 using Autofac;
 using Fabrica.Aws;
-using Fabrica.Aws.Secrets;
 using Fabrica.Watch;
 using NUnit.Framework;
 
@@ -34,7 +31,7 @@ public class AwsTests001
     [Test]
     public async Task Test_0850_Should_Find_SQS_Queue()
     {
-
+/*
         var builder = new ContainerBuilder();
         builder.UseAws("kampilan");
 
@@ -51,7 +48,7 @@ public class AwsTests001
         var response = await client.GetQueueUrlAsync(request);
 
         Assert.IsNotNull(response);
-
+*/
     }
 
 
@@ -102,7 +99,7 @@ public class AwsTests001
 
 
         var builder = new ContainerBuilder();
-        builder.UseAws();
+//        builder.UseAws();
 
         var container = builder.Build();
         var scope = container.BeginLifetimeScope();

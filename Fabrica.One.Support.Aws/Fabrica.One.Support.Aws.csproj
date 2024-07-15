@@ -13,6 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.301.39" />
+    <PackageReference Include="AWSSDK.AppConfigData" Version="3.7.301.54" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fabrica.Aws\Fabrica.Aws.csproj" />
     <ProjectReference Include="..\Fabrica.One.Core\Fabrica.One.Core.csproj" />
     <ProjectReference Include="..\Fabrica\Fabrica.csproj" />

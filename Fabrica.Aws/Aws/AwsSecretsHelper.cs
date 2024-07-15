@@ -5,9 +5,8 @@ using System.Text.Json;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
-using Fabrica.Watch;
 
-namespace Fabrica.Aws.Secrets;
+namespace Fabrica.Aws;
 
 public static class AwsSecretsHelper
 {
@@ -16,15 +15,8 @@ public static class AwsSecretsHelper
     public static async Task<T?> PopulateWithSecrets<T>(string secretId, string profileName = "") where T: class
     {
 
-        using var logger = WatchFactoryLocator.Factory.GetLogger(typeof(AwsSecretsHelper));
-
-
-        logger.EnterMethod();
-
-
 
         // *****************************************************************
-        logger.Debug("Attempting to check if should use local credentials");
         AmazonSecretsManagerClient client;
         if( !string.IsNullOrWhiteSpace(profileName) )
         {
@@ -46,7 +38,6 @@ public static class AwsSecretsHelper
 
 
         // *****************************************************************
-        logger.Debug("Attempting to create AWS Secrets Manager Client");
         using (client)
         {
 
@@ -58,17 +49,13 @@ public static class AwsSecretsHelper
 
 
             // *****************************************************************
-            logger.Debug("Attempting to get secrets JSON");
             var response = await client.GetSecretValueAsync(request);
 
             var json = response.SecretString;
 
-            logger.Inspect(nameof(json.Length), json.Length);
-
 
 
             // *****************************************************************
-            logger.Debug("Attempting to parse JSON secrets into Configuration Data");
             var target = JsonSerializer.Deserialize<T>(json);
 
             return target;

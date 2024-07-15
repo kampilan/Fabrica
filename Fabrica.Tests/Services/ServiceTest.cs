@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Amazon.SimpleNotificationService.Model;
 using Auth0.ManagementApi.Models;
 using Autofac;
 using Autofac.Core;

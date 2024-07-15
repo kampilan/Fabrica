@@ -1,5 +1,4 @@
-﻿#nullable disable
-
+﻿
 using System.Drawing;
 using Fabrica.Configuration.Yaml;
 using Fabrica.Watch;
@@ -16,7 +15,7 @@ public class Program
 {
 
 
-    public static IConfigurationRoot TheConfiguration { get; set; }
+    public static IConfigurationRoot TheConfiguration { get; set; } = null!;
 
 
     public static async Task Main(string[] args)

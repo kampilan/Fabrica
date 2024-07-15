@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="Bogus" Version="35.5.0" />
+    <PackageReference Include="Bogus" Version="35.5.1" />
     <PackageReference Include="DnsClient" Version="1.7.0" />
-    <PackageReference Include="Dumpify" Version="0.6.5" />
+    <PackageReference Include="Dumpify" Version="0.6.6" />
     <PackageReference Include="Fabrica.Mongo.Driver" Version="2.19.2" />
     <PackageReference Include="ImpromptuInterface" Version="8.0.4" />
     <PackageReference Include="JetBrains.dotMemoryUnit" Version="3.2.20220510" />

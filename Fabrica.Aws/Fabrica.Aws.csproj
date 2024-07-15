@@ -13,20 +13,10 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AWSSDK.AppConfig" Version="3.7.301.20" />
-		<PackageReference Include="AWSSDK.AppConfigData" Version="3.7.301.35" />
-		<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.302.15" />
-		<PackageReference Include="AWSSDK.S3" Version="3.7.307.15" />
-		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.302.49" />
-		<PackageReference Include="AWSSDK.SecretsManager.Caching" Version="1.0.6" />
-		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.300.75" />
-		<PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.301.22" />
-		<PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.303.23" />
-		<PackageReference Include="AWSSDK.SQS" Version="3.7.300.74" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Fabrica.Extensions\Fabrica.Extensions.csproj" />
+		<PackageReference Include="Autofac" Version="8.0.0" />
+		<PackageReference Include="AWSSDK.S3" Version="3.7.308.2" />
+		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.302.68" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.300.94" />
 	</ItemGroup>
 
 </Project>

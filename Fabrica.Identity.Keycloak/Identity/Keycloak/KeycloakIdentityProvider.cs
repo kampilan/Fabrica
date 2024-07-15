@@ -6,8 +6,6 @@ using Fabrica.Identity.Keycloak.Models;
 using Fabrica.Utilities.Container;
 using Fabrica.Utilities.Text;
 using Fabrica.Watch;
-using Humanizer;
-using MediatR;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -17,6 +15,9 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
 {
 
     public const string HttpClientName = "Keycloak";
+
+    public static readonly string UserResource = "users";
+
 
     private static JsonSerializerOptions DefaultOptions { get; } = new()
     {
@@ -36,7 +37,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
         logger.Debug("Attempting to fetch User by Email");
 
         var req = HttpRequestBuilder.Get(HttpClientName)
-            .ForResource<User>()
+            .ForResource(UserResource)
             .AddParameter("email", email)
             .AddParameter("exact", true )
             .ToRequest();
@@ -61,7 +62,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
             var body = new List<string> {"UPDATE_PASSWORD"};
 
             var actReq = HttpRequestBuilder.Put(HttpClientName)
-                .ForResource<User>()
+                .ForResource(UserResource)
                 .WithIdentifier(user.Id)
                 .WithSubResource("execute-actions-email")
                 .WithBody(body)
@@ -120,7 +121,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
             logger.Debug("Attempting to fetch User by given IdentityUid");
 
             var req = HttpRequestBuilder.Get(HttpClientName)
-                .ForResource<User>()
+                .ForResource(UserResource)
                 .WithIdentifier(request.IdentityUid)
                 .ToRequest();
 
@@ -142,7 +143,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
             logger.Debug("Attempting to fetch User by CurrentUsername");
 
             var req = HttpRequestBuilder.Get(HttpClientName)
-                .ForResource<User>()
+                .ForResource(UserResource)
                 .AddParameter("username", request.CurrentUsername )
                 .AddParameter("exact", "true")
                 .ToRequest();
@@ -159,7 +160,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
             logger.Debug("Attempting to fetch User by given NewUsername");
 
             var req = HttpRequestBuilder.Get(HttpClientName)
-                .ForResource<User>()
+                .ForResource(UserResource)
                 .AddParameter("username", request.NewUsername)
                 .AddParameter("exact", "true")
                 .ToRequest();
@@ -284,7 +285,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
             logger.Debug("Attempting to Create User");
             var json = JsonSerializer.Serialize(user, DefaultOptions);
             var req = HttpRequestBuilder.Post(HttpClientName)
-                .ForResource<User>()
+                .ForResource(UserResource)
                 .WithJson(json)
                 .ToRequest();
 
@@ -302,6 +303,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
             var reqGet = HttpRequestBuilder.Get(HttpClientName)
                 .ForResource("users")
                 .AddParameter("username", request.NewUsername)
+                .AddParameter("exact", "true")
                 .ToRequest();
 
             var (okGet, results) = await factory.Many<User>(reqGet, ct);
@@ -377,7 +379,7 @@ public class KeycloakIdentityProvider(ICorrelation correlation, IHttpClientFacto
                 logger.Debug("Attempting to Update existing User");
                 var json = JsonSerializer.Serialize( user, DefaultOptions );
                 var req = HttpRequestBuilder.Put(HttpClientName)
-                    .ForResource<User>()
+                    .ForResource(UserResource)
                     .WithIdentifier(user.Id??"x")
                     .WithJson(json)
                     .ToRequest();
