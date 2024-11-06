@@ -13,6 +13,7 @@ using Fabrica.Watch.Utilities;
 using JetBrains.dotMemoryUnit;
 using Microsoft.IdentityModel.Abstractions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Watch;
 
@@ -67,7 +68,7 @@ public class LoggerTests
 
         await Task.Delay(200);
 
-        Assert.AreEqual(3,TheSink.Count);
+        ClassicAssert.AreEqual(3,TheSink.Count);
 
     }
 
@@ -81,7 +82,7 @@ public class LoggerTests
 
         logger.LogObject("Bad", bad);
 
-        Assert.IsTrue(true);
+        ClassicAssert.IsTrue(true);
 
         var ms = new ModelMetaSource();
         ms.AddTypes(typeof(Person).Assembly);
@@ -187,32 +188,32 @@ public class LoggerTests
 
 
         var ws1 = ss.Lookup("Tester");
-        Assert.IsNotNull(ws1);
-        Assert.IsTrue( ws1.Level is Level.Debug);
+        ClassicAssert.IsNotNull(ws1);
+        ClassicAssert.IsTrue( ws1.Level is Level.Debug);
 
         var ws2 = ss.Lookup("NotTester");
-        Assert.IsNotNull(ws2);
-        Assert.IsTrue(ws2.Level is Level.Quiet);
+        ClassicAssert.IsNotNull(ws2);
+        ClassicAssert.IsTrue(ws2.Level is Level.Quiet);
 
         var ws3 = ss.Lookup("Tester.X.XX");
-        Assert.IsNotNull(ws3);
-        Assert.IsTrue(ws3.Level is Level.Debug);
+        ClassicAssert.IsNotNull(ws3);
+        ClassicAssert.IsTrue(ws3.Level is Level.Debug);
 
         var ws4 = ss.Lookup("Tester.X");
-        Assert.IsNotNull(ws4);
-        Assert.IsTrue(ws4.Level is Level.Debug);
+        ClassicAssert.IsNotNull(ws4);
+        ClassicAssert.IsTrue(ws4.Level is Level.Debug);
 
         var ws5 = ss.Lookup("Tester.X.X");
-        Assert.IsNotNull(ws5);
-        Assert.IsTrue(ws5.Level is Level.Trace);
+        ClassicAssert.IsNotNull(ws5);
+        ClassicAssert.IsTrue(ws5.Level is Level.Trace);
 
         var ws6 = ss.Lookup("Tester.X.XXXX");
-        Assert.IsNotNull(ws6);
-        Assert.IsTrue(ws6.Level is Level.Warning);
+        ClassicAssert.IsNotNull(ws6);
+        ClassicAssert.IsTrue(ws6.Level is Level.Warning);
 
         var ws7 = ss.Lookup("Tester.X.XXXXX");
-        Assert.IsNotNull(ws7);
-        Assert.IsTrue(ws7.Level is Level.Error);
+        ClassicAssert.IsNotNull(ws7);
+        ClassicAssert.IsTrue(ws7.Level is Level.Error);
 
 
 

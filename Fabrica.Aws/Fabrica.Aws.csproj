@@ -13,10 +13,10 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Autofac" Version="8.0.0" />
-		<PackageReference Include="AWSSDK.S3" Version="3.7.308.2" />
-		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.302.68" />
-		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.300.94" />
+		<PackageReference Include="Autofac" Version="8.1.1" />
+		<PackageReference Include="AWSSDK.S3" Version="3.7.405.9" />
+		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.400.45" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.400.45" />
 	</ItemGroup>
 
 </Project>

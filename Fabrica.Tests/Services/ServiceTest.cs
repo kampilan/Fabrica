@@ -21,6 +21,7 @@ using Fabrica.Watch.Realtime;
 using ImpromptuInterface;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using IContainer = Autofac.IContainer;
 
 namespace Fabrica.Tests.Services;
@@ -67,7 +68,7 @@ public class ServiceTest
 
         var response = await client.Request<Envelope<Dictionary<string,DateTime>>>(FakerService.PingFqn);
 
-        Assert.IsNotNull(response);
+        ClassicAssert.IsNotNull(response);
         
 
     }
@@ -95,7 +96,7 @@ public class ServiceTest
         var response = await client.Request<Envelope<Dictionary<string, DateTime>>>(ep);
 
 
-        Assert.IsNotNull(response);
+        ClassicAssert.IsNotNull(response);
 
 
     }
@@ -114,14 +115,14 @@ public class ServiceTest
         var response = await client.Ping();
 
 
-        Assert.IsNotNull(response);
-        Assert.IsNotNull(response.Value);
-        Assert.IsTrue(response.Value.Count == 6);
+        ClassicAssert.IsNotNull(response);
+        ClassicAssert.IsNotNull(response.Value);
+        ClassicAssert.IsTrue(response.Value.Count == 6);
 
         Dictionary<string, DateTime> dict = response;
 
-        Assert.IsNotNull(dict);
-        Assert.IsTrue(dict.Count == 6);
+        ClassicAssert.IsNotNull(dict);
+        ClassicAssert.IsTrue(dict.Count == 6);
 
 
     }
@@ -144,7 +145,7 @@ public class ServiceTest
 
         var response = await client.Request<Envelope<Dictionary<string, DateTime>>>(FakerService.TestTopicFqn, body);
 
-        Assert.IsNotNull(response);
+        ClassicAssert.IsNotNull(response);
 
 
     }
@@ -162,9 +163,9 @@ public class ServiceTest
 
         var response = await client.Test(body);
 
-        Assert.IsNotNull(response);
-        Assert.IsNotEmpty(response.Details);
-        Assert.IsNotEmpty(response.Details.First().Explanation);
+        ClassicAssert.IsNotNull(response);
+        ClassicAssert.IsNotEmpty(response.Details);
+        ClassicAssert.IsNotEmpty(response.Details.First().Explanation);
 
     }
 
@@ -189,7 +190,7 @@ public class ServiceTest
         var response = await client.RequestAsStream(ep);
 
 
-        Assert.IsNotNull(response);
+        ClassicAssert.IsNotNull(response);
 
 
     }

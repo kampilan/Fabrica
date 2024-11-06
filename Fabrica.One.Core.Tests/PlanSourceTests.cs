@@ -3,6 +3,7 @@ using System.IO;
 using Fabrica.One.Plan;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -18,7 +19,7 @@ public class PlanSourceTests : BaseOneTest
         var source = new MemoryPlanSource();
         source.CheckInterval = TimeSpan.FromSeconds(1);
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
         await using var strm = new MemoryStream();
         await using var writer = new StreamWriter(strm);
@@ -31,7 +32,7 @@ public class PlanSourceTests : BaseOneTest
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
 
     }
@@ -44,7 +45,7 @@ public class PlanSourceTests : BaseOneTest
         source.CheckInterval = TimeSpan.FromSeconds(1);
 
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
 
         await using var strm = new MemoryStream();
@@ -58,17 +59,17 @@ public class PlanSourceTests : BaseOneTest
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
         await source.GetSource();
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
         await source.Reload();
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
 
     }
@@ -90,15 +91,15 @@ public class PlanSourceTests : BaseOneTest
 
         await source.Start();
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
         await source.GetSource();
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
         await using var fi = new FileStream(@"c:\temp\test-mission-plan.json", FileMode.Open, FileAccess.Read);
         var ms = new MemoryStream();
@@ -113,7 +114,7 @@ public class PlanSourceTests : BaseOneTest
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
     }
 
@@ -131,21 +132,21 @@ public class PlanSourceTests : BaseOneTest
 
         await source.Start();
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
         await source.GetSource();
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsFalse(await source.HasUpdatedPlan());
+        ClassicAssert.IsFalse(await source.HasUpdatedPlan());
 
         source.Touch();
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        Assert.IsTrue(await source.HasUpdatedPlan());
+        ClassicAssert.IsTrue(await source.HasUpdatedPlan());
 
     }
 

@@ -11,6 +11,7 @@ using Autofac;
 using Fabrica.Aws;
 using Fabrica.Watch;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Aws;
 
@@ -24,7 +25,7 @@ public class AwsTests001
 
         var model = await AwsSecretsHelper.PopulateWithSecrets<SecretsModel>( "kampilan-local", "kampilan" );
 
-        Assert.IsNotEmpty(model.OriginDbPassword);
+        ClassicAssert.IsNotEmpty(model.OriginDbPassword);
 
     }
 
@@ -47,7 +48,7 @@ public class AwsTests001
 
         var response = await client.GetQueueUrlAsync(request);
 
-        Assert.IsNotNull(response);
+        ClassicAssert.IsNotNull(response);
 */
     }
 
@@ -66,13 +67,13 @@ public class AwsTests001
 
         var set = await client.CreateCredentialSet("arn:aws:iam::523329725044:role/client-serene", "Moring0001",  duration:TimeSpan.FromHours(8) );
 
-        Assert.NotNull(set);
+        ClassicAssert.NotNull(set);
 
-        Assert.IsNotEmpty(set.AccessKey);
-        Assert.IsNotEmpty(set.SecretKey);
-        Assert.IsNotEmpty(set.SessionToken);
+        ClassicAssert.IsNotEmpty(set.AccessKey);
+        ClassicAssert.IsNotEmpty(set.SecretKey);
+        ClassicAssert.IsNotEmpty(set.SessionToken);
 
-        Assert.IsTrue( set.Expiration > DateTime.Now );
+        ClassicAssert.IsTrue( set.Expiration > DateTime.Now );
 
         var creds = new SessionAWSCredentials(set.AccessKey, set.SecretKey, set.SessionToken);
 
@@ -86,8 +87,8 @@ public class AwsTests001
 
         var response = await s3.GetObjectMetadataAsync(request);
 
-        Assert.NotNull(response);
-        Assert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
+        ClassicAssert.NotNull(response);
+        ClassicAssert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
 
 
     }
@@ -115,7 +116,7 @@ public class AwsTests001
 
         var response = await client.GetObjectAsync(request);
 
-        Assert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
+        ClassicAssert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
 
 
     }
@@ -142,7 +143,7 @@ public class AwsTests001
 
         var response = await client.GetObjectAsync(request);
 
-        Assert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
+        ClassicAssert.IsTrue(response.HttpStatusCode == HttpStatusCode.OK);
 
 
     }

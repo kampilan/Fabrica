@@ -4,6 +4,7 @@ using Fabrica.Press.Generation;
 using Fabrica.Press.Generation.DataSources;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Press
 {
@@ -24,12 +25,12 @@ namespace Fabrica.Tests.Press
 
             var sources = builder.Sources;
 
-            Assert.AreEqual(2, sources.Count );
+            ClassicAssert.AreEqual(2, sources.Count );
 
             var json = builder.ToJson(true);
 
-            Assert.IsNotNull(json);
-            Assert.IsNotEmpty(json);
+            ClassicAssert.IsNotNull(json);
+            ClassicAssert.IsNotEmpty(json);
 
         }
 
@@ -54,8 +55,8 @@ namespace Fabrica.Tests.Press
                 ds.TryGetValue("FullName", out var name);
                 ds.TryGetValue("Age", out var age);
 
-                Assert.IsNotNull(name);
-                Assert.IsNotNull(age);
+                ClassicAssert.IsNotNull(name);
+                ClassicAssert.IsNotNull(age);
 
             }
 

@@ -7,6 +7,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.ObjectRepository;
 
@@ -70,8 +71,8 @@ public class ObjectRepoTests
         });
 
 
-        Assert.IsNotNull(key);
-        Assert.IsNotEmpty(key);
+        ClassicAssert.IsNotNull(key);
+        ClassicAssert.IsNotEmpty(key);
 
         var exists = await repo.Get(b =>
         {
@@ -79,7 +80,7 @@ public class ObjectRepoTests
             b.Content = new MemoryStream();
         });
 
-        Assert.IsTrue(exists);
+        ClassicAssert.IsTrue(exists);
 
     }
 
@@ -107,8 +108,8 @@ public class ObjectRepoTests
         var key = await repo.Put(MakePut);
 
 
-        Assert.IsNotNull(key);
-        Assert.IsNotEmpty(key);
+        ClassicAssert.IsNotNull(key);
+        ClassicAssert.IsNotEmpty(key);
 
         void MakeGet(GetOptions ops)
         {
@@ -119,7 +120,7 @@ public class ObjectRepoTests
         var exists = await repo.Get( MakeGet );
 
 
-        Assert.IsTrue(exists);
+        ClassicAssert.IsTrue(exists);
 
     }
 

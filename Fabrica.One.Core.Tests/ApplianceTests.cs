@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -36,7 +37,7 @@ public class ApplianceTests: BaseOneTest
         var started = app.WaitForStart();
 
 
-        Assert.IsTrue(started);
+        ClassicAssert.IsTrue(started);
 
         await Task.Delay(TimeSpan.FromSeconds(5));
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -19,9 +20,9 @@ public class ZipTests
             dst.Delete();
 
         ZipFile.CreateFromDirectory(src.FullName, dst.FullName, CompressionLevel.Fastest, false );
-   
 
-        Assert.IsTrue(true);
+
+        ClassicAssert.IsTrue(true);
 
 
     }        

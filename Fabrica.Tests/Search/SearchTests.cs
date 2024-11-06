@@ -14,6 +14,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Lifti;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Search;
 
@@ -153,7 +154,7 @@ public class SearchTests
 
         var res = await provider.Search("Apparel Amazon French");
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
         Console.Out.WriteLine($"{res.Count()} items matched");
 
@@ -187,7 +188,7 @@ public class SearchTests
 
         var res = await provider.Search("Apparel Amazon French");
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
         Console.Out.WriteLine($"{res.Count()} items matched");
 

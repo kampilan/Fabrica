@@ -32,6 +32,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Module = Autofac.Module;
 using Microsoft.Extensions.Options;
+using NUnit.Framework.Legacy;
 using Sprache;
 
 namespace Fabrica.Tests.Models;
@@ -121,9 +122,9 @@ public class SerializationTests
 
         var json = JsonSerializer.Serialize(company, options);
 
-        Assert.IsNotNull(json);
-        Assert.IsNotEmpty(json);
-        Assert.AreNotEqual("{}", json );
+        ClassicAssert.IsNotNull(json);
+        ClassicAssert.IsNotEmpty(json);
+        ClassicAssert.AreNotEqual("{}", json );
 
     }
 
@@ -145,9 +146,9 @@ public class SerializationTests
                 var options = scope.Resolve<JsonSerializerOptions>();
                 json = JsonSerializer.Serialize(company, options);
 
-                Assert.IsNotNull(json);
-                Assert.IsNotEmpty(json);
-                Assert.AreNotEqual("{}", json);
+                ClassicAssert.IsNotNull(json);
+                ClassicAssert.IsNotEmpty(json);
+                ClassicAssert.AreNotEqual("{}", json);
             }
 
         }
@@ -159,14 +160,14 @@ public class SerializationTests
             var options = scope.Resolve<JsonSerializerOptions>();
             var rt = JsonSerializer.Deserialize<Company>(json, options);
 
-            Assert.IsNotNull(rt);
-            Assert.AreNotEqual(company.Uid, rt.Uid);
-            Assert.IsEmpty(rt.GetDelta());
-            Assert.AreEqual(company.Name, rt.Name);
+            ClassicAssert.IsNotNull(rt);
+            ClassicAssert.AreNotEqual(company.Uid, rt.Uid);
+            ClassicAssert.IsEmpty(rt.GetDelta());
+            ClassicAssert.AreEqual(company.Name, rt.Name);
 
             rt.Name = "Jones";
 
-            Assert.IsNotEmpty(rt.GetDelta());
+            ClassicAssert.IsNotEmpty(rt.GetDelta());
 
         }
 

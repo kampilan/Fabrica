@@ -21,6 +21,7 @@ using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using IContainer = Autofac.IContainer;
 using Module = Autofac.Module;
 
@@ -118,9 +119,9 @@ public class MongoPersistenceTests
         var resC = await hc.Handle(reqC,new CancellationToken());
 
 
-        Assert.IsNotNull(resC);
-        Assert.IsTrue(resC.Ok);
-        Assert.IsNotNull(resC.Value);
+        ClassicAssert.IsNotNull(resC);
+        ClassicAssert.IsTrue(resC.Ok);
+        ClassicAssert.IsNotNull(resC.Value);
 
 
         var reqQ = new QueryEntityRequest<MongoCompany>();
@@ -131,14 +132,14 @@ public class MongoPersistenceTests
         var resQ = await hq.Handle(reqQ, new CancellationToken());
 
 
-        Assert.IsNotNull(resQ);
-        Assert.IsTrue(resC.Ok);
-        Assert.IsNotNull(resQ.Value);
-        Assert.IsNotEmpty(resQ.Value);
+        ClassicAssert.IsNotNull(resQ);
+        ClassicAssert.IsTrue(resC.Ok);
+        ClassicAssert.IsNotNull(resQ.Value);
+        ClassicAssert.IsNotEmpty(resQ.Value);
 
 
         var compQ = resQ.Value.SingleOrDefault();
-        Assert.IsNotNull(compQ);
+        ClassicAssert.IsNotNull(compQ);
 
         var reqR = new RetrieveEntityRequest<MongoCompany>
         {
@@ -148,9 +149,9 @@ public class MongoPersistenceTests
         var hr = new RetrieveCompanyEntityHandler(corr, mc);
         var resR = await hr.Handle(reqR,new CancellationToken());
 
-        Assert.IsNotNull(resR);
-        Assert.IsTrue(resR.Ok);
-        Assert.IsNotNull(resR.Value);
+        ClassicAssert.IsNotNull(resR);
+        ClassicAssert.IsTrue(resR.Ok);
+        ClassicAssert.IsNotNull(resR.Value);
 
         var compU = resR.Value;
 
@@ -166,9 +167,9 @@ public class MongoPersistenceTests
 
         var resU = await hu.Handle(reqU, new CancellationToken());
 
-        Assert.IsNotNull(resU);
-        Assert.IsTrue(resU.Ok);
-        Assert.IsNotNull(resU.Value);
+        ClassicAssert.IsNotNull(resU);
+        ClassicAssert.IsTrue(resU.Ok);
+        ClassicAssert.IsNotNull(resU.Value);
 
 
 
@@ -180,13 +181,13 @@ public class MongoPersistenceTests
         var hd = new DeleteCompanyEntityHandler(corr, mc);
         var resD = await hd.Handle(reqD, new CancellationToken());
 
-        Assert.IsNotNull(resD);
-        Assert.IsTrue(resD.Ok);
+        ClassicAssert.IsNotNull(resD);
+        ClassicAssert.IsTrue(resD.Ok);
 
         var resPd = await hr.Handle(reqR, new CancellationToken());
 
-        Assert.IsNotNull(resPd);
-        Assert.IsFalse(resPd.Ok);
+        ClassicAssert.IsNotNull(resPd);
+        ClassicAssert.IsFalse(resPd.Ok);
 
 
 
@@ -206,12 +207,12 @@ public class MongoPersistenceTests
         
         var reqC = resolver.Resolve(company);
 
-        Assert.IsNotNull(reqC);
+        ClassicAssert.IsNotNull(reqC);
         
         var resC = await mediator.Send(reqC);
 
-        Assert.IsNotNull(resC);
-        Assert.IsFalse( resC.HasErrors );
+        ClassicAssert.IsNotNull(resC);
+        ClassicAssert.IsFalse( resC.HasErrors );
 
 
         var reqR = new RetrieveEntityRequest<MongoCompany>
@@ -221,9 +222,9 @@ public class MongoPersistenceTests
 
         var resR = await mediator.Send(reqR);
 
-        Assert.IsNotNull(resR);
-        Assert.IsTrue(resR.Ok);
-        Assert.IsNotNull(resR.Value);
+        ClassicAssert.IsNotNull(resR);
+        ClassicAssert.IsTrue(resR.Ok);
+        ClassicAssert.IsNotNull(resR.Value);
 
 
         var compU = resR.Value;
@@ -233,12 +234,12 @@ public class MongoPersistenceTests
 
         var reqU = resolver.Resolve(compU);
 
-        Assert.IsNotNull(reqU);
+        ClassicAssert.IsNotNull(reqU);
 
         var resU = await mediator.Send(reqU);
 
-        Assert.IsNotNull(resU);
-        Assert.IsFalse(resU.HasErrors);
+        ClassicAssert.IsNotNull(resU);
+        ClassicAssert.IsFalse(resU.HasErrors);
 
 
 
@@ -246,13 +247,13 @@ public class MongoPersistenceTests
         compU.Removed();
         var reqD = resolver.Resolve(compU);
 
-        Assert.IsNotNull(reqD);
+        ClassicAssert.IsNotNull(reqD);
 
         var resD = await mediator.Send(reqD);
 
 
-        Assert.IsNotNull(resD);
-        Assert.IsFalse(resD.HasErrors);
+        ClassicAssert.IsNotNull(resD);
+        ClassicAssert.IsFalse(resD.HasErrors);
 
 
 
@@ -261,9 +262,9 @@ public class MongoPersistenceTests
 
         var resPd = await mediator.Send(reqPd);
 
-        Assert.IsNotNull(resPd);
-        Assert.IsNotNull(resPd.Value);
-        Assert.IsEmpty(resPd.Value);
+        ClassicAssert.IsNotNull(resPd);
+        ClassicAssert.IsNotNull(resPd.Value);
+        ClassicAssert.IsEmpty(resPd.Value);
 
 
 

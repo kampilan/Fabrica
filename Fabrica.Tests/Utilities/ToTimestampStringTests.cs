@@ -2,6 +2,7 @@
 using Bogus.DataSets;
 using Fabrica.Utilities.Types;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Utilities;
 
@@ -17,9 +18,9 @@ public class ToTimestampStringTests
 
         var ts = DateTime.Now.ToTimestampString();
 
-        Assert.IsNotNull(ts);
-        Assert.IsNotEmpty(ts);
-        Assert.IsTrue(ts.Length == 28);
+        ClassicAssert.IsNotNull(ts);
+        ClassicAssert.IsNotEmpty(ts);
+        ClassicAssert.IsTrue(ts.Length == 28);
 
         var label = "X";
         var x = $"{{label}}";
@@ -36,30 +37,30 @@ public class ToTimestampStringTests
 
         var tsE = DateTime.Now.AddMinutes(-15).ToTimestampString();
 
-        Assert.IsNotNull(tsE);
-        Assert.IsNotEmpty(tsE);
-        Assert.IsTrue(tsE.Length == 28);
+        ClassicAssert.IsNotNull(tsE);
+        ClassicAssert.IsNotEmpty(tsE);
+        ClassicAssert.IsTrue(tsE.Length == 28);
 
         var tsL = DateTime.Now.ToTimestampString();
 
-        Assert.IsNotNull(tsL);
-        Assert.IsNotEmpty(tsL);
-        Assert.IsTrue(tsL.Length == 28);
+        ClassicAssert.IsNotNull(tsL);
+        ClassicAssert.IsNotEmpty(tsL);
+        ClassicAssert.IsTrue(tsL.Length == 28);
 
 
         var comp1 = string.Compare(tsE, tsL, StringComparison.InvariantCulture);
 
-        Assert.AreEqual(-1,comp1);
+        ClassicAssert.AreEqual(-1,comp1);
 
 
         var comp2 = string.Compare(tsL, tsE, StringComparison.InvariantCulture);
 
-        Assert.AreEqual(1, comp2);
+        ClassicAssert.AreEqual(1, comp2);
 
 
         var comp3 = string.Compare(tsE, tsE, StringComparison.InvariantCulture);
 
-        Assert.AreEqual(0, comp3);
+        ClassicAssert.AreEqual(0, comp3);
 
 
     }

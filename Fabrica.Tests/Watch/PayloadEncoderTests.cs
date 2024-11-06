@@ -10,6 +10,7 @@ using Fabrica.Watch;
 using Fabrica.Watch.Sink;
 using Fabrica.Watch.Utilities;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Watch;
 
@@ -43,7 +44,7 @@ public class PayloadEncoderTests
 
         var json2 = WatchPayloadEncoder.DecodeToString(base64);
 
-        Assert.AreEqual(json1,json2);
+        ClassicAssert.AreEqual(json1,json2);
 
 
     }
@@ -75,7 +76,7 @@ public class PayloadEncoderTests
         var json2 = Encoding.ASCII.GetString(raw);
 
 
-        Assert.AreEqual(json1, json2);
+        ClassicAssert.AreEqual(json1, json2);
 
 
     }
@@ -106,7 +107,7 @@ public class PayloadEncoderTests
 
         var json2 = WatchPayloadEncoder.DecodeToString(base64);
 
-        Assert.AreEqual(json1, json2);
+        ClassicAssert.AreEqual(json1, json2);
 
 
     }
@@ -189,8 +190,8 @@ public class PayloadEncoderTests
 
         var payload = company.DumpText();
 
-        Assert.IsNotNull(payload);
-        Assert.IsNotEmpty(payload);
+        ClassicAssert.IsNotNull(payload);
+        ClassicAssert.IsNotEmpty(payload);
 
 
         var sw = new Stopwatch();

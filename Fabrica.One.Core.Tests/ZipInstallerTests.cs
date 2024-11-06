@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -33,9 +34,9 @@ public class ZipInstallerTests: BaseOneTest
         installDir.CreateSubdirectory("test123");
 
         await loader.Clean(plan);
-        
-        Assert.IsTrue( installDir.Exists);
-        Assert.IsTrue( installDir.GetDirectories().Length == 0);
+
+        ClassicAssert.IsTrue( installDir.Exists);
+        ClassicAssert.IsTrue( installDir.GetDirectories().Length == 0);
 
     }
 
@@ -67,12 +68,12 @@ public class ZipInstallerTests: BaseOneTest
 
         await loader.Load(plan, unit);
 
-        Assert.IsTrue(unit.HasLoaded);
+        ClassicAssert.IsTrue(unit.HasLoaded);
 
         await installer.Install(plan, unit);
 
-        Assert.IsTrue(installDir.Exists);
-        Assert.IsTrue(installDir.GetDirectories().Length == 1);
+        ClassicAssert.IsTrue(installDir.Exists);
+        ClassicAssert.IsTrue(installDir.GetDirectories().Length == 1);
 
 
     }
@@ -106,14 +107,14 @@ public class ZipInstallerTests: BaseOneTest
         await loader.Load(plan, unit);
         await installer.Install(plan, unit);
 
-        Assert.IsFalse(unit.HasLoaded);
-        Assert.IsTrue(unit.RepositoryContent.CanRead);
-        Assert.IsFalse(unit.RepositoryContent.Length > 0);
+        ClassicAssert.IsFalse(unit.HasLoaded);
+        ClassicAssert.IsTrue(unit.RepositoryContent.CanRead);
+        ClassicAssert.IsFalse(unit.RepositoryContent.Length > 0);
 
-        Assert.IsFalse(unit.HasInstalled);
+        ClassicAssert.IsFalse(unit.HasInstalled);
 
-        Assert.IsTrue(installDir.Exists);
-        Assert.IsTrue(installDir.GetDirectories().Length == 0);
+        ClassicAssert.IsTrue(installDir.Exists);
+        ClassicAssert.IsTrue(installDir.GetDirectories().Length == 0);
 
 
     }
@@ -150,12 +151,12 @@ public class ZipInstallerTests: BaseOneTest
         await loader.Load(plan, unit);
         await installer.Install(plan, unit);
 
-        Assert.IsTrue(unit.HasLoaded);
-        Assert.IsTrue(unit.HasInstalled);
+        ClassicAssert.IsTrue(unit.HasLoaded);
+        ClassicAssert.IsTrue(unit.HasInstalled);
 
 
-        Assert.IsTrue(installDir.Exists);
-        Assert.IsTrue(installDir.GetDirectories().Length == 1);
+        ClassicAssert.IsTrue(installDir.Exists);
+        ClassicAssert.IsTrue(installDir.GetDirectories().Length == 1);
 
 
     }
@@ -189,10 +190,10 @@ public class ZipInstallerTests: BaseOneTest
 
         await loader.Load(plan, unit);
 
-        var exp = Assert.ThrowsAsync<InvalidDataException>( async ()=>await installer.Install(plan, unit) );
+        var exp = ClassicAssert.ThrowsAsync<InvalidDataException>( async ()=>await installer.Install(plan, unit) );
 
-        Assert.IsTrue(unit.HasLoaded);
-        Assert.IsFalse(unit.HasInstalled);
+        ClassicAssert.IsTrue(unit.HasLoaded);
+        ClassicAssert.IsFalse(unit.HasInstalled);
 
 
     }

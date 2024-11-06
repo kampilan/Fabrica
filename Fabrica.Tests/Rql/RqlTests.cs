@@ -6,6 +6,7 @@ using Fabrica.Rql.Builder;
 using Fabrica.Rql.Parser;
 using Fabrica.Rql.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Rql;
 
@@ -19,7 +20,7 @@ public class RqlTests
 
         var tree = RqlLanguageParser.ToCriteria("()");
 
-        Assert.IsNotNull(tree);
+        ClassicAssert.IsNotNull(tree);
 
 
 
@@ -32,7 +33,7 @@ public class RqlTests
 
         var tree = RqlLanguageParser.ToCriteria("(in(Code,3,4,5))");
 
-        Assert.IsNotNull(tree);
+        ClassicAssert.IsNotNull(tree);
 
         var builder = new RqlFilterBuilder<Test>(tree);
 
@@ -46,7 +47,7 @@ public class RqlTests
 
         var sub = list.Where(expr).ToList();
 
-        Assert.IsNotEmpty(sub);
+        ClassicAssert.IsNotEmpty(sub);
     
 
     }
@@ -74,7 +75,7 @@ public class RqlTests
 
         var sub = list.Where(expr).ToList();
 
-        Assert.IsNotEmpty(sub);
+        ClassicAssert.IsNotEmpty(sub);
 
 
     }

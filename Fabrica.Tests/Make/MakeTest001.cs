@@ -6,6 +6,7 @@ using Fabrica.Make.Sdk;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Make;
 
@@ -57,7 +58,7 @@ public class MakeTest001
 
         response.EnsureSuccessStatusCode();
 
-        Assert.IsTrue(true);
+        ClassicAssert.IsTrue(true);
 
     }
 
@@ -72,8 +73,8 @@ public class MakeTest001
 
         var res = await factory.GetScenarios(60295);
 
-        Assert.IsNotNull(res);
-        Assert.IsNotEmpty(res.Scenarios);
+        ClassicAssert.IsNotNull(res);
+        ClassicAssert.IsNotEmpty(res.Scenarios);
 
     }
 
@@ -88,8 +89,8 @@ public class MakeTest001
 
         var res = await factory.GetHooks(60295);
 
-        Assert.IsNotNull(res);
-        Assert.IsNotEmpty(res.Hooks);
+        ClassicAssert.IsNotNull(res);
+        ClassicAssert.IsNotEmpty(res.Hooks);
 
     }
 

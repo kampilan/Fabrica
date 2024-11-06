@@ -10,6 +10,7 @@ using Fabrica.Utilities.Container;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Support.Aws.Tests;
 
@@ -74,14 +75,14 @@ public class OrchestratorTests
             var source = scope.Resolve<IPlanSource>();
 
             var updated = await source.HasUpdatedPlan();
-            Assert.IsTrue(updated);
+            ClassicAssert.IsTrue(updated);
 
             var factory = scope.Resolve<IPlanFactory>();
 
             var plan = await factory.Create(source, true);
 
-            Assert.IsNotNull(plan);
-            Assert.IsNotEmpty(plan.Deployments);
+            ClassicAssert.IsNotNull(plan);
+            ClassicAssert.IsNotEmpty(plan.Deployments);
 
 
         }    
@@ -100,7 +101,7 @@ public class OrchestratorTests
             var source = scope.Resolve<IPlanSource>();
 
             var updated = await source.HasUpdatedPlan();
-            Assert.IsTrue(updated);
+            ClassicAssert.IsTrue(updated);
 
             var factory = scope.Resolve<IPlanFactory>();
 
@@ -108,10 +109,10 @@ public class OrchestratorTests
 
             await factory.CreateRepositoryVersion(plan);
 
-            Assert.IsNotEmpty(plan.RepositoryVersion);
+            ClassicAssert.IsNotEmpty(plan.RepositoryVersion);
 
-            Assert.IsNotNull(plan);
-            Assert.IsNotEmpty(plan.Deployments);
+            ClassicAssert.IsNotNull(plan);
+            ClassicAssert.IsNotEmpty(plan.Deployments);
 
             var loader    = scope.Resolve<IApplianceLoader>();
             var installer = scope.Resolve<IApplianceInstaller>();
@@ -147,7 +148,7 @@ public class OrchestratorTests
 
             await orch.CheckForUpdatedPlan();
 
-            Assert.Pass();
+            ClassicAssert.Pass();
 
         }
 

@@ -10,6 +10,7 @@ using Fabrica.Api.Support.Identity.Token;
 using Fabrica.Identity;
 using Fabrica.Utilities.Container;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Identity.Claims;
 
@@ -120,18 +121,18 @@ public class ClaimTests
         
         var set2 = ci.ToPayload();
 
-        Assert.IsNotNull(set2);
-        Assert.AreEqual( set.AuthenticationType, set2.AuthenticationType);
-        Assert.AreEqual(set.AuthenticationFlow, set2.AuthenticationFlow);
-        Assert.AreEqual(set.Tenant, set2.Tenant);
-        Assert.AreEqual(set.Subject, set2.Subject);
-        Assert.AreEqual(set.AltSubject, set2.AltSubject);
-        Assert.AreEqual(set.UserName, set2.UserName);
-        Assert.AreEqual(set.GivenName, set2.GivenName);
-        Assert.AreEqual(set.FamilyName, set2.FamilyName);
-        Assert.AreEqual(set.Name, set2.Name);
-        Assert.AreEqual(set.Email, set2.Email);
-        Assert.AreEqual(set.Picture, set2.Picture);
+        ClassicAssert.IsNotNull(set2);
+        ClassicAssert.AreEqual( set.AuthenticationType, set2.AuthenticationType);
+        ClassicAssert.AreEqual(set.AuthenticationFlow, set2.AuthenticationFlow);
+        ClassicAssert.AreEqual(set.Tenant, set2.Tenant);
+        ClassicAssert.AreEqual(set.Subject, set2.Subject);
+        ClassicAssert.AreEqual(set.AltSubject, set2.AltSubject);
+        ClassicAssert.AreEqual(set.UserName, set2.UserName);
+        ClassicAssert.AreEqual(set.GivenName, set2.GivenName);
+        ClassicAssert.AreEqual(set.FamilyName, set2.FamilyName);
+        ClassicAssert.AreEqual(set.Name, set2.Name);
+        ClassicAssert.AreEqual(set.Email, set2.Email);
+        ClassicAssert.AreEqual(set.Picture, set2.Picture);
 
 
     }
@@ -145,25 +146,25 @@ public class ClaimTests
 
         var json = JsonSerializer.Serialize(set, set.GetType());
 
-        Assert.IsNotNull(json);
-        Assert.IsNotEmpty(json);
+        ClassicAssert.IsNotNull(json);
+        ClassicAssert.IsNotEmpty(json);
 
         var ci = new ClaimsIdentity();
         ci.Populate(json);
 
 
-        Assert.IsNotNull(ci);
-        Assert.AreEqual(set.AuthenticationType, ci.GetAuthType());
-        Assert.AreEqual(set.AuthenticationFlow, ci.GetAuthFlow());
-        Assert.AreEqual(set.Tenant, ci.GetTenant());
-        Assert.AreEqual(set.Subject, ci.GetSubject());
-        Assert.AreEqual(set.AltSubject, ci.GetAltSubject());
-        Assert.AreEqual(set.UserName, ci.GetUserName());
-        Assert.AreEqual(set.GivenName, ci.GetGivenName());
-        Assert.AreEqual(set.FamilyName, ci.GetFamilyName());
-        Assert.AreEqual(set.Name, ci.GetName());
-        Assert.AreEqual(set.Email, ci.GetEmail());
-        Assert.AreEqual(set.Picture, ci.GetPictureUrl());
+        ClassicAssert.IsNotNull(ci);
+        ClassicAssert.AreEqual(set.AuthenticationType, ci.GetAuthType());
+        ClassicAssert.AreEqual(set.AuthenticationFlow, ci.GetAuthFlow());
+        ClassicAssert.AreEqual(set.Tenant, ci.GetTenant());
+        ClassicAssert.AreEqual(set.Subject, ci.GetSubject());
+        ClassicAssert.AreEqual(set.AltSubject, ci.GetAltSubject());
+        ClassicAssert.AreEqual(set.UserName, ci.GetUserName());
+        ClassicAssert.AreEqual(set.GivenName, ci.GetGivenName());
+        ClassicAssert.AreEqual(set.FamilyName, ci.GetFamilyName());
+        ClassicAssert.AreEqual(set.Name, ci.GetName());
+        ClassicAssert.AreEqual(set.Email, ci.GetEmail());
+        ClassicAssert.AreEqual(set.Picture, ci.GetPictureUrl());
 
 
     }
@@ -189,25 +190,25 @@ public class ClaimTests
 
         var token = encoder.Encode(set);
 
-        Assert.IsNotNull(token);
-        Assert.IsNotEmpty(token);
+        ClassicAssert.IsNotNull(token);
+        ClassicAssert.IsNotEmpty(token);
 
 
         var set2 = encoder.Decode("Jwt", token);
 
 
-        Assert.IsNotNull(set2);
-        Assert.AreEqual(set.AuthenticationType, set2.AuthenticationType);
-        Assert.AreEqual(set.AuthenticationFlow, set2.AuthenticationFlow);
-        Assert.AreEqual(set.Tenant, set2.Tenant);
-        Assert.AreEqual(set.Subject, set2.Subject);
-        Assert.AreEqual(set.AltSubject, set2.AltSubject);
-        Assert.AreEqual(set.UserName, set2.UserName);
-        Assert.AreEqual(set.GivenName, set2.GivenName);
-        Assert.AreEqual(set.FamilyName, set2.FamilyName);
-        Assert.AreEqual(set.Name, set2.Name);
-        Assert.AreEqual(set.Email, set2.Email);
-        Assert.AreEqual(set.Picture, set2.Picture);
+        ClassicAssert.IsNotNull(set2);
+        ClassicAssert.AreEqual(set.AuthenticationType, set2.AuthenticationType);
+        ClassicAssert.AreEqual(set.AuthenticationFlow, set2.AuthenticationFlow);
+        ClassicAssert.AreEqual(set.Tenant, set2.Tenant);
+        ClassicAssert.AreEqual(set.Subject, set2.Subject);
+        ClassicAssert.AreEqual(set.AltSubject, set2.AltSubject);
+        ClassicAssert.AreEqual(set.UserName, set2.UserName);
+        ClassicAssert.AreEqual(set.GivenName, set2.GivenName);
+        ClassicAssert.AreEqual(set.FamilyName, set2.FamilyName);
+        ClassicAssert.AreEqual(set.Name, set2.Name);
+        ClassicAssert.AreEqual(set.Email, set2.Email);
+        ClassicAssert.AreEqual(set.Picture, set2.Picture);
 
 
 
@@ -224,13 +225,13 @@ public class ClaimTests
         var ci = new ClaimsIdentity();
         ci.Populate(set);
 
-        Assert.IsNotNull(ci);
+        ClassicAssert.IsNotNull(ci);
 
 
         var builder = new ClaimGatewayTokenPayloadBuilder();
         var set1 = builder.Build(ci.Claims);
 
-        Assert.IsNotNull(set1);
+        ClassicAssert.IsNotNull(set1);
 
 
 
@@ -246,8 +247,8 @@ public class ClaimTests
 
         var token = encoder.Encode(set1);
 
-        Assert.IsNotNull(token);
-        Assert.IsNotEmpty(token);
+        ClassicAssert.IsNotNull(token);
+        ClassicAssert.IsNotEmpty(token);
 
 
         var decoder = new GatewayTokenJwtEncoder
@@ -259,18 +260,18 @@ public class ClaimTests
 
         var set2 = decoder.Decode("Jwt", token);
 
-        Assert.IsNotNull(set2);
-        Assert.AreEqual(set.AuthenticationType, set2.AuthenticationType);
-        Assert.AreEqual(set.AuthenticationFlow, set2.AuthenticationFlow);
-        Assert.AreEqual(set.Tenant, set2.Tenant);
-        Assert.AreEqual(set.Subject, set2.Subject);
-        Assert.AreEqual(set.AltSubject, set2.AltSubject);
-        Assert.AreEqual(set.UserName, set2.UserName);
-        Assert.AreEqual(set.GivenName, set2.GivenName);
-        Assert.AreEqual(set.FamilyName, set2.FamilyName);
-        Assert.AreEqual(set.Name, set2.Name);
-        Assert.AreEqual(set.Email, set2.Email);
-        Assert.AreEqual(set.Picture, set2.Picture);
+        ClassicAssert.IsNotNull(set2);
+        ClassicAssert.AreEqual(set.AuthenticationType, set2.AuthenticationType);
+        ClassicAssert.AreEqual(set.AuthenticationFlow, set2.AuthenticationFlow);
+        ClassicAssert.AreEqual(set.Tenant, set2.Tenant);
+        ClassicAssert.AreEqual(set.Subject, set2.Subject);
+        ClassicAssert.AreEqual(set.AltSubject, set2.AltSubject);
+        ClassicAssert.AreEqual(set.UserName, set2.UserName);
+        ClassicAssert.AreEqual(set.GivenName, set2.GivenName);
+        ClassicAssert.AreEqual(set.FamilyName, set2.FamilyName);
+        ClassicAssert.AreEqual(set.Name, set2.Name);
+        ClassicAssert.AreEqual(set.Email, set2.Email);
+        ClassicAssert.AreEqual(set.Picture, set2.Picture);
 
 
     }
@@ -308,7 +309,7 @@ public class ClaimTests
         var builder = new ClaimGatewayTokenPayloadBuilder(mappings);
         var set = builder.Build(claims);
 
-        Assert.IsNotNull(set);
+        ClassicAssert.IsNotNull(set);
 
 
 
@@ -323,8 +324,8 @@ public class ClaimTests
 
         var token = encoder.Encode(set);
 
-        Assert.IsNotNull(token);
-        Assert.IsNotEmpty(token);
+        ClassicAssert.IsNotNull(token);
+        ClassicAssert.IsNotEmpty(token);
 
 
         var decoder = new GatewayTokenJwtEncoder
@@ -336,14 +337,14 @@ public class ClaimTests
 
         var set2 = decoder.Decode("Jwt", token);
 
-        Assert.IsNotNull(set2);
-        Assert.AreEqual(set.Subject, set2.Subject);
-        Assert.AreEqual(set.AltSubject, set2.AltSubject);
-        Assert.AreEqual(set.UserName, set2.UserName);
-        Assert.AreEqual(set.GivenName, set2.GivenName);
-        Assert.AreEqual(set.FamilyName, set2.FamilyName);
-        Assert.AreEqual(set.Name, set2.Name);
-        Assert.AreEqual(set.Email, set2.Email);
+        ClassicAssert.IsNotNull(set2);
+        ClassicAssert.AreEqual(set.Subject, set2.Subject);
+        ClassicAssert.AreEqual(set.AltSubject, set2.AltSubject);
+        ClassicAssert.AreEqual(set.UserName, set2.UserName);
+        ClassicAssert.AreEqual(set.GivenName, set2.GivenName);
+        ClassicAssert.AreEqual(set.FamilyName, set2.FamilyName);
+        ClassicAssert.AreEqual(set.Name, set2.Name);
+        ClassicAssert.AreEqual(set.Email, set2.Email);
 
 
     }

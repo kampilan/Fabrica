@@ -22,6 +22,7 @@ using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using ModelJsonTypeInfoResolver = Fabrica.Models.Serialization.ModelJsonTypeInfoResolver;
 using Module = Autofac.Module;
 
@@ -82,9 +83,9 @@ public class HttpMediatorTests
 
             var response = await mm.Send(request);
 
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Ok);
-            Assert.IsNotEmpty(response.Value);
+            ClassicAssert.IsNotNull(response);
+            ClassicAssert.IsTrue(response.Ok);
+            ClassicAssert.IsNotEmpty(response.Value);
 
         }
 
@@ -111,9 +112,9 @@ public class HttpMediatorTests
 
             var response = await mm.Send(request);
 
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Ok);
-            Assert.IsNotEmpty(response.Value);
+            ClassicAssert.IsNotNull(response);
+            ClassicAssert.IsTrue(response.Ok);
+            ClassicAssert.IsNotEmpty(response.Value);
 
         }
 
@@ -140,9 +141,9 @@ public class HttpMediatorTests
 
             var response = await mm.Send(request);
 
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Ok);
-            Assert.IsEmpty(response.Value);
+            ClassicAssert.IsNotNull(response);
+            ClassicAssert.IsTrue(response.Ok);
+            ClassicAssert.IsEmpty(response.Value);
 
         }
 
@@ -168,9 +169,9 @@ public class HttpMediatorTests
 
             var response = await mm.Send(request);
 
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Ok);
-            Assert.IsNotEmpty(response.Value);
+            ClassicAssert.IsNotNull(response);
+            ClassicAssert.IsTrue(response.Ok);
+            ClassicAssert.IsNotEmpty(response.Value);
 
             var person = response.Value.First();
 
@@ -179,12 +180,12 @@ public class HttpMediatorTests
             var res2 = await mm.Send(req2);
 
 
-            Assert.IsNotNull(res2);
-            Assert.IsTrue(res2.Ok);
-            Assert.IsNotNull(res2.Value);
+            ClassicAssert.IsNotNull(res2);
+            ClassicAssert.IsTrue(res2.Ok);
+            ClassicAssert.IsNotNull(res2.Value);
 
-            Assert.AreEqual(person.Uid, res2.Value.Uid);
-            Assert.AreEqual(person.LastName, res2.Value.LastName);
+            ClassicAssert.AreEqual(person.Uid, res2.Value.Uid);
+            ClassicAssert.AreEqual(person.LastName, res2.Value.LastName);
 
 
         }
@@ -208,9 +209,9 @@ public class HttpMediatorTests
             var res2 = await mm.Send(req2);
 
 
-            Assert.IsNotNull(res2);
-            Assert.IsFalse(res2.Ok);
-            Assert.IsNull(res2.Value);
+            ClassicAssert.IsNotNull(res2);
+            ClassicAssert.IsFalse(res2.Ok);
+            ClassicAssert.IsNull(res2.Value);
 
 
         }
@@ -236,9 +237,9 @@ public class HttpMediatorTests
 
             var response = await mm.Send(request);
 
-            Assert.IsNotNull(response);
-            Assert.IsTrue(response.Ok);
-            Assert.IsNotEmpty(response.Value);
+            ClassicAssert.IsNotNull(response);
+            ClassicAssert.IsTrue(response.Ok);
+            ClassicAssert.IsNotEmpty(response.Value);
 
             var person = response.Value.First();
 
@@ -250,12 +251,12 @@ public class HttpMediatorTests
             var res2 = await mm.Send(req2);
 
 
-            Assert.IsNotNull(res2);
-            Assert.IsTrue(res2.Ok);
-            Assert.IsNotNull(res2.Value);
+            ClassicAssert.IsNotNull(res2);
+            ClassicAssert.IsTrue(res2.Ok);
+            ClassicAssert.IsNotNull(res2.Value);
 
-            Assert.AreEqual(person.Uid, res2.Value.Uid);
-            Assert.AreEqual(person.LastName, res2.Value.LastName);
+            ClassicAssert.AreEqual(person.Uid, res2.Value.Uid);
+            ClassicAssert.AreEqual(person.LastName, res2.Value.LastName);
 
 
             var req3 = RetrieveEntityRequest<Person>.ForUid(res2.Value.Uid);
@@ -263,12 +264,12 @@ public class HttpMediatorTests
             var res3 = await mm.Send(req3);
 
 
-            Assert.IsNotNull(res3);
-            Assert.IsTrue(res3.Ok);
-            Assert.IsNotNull(res3.Value);
+            ClassicAssert.IsNotNull(res3);
+            ClassicAssert.IsTrue(res3.Ok);
+            ClassicAssert.IsNotNull(res3.Value);
 
-            Assert.AreEqual(person.Uid, res3.Value.Uid);
-            Assert.AreEqual(person.LastName, res3.Value.LastName);
+            ClassicAssert.AreEqual(person.Uid, res3.Value.Uid);
+            ClassicAssert.AreEqual(person.LastName, res3.Value.LastName);
 
 
 
@@ -300,12 +301,12 @@ public class HttpMediatorTests
 
         var response = await mediator.Send(request);
 
-        Assert.NotNull(response);
-        Assert.IsTrue(response.Ok);
+        ClassicAssert.NotNull(response);
+        ClassicAssert.IsTrue(response.Ok);
 
-        Assert.NotNull(response.Value);
-        Assert.IsNotEmpty(response.Value.GetUrl);
-        Assert.IsNotEmpty(response.Value.PutUrl);
+        ClassicAssert.NotNull(response.Value);
+        ClassicAssert.IsNotEmpty(response.Value.GetUrl);
+        ClassicAssert.IsNotEmpty(response.Value.PutUrl);
 
 
     }

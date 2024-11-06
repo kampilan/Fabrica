@@ -5,6 +5,7 @@ using Fabrica.One.Configuration;
 using Fabrica.One.Installer;
 using Fabrica.One.Loader;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -29,7 +30,7 @@ public class MissionTests: BaseOneTest
 
         var container = builder.Build();
 
-        Assert.IsNotNull(container);
+        ClassicAssert.IsNotNull(container);
 
         await container.DisposeAsync();
 
@@ -59,26 +60,26 @@ public class MissionTests: BaseOneTest
         var result2 = mission.Deploy();
         var result3 = mission.Start();
 
-        Assert.IsNotNull(result1);
-        Assert.IsTrue(result1.Successful);
+        ClassicAssert.IsNotNull(result1);
+        ClassicAssert.IsTrue(result1.Successful);
 
-        Assert.IsNotNull(result2);
-        Assert.IsTrue(result2.Successful);
+        ClassicAssert.IsNotNull(result2);
+        ClassicAssert.IsTrue(result2.Successful);
 
-        Assert.IsNotNull(result3);
-        Assert.IsTrue(result3.Successful);
+        ClassicAssert.IsNotNull(result3);
+        ClassicAssert.IsTrue(result3.Successful);
 
         await Task.Delay(TimeSpan.FromSeconds(5));
 
 
         var json = mission.GetStatusAsJson();
-        Assert.IsNotEmpty(json);
+        ClassicAssert.IsNotEmpty(json);
 
 
         var result4 = mission.Stop();
 
-        Assert.IsNotNull(result4);
-        Assert.IsTrue(result4.Successful);
+        ClassicAssert.IsNotNull(result4);
+        ClassicAssert.IsTrue(result4.Successful);
 
 
     }
@@ -104,25 +105,25 @@ public class MissionTests: BaseOneTest
         var result2 = mission.Deploy();
         var result3 = mission.Start();
 
-        Assert.IsNotNull(result1);
-        Assert.IsTrue(result1.Successful);
+        ClassicAssert.IsNotNull(result1);
+        ClassicAssert.IsTrue(result1.Successful);
 
-        Assert.IsNotNull(result2);
-        Assert.IsTrue(result2.Successful);
+        ClassicAssert.IsNotNull(result2);
+        ClassicAssert.IsTrue(result2.Successful);
 
-        Assert.IsNotNull(result3);
-        Assert.IsTrue(result3.Successful);
+        ClassicAssert.IsNotNull(result3);
+        ClassicAssert.IsTrue(result3.Successful);
 
         await Task.Delay(TimeSpan.FromSeconds(5));
 
         var json = mission.GetStatusAsJson();
-        Assert.IsNotEmpty(json);
+        ClassicAssert.IsNotEmpty(json);
 
 
         var result4 = mission.Stop();
 
-        Assert.IsNotNull(result4);
-        Assert.IsTrue(result4.Successful);
+        ClassicAssert.IsNotNull(result4);
+        ClassicAssert.IsTrue(result4.Successful);
 
 
     }

@@ -7,6 +7,7 @@ using Fabrica.One.Support.Aws.Repository;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Support.Aws.Tests;
 
@@ -45,7 +46,7 @@ public class RepositoryTests
 
         var repos = (await Manager.GetRepositories()).ToList();
 
-        Assert.IsNotEmpty(repos);
+        ClassicAssert.IsNotEmpty(repos);
 
     }
 
@@ -56,13 +57,13 @@ public class RepositoryTests
 
         var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
 
-        Assert.IsNotNull(repo);
+        ClassicAssert.IsNotNull(repo);
 
         await Manager.SetCurrentRepository(repo);
 
         var missions = (await Manager.GetMissions()).ToList();
         
-        Assert.IsNotEmpty(missions);
+        ClassicAssert.IsNotEmpty(missions);
 
     }
 
@@ -73,14 +74,14 @@ public class RepositoryTests
 
         var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
 
-        Assert.IsNotNull(repo);
+        ClassicAssert.IsNotNull(repo);
 
         await Manager.SetCurrentRepository(repo);
 
 
         var builds = (await Manager.GetBuilds()).ToList();
 
-        Assert.IsNotEmpty(builds);
+        ClassicAssert.IsNotEmpty(builds);
 
     }
 
@@ -92,7 +93,7 @@ public class RepositoryTests
 
         var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
 
-        Assert.IsNotNull(repo);
+        ClassicAssert.IsNotNull(repo);
 
         await Manager.SetCurrentRepository(repo);
 
@@ -103,9 +104,9 @@ public class RepositoryTests
 
         var nm = await Manager.CreateMission( "cool", "development" );
 
-        Assert.IsNotNull(nm);
-        Assert.AreEqual("cool", nm.Name );
-        Assert.IsEmpty(nm.Deployments);
+        ClassicAssert.IsNotNull(nm);
+        ClassicAssert.AreEqual("cool", nm.Name );
+        ClassicAssert.IsEmpty(nm.Deployments);
 
 
         var build = all.First();
@@ -121,7 +122,7 @@ public class RepositoryTests
         nd.SetConfiguration(dict);
 
 
-        Assert.IsNotEmpty(nm.Deployments);
+        ClassicAssert.IsNotEmpty(nm.Deployments);
 
 
         var dp = nm.Deployments.First();
@@ -146,7 +147,7 @@ public class RepositoryTests
 
         var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
 
-        Assert.IsNotNull(repo);
+        ClassicAssert.IsNotNull(repo);
 
         await Manager.SetCurrentRepository(repo);
 
@@ -156,16 +157,16 @@ public class RepositoryTests
 
         var mm = missions.FirstOrDefault(m => m.Fqmn == "Fake-Local");
 
-        Assert.IsNotNull(mm);
-        Assert.IsNotEmpty(mm.Deployments);
+        ClassicAssert.IsNotNull(mm);
+        ClassicAssert.IsNotEmpty(mm.Deployments);
 
         var dm = mm.Deployments.FirstOrDefault();
 
-        Assert.IsNotNull(dm);
+        ClassicAssert.IsNotNull(dm);
 
         var cj = dm.ConfigurationAsJson;
-        Assert.IsNotNull(cj);
-        Assert.IsNotEmpty(cj);
+        ClassicAssert.IsNotNull(cj);
+        ClassicAssert.IsNotEmpty(cj);
 
         var dict = new Dictionary<string, object>
         {
@@ -182,8 +183,8 @@ public class RepositoryTests
 
         var mj = JsonSerializer.Serialize(mm, new JsonSerializerOptions(JsonSerializerDefaults.General) {WriteIndented = true});
 
-        Assert.IsNotNull(mj);
-        Assert.IsNotEmpty(mj);
+        ClassicAssert.IsNotNull(mj);
+        ClassicAssert.IsNotEmpty(mj);
 
 
     }
@@ -195,15 +196,15 @@ public class RepositoryTests
 
         var repo = (await Manager.GetRepositories(r => r.Description.Contains("pondhawk-"))).FirstOrDefault();
 
-        Assert.IsNotNull(repo);
+        ClassicAssert.IsNotNull(repo);
 
         await Manager.SetCurrentRepository(repo);
 
 
         var builds = await Manager.GetMissionBuildUsage();
 
-        Assert.IsNotNull(builds);
-        Assert.IsNotEmpty(builds);
+        ClassicAssert.IsNotNull(builds);
+        ClassicAssert.IsNotEmpty(builds);
 
 
     }

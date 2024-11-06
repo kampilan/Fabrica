@@ -8,6 +8,7 @@ using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Identity.Auth0
 {
@@ -72,8 +73,8 @@ namespace Fabrica.Tests.Identity.Auth0
 
             var token = await comp.GetToken();
 
-            Assert.IsNotEmpty(token);
-            Assert.IsFalse(comp.HasExpired);
+            ClassicAssert.IsNotEmpty(token);
+            ClassicAssert.IsFalse(comp.HasExpired);
 
         }
 
@@ -97,10 +98,10 @@ namespace Fabrica.Tests.Identity.Auth0
 
             var result = await comp.SyncUser(request);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Created);
-            Assert.IsNotEmpty(result.IdentityUid);
-            Assert.IsNotEmpty(result.Password);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.IsTrue(result.Created);
+            ClassicAssert.IsNotEmpty(result.IdentityUid);
+            ClassicAssert.IsNotEmpty(result.Password);
 
 
             var request2 = new SyncUserRequest
@@ -116,10 +117,10 @@ namespace Fabrica.Tests.Identity.Auth0
 
             var result2 = await comp.SyncUser(request2);
 
-            Assert.IsNotNull(result2);
-            Assert.IsFalse(result2.Created);
-            Assert.IsNotEmpty(result2.IdentityUid);
-            Assert.IsEmpty(result2.Password);
+            ClassicAssert.IsNotNull(result2);
+            ClassicAssert.IsFalse(result2.Created);
+            ClassicAssert.IsNotEmpty(result2.IdentityUid);
+            ClassicAssert.IsEmpty(result2.Password);
 
 
         }

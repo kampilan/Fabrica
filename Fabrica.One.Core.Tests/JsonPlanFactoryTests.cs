@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Fabrica.Exceptions;
 using Fabrica.One.Plan;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -21,7 +22,7 @@ public class JsonPlanFactoryTests: BaseOneTest
         var source  = await NoAppliancePlanSource();
         var factory = GetFactory();
 
-        Assert.ThrowsAsync<PredicateException>( async () => await factory.Create(source) );
+        ClassicAssert.ThrowsAsync<PredicateException>( async () => await factory.Create(source) );
 
     }
 
@@ -33,7 +34,7 @@ public class JsonPlanFactoryTests: BaseOneTest
         var source  = await EmptyJsonPlanSource();
         var factory = GetFactory();
 
-        Assert.ThrowsAsync<PredicateException>(async () => await factory.Create(source));
+        ClassicAssert.ThrowsAsync<PredicateException>(async () => await factory.Create(source));
 
     }
 
@@ -44,7 +45,7 @@ public class JsonPlanFactoryTests: BaseOneTest
         var source  = await BadJsonPlanSource();
         var factory = GetFactory();
 
-        Assert.ThrowsAsync<PredicateException>(async () => await factory.Create(source));
+        ClassicAssert.ThrowsAsync<PredicateException>(async () => await factory.Create(source));
 
     }
 
@@ -58,15 +59,15 @@ public class JsonPlanFactoryTests: BaseOneTest
 
         var plan = await factory.Create(source);
 
-        Assert.IsNotNull(plan);
-        Assert.IsTrue(plan.Deployments.Count == 1);
+        ClassicAssert.IsNotNull(plan);
+        ClassicAssert.IsTrue(plan.Deployments.Count == 1);
         var d1 = plan.Deployments[0];
 
-        Assert.IsNotNull(d1.Configuration);
+        ClassicAssert.IsNotNull(d1.Configuration);
 
         var cd = d1.Configuration.Deserialize<Dictionary<string, object>>();
-        Assert.IsNotNull(cd);
-        Assert.IsNotEmpty(cd);
+        ClassicAssert.IsNotNull(cd);
+        ClassicAssert.IsNotEmpty(cd);
 
         var json = JsonSerializer.Serialize(plan);
 
@@ -85,19 +86,19 @@ public class JsonPlanFactoryTests: BaseOneTest
 
         var plan = await factory.Create(source);
 
-        Assert.IsNotNull(plan);
-        Assert.IsTrue(plan.Deployments.Count == 2);
+        ClassicAssert.IsNotNull(plan);
+        ClassicAssert.IsTrue(plan.Deployments.Count == 2);
         var d1 = plan.Deployments[1];
 
-        Assert.IsNotNull(d1.Configuration);
+        ClassicAssert.IsNotNull(d1.Configuration);
 
         var cd = d1.Configuration.Deserialize<Dictionary<string, object>>();
-        Assert.IsNotNull(cd);
-        Assert.IsNotEmpty(cd);
+        ClassicAssert.IsNotNull(cd);
+        ClassicAssert.IsNotEmpty(cd);
 
 
         var json2 = d1.Configuration.ToString();
-        Assert.IsNotEmpty(json2);
+        ClassicAssert.IsNotEmpty(json2);
 
 
     }
@@ -112,7 +113,7 @@ public class JsonPlanFactoryTests: BaseOneTest
 
         var plan = await factory.Create(source);
 
-        Assert.IsNotNull(plan);
+        ClassicAssert.IsNotNull(plan);
 
 
         var options = new JsonSerializerOptions

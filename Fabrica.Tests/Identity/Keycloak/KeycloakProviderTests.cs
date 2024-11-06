@@ -17,6 +17,7 @@ using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.Tests.Identity.Keycloak;
 
@@ -77,28 +78,28 @@ public class KeycloakProviderTests
 
             var json = await client.GetStringAsync("users");
 
-            Assert.IsNotNull(json);
-            Assert.IsNotEmpty(json);
+            ClassicAssert.IsNotNull(json);
+            ClassicAssert.IsNotEmpty(json);
 
             var list = JsonSerializer.Deserialize<List<User>>(json);
 
-            Assert.IsNotNull(list);
-            Assert.IsNotEmpty(list);
+            ClassicAssert.IsNotNull(list);
+            ClassicAssert.IsNotEmpty(list);
 
             var user = list.First();
 
-            Assert.IsNotNull(user);
+            ClassicAssert.IsNotNull(user);
 
 
             var json2 = await client.GetStringAsync($"users/{user.Id}");
 
 
-            Assert.IsNotNull(json2);
-            Assert.IsNotEmpty(json2);
+            ClassicAssert.IsNotNull(json2);
+            ClassicAssert.IsNotEmpty(json2);
 
             var user2 = JsonSerializer.Deserialize<User>(json2);
 
-            Assert.IsNotNull(user2);
+            ClassicAssert.IsNotNull(user2);
 
         }
 
@@ -130,12 +131,12 @@ public class KeycloakProviderTests
 
         var res = await provider.SyncUser(request);
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsFalse(res.Exists);
-        Assert.IsFalse(res.Updated);
-        Assert.IsTrue(res.Created);
+        ClassicAssert.IsNotEmpty(res.IdentityUid);
+        ClassicAssert.IsFalse(res.Exists);
+        ClassicAssert.IsFalse(res.Updated);
+        ClassicAssert.IsTrue(res.Created);
 
 
 
@@ -170,12 +171,12 @@ public class KeycloakProviderTests
 
         var res = await provider.SyncUser(request);
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsFalse(res.Exists);
-        Assert.IsFalse(res.Updated);
-        Assert.IsTrue(res.Created);
+        ClassicAssert.IsNotEmpty(res.IdentityUid);
+        ClassicAssert.IsFalse(res.Exists);
+        ClassicAssert.IsFalse(res.Updated);
+        ClassicAssert.IsTrue(res.Created);
 
     }
 
@@ -200,12 +201,12 @@ public class KeycloakProviderTests
 
         var res = await provider.SyncUser(request);
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsFalse(res.Exists);
-        Assert.IsFalse(res.Updated);
-        Assert.IsTrue(res.Created);
+        ClassicAssert.IsNotEmpty(res.IdentityUid);
+        ClassicAssert.IsFalse(res.Exists);
+        ClassicAssert.IsFalse(res.Updated);
+        ClassicAssert.IsTrue(res.Created);
 
     }
 
@@ -230,12 +231,12 @@ public class KeycloakProviderTests
 
         var res = await provider.SyncUser(request);
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsTrue(res.Exists);
-        Assert.IsTrue(res.Updated);
-        Assert.IsFalse(res.Created);
+        ClassicAssert.IsNotEmpty(res.IdentityUid);
+        ClassicAssert.IsTrue(res.Exists);
+        ClassicAssert.IsTrue(res.Updated);
+        ClassicAssert.IsFalse(res.Created);
 
     }
 
@@ -256,12 +257,12 @@ public class KeycloakProviderTests
 
         var res = await provider.SyncUser(request);
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsTrue(res.Exists);
-        Assert.IsTrue(res.Updated);
-        Assert.IsFalse(res.Created);
+        ClassicAssert.IsNotEmpty(res.IdentityUid);
+        ClassicAssert.IsTrue(res.Exists);
+        ClassicAssert.IsTrue(res.Updated);
+        ClassicAssert.IsFalse(res.Created);
 
     }
 
@@ -276,7 +277,7 @@ public class KeycloakProviderTests
         var res = await provider.ExecutePasswordReset("james.moring@kampilangroup.com");
 
 
-        Assert.IsTrue(res);
+        ClassicAssert.IsTrue(res);
 
     }
 
@@ -301,12 +302,12 @@ public class KeycloakProviderTests
 
         var res = await provider.SyncUser(request);
 
-        Assert.IsNotNull(res);
+        ClassicAssert.IsNotNull(res);
 
-        Assert.IsNotEmpty(res.IdentityUid);
-        Assert.IsTrue(res.Exists);
-        Assert.IsFalse(res.Updated);
-        Assert.IsFalse(res.Created);
+        ClassicAssert.IsNotEmpty(res.IdentityUid);
+        ClassicAssert.IsTrue(res.Exists);
+        ClassicAssert.IsFalse(res.Updated);
+        ClassicAssert.IsFalse(res.Created);
 
     }
 
@@ -323,7 +324,7 @@ public class KeycloakProviderTests
 
             var token = await source.GetToken();
 
-            Assert.IsNotEmpty(token);
+            ClassicAssert.IsNotEmpty(token);
 
         }
 
@@ -347,16 +348,16 @@ public class KeycloakProviderTests
 
             var response = await client.SendAsync(request);
 
-            Assert.IsNotNull( response );
-            Assert.IsTrue( response.IsSuccessStatusCode );
+            ClassicAssert.IsNotNull( response );
+            ClassicAssert.IsTrue( response.IsSuccessStatusCode );
 
             var json = await response.Content.ReadAsStringAsync();
 
-            Assert.IsNotEmpty( json );
+            ClassicAssert.IsNotEmpty( json );
 
             var intro = JsonNode.Parse(json);
 
-            Assert.IsNotNull(intro);
+            ClassicAssert.IsNotNull(intro);
 
 
         }

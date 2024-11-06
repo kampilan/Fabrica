@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Fabrica.One.Loader;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -36,8 +37,8 @@ public class FileSysLoaderTests : BaseOneTest
 
         await loader.Clean(plan);
 
-        Assert.IsTrue(CurDir.Exists);
-        Assert.IsFalse(OldDir.Exists);
+        ClassicAssert.IsTrue(CurDir.Exists);
+        ClassicAssert.IsFalse(OldDir.Exists);
 
     }
 
@@ -56,10 +57,10 @@ public class FileSysLoaderTests : BaseOneTest
 
         await loader.Load( plan, unit );
 
-        Assert.IsTrue(CurDir.Exists);
+        ClassicAssert.IsTrue(CurDir.Exists);
 
-        Assert.IsTrue(unit.HasLoaded);
-        Assert.IsTrue(unit.RepositoryContent.Length > 0);
+        ClassicAssert.IsTrue(unit.HasLoaded);
+        ClassicAssert.IsTrue(unit.RepositoryContent.Length > 0);
 
     }
 
@@ -78,10 +79,10 @@ public class FileSysLoaderTests : BaseOneTest
 
         await loader.Load(plan, unit);
 
-        Assert.IsTrue(CurDir.Exists);
+        ClassicAssert.IsTrue(CurDir.Exists);
 
-        Assert.IsTrue(unit.HasLoaded);
-        Assert.IsTrue(unit.RepositoryContent.Length > 0);
+        ClassicAssert.IsTrue(unit.HasLoaded);
+        ClassicAssert.IsTrue(unit.RepositoryContent.Length > 0);
 
     }
 
@@ -100,10 +101,10 @@ public class FileSysLoaderTests : BaseOneTest
 
         await loader.Load(plan, unit);
 
-        Assert.IsTrue(CurDir.Exists);
+        ClassicAssert.IsTrue(CurDir.Exists);
 
-        Assert.IsFalse(unit.HasLoaded);
-        Assert.IsFalse(unit.RepositoryContent.Length > 0);
+        ClassicAssert.IsFalse(unit.HasLoaded);
+        ClassicAssert.IsFalse(unit.RepositoryContent.Length > 0);
 
     }
 
@@ -122,11 +123,11 @@ public class FileSysLoaderTests : BaseOneTest
 
         var loader = new FileSysApplianceLoader();
 
-        var exp = Assert.ThrowsAsync<Exception>( async ()=>await loader.Load(plan, unit) );
+        var exp = ClassicAssert.ThrowsAsync<Exception>( async ()=>await loader.Load(plan, unit) );
 
 
-        Assert.IsFalse(unit.HasLoaded);
-        Assert.IsTrue(unit.RepositoryContent.Length == 0);
+        ClassicAssert.IsFalse(unit.HasLoaded);
+        ClassicAssert.IsTrue(unit.RepositoryContent.Length == 0);
 
     }
 
@@ -143,12 +144,12 @@ public class FileSysLoaderTests : BaseOneTest
 
         var loader = new FileSysApplianceLoader();
 
-        Assert.ThrowsAsync<FileNotFoundException>( async ()=>await loader.Load(plan, unit));
+        ClassicAssert.ThrowsAsync<FileNotFoundException>( async ()=>await loader.Load(plan, unit));
 
-        Assert.IsTrue(CurDir.Exists);
+        ClassicAssert.IsTrue(CurDir.Exists);
 
-        Assert.IsFalse(unit.HasLoaded);
-        Assert.IsFalse(unit.RepositoryContent.Length > 0);
+        ClassicAssert.IsFalse(unit.HasLoaded);
+        ClassicAssert.IsFalse(unit.RepositoryContent.Length > 0);
 
     }
 

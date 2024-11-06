@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Fabrica.One.Repository;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Fabrica.One.Core.Tests;
 
@@ -20,8 +21,8 @@ public class FileStatusRepositoryTests
 
         var list = (await repo.GetStatus()).ToList();
 
-        Assert.IsNotNull(list);
-        Assert.IsNotEmpty(list);
+        ClassicAssert.IsNotNull(list);
+        ClassicAssert.IsNotEmpty(list);
 
 
     }

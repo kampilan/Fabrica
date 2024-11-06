@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -24,8 +25,8 @@ public class YamlTests
 
         var p = deserializer.Deserialize<Model>(yaml);
 
-        Assert.IsNotNull(p);
-        Assert.IsNotNull(p.Proxy);
+        ClassicAssert.IsNotNull(p);
+        ClassicAssert.IsNotNull(p.Proxy);
 
         var serializer = new SerializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -33,11 +34,11 @@ public class YamlTests
         var py = serializer.Serialize(p.Proxy);
 
 
-        Assert.IsNotEmpty(py);
+        ClassicAssert.IsNotEmpty(py);
 
         var po = deserializer.Deserialize<object>(py);
 
-        Assert.IsNotNull(po);
+        ClassicAssert.IsNotNull(po);
 
 
     }

@@ -19,6 +19,7 @@ using Fabrica.Utilities.Text;
 using Fabrica.Watch;
 using Fabrica.Watch.Realtime;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using IContainer = Autofac.IContainer;
 using Module = Autofac.Module;
 using Person = Fabrica.Test.Models.Patch.Person;
@@ -114,9 +115,9 @@ public class PatchTests
 
             var requests = resolver.Resolve(set2).ToList();
 
-            Assert.IsNotNull(requests);
-            Assert.IsNotEmpty(requests);
-            Assert.AreEqual(3, requests.Count);
+            ClassicAssert.IsNotNull(requests);
+            ClassicAssert.IsNotEmpty(requests);
+            ClassicAssert.AreEqual(3, requests.Count);
 
 
             var set3 = new PatchSet();
@@ -168,9 +169,9 @@ public class PatchTests
 
             var requests = resolver.Resolve(set2).ToList();
 
-            Assert.IsNotNull(requests);
-            Assert.IsNotEmpty(requests);
-            Assert.AreEqual(3, requests.Count);
+            ClassicAssert.IsNotNull(requests);
+            ClassicAssert.IsNotEmpty(requests);
+            ClassicAssert.AreEqual(3, requests.Count);
 
         }
 
@@ -201,7 +202,7 @@ public class PatchTests
             var mediator = scope.Resolve<IMessageMediator>();
             var batch = await mediator.Send(requests);
 
-            Assert.IsNotNull( batch );
+            ClassicAssert.IsNotNull( batch );
 
 
         }
